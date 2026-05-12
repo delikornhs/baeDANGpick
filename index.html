@@ -115,7 +115,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .card-name{font-size:13px;font-weight:600;line-height:1.4;letter-spacing:-.2px;flex:1}
 .card-meta{display:flex;align-items:center;gap:4px;margin-bottom:10px;flex-wrap:wrap}
 .type-badge{font-size:10px;background:var(--bg);border:1px solid var(--border);color:var(--ink3);padding:2px 6px;border-radius:3px}
-.card-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.card-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
 .cs{background:var(--bg);border-radius:6px;padding:8px 10px}
 .cs-l{font-size:10px;color:var(--ink3);margin-bottom:3px}
 .cs-v{font-size:14px;font-weight:700;font-family:"DM Mono",monospace}
@@ -300,6 +300,10 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   </div>
   <div class="etf-grid" id="etfGrid"></div>
   <div class="pg" id="pg"></div>
+  <p style="margin-top:18px;font-size:11px;color:var(--ink3);line-height:1.7;text-align:center">
+    분배율은 가장 최근 배당락일의 분배금액과 배당락 전일 종가를 기준으로 산출한 참고 수치입니다.<br>
+    각 운용사가 공시하는 분배율과 일부 차이가 있을 수 있습니다.
+  </p>
 </div>
 
 <!-- 계산기 -->
@@ -332,14 +336,17 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
         </div>
       </div>
       <div class="c-right">
-        <div class="r-row"><span class="r-label">전날 종가</span><span class="r-val" id="rP">—</span></div>
+        <div class="r-row"><span class="r-label">현재 주가<span style="font-size:10px;font-weight:400;opacity:.7;margin-left:4px">(어제 종가 기준)</span></span><span class="r-val" id="rP">—</span></div>
         <div class="r-row"><span class="r-label">분배 주기</span><span class="r-val" id="rFreq">—</span></div>
         <div class="r-row"><span class="r-label">매수 가능 수량</span><span class="r-val g" id="rQ">—</span></div>
         <div class="r-row"><span class="r-label">실제 투자금</span><span class="r-val" id="rA">—</span></div>
         <div class="r-row"><span class="r-label">주당 분배금</span><span class="r-val" id="rD">—</span></div>
         <div class="r-row"><span class="r-label" style="color:#fff;font-weight:700">이번달 예상 분배금</span><span class="r-val big" id="rT">—</span></div>
         <div class="r-row"><span class="r-label">이번달 분배율</span><span class="r-val g" id="rR">—</span></div>
-
+        <p style="font-size:10px;color:#888;line-height:1.6;margin-top:10px">
+          분배율은 최근 배당락일 기준 분배금액과 배당락 전일 종가로 산출한 참고 수치입니다.<br>
+          상단의 공시일자를 함께 확인하세요.
+        </p>
       </div>
     </div>
   </div>
@@ -963,10 +970,13 @@ const ALL_ETF = [...ETF_END, ...ETF_MID];
 document.getElementById('hTotal').textContent = ALL_ETF.length;
 document.getElementById('hMid').textContent = ETF_MID.length;
 document.getElementById('hEnd').textContent = ETF_END.length;
-const _exYear = ETF_END[0]?.ex?.slice(0,4) || '';
-const _exMonth = parseInt(ETF_END[0]?.ex?.slice(5,7)||0);
-const _pDate = typeof PRICE_DATE !== 'undefined' && PRICE_DATE ? ` · 종가 ${PRICE_DATE}` : '';
-document.getElementById('navMeta').textContent = `${_exYear}년 ${_exMonth}월 기준${_pDate}`;
+const _midEx = ETF_MID[0]?.ex || '';
+const _endEx = ETF_END[0]?.ex || '';
+const _pDate = typeof PRICE_DATE !== 'undefined' && PRICE_DATE ? ` | 종가 ${PRICE_DATE}` : '';
+const _metaParts = [];
+if(_midEx) _metaParts.push(`월중 ${_midEx.slice(5)}`);
+if(_endEx) _metaParts.push(`월말 ${_endEx.slice(5)}`);
+document.getElementById('navMeta').textContent = (_metaParts.length ? '공시 ' + _metaParts.join(' · ') : '') + _pDate;
 
 // ── 달력 ──
 let calYear = 2026, calMonth = 3; // 0-indexed, 3=4월
@@ -1087,7 +1097,8 @@ function renderGrid() {
       </div>
       <div class="card-stats">
         <div class="cs"><div class="cs-l">주당 분배금</div><div class="cs-v b">${comma(e.dist)}원</div></div>
-        <div class="cs"><div class="cs-l">이번달 분배율</div><div class="cs-v g">${e.rate}%</div></div>
+        <div class="cs"><div class="cs-l">분배율</div><div class="cs-v g">${e.rate}%</div></div>
+        <div class="cs"><div class="cs-l">현재 주가</div><div class="cs-v">${comma(e.price)}원</div></div>
       </div>
       <div class="card-dates">
         <div class="dbadge buy">🛒 ${fd(lb)}</div>
@@ -1266,11 +1277,10 @@ function calcResult() {
   if(qty<=0){['rQ','rA','rT','rR'].forEach(id=>document.getElementById(id).textContent='—');return;}
 
   const actual=qty*e.price, total=qty*e.dist;
-  const rate=(e.dist/e.price*100).toFixed(2);
   document.getElementById('rQ').textContent=comma(qty)+'주';
   document.getElementById('rA').textContent=comma(actual)+'원';
   document.getElementById('rT').textContent=comma(total)+'원';
-  document.getElementById('rR').textContent=rate+'%';
+  document.getElementById('rR').textContent=e.rate+'%';
 }
 function resetCalc(){['rP','rFreq','rQ','rA','rD','rT','rR'].forEach(id=>document.getElementById(id).textContent='—');}
 

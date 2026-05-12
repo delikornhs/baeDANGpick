@@ -365,10 +365,11 @@ def build_latest(history: dict, target_month: str = None):
     return latest
 
 
-def build_js(latest: list, price_map: dict = None, price_date: str = ""):
+def build_js(latest: list, price_map: dict = None, price_date: str = "", update_rate: bool = True):
     """
     latest.json을 사이트에 바로 삽입할 etf_data.js로 변환.
     price_map: {code: price} — 네이버에서 조회한 전날 종가
+    update_rate: False면 price만 갱신하고 rate는 기존 값 유지
     """
     print("\n" + "=" * 50)
     print("📝 JS 데이터 파일 생성")
@@ -381,9 +382,10 @@ def build_js(latest: list, price_map: dict = None, price_date: str = ""):
             p = price_map.get(item["code"]) or price_map.get(item["isin"])
             if p and p > 0:
                 item["price"] = p
-                item["rate"] = round(item["dist"] / p * 100, 2)
+                if update_rate:
+                    item["rate"] = round(item["dist"] / p * 100, 2)
                 updated += 1
-        print(f"가격 업데이트: {updated}개")
+        print(f"가격 업데이트: {updated}개 (분배율 재계산: {'예' if update_rate else '아니오'})")
 
     # ETF_END (월말), ETF_MID (월중) 분리
     end_list, mid_list = [], []
@@ -568,7 +570,17 @@ if __name__ == "__main__":
         codes = list({item["code"] for item in latest})
         price_map, price_date = fetch_naver_prices(codes)
 
-        build_js(latest, price_map, price_date)
+        # 종가만 갱신, 분배율은 월간 전체 실행 시 계산된 값 유지
+        build_js(latest, price_map, price_date, update_rate=False)
+
+        # 갱신된 price를 latest.json에도 저장
+        for item in latest:
+            p = price_map.get(item["code"]) or price_map.get(item["isin"])
+            if p and p > 0:
+                item["price"] = p
+        with open(LATEST_FILE, "w", encoding="utf-8") as f:
+            json.dump(latest, f, ensure_ascii=False, indent=2)
+
         inject_html()
 
         print("\n✅ 종가 업데이트 완료!")
