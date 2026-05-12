@@ -100,6 +100,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .ftab{border:1px solid var(--border);border-radius:6px;padding:7px 12px;font-size:12px;font-weight:500;color:var(--ink2);cursor:pointer;background:var(--white);transition:all .15s;font-family:"Noto Sans KR",sans-serif;white-space:nowrap}
 .ftab:hover{border-color:var(--accent);color:var(--accent)}
 .ftab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.ftab.stab{font-size:11px;padding:5px 10px;background:var(--accent-bg);border-color:var(--accent-mid);color:var(--accent)}
+.ftab.stab.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .sort-sel{border:1px solid var(--border);border-radius:8px;padding:9px 10px;font-size:12px;font-family:"Noto Sans KR",sans-serif;background:var(--white);color:var(--ink);outline:none;cursor:pointer}
 
 /* FREQ BADGE */
@@ -325,13 +327,14 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     </div>
     <div class="ftabs" id="freqTabs">
       <button class="ftab" data-v="전체" data-group="freq">전체주기</button>
-      <button class="ftab on" data-v="월배당" data-group="freq">월배당</button>
       <button class="ftab" data-v="분기배당이상" data-group="freq">분기배당이상</button>
+      <button class="ftab on" data-v="월배당" data-group="freq">월배당</button>
     </div>
-    <div class="ftabs" id="timingTabs" style="margin-top:-4px">
-      <button class="ftab on" data-v="전체" data-group="timing">전체</button>
-      <button class="ftab" data-v="월중" data-group="timing">월중</button>
-      <button class="ftab" data-v="월말" data-group="timing">월말</button>
+    <div class="ftabs" id="timingTabs" style="margin-top:-2px;padding-left:4px;align-items:center">
+      <span style="font-size:12px;color:var(--accent);margin-right:2px;line-height:1">ㄴ</span>
+      <button class="ftab stab on" data-v="전체" data-group="timing">전체</button>
+      <button class="ftab stab" data-v="월중" data-group="timing">월중</button>
+      <button class="ftab stab" data-v="월말" data-group="timing">월말</button>
     </div>
     <select class="sort-sel" id="sortSel">
       <option value="rate_d">분배율 높은순</option>
