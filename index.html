@@ -979,7 +979,7 @@ const ETF_MID = [
 ];
 
 
-const TODAY = new Date('2026-05-11');
+const TODAY = new Date();
 const MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
 function lastBuy(exStr) {
@@ -1016,7 +1016,7 @@ if(_endNotice) _metaParts.push(`월말 ${_endNotice.slice(5)}`);
 document.getElementById('navMeta').textContent = (_metaParts.length ? '최종 분배금 공시일 ' + _metaParts.join(' · ') : '') + _pDate;
 
 // ── 달력 ──
-let calYear = 2026, calMonth = 3; // 0-indexed, 3=4월
+let calYear = TODAY.getFullYear(), calMonth = TODAY.getMonth();
 
 function moveMonth(d) {
   calMonth += d;
