@@ -47,9 +47,6 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .hero h1{font-size:24px;font-weight:700;letter-spacing:-.5px;line-height:1.35;margin-bottom:8px}
 .hero h1 span{color:#6cba8b}
 .hero p{font-size:13px;color:#999;line-height:1.7;margin-bottom:14px}
-.hero-chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:5px 12px;font-size:12px;color:#ccc}
-.chip b{color:#6cba8b}
 
 /* SECTION */
 .section{max-width:1100px;margin:0 auto;padding:24px 20px 0}
@@ -241,11 +238,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   <div class="hero-inner">
     <h1><span>언제까지</span> 사야 받고 <span>언제부터</span> 팔아도 될까?</h1>
     <p>최종 매수일 · 배당락일 · 지급일 한눈에 확인</p>
-    <div class="hero-chips">
-      <div class="chip">이번달 <b id="hTotal">0</b>개 ETF</div>
-      <div class="chip">월중 배당 <b id="hMid">0</b>개</div>
-      <div class="chip">월말 배당 <b id="hEnd">0</b>개</div>
-    </div>
   </div>
 </div>
 
@@ -1004,9 +996,6 @@ function comma(n){return n.toLocaleString();}
 const ALL_ETF = [...ETF_END, ...ETF_MID];
 
 // 히어로 카운트
-document.getElementById('hTotal').textContent = ALL_ETF.length;
-document.getElementById('hMid').textContent = ETF_MID.length;
-document.getElementById('hEnd').textContent = ETF_END.length;
 const _midNotice = typeof MID_NOTICE_DATE !== 'undefined' ? MID_NOTICE_DATE : '';
 const _endNotice = typeof END_NOTICE_DATE !== 'undefined' ? END_NOTICE_DATE : '';
 const _pDate = typeof PRICE_DATE !== 'undefined' && PRICE_DATE ? ` | 종가 ${PRICE_DATE}` : '';
