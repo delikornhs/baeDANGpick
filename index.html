@@ -65,10 +65,10 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .cal-nav-btn{width:30px;height:30px;border:1px solid var(--border);border-radius:6px;background:var(--white);cursor:pointer;font-size:14px;color:var(--ink2);display:flex;align-items:center;justify-content:center;transition:all .15s}
 .cal-nav-btn:hover{border-color:var(--accent);color:var(--accent)}
 .cal-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:6px}
-.cal-header{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg);border-bottom:1px solid var(--border)}
+.cal-header{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:var(--bg);border-bottom:1px solid var(--border)}
 .cal-dow{text-align:center;padding:8px 4px;font-size:11px;font-weight:600;color:var(--ink3);letter-spacing:.5px}
-.cal-body{display:grid;grid-template-columns:repeat(7,1fr)}
-.cal-day{min-height:64px;padding:6px 8px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);cursor:default}
+.cal-body{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.cal-day{min-height:64px;padding:6px 8px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);cursor:default;overflow:hidden;min-width:0}
 .cal-day:nth-child(7n){border-right:none}
 .cal-day.empty{background:var(--bg)}
 .cal-day.other-month{background:#fafafa;opacity:.5}
@@ -236,9 +236,10 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   .hero h1{font-size:20px}
   .calc-layout{grid-template-columns:1fr}
   .modal-sg{grid-template-columns:1fr 1fr}
-  .cal-day{min-height:48px}
-  .cal-ev{display:none}
-  .cal-ev:first-child{display:block}
+  .cal-day{min-height:44px;padding:4px 3px}
+  .cal-num{font-size:10px}
+  .cal-ev{font-size:9px;padding:1px 3px}
+  .cal-ev:nth-child(n+2){display:none}
 }
 </style>
 </head>
