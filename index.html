@@ -82,6 +82,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .cal-ev.buy{background:#dcfce7;color:#166534}
 .cal-ev.ex{background:#fee2e2;color:#991b1b}
 .cal-ev.pay{background:#dbeafe;color:#1e40af}
+.cal-ev.record{background:#f3e8ff;color:#7e22ce}
 .cal-ev.more{background:var(--bg);color:var(--ink3);font-weight:400;cursor:default}
 .cal-no-data{padding:60px 20px;text-align:center;color:var(--ink3);font-size:14px}
 .cal-legend{display:flex;gap:16px;padding:10px 14px;border-top:1px solid var(--border);font-size:11px;flex-wrap:wrap}
@@ -299,7 +300,8 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     <div class="cal-body" id="calBody"></div>
     <div class="cal-legend">
       <div class="legend-item"><div class="legend-dot" style="background:#dcfce7;border:1px solid #86efac"></div>최종 매수일</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#fee2e2;border:1px solid #fca5a5"></div>배당락일 · 이날부터 매도가능</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fee2e2;border:1px solid #fca5a5"></div>배당락일</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f3e8ff;border:1px solid #d8b4fe"></div>지급기준일</div>
       <div class="legend-item"><div class="legend-dot" style="background:#dbeafe;border:1px solid #93c5fd"></div>분배금 지급일</div>
     </div>
   </div>
@@ -987,17 +989,25 @@ const TODAY = new Date();
 const MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
 function prevBizDay(d) {
-  d.setDate(d.getDate()-1);
-  while(d.getDay()===0||d.getDay()===6) d.setDate(d.getDate()-1);
-  return d;
+  const r = new Date(d);
+  r.setDate(r.getDate()-1);
+  while(r.getDay()===0||r.getDay()===6) r.setDate(r.getDate()-1);
+  return r;
 }
 function exDate(exStr) {
-  // 배당락일 = 지급기준일 - 1 영업일
   return prevBizDay(new Date(exStr));
 }
 function lastBuy(exStr) {
-  // 최종 매수일 = 배당락일 - 1 영업일
   return prevBizDay(exDate(exStr));
+}
+function calcSchedule(y, m) {
+  // 월중 지급기준일: 15일 (주말이면 직전 평일)
+  const mid = new Date(y, m, 15);
+  while(mid.getDay()===0||mid.getDay()===6) mid.setDate(mid.getDate()-1);
+  // 월말 지급기준일: 마지막 평일
+  const end = new Date(y, m+1, 0);
+  while(end.getDay()===0||end.getDay()===6) end.setDate(end.getDate()-1);
+  return {mid, end};
 }
 function status(e) {
   const ex=exDate(e.ex), pay=new Date(e.pay), lb=lastBuy(e.ex);
@@ -1036,36 +1046,46 @@ function moveMonth(d) {
 function renderCalendar() {
   const y=calYear, m=calMonth;
   document.getElementById('calTitle').textContent = `${y}년 ${m+1}월`;
-
-  // 해당 월 데이터 있는지 확인
   const monthStr = `${y}-${String(m+1).padStart(2,'0')}`;
-  const hasData = ALL_ETF.some(e => e.ex.startsWith(monthStr) || e.pay.startsWith(monthStr));
 
-  // 이벤트 수집
   const events = {};
+  function addEv(date, type, label) {
+    if(date.getFullYear()===y && date.getMonth()===m) {
+      const k = date.getDate();
+      if(!events[k]) events[k]=[];
+      if(!events[k].find(x=>x.type===type&&x.label===label)) events[k].push({type,label});
+    }
+  }
+
+  // 실제 ETF 데이터 이벤트
   ALL_ETF.forEach(e => {
-    const lb = lastBuy(e.ex);
-    [
-      {date: lb, type:'buy', label:'최종매수'},
-      {date: exDate(e.ex), type:'ex', label:'배당락'},
-      {date: new Date(e.pay), type:'pay', label:'지급일'},
-    ].forEach(({date,type,label}) => {
-      if(date.getFullYear()===y && date.getMonth()===m) {
-        const k = date.getDate();
-        if(!events[k]) events[k]=[];
-        // 중복 type 제거
-        if(!events[k].find(x=>x.type===type)) events[k].push({type,label});
-      }
-    });
+    addEv(lastBuy(e.ex), 'buy', '최종매수');
+    addEv(exDate(e.ex), 'ex', '배당락');
+    addEv(new Date(e.pay), 'pay', '지급일');
   });
+
+  // 규칙 기반 일정: 지급기준일 항상 표시, 데이터 없는 타이밍은 배당락·최종매수도 표시
+  const sched = calcSchedule(y, m);
+  const hasMidData = ETF_MID.some(e => e.ex.startsWith(monthStr));
+  const hasEndData = ETF_END.some(e => e.ex.startsWith(monthStr));
+
+  addEv(sched.mid, 'record', '기준일(월중)');
+  addEv(sched.end, 'record', '기준일(월말)');
+
+  if(!hasMidData) {
+    addEv(prevBizDay(sched.mid), 'ex', '배당락(예정)');
+    addEv(prevBizDay(prevBizDay(sched.mid)), 'buy', '최종매수(예정)');
+  }
+  if(!hasEndData) {
+    addEv(prevBizDay(sched.end), 'ex', '배당락(예정)');
+    addEv(prevBizDay(prevBizDay(sched.end)), 'buy', '최종매수(예정)');
+  }
 
   const firstDay = new Date(y,m,1).getDay();
   const lastDate = new Date(y,m+1,0).getDate();
 
   let html = '';
-  // 이전달 빈칸
   for(let i=0;i<firstDay;i++) html+=`<div class="cal-day empty"></div>`;
-
   for(let d=1;d<=lastDate;d++) {
     const dow=(firstDay+d-1)%7;
     const isWE=dow===0||dow===6;
@@ -1081,17 +1101,11 @@ function renderCalendar() {
       </div>
     </div>`;
   }
-  // 나머지 빈칸
   const total = firstDay + lastDate;
   const remain = total%7===0?0:7-(total%7);
   for(let i=0;i<remain;i++) html+=`<div class="cal-day empty"></div>`;
 
-  if(!hasData) {
-    document.getElementById('calBody').innerHTML=
-      `<div class="cal-no-data" style="grid-column:1/-1">이 달의 공시 데이터가 없습니다.<br><span style="font-size:12px">데이터 업로드 후 반영됩니다.</span></div>`;
-  } else {
-    document.getElementById('calBody').innerHTML=html;
-  }
+  document.getElementById('calBody').innerHTML=html;
 }
 
 // ── ETF 목록 ──
