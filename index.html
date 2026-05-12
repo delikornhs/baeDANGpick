@@ -236,7 +236,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 
 <nav>
   <div class="nav-inner">
-    <div class="logo"><div class="logo-mark">₩</div>배당픽<span style="font-size:13px;font-weight:500;color:var(--ink2);margin-left:5px">[ETF 분배금 일정 &amp; 계산기]</span></div>
+    <div class="logo"><div class="logo-mark">₩</div>배당픽</div>
     <div class="nav-meta" id="navMeta"></div>
   </div>
 </nav>
@@ -1035,7 +1035,7 @@ function renderCalendar() {
     const lb = lastBuy(e.ex);
     [
       {date: lb, type:'buy', label:'최종매수'},
-      {date: new Date(e.ex), type:'ex', label:'배당락 · 매도가능'},
+      {date: new Date(e.ex), type:'ex', label:'배당락'},
       {date: new Date(e.pay), type:'pay', label:'지급일'},
     ].forEach(({date,type,label}) => {
       if(date.getFullYear()===y && date.getMonth()===m) {
