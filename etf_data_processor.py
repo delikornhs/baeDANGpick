@@ -117,11 +117,11 @@ def parse_csv(path: Path) -> list:
 
 # ── 파일명에서 날짜 추출 ──
 def extract_date_from_filename(filename: str) -> str:
-    """파일명에서 YYYY_MM_DD 패턴 추출 → 'YYYYMMDD' 반환"""
-    m = re.search(r"(\d{4})_(\d{2})_(\d{2})", filename)
+    """파일명에서 날짜 추출 → 'YYYY-MM-DD' 반환. (2026.04.28) / 2026_04_28 형식 지원."""
+    m = re.search(r"(\d{4})[._\-](\d{2})[._\-](\d{2})", filename)
     if m:
-        return m.group(1) + m.group(2) + m.group(3)
-    return "00000000"
+        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+    return ""
 
 
 # ── 브랜드 추출 ──
@@ -256,17 +256,19 @@ def build_history():
         for d, cnt in sorted(ex_dates.items()):
             print(f"  → {d}: {cnt}개")
 
+        notice_date = extract_date_from_filename(xls_path.name)
         for r in records:
             isin = r["isin"]
             ex_key = r["ex_date"]
             if isin not in history:
                 history[isin] = {}
             history[isin][ex_key] = {
-                "dist":  r["dist"],
-                "ex":    r["ex_date"],
-                "pay":   r["pay_date"],
-                "name":  r["name"],
-                "code":  r["code"],
+                "dist":        r["dist"],
+                "ex":          r["ex_date"],
+                "pay":         r["pay_date"],
+                "name":        r["name"],
+                "code":        r["code"],
+                "notice_date": notice_date,
             }
             total_records += 1
 
@@ -324,18 +326,19 @@ def build_latest(history: dict, target_month: str = None):
                     day = int(ex[8:10]) if len(ex) >= 10 else 31
                     timing = "월중" if day <= 20 else "월말"
                 latest.append({
-                    "isin":     isin,
-                    "code":     r.get("code", isin[3:9]),
-                    "name":     name,
-                    "brand":    get_brand(name),
-                    "type":     get_type(name),
-                    "freq":     freq,
-                    "timing":   timing,
-                    "ex_date":  ex,
-                    "pay_date": r["pay"],
-                    "dist":     r["dist"],
-                    "price":    0,
-                    "rate":     0.0,
+                    "isin":        isin,
+                    "code":        r.get("code", isin[3:9]),
+                    "name":        name,
+                    "brand":       get_brand(name),
+                    "type":        get_type(name),
+                    "freq":        freq,
+                    "timing":      timing,
+                    "ex_date":     ex,
+                    "pay_date":    r["pay"],
+                    "dist":        r["dist"],
+                    "price":       0,
+                    "rate":        0.0,
+                    "notice_date": r.get("notice_date", ""),
                 })
 
     # 분배금 추이 추가
@@ -365,27 +368,11 @@ def build_latest(history: dict, target_month: str = None):
     return latest
 
 
-def build_js(latest: list, price_map: dict = None, price_date: str = "", update_rate: bool = True):
-    """
-    latest.json을 사이트에 바로 삽입할 etf_data.js로 변환.
-    price_map: {code: price} — 네이버에서 조회한 전날 종가
-    update_rate: False면 price만 갱신하고 rate는 기존 값 유지
-    """
+def build_js(latest: list, price_date: str = ""):
+    """latest.json을 사이트에 바로 삽입할 etf_data.js로 변환. price/rate는 호출 전에 설정."""
     print("\n" + "=" * 50)
     print("📝 JS 데이터 파일 생성")
     print("=" * 50)
-
-    # 가격 업데이트
-    if price_map:
-        updated = 0
-        for item in latest:
-            p = price_map.get(item["code"]) or price_map.get(item["isin"])
-            if p and p > 0:
-                item["price"] = p
-                if update_rate:
-                    item["rate"] = round(item["dist"] / p * 100, 2)
-                updated += 1
-        print(f"가격 업데이트: {updated}개 (분배율 재계산: {'예' if update_rate else '아니오'})")
 
     # ETF_END (월말), ETF_MID (월중) 분리
     end_list, mid_list = [], []
@@ -419,6 +406,38 @@ def build_js(latest: list, price_map: dict = None, price_date: str = "", update_
     size_kb = JS_FILE.stat().st_size // 1024
     print(f"✅ ETF_END: {len(end_list)}개, ETF_MID: {len(mid_list)}개")
     print(f"💾 저장: {JS_FILE} ({size_kb}KB)")
+
+
+def prev_business_day(date_str: str) -> str:
+    """YYYY-MM-DD 기준 직전 영업일 (주말만 제외, 공휴일 미고려)"""
+    d = datetime.strptime(date_str, "%Y-%m-%d")
+    d -= timedelta(days=1)
+    while d.weekday() >= 5:  # 5=토, 6=일
+        d -= timedelta(days=1)
+    return d.strftime("%Y-%m-%d")
+
+
+def fetch_naver_historical_price(code: str, target_date: str, headers: dict) -> int:
+    """
+    특정 날짜(YYYY-MM-DD)의 종가 조회.
+    Naver Finance fchart API (최근 60거래일 데이터에서 검색).
+    """
+    target_nodash = target_date.replace("-", "")
+    url = (
+        f"https://fchart.stock.naver.com/sise.nhn"
+        f"?symbol={code}&timeframe=day&count=60&requestType=0"
+    )
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            content = resp.read().decode("euc-kr", errors="replace")
+        # 형식: <item data="YYYYMMDD|open|high|low|close|volume" />
+        for m in re.finditer(r'<item data="(\d{8})\|[^|]+\|[^|]+\|[^|]+\|(\d+)\|', content):
+            if m.group(1) == target_nodash:
+                return int(m.group(2))
+    except Exception:
+        pass
+    return 0
 
 
 def fetch_naver_prices(codes: list) -> tuple:
@@ -570,17 +589,16 @@ if __name__ == "__main__":
         codes = list({item["code"] for item in latest})
         price_map, price_date = fetch_naver_prices(codes)
 
-        # 종가만 갱신, 분배율은 월간 전체 실행 시 계산된 값 유지
-        build_js(latest, price_map, price_date, update_rate=False)
-
-        # 갱신된 price를 latest.json에도 저장
+        # 현재 종가만 price 필드에 반영 (rate는 기존 공시일자 기준 값 유지)
         for item in latest:
             p = price_map.get(item["code"]) or price_map.get(item["isin"])
             if p and p > 0:
                 item["price"] = p
+
         with open(LATEST_FILE, "w", encoding="utf-8") as f:
             json.dump(latest, f, ensure_ascii=False, indent=2)
 
+        build_js(latest, price_date)
         inject_html()
 
         print("\n✅ 종가 업데이트 완료!")
@@ -604,17 +622,50 @@ if __name__ == "__main__":
     # 3. 최신 데이터 생성
     latest = build_latest(history, target_month)
 
-    # 4. 네이버 금융 전날 종가 조회
-    price_map, price_date = {}, ""
-    if latest:
-        codes = list({item["code"] for item in latest})
-        price_map, price_date = fetch_naver_prices(codes)
+    if not latest:
+        print("최신 데이터가 없습니다.")
+        exit(1)
 
-    # 5. JS 파일 생성 (가격 반영)
-    if latest:
-        build_js(latest, price_map, price_date)
+    # 4. 현재 종가 조회 → price 필드 업데이트
+    codes = list({item["code"] for item in latest})
+    price_map, price_date = fetch_naver_prices(codes)
+    for item in latest:
+        p = price_map.get(item["code"]) or price_map.get(item["isin"])
+        if p and p > 0:
+            item["price"] = p
+            item["rate"] = round(item["dist"] / p * 100, 2)  # 임시값 (다음 단계에서 재계산)
 
-    # 6. HTML 자동 삽입
+    # 5. 공시일자 전일 역사 종가로 분배율 재계산
+    hist_headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "Referer": "https://finance.naver.com/",
+    }
+    print("\n" + "=" * 50)
+    print("📊 공시일자 전일 종가로 분배율 계산")
+    print("=" * 50)
+    rate_updated = rate_fallback = 0
+    for item in latest:
+        nd = item.get("notice_date", "")
+        if nd:
+            prev_day = prev_business_day(nd)
+            hist_price = fetch_naver_historical_price(item["code"], prev_day, hist_headers)
+            if hist_price > 0:
+                item["rate"] = round(item["dist"] / hist_price * 100, 2)
+                rate_updated += 1
+            else:
+                rate_fallback += 1  # 현재 종가 임시값 유지
+        else:
+            rate_fallback += 1
+    print(f"  → 공시일자 전일 기준: {rate_updated}개 | 현재 종가 fallback: {rate_fallback}개")
+
+    # 6. latest.json 최종 저장 (rate 확정 후)
+    with open(LATEST_FILE, "w", encoding="utf-8") as f:
+        json.dump(latest, f, ensure_ascii=False, indent=2)
+
+    # 7. JS 파일 생성
+    build_js(latest, price_date)
+
+    # 8. HTML 자동 삽입
     inject_html()
 
     print("\n✅ 완료!")
