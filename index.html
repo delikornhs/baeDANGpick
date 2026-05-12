@@ -1282,7 +1282,7 @@ function selectCalcEtf(isin) {
   document.getElementById('cSelectedName').textContent = `[${e.brand}] ${e.name} · ${comma(e.dist)}원`;
   tag.style.display = 'flex';
   calcResult();
-  if (e.freq === '분기배당' || e.freq === '연배당') {
+  if (e.freq === '분기배당이상' || e.freq === '분기배당' || e.freq === '연배당') {
     showToast('월배당 ETF에 최적화된 계산기입니다. 분기·연 배당 ETF는 매달 지급되지 않으므로, 표시된 분배금과 분배율은 최근 공시 기준 참고값으로만 활용하세요.');
   }
 }
