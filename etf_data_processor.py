@@ -554,8 +554,30 @@ def inject_html():
 if __name__ == "__main__":
     import sys
 
+    args = sys.argv[1:]
+
+    # --prices-only: latest.json 기준 종가만 업데이트
+    if "--prices-only" in args:
+        if not LATEST_FILE.exists():
+            print(f"❌ {LATEST_FILE} 없음. 먼저 전체 실행하세요.")
+            exit(1)
+
+        with open(LATEST_FILE, encoding="utf-8") as f:
+            latest = json.load(f)
+
+        codes = list({item["code"] for item in latest})
+        price_map, price_date = fetch_naver_prices(codes)
+
+        build_js(latest, price_map, price_date)
+        inject_html()
+
+        print("\n✅ 종가 업데이트 완료!")
+        print(f"   - price_date : {price_date}")
+        print(f"   - etf_data.js: {JS_FILE}")
+        exit(0)
+
     # 특정 월 지정 가능: python etf_data_processor.py 2026-04
-    target_month = sys.argv[1] if len(sys.argv) > 1 else None
+    target_month = args[0] if args else None
 
     # 1. 전체 이력 구축
     history = build_history()
