@@ -328,6 +328,11 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
       <button class="ftab on" data-v="월배당" data-group="freq">월배당</button>
       <button class="ftab" data-v="분기배당이상" data-group="freq">분기배당이상</button>
     </div>
+    <div class="ftabs" id="timingTabs" style="margin-top:-4px">
+      <button class="ftab on" data-v="전체" data-group="timing">전체</button>
+      <button class="ftab" data-v="월중" data-group="timing">월중</button>
+      <button class="ftab" data-v="월말" data-group="timing">월말</button>
+    </div>
     <select class="sort-sel" id="sortSel">
       <option value="rate_d">분배율 높은순</option>
       <option value="rate_a">분배율 낮은순</option>
@@ -768,7 +773,7 @@ const ETF_END = [
 {isin:'KR70013R0008',code:'0013R0',name:'RISE 테슬라미국채타겟커버드콜혼합(합성)',brand:'RISE',type:'커버드콜',freq:'월배당',timing:'월말', ex:'2026-04-30',pay:'2026-05-06',dist:112,price:9490,rate:1.21,trend:[{"ex_date": "2025-05-30", "dist": 113}, {"ex_date": "2025-06-30", "dist": 109}, {"ex_date": "2025-07-31", "dist": 118}, {"ex_date": "2025-08-29", "dist": 127}, {"ex_date": "2025-09-30", "dist": 140}, {"ex_date": "2025-10-31", "dist": 132}, {"ex_date": "2025-11-28", "dist": 109}, {"ex_date": "2025-12-30", "dist": 110}, {"ex_date": "2026-01-30", "dist": 125}, {"ex_date": "2026-02-27", "dist": 120}, {"ex_date": "2026-03-31", "dist": 106}, {"ex_date": "2026-04-30", "dist": 112}]},
 {isin:'KR7253280002',code:'253280',name:'RISE 헬스케어',brand:'RISE',type:'기타',freq:'분기배당이상',timing:'', ex:'2026-04-30',pay:'2026-05-06',dist:25,price:15960,rate:0.14,trend:[{"ex_date": "2025-04-30", "dist": 20}, {"ex_date": "2026-04-30", "dist": 25}]},
 {isin:'KR7411540008',code:'411540',name:'SOL 200 Top10',brand:'SOL',type:'기타',freq:'분기배당이상',timing:'', ex:'2026-04-30',pay:'2026-05-04',dist:35,price:20240,rate:0.19,trend:[{"ex_date": "2025-04-30", "dist": 55}, {"ex_date": "2025-10-31", "dist": 29}, {"ex_date": "2026-01-30", "dist": 10}, {"ex_date": "2026-04-30", "dist": 35}]},
-{isin:'KR70167B0000',code:'0167B0',name:'SOL 200타겟위클리커버드콜',brand:'SOL',type:'커버드콜',freq:'월배당추정',timing:'월말', ex:'2026-04-30',pay:'2026-05-04',dist:250,price:13660,rate:2.1,trend:[{"ex_date": "2026-04-30", "dist": 250}]},
+{isin:'KR70167B0000',code:'0167B0',name:'SOL 200타겟위클리커버드콜',brand:'SOL',type:'커버드콜',freq:'월배당',timing:'월말', ex:'2026-04-30',pay:'2026-05-04',dist:250,price:13660,rate:2.1,trend:[{"ex_date": "2026-04-30", "dist": 250}]},
 {isin:'KR7455860007',code:'455860',name:'SOL 2차전지소부장Fn',brand:'SOL',type:'기타',freq:'분기배당이상',timing:'', ex:'2026-04-30',pay:'2026-05-04',dist:16,price:7090,rate:0.22,trend:[{"ex_date": "2025-04-30", "dist": 5}, {"ex_date": "2026-04-30", "dist": 16}]},
 {isin:'KR7455850008',code:'455850',name:'SOL AI반도체소부장',brand:'SOL',type:'기타',freq:'분기배당이상',timing:'', ex:'2026-04-30',pay:'2026-05-04',dist:12,price:31620,rate:0.04,trend:[{"ex_date": "2025-04-30", "dist": 24}, {"ex_date": "2026-04-30", "dist": 12}]},
 {isin:'KR7497880005',code:'497880',name:'SOL CD금리&amp;머니마켓액티브',brand:'SOL',type:'기타',freq:'월배당',timing:'월말', ex:'2026-04-30',pay:'2026-05-04',dist:145,price:50065,rate:0.29,trend:[{"ex_date": "2025-04-30", "dist": 150}, {"ex_date": "2025-05-30", "dist": 125}, {"ex_date": "2025-06-30", "dist": 130}, {"ex_date": "2025-08-29", "dist": 115}, {"ex_date": "2025-09-30", "dist": 115}, {"ex_date": "2025-10-31", "dist": 115}, {"ex_date": "2025-11-28", "dist": 105}, {"ex_date": "2025-12-30", "dist": 130}, {"ex_date": "2026-01-30", "dist": 145}, {"ex_date": "2026-02-27", "dist": 120}, {"ex_date": "2026-03-31", "dist": 130}, {"ex_date": "2026-04-30", "dist": 145}]},
@@ -1119,7 +1124,7 @@ function freqBadges(e){
   const timing=e.timing?`<span class="timing-badge">${e.timing}</span>`:'';
   return badge+timing;
 }
-let page=1, filtered=[], typeF='전체', freqF='월배당', q='', sort='rate_d';
+let page=1, filtered=[], typeF='전체', freqF='월배당', timingF='전체', q='', sort='rate_d';
 
 function applyFilter() {
   let d=[...ALL_ETF];
@@ -1127,6 +1132,7 @@ function applyFilter() {
   if(typeF!=='전체') d=d.filter(e=>e.type===typeF);
   if(freqF==='월배당') d=d.filter(e=>e.freq==='월배당'||e.freq==='월배당추정');
   else if(freqF!=='전체') d=d.filter(e=>e.freq===freqF);
+  if(freqF==='월배당' && timingF!=='전체') d=d.filter(e=>e.timing===timingF);
   d.sort((a,b)=>{
     if(sort==='rate_d') return b.rate-a.rate;
     if(sort==='rate_a') return a.rate-b.rate;
@@ -1357,7 +1363,18 @@ document.getElementById('typeTabs').addEventListener('click',e=>{
 document.getElementById('freqTabs').addEventListener('click',e=>{
   if(!e.target.classList.contains('ftab')) return;
   document.querySelectorAll('#freqTabs .ftab').forEach(b=>b.classList.remove('on'));
-  e.target.classList.add('on'); freqF=e.target.dataset.v; applyFilter();
+  e.target.classList.add('on'); freqF=e.target.dataset.v;
+  // 월배당 선택 시 타이밍 탭 표시, 아니면 숨기고 초기화
+  const tt=document.getElementById('timingTabs');
+  tt.style.display=freqF==='월배당'?'flex':'none';
+  timingF='전체';
+  document.querySelectorAll('#timingTabs .ftab').forEach((b,i)=>{b.classList.toggle('on',i===0);});
+  applyFilter();
+});
+document.getElementById('timingTabs').addEventListener('click',e=>{
+  if(!e.target.classList.contains('ftab')) return;
+  document.querySelectorAll('#timingTabs .ftab').forEach(b=>b.classList.remove('on'));
+  e.target.classList.add('on'); timingF=e.target.dataset.v; applyFilter();
 });
 
 document.getElementById('cAmt').addEventListener('input',()=>{document.getElementById('cQty').value='';calcResult();});
