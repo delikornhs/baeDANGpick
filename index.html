@@ -1093,12 +1093,12 @@ function renderCalendar() {
   addEv(sched.end, 'record', '기준일(월말)');
 
   if(!hasMidData) {
-    addEv(prevBizDay(sched.mid), 'ex', '배당락');
-    addEv(prevBizDay(prevBizDay(sched.mid)), 'buy', '최종매수');
+    addEv(prevBizDay(sched.mid), 'ex', '배당락(예정)');
+    addEv(prevBizDay(prevBizDay(sched.mid)), 'buy', '최종매수(예정)');
   }
   if(!hasEndData) {
-    addEv(prevBizDay(sched.end), 'ex', '배당락');
-    addEv(prevBizDay(prevBizDay(sched.end)), 'buy', '최종매수');
+    addEv(prevBizDay(sched.end), 'ex', '배당락(예정)');
+    addEv(prevBizDay(prevBizDay(sched.end)), 'buy', '최종매수(예정)');
   }
 
   const firstDay = new Date(y,m,1).getDay();
