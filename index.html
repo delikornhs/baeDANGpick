@@ -237,9 +237,10 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   .calc-layout{grid-template-columns:1fr}
   .modal-sg{grid-template-columns:1fr 1fr}
   .cal-day{min-height:44px;padding:4px 3px}
-  .cal-num{font-size:10px}
-  .cal-ev{font-size:9px;padding:1px 3px}
-  .cal-ev:nth-child(n+2){display:none}
+  .cal-num{font-size:10px;margin-bottom:3px}
+  .cal-events{flex-direction:row;flex-wrap:wrap;gap:2px}
+  .cal-ev{width:7px;height:7px;border-radius:50%;padding:0;font-size:0;flex-shrink:0}
+  .cal-ev.more{display:none}
 }
 </style>
 </head>
