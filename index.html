@@ -379,6 +379,8 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 
 <script>
 const PRICE_DATE = "2026-05-11";
+const MID_NOTICE_DATE = "2026-04-13";
+const END_NOTICE_DATE = "2026-04-28";
 
 const ETF_END = [
 {isin:'KR7451060008',code:'451060',name:'1Q 200액티브',brand:'1Q',type:'기타',freq:'분기배당이상',timing:'', ex:'2026-04-30',pay:'2026-05-04',dist:143,price:39260,rate:0.36,trend:[{"ex_date": "2025-10-31", "dist": 39}, {"ex_date": "2026-01-30", "dist": 212}, {"ex_date": "2026-04-30", "dist": 143}]},
@@ -970,12 +972,12 @@ const ALL_ETF = [...ETF_END, ...ETF_MID];
 document.getElementById('hTotal').textContent = ALL_ETF.length;
 document.getElementById('hMid').textContent = ETF_MID.length;
 document.getElementById('hEnd').textContent = ETF_END.length;
-const _midEx = ETF_MID[0]?.ex || '';
-const _endEx = ETF_END[0]?.ex || '';
+const _midNotice = typeof MID_NOTICE_DATE !== 'undefined' ? MID_NOTICE_DATE : '';
+const _endNotice = typeof END_NOTICE_DATE !== 'undefined' ? END_NOTICE_DATE : '';
 const _pDate = typeof PRICE_DATE !== 'undefined' && PRICE_DATE ? ` | 종가 ${PRICE_DATE}` : '';
 const _metaParts = [];
-if(_midEx) _metaParts.push(`월중 ${_midEx.slice(5)}`);
-if(_endEx) _metaParts.push(`월말 ${_endEx.slice(5)}`);
+if(_midNotice) _metaParts.push(`월중 ${_midNotice.slice(5)}`);
+if(_endNotice) _metaParts.push(`월말 ${_endNotice.slice(5)}`);
 document.getElementById('navMeta').textContent = (_metaParts.length ? '공시 ' + _metaParts.join(' · ') : '') + _pDate;
 
 // ── 달력 ──

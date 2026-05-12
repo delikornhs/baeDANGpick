@@ -397,7 +397,20 @@ def build_js(latest: list, price_date: str = ""):
             )
         return f"const {var_name} = [\n" + ",\n".join(items) + "\n];"
 
-    header = f'const PRICE_DATE = "{price_date}";\n\n' if price_date else ""
+    def most_common_notice(lst):
+        counts = defaultdict(int)
+        for e in lst:
+            nd = e.get("notice_date", "")
+            if nd:
+                counts[nd] += 1
+        return max(counts, key=counts.get) if counts else ""
+
+    mid_notice = most_common_notice(mid_list)
+    end_notice = most_common_notice(end_list)
+
+    header = f'const PRICE_DATE = "{price_date}";\n'
+    header += f'const MID_NOTICE_DATE = "{mid_notice}";\n'
+    header += f'const END_NOTICE_DATE = "{end_notice}";\n\n'
     js_content = header + to_js_array(end_list, "ETF_END") + "\n\n" + to_js_array(mid_list, "ETF_MID")
 
     with open(JS_FILE, "w", encoding="utf-8") as f:
