@@ -1022,15 +1022,12 @@ function exDate(exStr) {
 function lastBuy(exStr) {
   return prevBizDay(exDate(exStr));
 }
-function calcSchedule(y, m) {
-  // 월중 지급기준일: 15일 (주말이면 직전 평일)
-  const mid = new Date(y, m, 15);
-  while(mid.getDay()===0||mid.getDay()===6) mid.setDate(mid.getDate()-1);
-  // 월말 지급기준일: 마지막 평일 (12월은 30일 기준)
-  const end = m === 11 ? new Date(y, m, 30) : new Date(y, m+1, 0);
-  while(end.getDay()===0||end.getDay()===6) end.setDate(end.getDate()-1);
-  return {mid, end};
-}
+// 확정된 일정 (ETF 데이터 업로드 전 수동 확인된 날짜)
+const CONFIRMED_SCHEDULE = [
+  {date:'2026-05-13', type:'buy',    label:'최종매수'},
+  {date:'2026-05-14', type:'ex',     label:'배당락'},
+  {date:'2026-05-15', type:'record', label:'기준일(월중)'},
+];
 function status(e) {
   const ex=exDate(e.ex), pay=new Date(e.pay), lb=lastBuy(e.ex);
   if(TODAY>pay) return{label:'지급완료',cls:'done'};
@@ -1086,22 +1083,10 @@ function renderCalendar() {
     addEv(new Date(e.pay), 'pay', '지급일');
   });
 
-  // 규칙 기반 일정: 지급기준일 항상 표시, 데이터 없는 타이밍은 배당락·최종매수도 표시
-  const sched = calcSchedule(y, m);
-  const hasMidData = ETF_MID.some(e => e.ex.startsWith(monthStr));
-  const hasEndData = ETF_END.some(e => e.ex.startsWith(monthStr));
-
-  addEv(sched.mid, 'record', '기준일(월중)');
-  addEv(sched.end, 'record', '기준일(월말)');
-
-  if(!hasMidData) {
-    addEv(prevBizDay(sched.mid), 'ex', '배당락(예정)');
-    addEv(prevBizDay(prevBizDay(sched.mid)), 'buy', '최종매수(예정)');
-  }
-  if(!hasEndData) {
-    addEv(prevBizDay(sched.end), 'ex', '배당락(예정)');
-    addEv(prevBizDay(prevBizDay(sched.end)), 'buy', '최종매수(예정)');
-  }
+  // 확정 일정 추가 (ETF 데이터와 중복되지 않는 경우만)
+  CONFIRMED_SCHEDULE.forEach(s => {
+    addEv(new Date(s.date), s.type, s.label);
+  });
 
   const firstDay = new Date(y,m,1).getDay();
   const lastDate = new Date(y,m+1,0).getDate();
