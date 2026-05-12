@@ -986,14 +986,21 @@ const ETF_MID = [
 const TODAY = new Date();
 const MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
-function lastBuy(exStr) {
-  const d = new Date(exStr);
+function prevBizDay(d) {
   d.setDate(d.getDate()-1);
   while(d.getDay()===0||d.getDay()===6) d.setDate(d.getDate()-1);
   return d;
 }
+function exDate(exStr) {
+  // 배당락일 = 지급기준일 - 1 영업일
+  return prevBizDay(new Date(exStr));
+}
+function lastBuy(exStr) {
+  // 최종 매수일 = 배당락일 - 1 영업일
+  return prevBizDay(exDate(exStr));
+}
 function status(e) {
-  const ex=new Date(e.ex),pay=new Date(e.pay),lb=lastBuy(e.ex);
+  const ex=exDate(e.ex), pay=new Date(e.pay), lb=lastBuy(e.ex);
   if(TODAY>pay) return{label:'지급완료',cls:'done'};
   if(TODAY>=ex) return{label:'배당락후',cls:'done'};
   if(TODAY.toDateString()===lb.toDateString()) return{label:'오늘마감!',cls:'warn'};
@@ -1040,7 +1047,7 @@ function renderCalendar() {
     const lb = lastBuy(e.ex);
     [
       {date: lb, type:'buy', label:'최종매수'},
-      {date: new Date(e.ex), type:'ex', label:'배당락'},
+      {date: exDate(e.ex), type:'ex', label:'배당락'},
       {date: new Date(e.pay), type:'pay', label:'지급일'},
     ].forEach(({date,type,label}) => {
       if(date.getFullYear()===y && date.getMonth()===m) {
@@ -1140,7 +1147,7 @@ function renderGrid() {
       </div>
       <div class="card-dates">
         <div class="dbadge buy">🛒 ${fd(lb)}</div>
-        <div class="dbadge ex">📉 ${fds(e.ex)}</div>
+        <div class="dbadge ex">📉 ${fd(exDate(e.ex))}</div>
         <div class="dbadge pay">💰 ${fds(e.pay)}</div>
       </div>
     </div>`;
@@ -1175,7 +1182,7 @@ function openModal(isin) {
 
   document.getElementById('mDates').innerHTML=`
     <div class="dbadge buy">🛒 최종매수 ${fd(lb)}</div>
-    <div class="dbadge ex">📉 배당락 ${fds(e.ex)}</div>
+    <div class="dbadge ex">📉 배당락 ${fd(exDate(e.ex))}</div>
     <div class="dbadge pay">💰 지급 ${fds(e.pay)}</div>
     ${freqBadges(e)}
     <span class="status-pill ${st.cls}" style="position:static;display:inline-flex">${st.label}</span>
