@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>배당락일과 최종 매수일, 왜 중요한가요? - 배당픽</title>
+<meta name="description" content="ETF 분배금을 받으려면 언제까지 사야 할까요? 지급기준일, 배당락일, 최종 매수일의 개념과 날짜 계산 방법을 쉽게 정리합니다.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f7f7f4;--white:#fff;--ink:#1a1a18;--ink2:#4a4a45;--ink3:#9a9a93;--ink4:#d4d4cc;
+  --accent:#1d6b38;--accent-bg:#edf7f1;--accent-mid:#6cba8b;
+  --border:#e8e8e2;--radius:10px;
+}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",sans-serif;min-height:100vh;line-height:1.8}
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200}
+.nav-inner{max-width:720px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:15px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--ink)}
+.logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.nav-tag{font-size:11px;color:var(--ink3);background:var(--bg);padding:3px 8px;border-radius:4px;border:1px solid var(--border)}
+.g-wrap{max-width:720px;margin:0 auto;padding:48px 20px 80px}
+.g-tag{display:inline-block;font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);padding:3px 8px;border-radius:4px;margin-bottom:16px}
+.g-title{font-size:26px;font-weight:700;letter-spacing:-.6px;line-height:1.4;margin-bottom:10px}
+.g-meta{font-size:12px;color:var(--ink3);margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.g-body h2{font-size:18px;font-weight:700;letter-spacing:-.3px;margin:36px 0 12px;padding-left:12px;border-left:3px solid var(--accent)}
+.g-body p{font-size:15px;color:var(--ink2);margin-bottom:16px;line-height:1.85}
+.g-body p strong{color:var(--ink);font-weight:700}
+.step-item{margin:16px 0;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.step-head{padding:12px 18px;background:var(--accent-bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.step-badge{font-size:11px;font-weight:700;color:var(--accent);background:var(--white);border:1px solid var(--accent-mid);padding:2px 8px;border-radius:4px;white-space:nowrap}
+.step-head-title{font-size:15px;font-weight:700;color:var(--ink)}
+.step-body{padding:16px 18px}
+.step-body p{margin-bottom:10px}
+.step-body p:last-child{margin-bottom:0}
+.formula{background:var(--ink);color:#6cba8b;font-family:"DM Mono",monospace;font-size:14px;padding:14px 18px;border-radius:8px;margin:16px 0;line-height:1.6}
+.warn-box{background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius);padding:14px 18px;margin:16px 0}
+.warn-box p{font-size:14px;color:#92400e;margin-bottom:6px}
+.warn-box p:last-child{margin-bottom:0}
+@media(max-width:600px){.g-title{font-size:22px}}
+.g-nav{margin-top:56px;padding-top:24px;border-top:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap}
+.g-nav a{display:flex;flex-direction:column;flex:1;min-width:180px;padding:14px 16px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);text-decoration:none;color:var(--ink);transition:border-color .15s}
+.g-nav a:hover{border-color:var(--accent-mid)}
+.g-nav-label{font-size:10px;color:var(--ink3);margin-bottom:4px}
+.g-nav-title{font-size:13px;font-weight:600;letter-spacing:-.2px}
+.home-btn{display:inline-flex;align-items:center;gap:6px;margin-top:24px;padding:10px 18px;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600}
+footer{text-align:center;padding:24px 20px;font-size:12px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-mark">₩</div>배당픽</a>
+    <span class="nav-tag">ETF 분배금 가이드</span>
+  </div>
+</nav>
+
+<div class="g-wrap">
+  <span class="g-tag">가이드 02</span>
+  <h1 class="g-title">배당락일과 최종 매수일,<br>왜 중요한가요?</h1>
+  <p class="g-meta">분배금을 받기 위해 반드시 알아야 할 핵심 날짜 정리</p>
+
+  <div class="g-body">
+
+    <p>ETF 분배금을 받으려면 아무 때나 사면 되는 게 아니에요. 정해진 날짜까지 매수해야 분배금을 받을 자격이 생겨요. 이 날짜를 놓치면 이번달 분배금은 받을 수 없어요. 이번 글에서는 분배금 지급 절차와 핵심 날짜들을 정리해드릴게요.</p>
+
+    <h2>분배금 지급 절차</h2>
+    <p>분배금 지급은 크게 세 단계로 이루어져요.</p>
+
+    <div class="step-item">
+      <div class="step-head">
+        <span class="step-badge">1단계</span>
+        <span class="step-head-title">지급기준일</span>
+      </div>
+      <div class="step-body">
+        <p>지급기준일은 분배금을 받을 투자자를 확정하는 날이에요. 이 날 ETF를 보유하고 있는 투자자에게 분배금을 지급해요. 쉽게 말해 "이 날 기준으로 ETF를 가지고 있는 사람에게 분배금을 준다"는 뜻이에요.</p>
+        <p>중요한 건 지급기준일에 ETF를 보유하려면 <strong>최소 이틀 전에 매수해야</strong> 한다는 거예요. 주식과 ETF는 매수 후 결제가 완료되기까지 2영업일이 걸리기 때문이에요. 즉 지급기준일 당일이나 하루 전에 사면 결제가 아직 완료되지 않아서 보유자로 인정받지 못해요.</p>
+        <p>예를 들어 지급기준일이 4월 30일이라면, 늦어도 <strong>4월 28일(2영업일 전)</strong>까지 매수 체결이 완료되어야 해요. 주말과 공휴일은 영업일에서 제외되니까 주의해야 해요.</p>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-head">
+        <span class="step-badge">2단계</span>
+        <span class="step-head-title">배당락일 (분배락일)</span>
+      </div>
+      <div class="step-body">
+        <p>배당락일은 지급기준일 바로 다음 영업일이에요. 이 날부터 매수한 투자자는 이번달 분배금을 받을 수 없어요. 이미 분배금을 받을 권리가 확정된 투자자와 그렇지 않은 투자자가 나뉘는 기준점이에요.</p>
+        <p>배당락일에는 ETF 가격이 분배금만큼 떨어지는 현상이 발생해요. 분배금이 ETF 순자산에서 빠져나가기 때문이에요. 예를 들어 ETF 가격이 10,000원이고 분배금이 100원이라면, 배당락일에는 이론적으로 9,900원으로 시작해요.</p>
+        <p><strong>배당락일 당일부터는 매도해도 분배금을 받을 수 있어요.</strong> 지급기준일 기준으로 이미 권리가 확정됐으니까요.</p>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-head">
+        <span class="step-badge">3단계</span>
+        <span class="step-head-title">분배금 지급일</span>
+      </div>
+      <div class="step-body">
+        <p>실제로 계좌에 분배금이 입금되는 날이에요. 보통 지급기준일로부터 영업일 기준 2~7일 이내에 입금돼요. ETF마다 다를 수 있으니 배당픽에서 ETF별 지급일을 미리 확인해두세요.</p>
+      </div>
+    </div>
+
+    <h2>최종 매수일을 정리하면</h2>
+    <p>지급기준일에서 2영업일을 뺀 날이 최종 매수일이에요.</p>
+
+    <div class="formula">최종 매수일 = 지급기준일 − 2영업일</div>
+
+    <p>배당락일 기준으로 보면 배당락일 하루 전 영업일이 최종 매수일이에요.</p>
+
+    <div class="formula">최종 매수일 = 배당락일 − 1영업일</div>
+
+    <p>배당픽에서는 ETF별 최종 매수일을 자동으로 계산해서 보여드리고 있어요. 직접 계산할 필요 없이 바로 확인할 수 있어요.</p>
+
+    <h2>최종 매수일을 놓치면 어떻게 되나요?</h2>
+    <p>최종 매수일 이후에 ETF를 매수하면 이번달 분배금은 받을 수 없어요. 대신 배당락이 반영된 낮은 가격에 살 수 있어요.</p>
+    <p>반대로 최종 매수일 이전에 매수하면 분배금을 받을 수 있지만, 배당락으로 인한 주가 하락도 함께 겪게 돼요. 장기적으로 보면 분배금을 받는 것과 배당락 후 낮은 가격에 사는 것이 크게 차이나지 않아요.</p>
+    <p>결국 분배금 투자는 단기 차익보다 <strong>꾸준한 현금 흐름</strong>을 목적으로 하는 투자예요. 매달 정해진 날짜에 분배금이 들어오는 것 자체가 장점이에요.</p>
+
+    <h2>주의할 점</h2>
+    <div class="warn-box">
+      <p>장 마감 후 매수는 다음 영업일에 체결돼요. 최종 매수일 당일 오후 늦게 주문하면 다음날 체결될 수 있으니, 최종 매수일에는 장 마감 전에 여유 있게 매수하는 게 좋아요.</p>
+      <p>또한 ETF마다 지급기준일과 지급일이 다를 수 있어요. 배당픽에서 ETF별 날짜를 확인하고 놓치지 않도록 챙기세요.</p>
+    </div>
+
+  </div>
+
+  <div class="g-nav">
+    <a href="guide-1.html">
+      <span class="g-nav-label">← 이전 글</span>
+      <span class="g-nav-title">ETF 분배금이란? 재원과 지급 방식 완전 정리</span>
+    </a>
+    <a href="guide-3.html">
+      <span class="g-nav-label">다음 글 →</span>
+      <span class="g-nav-title">분배율이 높으면 무조건 좋을까? 커버드콜 ETF 리스크</span>
+    </a>
+  </div>
+
+  <a href="/" class="home-btn">← 배당픽 홈으로</a>
+</div>
+
+<footer>
+  본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.
+</footer>
+</body>
+</html>

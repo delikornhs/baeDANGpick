@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETF 분배금이란? 재원과 지급 방식 완전 정리 - 배당픽</title>
+<meta name="description" content="ETF 분배금이 무엇인지, 어디서 나오는지, 왜 지급하는지 처음부터 차근차근 설명합니다. 주식 배당금과의 차이, 분배금의 세 가지 재원, 지급 주기까지 완전 정리.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f7f7f4;--white:#fff;--ink:#1a1a18;--ink2:#4a4a45;--ink3:#9a9a93;--ink4:#d4d4cc;
+  --accent:#1d6b38;--accent-bg:#edf7f1;--accent-mid:#6cba8b;
+  --border:#e8e8e2;--radius:10px;
+}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",sans-serif;min-height:100vh;line-height:1.8}
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200}
+.nav-inner{max-width:720px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:15px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--ink)}
+.logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.nav-tag{font-size:11px;color:var(--ink3);background:var(--bg);padding:3px 8px;border-radius:4px;border:1px solid var(--border)}
+.g-wrap{max-width:720px;margin:0 auto;padding:48px 20px 80px}
+.g-tag{display:inline-block;font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);padding:3px 8px;border-radius:4px;margin-bottom:16px}
+.g-title{font-size:26px;font-weight:700;letter-spacing:-.6px;line-height:1.4;margin-bottom:10px}
+.g-meta{font-size:12px;color:var(--ink3);margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.g-body h2{font-size:18px;font-weight:700;letter-spacing:-.3px;margin:36px 0 12px;padding-left:12px;border-left:3px solid var(--accent)}
+.g-body p{font-size:15px;color:var(--ink2);margin-bottom:16px;line-height:1.85}
+.g-body p strong{color:var(--ink);font-weight:700}
+.num-item{margin:16px 0;padding:16px 18px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius)}
+.num-item-head{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.num-item p{margin-bottom:8px}
+.num-item p:last-child{margin-bottom:0}
+.freq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.freq-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+.freq-box-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.freq-box p{font-size:13px;color:var(--ink2);margin:0;line-height:1.7}
+@media(max-width:600px){.freq-grid{grid-template-columns:1fr}.g-title{font-size:22px}}
+.g-nav{margin-top:56px;padding-top:24px;border-top:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap}
+.g-nav a{display:flex;flex-direction:column;flex:1;min-width:180px;padding:14px 16px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);text-decoration:none;color:var(--ink);transition:border-color .15s}
+.g-nav a:hover{border-color:var(--accent-mid)}
+.g-nav-label{font-size:10px;color:var(--ink3);margin-bottom:4px}
+.g-nav-title{font-size:13px;font-weight:600;letter-spacing:-.2px}
+.home-btn{display:inline-flex;align-items:center;gap:6px;margin-top:24px;padding:10px 18px;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600}
+footer{text-align:center;padding:24px 20px;font-size:12px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-mark">₩</div>배당픽</a>
+    <span class="nav-tag">ETF 분배금 가이드</span>
+  </div>
+</nav>
+
+<div class="g-wrap">
+  <span class="g-tag">가이드 01</span>
+  <h1 class="g-title">ETF 분배금이란?<br>재원과 지급 방식 완전 정리</h1>
+  <p class="g-meta">ETF를 처음 접하는 분들을 위한 분배금 기초 안내</p>
+
+  <div class="g-body">
+
+    <p>ETF를 처음 접하면 "분배금"이라는 단어가 낯설게 느껴질 수 있어요. 주식의 배당금과 비슷한 개념이지만, ETF 분배금은 재원이 더 다양하고 지급 방식도 조금 달라요. 이번 글에서는 ETF 분배금이 무엇인지, 어디서 나오는지, 왜 지급하는지 처음부터 차근차근 설명해드릴게요.</p>
+
+    <h2>ETF란 무엇인가요?</h2>
+    <p>ETF는 Exchange Traded Fund의 약자로, 우리말로 하면 <strong>상장지수펀드</strong>예요. 쉽게 말해 여러 종목을 한 바구니에 담아서 주식처럼 거래소에서 사고팔 수 있게 만든 상품이에요.</p>
+    <p>예를 들어 삼성전자, SK하이닉스, LG에너지솔루션 같은 코스피 대형주 200개를 한꺼번에 담은 ETF를 사면, 종목 하나하나를 직접 사지 않아도 200개 종목에 분산투자하는 효과를 얻을 수 있어요.</p>
+    <p>ETF는 일반 펀드처럼 전문가가 운용하지만, 주식처럼 실시간으로 사고팔 수 있다는 점이 특징이에요. 그래서 접근성이 높고, 수수료도 일반 펀드보다 저렴한 편이에요.</p>
+
+    <h2>분배금이란 무엇인가요?</h2>
+    <p>분배금은 ETF가 운용 과정에서 발생한 수익 중 일부를 투자자에게 나눠주는 돈이에요. 주식의 배당금과 비슷한 개념이지만, ETF는 여러 종류의 재원에서 분배금이 나온다는 점이 달라요.</p>
+    <p>분배금은 ETF를 보유하고 있는 것만으로 받을 수 있어요. 주가가 오르내리는 것과 별개로, 정해진 날짜에 계좌로 입금되는 방식이에요.</p>
+
+    <h2>분배금의 재원은 어디서 나오나요?</h2>
+    <p>ETF 분배금의 재원은 크게 세 가지예요.</p>
+
+    <div class="num-item">
+      <div class="num-item-head">① 주식 배당금</div>
+      <p>ETF가 보유한 종목들이 배당금을 지급하면, 그 배당금이 ETF 안에 쌓여요. 운용사는 이걸 모아서 투자자에게 분배금으로 나눠줘요.</p>
+      <p>예를 들어 고배당 ETF는 배당을 많이 주는 종목들을 담고 있어서, 해당 종목들의 배당금이 분배금의 주요 재원이 돼요.</p>
+    </div>
+
+    <div class="num-item">
+      <div class="num-item-head">② 커버드콜 옵션 매도 수익</div>
+      <p>커버드콜 ETF는 보유한 주식이나 지수를 기반으로 콜옵션을 매도해서 프리미엄(수수료)을 받아요. 이 옵션 프리미엄이 분배금의 주요 재원이에요.</p>
+      <p>콜옵션은 "미래에 특정 가격에 살 수 있는 권리"예요. 이 권리를 사는 사람이 있고, ETF는 그 권리를 파는 역할을 해요. 권리를 팔면 프리미엄을 받게 되는데, 이게 분배금으로 이어지는 거예요.</p>
+      <p>덕분에 커버드콜 ETF는 일반 ETF보다 분배율이 높은 편이에요. 다만 주가가 크게 오를 때 수익이 제한되는 특성이 있어요.</p>
+    </div>
+
+    <div class="num-item">
+      <div class="num-item-head">③ 채권 이자</div>
+      <p>채권 ETF는 보유한 채권에서 이자가 발생해요. 이 이자 수익이 분배금으로 지급돼요. 국채 ETF, 회사채 ETF, 하이일드 채권 ETF 등이 여기에 해당해요.</p>
+    </div>
+
+    <h2>왜 분배금을 지급하나요?</h2>
+    <p>ETF가 분배금을 지급하는 이유는 크게 두 가지예요.</p>
+    <p><strong>첫째, 법적 의무 때문이에요.</strong> 펀드는 운용 과정에서 발생한 이익을 일정 기간마다 투자자에게 돌려줘야 해요. 무한정 쌓아두는 건 허용되지 않아요.</p>
+    <p><strong>둘째, 투자자 선호 때문이에요.</strong> 특히 은퇴 후 생활비가 필요한 투자자, 정기적인 현금 흐름을 원하는 투자자들은 주가 상승보다 분배금을 더 중요하게 여기는 경우가 많아요. 월배당 ETF가 인기 있는 이유가 여기에 있어요.</p>
+
+    <h2>분배금은 얼마나 자주 받을 수 있나요?</h2>
+    <p>ETF마다 분배 주기가 달라요.</p>
+
+    <div class="freq-grid">
+      <div class="freq-box">
+        <div class="freq-box-title">월배당</div>
+        <p>매달 지급. 커버드콜 ETF, 고배당 ETF, 채권 ETF 등이 주로 월배당. 정기적인 현금 흐름을 원하는 투자자에게 인기.</p>
+      </div>
+      <div class="freq-box">
+        <div class="freq-box-title">분기배당</div>
+        <p>3개월에 한 번 지급. 코스피200, S&amp;P500 같은 지수 추종 ETF가 주로 분기배당.</p>
+      </div>
+      <div class="freq-box">
+        <div class="freq-box-title">연배당</div>
+        <p>1년에 한 번 지급. 일부 섹터 ETF나 테마 ETF가 여기에 해당.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="g-nav">
+    <a href="guide-2.html">
+      <span class="g-nav-label">다음 글 →</span>
+      <span class="g-nav-title">배당락일과 최종 매수일, 왜 중요한가요?</span>
+    </a>
+    <a href="guide-3.html">
+      <span class="g-nav-label">다음 글 →</span>
+      <span class="g-nav-title">분배율이 높으면 무조건 좋을까? 커버드콜 ETF 리스크</span>
+    </a>
+  </div>
+
+  <a href="/" class="home-btn">← 배당픽 홈으로</a>
+</div>
+
+<footer>
+  본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.
+</footer>
+</body>
+</html>

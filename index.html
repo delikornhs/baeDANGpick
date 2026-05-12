@@ -207,7 +207,17 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .empty-msg{text-align:center;padding:50px 20px;color:var(--ink3);font-size:14px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius)}
 footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8}
 
+/* GUIDE CARDS */
+.guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.guide-card{display:block;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;text-decoration:none;color:var(--ink);transition:all .18s}
+.guide-card:hover{border-color:var(--accent-mid);box-shadow:0 4px 14px rgba(29,107,56,.08);transform:translateY(-1px)}
+.guide-num{font-size:10px;font-family:"DM Mono",monospace;color:var(--accent);font-weight:700;margin-bottom:8px}
+.guide-card-title{font-size:14px;font-weight:700;letter-spacing:-.3px;line-height:1.45;margin-bottom:5px}
+.guide-card-desc{font-size:12px;color:var(--ink3);margin-bottom:12px;line-height:1.5}
+.guide-read{font-size:12px;color:var(--accent);font-weight:500}
+
 @media(max-width:680px){
+  .guide-grid{grid-template-columns:1fr}
   .etf-grid{grid-template-columns:1fr}
   .hero h1{font-size:20px}
   .calc-layout{grid-template-columns:1fr}
@@ -236,6 +246,31 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
       <div class="chip">월중 배당 <b id="hMid">0</b>개</div>
       <div class="chip">월말 배당 <b id="hEnd">0</b>개</div>
     </div>
+  </div>
+</div>
+
+<!-- ETF 가이드 -->
+<div class="section" style="padding-top:26px">
+  <div class="sec-title">ETF 분배금 가이드</div>
+  <div class="guide-grid">
+    <a href="guide-1.html" class="guide-card">
+      <div class="guide-num">01</div>
+      <div class="guide-card-title">ETF 분배금이란?</div>
+      <div class="guide-card-desc">재원과 지급 방식 완전 정리</div>
+      <span class="guide-read">읽기 →</span>
+    </a>
+    <a href="guide-2.html" class="guide-card">
+      <div class="guide-num">02</div>
+      <div class="guide-card-title">배당락일과 최종 매수일</div>
+      <div class="guide-card-desc">왜 중요한가요?</div>
+      <span class="guide-read">읽기 →</span>
+    </a>
+    <a href="guide-3.html" class="guide-card">
+      <div class="guide-num">03</div>
+      <div class="guide-card-title">분배율이 높으면 무조건 좋을까?</div>
+      <div class="guide-card-desc">커버드콜 ETF 리스크</div>
+      <span class="guide-read">읽기 →</span>
+    </a>
   </div>
 </div>
 
