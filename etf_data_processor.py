@@ -432,8 +432,9 @@ def prev_business_day(date_str: str) -> str:
 
 def fetch_naver_historical_price(code: str, target_date: str, headers: dict) -> int:
     """
-    특정 날짜(YYYY-MM-DD)의 종가 조회.
-    Naver Finance fchart API (최근 60거래일 데이터에서 검색).
+    target_date(YYYY-MM-DD) 이하 가장 가까운 거래일 종가 조회.
+    공휴일 포함 시장 휴장일은 데이터가 없으므로 그 직전 거래일 종가를 반환.
+    Naver Finance fchart API (최근 60거래일).
     """
     target_nodash = target_date.replace("-", "")
     url = (
@@ -445,9 +446,15 @@ def fetch_naver_historical_price(code: str, target_date: str, headers: dict) -> 
         with urllib.request.urlopen(req, timeout=10) as resp:
             content = resp.read().decode("euc-kr", errors="replace")
         # 형식: <item data="YYYYMMDD|open|high|low|close|volume" />
+        # target_date 이하 가장 최근 거래일 선택 (정렬 순서 무관)
+        best_date, best_price = "", 0
         for m in re.finditer(r'<item data="(\d{8})\|[^|]+\|[^|]+\|[^|]+\|(\d+)\|', content):
-            if m.group(1) == target_nodash:
-                return int(m.group(2))
+            d = m.group(1)
+            if d <= target_nodash and d > best_date:
+                best_date = d
+                best_price = int(m.group(2))
+        if best_price:
+            return best_price
     except Exception:
         pass
     return 0
