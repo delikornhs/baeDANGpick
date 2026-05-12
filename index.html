@@ -1004,8 +1004,8 @@ function calcSchedule(y, m) {
   // 월중 지급기준일: 15일 (주말이면 직전 평일)
   const mid = new Date(y, m, 15);
   while(mid.getDay()===0||mid.getDay()===6) mid.setDate(mid.getDate()-1);
-  // 월말 지급기준일: 마지막 평일
-  const end = new Date(y, m+1, 0);
+  // 월말 지급기준일: 마지막 평일 (12월은 30일 기준)
+  const end = m === 11 ? new Date(y, m, 30) : new Date(y, m+1, 0);
   while(end.getDay()===0||end.getDay()===6) end.setDate(end.getDate()-1);
   return {mid, end};
 }
