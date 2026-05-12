@@ -558,12 +558,16 @@ def inject_html():
     print("🔧 HTML 자동 삽입")
     print("=" * 50)
 
-    html_files = list(BASE_DIR.glob("*.html"))
-    if not html_files:
-        print("⚠️  HTML 파일을 찾지 못했습니다.")
-        return
-
-    html_path = html_files[0]
+    html_path = BASE_DIR / "index.html"
+    if not html_path.exists():
+        # fallback: 마커가 있는 HTML 파일 탐색
+        for f in sorted(BASE_DIR.glob("*.html")):
+            if "const ETF_END" in f.read_text(encoding="utf-8", errors="replace"):
+                html_path = f
+                break
+        else:
+            print("⚠️  HTML 파일을 찾지 못했습니다.")
+            return
     js_content = JS_FILE.read_text(encoding="utf-8")
 
     html = html_path.read_text(encoding="utf-8", errors="replace")
