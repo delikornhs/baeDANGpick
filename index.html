@@ -90,7 +90,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .legend-dot{width:10px;height:10px;border-radius:2px}
 
 /* CONTROLS */
-.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.controls{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.filter-label{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.3px;white-space:nowrap;min-width:46px}
 .search-wrap{position:relative;flex:1;min-width:180px}
 .search-wrap input{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px 12px 9px 34px;font-size:13px;font-family:"Noto Sans KR",sans-serif;background:var(--white);color:var(--ink);outline:none;transition:border-color .15s}
 .search-wrap input:focus{border-color:var(--accent)}
@@ -313,35 +315,45 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <div class="section" style="padding-top:26px">
   <div class="sec-title">ETF 목록</div>
   <div class="controls">
-    <div class="search-wrap">
-      <span class="s-icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="ETF명, 종목코드, 브랜드 검색">
+    <div class="filter-row">
+      <div class="search-wrap">
+        <span class="s-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="ETF명, 종목코드, 브랜드 검색">
+      </div>
+      <select class="sort-sel" id="sortSel">
+        <option value="rate_d">분배율 높은순</option>
+        <option value="rate_a">분배율 낮은순</option>
+        <option value="dist_d">분배금 높은순</option>
+        <option value="name_a">이름순</option>
+      </select>
     </div>
-    <div class="ftabs" id="typeTabs">
-      <button class="ftab on" data-v="전체">전체</button>
-      <button class="ftab" data-v="커버드콜">커버드콜</button>
-      <button class="ftab" data-v="배당">배당</button>
-      <button class="ftab" data-v="리츠">리츠</button>
-      <button class="ftab" data-v="채권">채권</button>
-      <button class="ftab" data-v="기타">기타</button>
+    <div class="filter-row">
+      <span class="filter-label">유형</span>
+      <div class="ftabs" id="typeTabs">
+        <button class="ftab on" data-v="전체">전체</button>
+        <button class="ftab" data-v="커버드콜">커버드콜</button>
+        <button class="ftab" data-v="배당">배당</button>
+        <button class="ftab" data-v="리츠">리츠</button>
+        <button class="ftab" data-v="채권">채권</button>
+        <button class="ftab" data-v="기타">기타</button>
+      </div>
     </div>
-    <div class="ftabs" id="freqTabs">
-      <button class="ftab" data-v="전체" data-group="freq">전체주기</button>
-      <button class="ftab" data-v="분기배당이상" data-group="freq">분기배당이상</button>
-      <button class="ftab on" data-v="월배당" data-group="freq">월배당</button>
+    <div class="filter-row">
+      <span class="filter-label">분배주기</span>
+      <div class="ftabs" id="freqTabs">
+        <button class="ftab" data-v="전체" data-group="freq">전체주기</button>
+        <button class="ftab" data-v="분기배당이상" data-group="freq">분기배당이상</button>
+        <button class="ftab on" data-v="월배당" data-group="freq">월배당</button>
+      </div>
     </div>
-    <div class="ftabs" id="timingTabs" style="margin-top:-2px;padding-left:4px;align-items:center">
-      <span style="font-size:12px;color:var(--accent);margin-right:2px;line-height:1">ㄴ</span>
-      <button class="ftab stab on" data-v="전체" data-group="timing">전체</button>
-      <button class="ftab stab" data-v="월중" data-group="timing">월중</button>
-      <button class="ftab stab" data-v="월말" data-group="timing">월말</button>
+    <div class="filter-row" id="timingRow">
+      <span class="filter-label" style="color:var(--accent)">지급 시기</span>
+      <div class="ftabs" id="timingTabs">
+        <button class="ftab stab on" data-v="전체" data-group="timing">전체</button>
+        <button class="ftab stab" data-v="월중" data-group="timing">월중</button>
+        <button class="ftab stab" data-v="월말" data-group="timing">월말</button>
+      </div>
     </div>
-    <select class="sort-sel" id="sortSel">
-      <option value="rate_d">분배율 높은순</option>
-      <option value="rate_a">분배율 낮은순</option>
-      <option value="dist_d">분배금 높은순</option>
-      <option value="name_a">이름순</option>
-    </select>
   </div>
   <div class="res-meta">
     <span id="resMeta"></span>
@@ -1367,9 +1379,9 @@ document.getElementById('freqTabs').addEventListener('click',e=>{
   if(!e.target.classList.contains('ftab')) return;
   document.querySelectorAll('#freqTabs .ftab').forEach(b=>b.classList.remove('on'));
   e.target.classList.add('on'); freqF=e.target.dataset.v;
-  // 월배당 선택 시 타이밍 탭 표시, 아니면 숨기고 초기화
-  const tt=document.getElementById('timingTabs');
-  tt.style.display=freqF==='월배당'?'flex':'none';
+  // 월배당 선택 시 타이밍 행 표시, 아니면 숨기고 초기화
+  const tr=document.getElementById('timingRow');
+  tr.style.display=freqF==='월배당'?'flex':'none';
   timingF='전체';
   document.querySelectorAll('#timingTabs .ftab').forEach((b,i)=>{b.classList.toggle('on',i===0);});
   applyFilter();
