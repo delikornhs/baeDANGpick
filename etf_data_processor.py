@@ -471,8 +471,10 @@ def fetch_naver_prices(codes: list) -> tuple:
         "Accept": "application/json, text/plain, */*",
     }
 
+    # 항상 직전 영업일을 기준일로 고정 (장 중 실행 시 오늘 날짜 오기입 방지)
+    price_date = prev_business_day(datetime.now().strftime("%Y-%m-%d"))
+
     prices = {}
-    price_date = ""
     ok = fail = 0
 
     print(f"\n{'='*50}")
@@ -491,10 +493,6 @@ def fetch_naver_prices(codes: list) -> tuple:
             if close_str and close_str.lstrip("-").isdigit() and int(close_str) > 0:
                 prices[code] = int(close_str)
                 ok += 1
-                if not price_date:
-                    traded = data.get("localTradedAt", "")
-                    if traded:
-                        price_date = traded[:10]  # "2026-05-11T..." → "2026-05-11"
             else:
                 fail += 1
 
@@ -506,13 +504,6 @@ def fetch_naver_prices(codes: list) -> tuple:
         except Exception:
             fail += 1
             time.sleep(0.05)
-
-    if not price_date:
-        # API에서 날짜를 못 가져온 경우 → 직전 영업일 계산
-        d = datetime.now() - timedelta(days=1)
-        while d.weekday() >= 5:
-            d -= timedelta(days=1)
-        price_date = d.strftime("%Y-%m-%d")
 
     print(f"✅ {ok}개 성공 / {fail}개 실패")
     print(f"📅 기준일: {price_date}")
