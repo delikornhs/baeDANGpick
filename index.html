@@ -282,8 +282,8 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
       <button class="ftab" data-v="기타">기타</button>
     </div>
     <div class="ftabs" id="freqTabs">
-      <button class="ftab on" data-v="전체" data-group="freq">전체주기</button>
-      <button class="ftab" data-v="월배당" data-group="freq">월배당</button>
+      <button class="ftab" data-v="전체" data-group="freq">전체주기</button>
+      <button class="ftab on" data-v="월배당" data-group="freq">월배당</button>
       <button class="ftab" data-v="분기배당이상" data-group="freq">분기배당이상</button>
     </div>
     <select class="sort-sel" id="sortSel">
@@ -1039,7 +1039,7 @@ function renderCalendar() {
 }
 
 // ── ETF 목록 ──
-const PER = 10;
+const PER = 9;
 function freqCls(f){ return f==='월배당'?'fc-monthly':f==='월배당추정'?'fc-monthly-est':'fc-quarterly'; }
 function freqBadges(e){
   const label = e.freq==='월배당추정'
@@ -1049,7 +1049,7 @@ function freqBadges(e){
   const timing=e.timing?`<span class="timing-badge">${e.timing}</span>`:'';
   return badge+timing;
 }
-let page=1, filtered=[], typeF='전체', freqF='전체', q='', sort='rate_d';
+let page=1, filtered=[], typeF='전체', freqF='월배당', q='', sort='rate_d';
 
 function applyFilter() {
   let d=[...ALL_ETF];
