@@ -1013,7 +1013,7 @@ const _pDate = typeof PRICE_DATE !== 'undefined' && PRICE_DATE ? ` | 종가 ${PR
 const _metaParts = [];
 if(_midNotice) _metaParts.push(`월중 ${_midNotice.slice(5)}`);
 if(_endNotice) _metaParts.push(`월말 ${_endNotice.slice(5)}`);
-document.getElementById('navMeta').textContent = (_metaParts.length ? '공시 ' + _metaParts.join(' · ') : '') + _pDate;
+document.getElementById('navMeta').textContent = (_metaParts.length ? '최종 분배금 공시일 ' + _metaParts.join(' · ') : '') + _pDate;
 
 // ── 달력 ──
 let calYear = 2026, calMonth = 3; // 0-indexed, 3=4월
