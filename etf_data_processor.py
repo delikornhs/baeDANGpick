@@ -284,8 +284,10 @@ def build_history():
 
 def build_latest(history: dict, target_month: str = None):
     """
-    가장 최근 배당락일 기준으로 latest.json 생성.
-    target_month: 'YYYY-MM' 형식으로 특정 월 지정 가능 (기본: 최신)
+    전체 ETF를 대상으로 최신 데이터 생성.
+    - 현재 기간(최근 월중/월말) 해당 ETF: current=True
+    - 나머지 ETF: 가장 최근 기록 사용, current=False
+    target_month: 'YYYY-MM' 형식으로 현재 기간 기준월 지정 가능
     """
     print("\n" + "=" * 50)
     print("📊 최신 데이터 생성")
@@ -301,66 +303,74 @@ def build_latest(history: dict, target_month: str = None):
         print("⚠️  데이터 없음")
         return []
 
-    # target_month 필터링
+    # 현재 기간 날짜 결정
     if target_month:
-        target_dates = [d for d in all_ex_dates if d.startswith(target_month)]
+        target_dates = set(d for d in all_ex_dates if d.startswith(target_month))
     else:
         # 월중(20일 이하)과 월말(21일 이상) 각각 독립적으로 최신 날짜 선택
         mid_dates = [d for d in all_ex_dates if int(d[8:10]) <= 20]
         end_dates = [d for d in all_ex_dates if int(d[8:10]) > 20]
-        target_dates = []
+        target_dates = set()
         if mid_dates:
-            target_dates.append(mid_dates[-1])
+            target_dates.add(mid_dates[-1])
         if end_dates:
-            target_dates.append(end_dates[-1])
+            target_dates.add(end_dates[-1])
 
-    print(f"대상 배당락일: {target_dates}")
+    print(f"현재 기간 배당락일: {sorted(target_dates)}")
+
+    def make_entry(isin, r, ex, is_current):
+        freq = classify_frequency(isin, history)
+        name = r.get("name", "")
+        timing = ""
+        if freq in ("월배당", "월배당추정"):
+            day = int(ex[8:10]) if len(ex) >= 10 else 31
+            timing = "월중" if day <= 20 else "월말"
+        return {
+            "isin":        isin,
+            "code":        r.get("code", isin[3:9]),
+            "name":        name,
+            "brand":       get_brand(name),
+            "type":        get_type(name),
+            "freq":        freq,
+            "timing":      timing,
+            "ex_date":     ex,
+            "pay_date":    r["pay"],
+            "dist":        r["dist"],
+            "price":       0,
+            "rate":        0.0,
+            "notice_date": r.get("notice_date", ""),
+            "current":     is_current,
+        }
 
     latest = []
-    for isin, records in history.items():
-        for ex_date, r in records.items():
-            if ex_date in target_dates:
-                freq = classify_frequency(isin, history)
-                if freq == "분기배당이상":
-                    # 이력 기반 분기배당이상이어도 이름으로 재확인 불필요
-                    pass
-                name = r.get("name", "")
-                ex = r["ex"]
-                timing = ""
-                if freq in ("월배당", "월배당추정"):
-                    day = int(ex[8:10]) if len(ex) >= 10 else 31
-                    timing = "월중" if day <= 20 else "월말"
-                latest.append({
-                    "isin":        isin,
-                    "code":        r.get("code", isin[3:9]),
-                    "name":        name,
-                    "brand":       get_brand(name),
-                    "type":        get_type(name),
-                    "freq":        freq,
-                    "timing":      timing,
-                    "ex_date":     ex,
-                    "pay_date":    r["pay"],
-                    "dist":        r["dist"],
-                    "price":       0,
-                    "rate":        0.0,
-                    "notice_date": r.get("notice_date", ""),
-                })
+    seen_isins = set()
 
-    # 분배금 추이 추가
+    # 1단계: 현재 기간 ETF (current=True)
+    for isin, records in history.items():
+        for td in sorted(target_dates):
+            if td in records and isin not in seen_isins:
+                r = records[td]
+                latest.append(make_entry(isin, r, r["ex"], True))
+                seen_isins.add(isin)
+                break
+
+    # 2단계: 나머지 ETF (가장 최근 기록, current=False)
+    for isin, records in history.items():
+        if isin in seen_isins or not records:
+            continue
+        latest_ex_key = sorted(records.keys())[-1]
+        r = records[latest_ex_key]
+        latest.append(make_entry(isin, r, r["ex"], False))
+        seen_isins.add(isin)
+
+    # 분배금 추이 추가 (최근 12개월)
     for item in latest:
         isin = item["isin"]
         trend = []
         if isin in history:
-            # 최근 12개월 이력 정렬
-            sorted_records = sorted(
-                history[isin].items(),
-                key=lambda x: x[0]
-            )[-12:]
+            sorted_records = sorted(history[isin].items(), key=lambda x: x[0])[-12:]
             for ex_key, rec in sorted_records:
-                trend.append({
-                    "ex_date": ex_key,
-                    "dist":    rec["dist"],
-                })
+                trend.append({"ex_date": ex_key, "dist": rec["dist"]})
         item["trend"] = trend
 
     latest.sort(key=lambda x: x["name"])
@@ -368,7 +378,8 @@ def build_latest(history: dict, target_month: str = None):
     with open(LATEST_FILE, "w", encoding="utf-8") as f:
         json.dump(latest, f, ensure_ascii=False, indent=2)
 
-    print(f"✅ {len(latest)}개 ETF")
+    current_cnt = sum(1 for e in latest if e["current"])
+    print(f"✅ 전체 {len(latest)}개 ETF (현재 기간 {current_cnt}개 포함)")
     print(f"💾 저장: {LATEST_FILE}")
     return latest
 
@@ -379,29 +390,6 @@ def build_js(latest: list, price_date: str = ""):
     print("📝 JS 데이터 파일 생성")
     print("=" * 50)
 
-    # ETF_END (월말), ETF_MID (월중) 분리
-    end_list, mid_list = [], []
-    for item in latest:
-        ex_day = int(item["ex_date"][8:10]) if len(item["ex_date"]) >= 10 else 0
-        if ex_day <= 20:
-            mid_list.append(item)
-        else:
-            end_list.append(item)
-
-    def to_js_array(lst, var_name):
-        items = []
-        for e in lst:
-            name_esc = e["name"].replace("'", "\\'").replace('"', '&quot;')
-            trend_js = json.dumps(e.get("trend", []), ensure_ascii=False)
-            items.append(
-                f"{{isin:'{e['isin']}',code:'{e['code']}',name:'{name_esc}',"
-                f"brand:'{e['brand']}',type:'{e['type']}',freq:'{e['freq']}',timing:'{e.get('timing','')}', "
-                f"ex:'{e['ex_date']}',pay:'{e['pay_date']}',"
-                f"dist:{e['dist']},price:{e['price']},rate:{e['rate']},"
-                f"trend:{trend_js}}}"
-            )
-        return f"const {var_name} = [\n" + ",\n".join(items) + "\n];"
-
     def most_common_notice(lst):
         counts = defaultdict(int)
         for e in lst:
@@ -410,19 +398,41 @@ def build_js(latest: list, price_date: str = ""):
                 counts[nd] += 1
         return max(counts, key=counts.get) if counts else ""
 
-    mid_notice = most_common_notice(mid_list)
-    end_notice = most_common_notice(end_list)
+    # 현재 기간 ETF에서 공시일 계산
+    current_mid = [e for e in latest if e.get("current") and int(e["ex_date"][8:10]) <= 20]
+    current_end = [e for e in latest if e.get("current") and int(e["ex_date"][8:10]) > 20]
+    mid_notice = most_common_notice(current_mid)
+    end_notice = most_common_notice(current_end)
+
+    # ETF_ALL 단일 배열 (current 플래그 포함)
+    def to_js_array_all(lst):
+        items = []
+        for e in lst:
+            name_esc = e["name"].replace("'", "\\'").replace('"', '&quot;')
+            trend_js = json.dumps(e.get("trend", []), ensure_ascii=False)
+            current_js = "true" if e.get("current") else "false"
+            items.append(
+                f"{{isin:'{e['isin']}',code:'{e['code']}',name:'{name_esc}',"
+                f"brand:'{e['brand']}',type:'{e['type']}',freq:'{e['freq']}',timing:'{e.get('timing','')}', "
+                f"ex:'{e['ex_date']}',pay:'{e['pay_date']}',"
+                f"dist:{e['dist']},price:{e['price']},rate:{e['rate']},"
+                f"current:{current_js},trend:{trend_js}}}"
+            )
+        return "const ETF_ALL = [\n" + ",\n".join(items) + "\n];"
 
     header = f'const PRICE_DATE = "{price_date}";\n'
     header += f'const MID_NOTICE_DATE = "{mid_notice}";\n'
     header += f'const END_NOTICE_DATE = "{end_notice}";\n\n'
-    js_content = header + to_js_array(end_list, "ETF_END") + "\n\n" + to_js_array(mid_list, "ETF_MID")
+    # ETF_END, ETF_MID는 JS에서 ETF_ALL로부터 파생
+    derive = ('const ETF_END = ETF_ALL.filter(e => e.current && e.timing === "월말");\n'
+              'const ETF_MID = ETF_ALL.filter(e => e.current && e.timing === "월중");\n')
+    js_content = header + to_js_array_all(latest) + "\n\n" + derive
 
     with open(JS_FILE, "w", encoding="utf-8") as f:
         f.write(js_content)
 
     size_kb = JS_FILE.stat().st_size // 1024
-    print(f"✅ ETF_END: {len(end_list)}개, ETF_MID: {len(mid_list)}개")
+    print(f"✅ 전체 {len(latest)}개 (현재 기간 월중 {len(current_mid)}개 / 월말 {len(current_end)}개)")
     print(f"💾 저장: {JS_FILE} ({size_kb}KB)")
 
 
@@ -563,9 +573,9 @@ def inject_html():
 
     html_path = BASE_DIR / "index.html"
     if not html_path.exists():
-        # fallback: 마커가 있는 HTML 파일 탐색
         for f in sorted(BASE_DIR.glob("*.html")):
-            if "const ETF_END" in f.read_text(encoding="utf-8", errors="replace"):
+            txt = f.read_text(encoding="utf-8", errors="replace")
+            if "const ETF_ALL" in txt or "const ETF_END" in txt:
                 html_path = f
                 break
         else:
@@ -575,15 +585,18 @@ def inject_html():
 
     html = html_path.read_text(encoding="utf-8", errors="replace")
 
-    start = html.find("const ETF_END")
+    # ETF_ALL 또는 ETF_END 마커 찾기
+    start = html.find("const ETF_ALL")
+    if start == -1:
+        start = html.find("const ETF_END")
     # PRICE_DATE가 있으면 그 앞부터 교체
     pd_pos = html.find("const PRICE_DATE")
-    if pd_pos != -1 and pd_pos < start:
+    if pd_pos != -1 and (start == -1 or pd_pos < start):
         start = pd_pos
 
     end = html.find("const TODAY")
     if start == -1 or end == -1:
-        print(f"⚠️  교체 마커를 찾지 못했습니다. (ETF_END={start}, TODAY={end})")
+        print(f"⚠️  교체 마커를 찾지 못했습니다. (ETF_ALL={start}, TODAY={end})")
         return
 
     new_html = html[:start] + js_content.strip() + "\n\n\n" + html[end:]
