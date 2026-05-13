@@ -9,6 +9,11 @@ on:
 permissions:
   contents: write
 
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONUTF8: 1
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -23,7 +28,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests xlrd
 
       - name: Fetch latest prices
         run: python etf_data_processor.py --prices-only
