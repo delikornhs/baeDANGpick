@@ -471,8 +471,8 @@ def fetch_naver_prices(codes: list) -> tuple:
         "Accept": "application/json, text/plain, */*",
     }
 
-    # 항상 직전 영업일을 기준일로 고정 (장 중 실행 시 오늘 날짜 오기입 방지)
-    price_date = prev_business_day(datetime.now().strftime("%Y-%m-%d"))
+    # 워크플로우가 17:30 KST(장 마감 후)에 실행되므로 오늘 날짜가 곧 종가 기준일
+    price_date = datetime.now().strftime("%Y-%m-%d")
 
     prices = {}
     ok = fail = 0
