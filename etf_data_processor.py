@@ -305,9 +305,14 @@ def build_latest(history: dict, target_month: str = None):
     if target_month:
         target_dates = [d for d in all_ex_dates if d.startswith(target_month)]
     else:
-        # 가장 최근 월의 모든 배당락일
-        latest_month = all_ex_dates[-1][:7]
-        target_dates = [d for d in all_ex_dates if d.startswith(latest_month)]
+        # 월중(20일 이하)과 월말(21일 이상) 각각 독립적으로 최신 날짜 선택
+        mid_dates = [d for d in all_ex_dates if int(d[8:10]) <= 20]
+        end_dates = [d for d in all_ex_dates if int(d[8:10]) > 20]
+        target_dates = []
+        if mid_dates:
+            target_dates.append(mid_dates[-1])
+        if end_dates:
+            target_dates.append(end_dates[-1])
 
     print(f"대상 배당락일: {target_dates}")
 
