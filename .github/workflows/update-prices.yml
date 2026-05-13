@@ -6,6 +6,9 @@ on:
     - cron: '30 8 * * 1-5'
   workflow_dispatch:  # 수동 실행 허용
 
+permissions:
+  contents: write
+
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -29,7 +32,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/latest.json etf_data.js index.html
+          git add data/output/latest.json data/output/etf_data.js index.html
           if git diff --cached --quiet; then
             echo "변경 없음, 스킵"
           else
