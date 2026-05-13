@@ -24,6 +24,7 @@
 <meta name="twitter:title" content="배당픽 : ETF 분배금 일정 계산기">
 <meta name="twitter:description" content="국내 ETF 분배금 배당락일·지급일 일정과 분배율을 한눈에 확인하세요.">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -251,6 +252,35 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   .cal-ev{width:7px;height:7px;border-radius:50%;padding:0;font-size:0;flex-shrink:0}
   .cal-ev.more{display:none}
 }
+
+/* SHARE BUTTONS */
+.share-btns{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.share-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:"Noto Sans KR",sans-serif;white-space:nowrap}
+.share-btn-img{background:rgba(255,255,255,.1);color:#ccc;border:1px solid rgba(255,255,255,.2)}
+.share-btn-img:hover{background:rgba(255,255,255,.18);color:#fff}
+.share-btn-kako{background:#FEE500;color:#3C1E1E}
+.share-btn-kako:hover{background:#FFD700}
+
+/* SHARE CARD (off-screen rendering) */
+#shareCard{position:absolute;left:-9999px;top:0;width:360px;background:#fff;font-family:"Noto Sans KR",-apple-system,sans-serif;border-radius:16px;overflow:hidden}
+.sc-banner{background:#fffbeb;color:#b45309;font-size:11px;font-weight:600;padding:9px 16px;border-bottom:1px solid #fde68a;display:flex;align-items:center;gap:5px}
+.sc-head{background:#1d6b38;color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+.sc-logo-row{display:flex;align-items:center;gap:8px}
+.sc-logo-mark{width:24px;height:24px;background:rgba(255,255,255,.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.sc-logo-text{font-size:15px;font-weight:700}
+.sc-ref-badge{font-size:10px;background:rgba(255,255,255,.2);padding:3px 9px;border-radius:10px}
+.sc-etf-block{padding:14px 20px 12px;border-bottom:1px solid #f0f0f0}
+.sc-etf-name{font-size:14px;font-weight:700;color:#1a1a18;line-height:1.4;word-break:keep-all}
+.sc-etf-meta{font-size:10px;color:#9a9a93;margin-top:4px;font-family:"DM Mono",monospace}
+.sc-stats{padding:12px 20px;border-bottom:1px solid #f0f0f0}
+.sc-stat-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:12px}
+.sc-sl{color:#4a4a45}
+.sc-sv{font-weight:600;color:#1a1a18;font-family:"DM Mono",monospace}
+.sc-total-block{padding:14px 20px 16px;background:#edf7f1}
+.sc-total-label{font-size:10px;font-weight:700;color:#1d6b38;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
+.sc-total-val{font-size:28px;font-weight:700;color:#1d6b38;font-family:"DM Mono",monospace;line-height:1.1}
+.sc-total-sub{font-size:11px;color:#4a7a57;margin-top:5px}
+.sc-foot{background:#f7f7f4;padding:9px 16px;font-size:9px;color:#9a9a93;display:flex;justify-content:space-between;align-items:center;letter-spacing:.3px}
 </style>
 </head>
 <body>
@@ -421,6 +451,10 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
         </p>
       </div>
     </div>
+    <div class="share-btns" id="calcShareBtns" style="display:none">
+      <button class="share-btn share-btn-img" onclick="saveCalcCard()">📸 이미지 저장</button>
+      <button class="share-btn share-btn-kako" onclick="kakaoShare()">💬 카카오톡 공유</button>
+    </div>
   </div>
 </div>
 
@@ -441,6 +475,37 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
       <div class="bars" id="tBars"></div>
       <div class="trend-avg" id="tAvg"></div>
     </div>
+  </div>
+</div>
+
+<!-- 공유 카드 (off-screen, html2canvas 대상) -->
+<div id="shareCard">
+  <div class="sc-banner" id="scBanner">⚠ 직전 분배금 기준 데이터입니다</div>
+  <div class="sc-head">
+    <div class="sc-logo-row">
+      <div class="sc-logo-mark">₩</div>
+      <span class="sc-logo-text">배당픽</span>
+    </div>
+    <span class="sc-ref-badge" id="scRef">—</span>
+  </div>
+  <div class="sc-etf-block">
+    <div class="sc-etf-name" id="scEtfName">—</div>
+    <div class="sc-etf-meta" id="scEtfMeta">—</div>
+  </div>
+  <div class="sc-stats">
+    <div class="sc-stat-row"><span class="sc-sl">보유 수량</span><span class="sc-sv" id="scQty">—</span></div>
+    <div class="sc-stat-row"><span class="sc-sl">현재 주가</span><span class="sc-sv" id="scPrice">—</span></div>
+    <div class="sc-stat-row"><span class="sc-sl">주당 분배금</span><span class="sc-sv" id="scDist">—</span></div>
+    <div class="sc-stat-row"><span class="sc-sl">이번달 분배율</span><span class="sc-sv" id="scRate">—</span></div>
+  </div>
+  <div class="sc-total-block">
+    <div class="sc-total-label">이번달 예상 분배금</div>
+    <div class="sc-total-val" id="scTotal">—</div>
+    <div class="sc-total-sub" id="scTotalSub"></div>
+  </div>
+  <div class="sc-foot">
+    <span id="scPriceDate"></span>
+    <span>bae-dang-pick.vercel.app</span>
   </div>
 </div>
 
@@ -1373,15 +1438,20 @@ function calcResult() {
   if(qtyV>0){qty=qtyV;document.getElementById('cAmt').value='';}
   else if(amtV>0){qty=Math.floor(amtV/e.price);}
 
-  if(qty<=0){['rQ','rA','rT','rR'].forEach(id=>document.getElementById(id).textContent='—');return;}
+  if(qty<=0){['rQ','rA','rT','rR'].forEach(id=>document.getElementById(id).textContent='—');
+    document.getElementById('calcShareBtns').style.display='none';return;}
 
   const actual=qty*e.price, total=qty*e.dist;
   document.getElementById('rQ').textContent=comma(qty)+'주';
   document.getElementById('rA').textContent=comma(actual)+'원';
   document.getElementById('rT').textContent=comma(total)+'원';
   document.getElementById('rR').textContent=e.rate+'%';
+  updateShareCard(e, qty, total);
+  document.getElementById('calcShareBtns').style.display='flex';
 }
-function resetCalc(){['rP','rFreq','rQ','rA','rD','rT','rR'].forEach(id=>document.getElementById(id).textContent='—');}
+function resetCalc(){['rP','rFreq','rQ','rA','rD','rT','rR'].forEach(id=>document.getElementById(id).textContent='—');
+  document.getElementById('calcShareBtns').style.display='none';
+}
 
 // ── 이벤트 ──
 document.getElementById('searchInput').addEventListener('input',e=>{q=e.target.value.trim();applyFilter();});
@@ -1410,6 +1480,82 @@ document.getElementById('timingTabs').addEventListener('click',e=>{
 
 document.getElementById('cAmt').addEventListener('input',()=>{document.getElementById('cQty').value='';calcResult();});
 document.getElementById('cQty').addEventListener('input',()=>{document.getElementById('cAmt').value='';calcResult();});
+
+// ── 공유 카드 ──
+function _cardRef(etf) {
+  let nd = null;
+  if (etf.timing === '월중') nd = _midNotice;
+  else if (etf.timing === '월말') nd = _endNotice;
+  if (nd) {
+    const d = new Date(nd);
+    const refM = d.getMonth()+1, refY = d.getFullYear();
+    const curY = TODAY.getFullYear(), curM = TODAY.getMonth()+1;
+    const isCurrent = refY===curY && refM===curM;
+    return { label: `${refM}월 기준`, showBanner: !isCurrent };
+  }
+  // 분기/연배당 → 직전 공시 기준
+  const d = new Date(etf.ex);
+  return { label: `${d.getMonth()+1}월 기준`, showBanner: false };
+}
+
+function updateShareCard(etf, qty, total) {
+  const ref = _cardRef(etf);
+  document.getElementById('scBanner').style.display = ref.showBanner ? 'flex' : 'none';
+  document.getElementById('scRef').textContent = ref.label;
+  document.getElementById('scEtfName').textContent = `[${etf.brand}] ${etf.name}`;
+  document.getElementById('scEtfMeta').textContent = `${etf.code} · ${etf.type} · ${etf.freq}`;
+  document.getElementById('scQty').textContent = comma(qty) + '주';
+  document.getElementById('scPrice').textContent = comma(etf.price) + '원';
+  document.getElementById('scDist').textContent = comma(etf.dist) + '원';
+  document.getElementById('scRate').textContent = etf.rate + '%';
+  document.getElementById('scTotal').textContent = comma(total) + '원';
+  document.getElementById('scTotalSub').textContent = `${comma(qty)}주 × 주당 ${comma(etf.dist)}원`;
+  document.getElementById('scPriceDate').textContent = typeof PRICE_DATE!=='undefined'&&PRICE_DATE ? `주가 ${PRICE_DATE} 기준` : '';
+}
+
+function captureCard() {
+  const card = document.getElementById('shareCard');
+  return html2canvas(card, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
+}
+
+function saveCalcCard() {
+  const btn = event.currentTarget;
+  const orig = btn.innerHTML;
+  btn.innerHTML = '⏳ 저장 중...'; btn.disabled = true;
+  captureCard().then(canvas => {
+    const a = document.createElement('a');
+    a.download = '배당픽_분배금.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+    btn.innerHTML = '✅ 저장 완료';
+    setTimeout(()=>{btn.innerHTML=orig;btn.disabled=false;},1800);
+  }).catch(()=>{btn.innerHTML=orig;btn.disabled=false;alert('이미지 저장에 실패했습니다.');});
+}
+
+function kakaoShare() {
+  const btn = event.currentTarget;
+  const orig = btn.innerHTML;
+  btn.innerHTML = '⏳ 생성 중...'; btn.disabled = true;
+  captureCard().then(canvas => {
+    canvas.toBlob(blob => {
+      btn.innerHTML = orig; btn.disabled = false;
+      if (!blob) { alert('이미지 생성에 실패했습니다.'); return; }
+      const file = new File([blob], '배당픽_분배금.png', { type: 'image/png' });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: '배당픽 분배금 계산 결과' })
+          .catch(e => { if (e.name !== 'AbortError') alert('공유에 실패했습니다.'); });
+      } else {
+        // 데스크톱: 이미지 다운로드 후 안내
+        const a = document.createElement('a');
+        a.download = '배당픽_분배금.png';
+        a.href = URL.createObjectURL(blob);
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+        showToast('이미지를 저장했습니다.\n카카오톡에서 [파일 첨부]로 공유해 주세요.');
+      }
+    }, 'image/png');
+  }).catch(()=>{btn.innerHTML=orig;btn.disabled=false;alert('이미지 생성에 실패했습니다.');});
+}
 
 // ── 초기화 ──
 renderCalendar();
