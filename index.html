@@ -1517,25 +1517,27 @@ function renderCalendar() {
   const monthStr = `${y}-${String(m+1).padStart(2,'0')}`;
 
   const events = {};
-  function addEv(date, type, label, exRef) {
+  function dStr(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
+  function addEv(date, type, label) {
     if(date.getFullYear()===y && date.getMonth()===m) {
       const k = date.getDate();
+      const ds = dStr(date);
       if(!events[k]) events[k]=[];
-      if(!events[k].find(x=>x.type===type&&x.label===label&&x.exRef===exRef))
-        events[k].push({type, label, exRef: exRef||null});
+      if(!events[k].find(x=>x.type===type&&x.label===label))
+        events[k].push({type, label, dateStr: ds});
     }
   }
 
-  // 실제 ETF 데이터 이벤트 (exRef = 지급기준일)
-  ALL_ETF.forEach(e => {
-    addEv(lastBuy(e.ex), 'buy', '최종매수', e.ex);
-    addEv(exDate(e.ex), 'ex', '배당락', e.ex);
-    addEv(new Date(e.pay), 'pay', '지급일', e.ex);
+  // 현재 기간 ETF만 달력에 표시
+  ALL_ETF.filter(e=>e.current).forEach(e => {
+    addEv(lastBuy(e.ex), 'buy', '최종매수');
+    addEv(exDate(e.ex), 'ex', '배당락');
+    addEv(new Date(e.pay), 'pay', '지급일');
   });
 
   // 확정 일정
   CONFIRMED_SCHEDULE.forEach(s => {
-    addEv(new Date(s.date), s.type, s.label, s.ex||null);
+    addEv(new Date(s.date), s.type, s.label);
   });
 
   const firstDay = new Date(y,m,1).getDay();
@@ -1553,11 +1555,7 @@ function renderCalendar() {
     html+=`<div class="cal-day${isWE?' weekend':''}${isToday?' today':''}">
       <div class="cal-num">${d}</div>
       <div class="cal-events">
-        ${shown.map(ev=>{
-          const cls = ev.exRef ? `cal-ev ${ev.type} clickable` : `cal-ev ${ev.type}`;
-          const click = ev.exRef ? `onclick="setCalFilter('${ev.exRef}','${ev.label}')"` : '';
-          return `<div class="${cls}" ${click}>${ev.label}</div>`;
-        }).join('')}
+        ${shown.map(ev=>`<div class="cal-ev ${ev.type} clickable" onclick="setCalFilter('${ev.dateStr}','${ev.type}','${ev.label}')">${ev.label}</div>`).join('')}
         ${more>0?`<div class="cal-ev more">+${more}</div>`:''}
       </div>
     </div>`;
@@ -1581,24 +1579,22 @@ function freqBadges(e){
   return badge+timing;
 }
 let page=1, filtered=[], typeF='전체', freqF='전체', timingF='전체', q='', sort='rate_d';
-let calFilter=null, calFilterLabel='';
+let calFilter=null;
 
-function setCalFilter(exDate, label) {
-  calFilter = exDate;
-  calFilterLabel = label;
-  // 필터 배너 표시
-  const d = new Date(exDate);
+function dStrUtil(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
+
+function setCalFilter(dateStr, type, label) {
+  calFilter = {dateStr, type, label};
+  const d = new Date(dateStr);
   const txt = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 ${label} 해당 ETF`;
   document.getElementById('calFilterText').textContent = txt;
   document.getElementById('calFilterBar').style.display = 'flex';
-  // 주기 필터 전체로 초기화 (달력 필터가 우선)
   page=1; applyFilter();
-  // ETF 목록으로 스크롤
   document.querySelector('.section').scrollIntoView({behavior:'smooth'});
 }
 
 function clearCalFilter() {
-  calFilter = null; calFilterLabel = '';
+  calFilter = null;
   document.getElementById('calFilterBar').style.display = 'none';
   applyFilter();
 }
@@ -1607,7 +1603,16 @@ function applyFilter() {
   let d=[...ALL_ETF];
   // 달력 필터 우선 적용
   if(calFilter) {
-    d=d.filter(e=>e.ex===calFilter);
+    const {dateStr, type} = calFilter;
+    if(type==='pay') {
+      d=d.filter(e=>e.pay===dateStr);
+    } else if(type==='record') {
+      d=d.filter(e=>e.ex===dateStr);
+    } else if(type==='ex') {
+      d=d.filter(e=>dStrUtil(exDate(e.ex))===dateStr);
+    } else if(type==='buy') {
+      d=d.filter(e=>dStrUtil(lastBuy(e.ex))===dateStr);
+    }
   } else {
     if(q){const lq=q.toLowerCase();d=d.filter(e=>e.name.toLowerCase().includes(lq)||e.code.includes(lq)||e.brand.toLowerCase().includes(lq));}
     if(typeF!=='전체') d=d.filter(e=>e.type===typeF);
