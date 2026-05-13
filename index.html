@@ -258,9 +258,8 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 .share-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:"Noto Sans KR",sans-serif;white-space:nowrap}
 .share-btn-img{background:rgba(255,255,255,.1);color:#ccc;border:1px solid rgba(255,255,255,.2)}
 .share-btn-img:hover{background:rgba(255,255,255,.18);color:#fff}
-.share-btn-kako{background:#FEE500;color:#3C1E1E}
+.share-btn-kako{background:#FEE500;color:#3C1E1E;display:none}
 .share-btn-kako:hover{background:#FFD700}
-@media(hover:hover) and (pointer:fine){.share-btn-kako{display:none}}
 
 /* SHARE CARD (off-screen rendering) */
 #shareCard{position:absolute;left:-9999px;top:0;width:360px;background:#fff;font-family:"Noto Sans KR",-apple-system,sans-serif;border-radius:16px;overflow:hidden}
@@ -1557,6 +1556,14 @@ function kakaoShare() {
     }, 'image/png');
   }).catch(()=>{btn.innerHTML=orig;btn.disabled=false;alert('이미지 생성에 실패했습니다.');});
 }
+
+// 카카오 공유 버튼: navigator.share 파일 공유 지원 환경에서만 표시
+(function(){
+  const testFile = new File([''], 't.png', {type:'image/png'});
+  if (navigator.share && navigator.canShare && navigator.canShare({files:[testFile]})) {
+    document.querySelector('.share-btn-kako').style.display = 'inline-flex';
+  }
+})();
 
 // ── 초기화 ──
 renderCalendar();
