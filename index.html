@@ -40,10 +40,17 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .logo{font-size:15px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:7px;flex-shrink:0}
 .logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
 .nav-meta{font-size:11px;color:var(--ink3);font-family:"DM Mono",monospace;text-align:right;min-width:0}
+.nav-meta-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.nav-meta-sub{font-size:10px;color:var(--ink3)}
 .nav-meta-notice{display:inline}
+.notice-badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.1px;white-space:nowrap;font-family:"Noto Sans KR",sans-serif;line-height:1.5}
+.notice-badge.pending{background:#fffbeb;color:#b45309;border:1px solid #fcd34d}
+.notice-badge.done{background:#edf7f1;color:#1d6b38;border:1px solid #6cba8b}
 @media(max-width:480px){
   .nav-inner{height:auto;padding:8px 0;flex-direction:column;align-items:flex-start;gap:3px}
   .nav-meta{font-size:10px;text-align:left}
+  .nav-meta-wrap{align-items:flex-start}
+  .notice-badge{font-size:10px}
 }
 
 /* HERO */
@@ -1046,11 +1053,31 @@ const ALL_ETF = [...ETF_END, ...ETF_MID];
 // 히어로 카운트
 const _midNotice = typeof MID_NOTICE_DATE !== 'undefined' ? MID_NOTICE_DATE : '';
 const _endNotice = typeof END_NOTICE_DATE !== 'undefined' ? END_NOTICE_DATE : '';
-const _pDate = typeof PRICE_DATE !== 'undefined' && PRICE_DATE ? ` | 종가 ${PRICE_DATE}` : '';
+const _pDate = typeof PRICE_DATE !== 'undefined' && PRICE_DATE ? `종가 ${PRICE_DATE}` : '';
 const _metaParts = [];
 if(_midNotice) _metaParts.push(`월중 ${_midNotice.slice(5)}`);
 if(_endNotice) _metaParts.push(`월말 ${_endNotice.slice(5)}`);
-document.getElementById('navMeta').innerHTML = (_metaParts.length ? `<span class="nav-meta-notice">최종 분배금 공시일 ${_metaParts.join(' · ')}</span>` : '') + _pDate;
+
+// 공시 현황 배지 생성
+(function(){
+  const t = new Date(); t.setHours(0,0,0,0);
+  const ty = t.getFullYear(), tm = t.getMonth()+1;
+  function midRec(y,m){const d=new Date(y,m-1,15);while(d.getDay()===0||d.getDay()===6)d.setDate(d.getDate()-1);return d;}
+  function endRec(y,m){const d=new Date(y,m,0);while(d.getDay()===0||d.getDay()===6)d.setDate(d.getDate()-1);return d;}
+  let tY=ty, tM=tm, tT;
+  if(t<=midRec(ty,tm)){tT='mid';}
+  else if(t<=endRec(ty,tm)){tT='end';}
+  else{tT='mid'; tM=tm===12?1:tm+1; tY=tm===12?ty+1:ty;}
+  const nd = tT==='mid' ? _midNotice : _endNotice;
+  const isOK = nd && (function(){const d=new Date(nd);return d.getFullYear()===tY&&d.getMonth()+1===tM;})();
+  const typeStr = tT==='mid' ? '월중' : '월말';
+  const badge = `<span class="notice-badge ${isOK?'done':'pending'}">${tM}월 ${typeStr} 분배금 공시 ${isOK?'반영 완료':'확인 중'}</span>`;
+  const subParts = [];
+  if(_metaParts.length) subParts.push(`최종 공시일 ${_metaParts.join(' · ')}`);
+  if(_pDate) subParts.push(_pDate);
+  const sub = subParts.length ? `<div class="nav-meta-sub">${subParts.join(' | ')}</div>` : '';
+  document.getElementById('navMeta').innerHTML = `<div class="nav-meta-wrap">${badge}${sub}</div>`;
+})();
 
 // ── 달력 ──
 let calYear = TODAY.getFullYear(), calMonth = TODAY.getMonth();
