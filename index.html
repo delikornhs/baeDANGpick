@@ -1590,7 +1590,7 @@ function setCalFilter(dateStr, type, label) {
   document.getElementById('calFilterText').textContent = txt;
   document.getElementById('calFilterBar').style.display = 'flex';
   page=1; applyFilter();
-  document.getElementById('etfGrid').scrollIntoView({behavior:'smooth', block:'start'});
+  document.getElementById('calFilterBar').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function clearCalFilter() {
