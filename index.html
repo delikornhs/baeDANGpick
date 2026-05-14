@@ -448,18 +448,22 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
           <span class="c-unit">주</span>
         </div>
       </div>
-      <div class="c-right">
-        <div class="r-row"><span class="r-label">현재 주가<span style="font-size:10px;font-weight:400;opacity:.7;margin-left:4px">(어제 종가 기준)</span></span><span class="r-val" id="rP">—</span></div>
-        <div class="r-row"><span class="r-label">분배 주기</span><span class="r-val" id="rFreq">—</span></div>
-        <div class="r-row"><span class="r-label">매수 가능 수량</span><span class="r-val g" id="rQ">—</span></div>
-        <div class="r-row"><span class="r-label">실제 투자금</span><span class="r-val" id="rA">—</span></div>
-        <div class="r-row"><span class="r-label">주당 분배금</span><span class="r-val" id="rD">—</span></div>
-        <div class="r-row"><span class="r-label" style="color:#fff;font-weight:700">이번달 예상 분배금</span><span class="r-val big" id="rT">—</span></div>
-        <div class="r-row"><span class="r-label">이번달 분배율</span><span class="r-val g" id="rR">—</span></div>
-        <p style="font-size:10px;color:#888;line-height:1.6;margin-top:10px">
-          분배율은 가장 최근 공시된 분배금액과 공시일자 전일 종가로 산출한 참고 수치입니다.<br>
-          상단에 표시된 공시일자를 함께 확인하세요.
-        </p>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="c-right">
+          <div class="r-row"><span class="r-label">현재 주가<span style="font-size:10px;font-weight:400;opacity:.7;margin-left:4px">(어제 종가 기준)</span></span><span class="r-val" id="rP">—</span></div>
+          <div class="r-row"><span class="r-label">분배 주기</span><span class="r-val" id="rFreq">—</span></div>
+          <div class="r-row"><span class="r-label" id="rQLabel">매수 가능 수량</span><span class="r-val g" id="rQ">—</span></div>
+          <div class="r-row"><span class="r-label" id="rALabel">투자금액</span><span class="r-val" id="rA">—</span></div>
+        </div>
+        <div class="c-right">
+          <div class="r-row"><span class="r-label">주당 분배금</span><span class="r-val" id="rD">—</span></div>
+          <div class="r-row"><span class="r-label" style="color:#fff;font-weight:700">이번달 예상 분배금</span><span class="r-val big" id="rT">—</span></div>
+          <div class="r-row"><span class="r-label">이번달 분배율</span><span class="r-val g" id="rR">—</span></div>
+          <p style="font-size:10px;color:#888;line-height:1.6;margin-top:10px">
+            분배율은 가장 최근 공시된 분배금액과 공시일자 전일 종가로 산출한 참고 수치입니다.<br>
+            상단에 표시된 공시일자를 함께 확인하세요.
+          </p>
+        </div>
       </div>
     </div>
     <div class="share-btns" id="calcShareBtns" style="display:none">
@@ -1820,9 +1824,17 @@ function calcResult() {
   document.getElementById('rFreq').innerHTML=`<span style="font-size:11px">${freqBadges(e)}</span>`;
   document.getElementById('rD').textContent=comma(e.dist)+'원';
 
-  let qty=0;
-  if(qtyV>0){qty=qtyV;document.getElementById('cAmt').value='';}
-  else if(amtV>0){qty=Math.floor(amtV/e.price);}
+  let qty=0, mode='none';
+  if(qtyV>0){qty=qtyV;document.getElementById('cAmt').value='';mode='qty';}
+  else if(amtV>0){qty=Math.floor(amtV/e.price);mode='amt';}
+
+  if(mode==='qty'){
+    document.getElementById('rQLabel').textContent='보유수량';
+    document.getElementById('rALabel').textContent='평가금액';
+  } else {
+    document.getElementById('rQLabel').textContent='매수 가능 수량';
+    document.getElementById('rALabel').textContent='매입금액';
+  }
 
   if(qty<=0){['rQ','rA','rT','rR'].forEach(id=>document.getElementById(id).textContent='—');
     document.getElementById('calcShareBtns').style.display='none';return;}
@@ -1835,7 +1847,10 @@ function calcResult() {
   updateShareCard(e, qty, total);
   document.getElementById('calcShareBtns').style.display='flex';
 }
-function resetCalc(){['rP','rFreq','rQ','rA','rD','rT','rR'].forEach(id=>document.getElementById(id).textContent='—');
+function resetCalc(){
+  ['rP','rFreq','rQ','rA','rD','rT','rR'].forEach(id=>document.getElementById(id).textContent='—');
+  document.getElementById('rQLabel').textContent='매수 가능 수량';
+  document.getElementById('rALabel').textContent='투자금액';
   document.getElementById('calcShareBtns').style.display='none';
 }
 
