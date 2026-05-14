@@ -150,24 +150,38 @@ def get_type(name: str) -> str:
     return "기타"
 
 
+RECENCY_DAYS = 60  # 최근 배당락일이 이 일수 이내여야 월배당/월배당추정으로 분류
+
+
+def is_recent(ex_date_str: str) -> bool:
+    """배당락일이 오늘 기준 RECENCY_DAYS 이내인지 확인."""
+    try:
+        ex = datetime.strptime(ex_date_str, "%Y-%m-%d")
+        return (datetime.now() - ex).days <= RECENCY_DAYS
+    except ValueError:
+        return False
+
+
 # ── 분배 주기 분류 ──
 def classify_frequency(isin: str, history: dict) -> str:
     """
     배당락일 간격 중앙값으로 주기를 결정.
       ~45일  → 월배당
-      ~100일 → 분기배당
-      ~190일 → 반기배당
-      그 이상 → 연배당
+      그 이상 → 분기배당이상
     데이터 2건 미만이면 이름 기반으로 추정.
+    단, 가장 최근 배당락일이 60일 이상 지났으면 월배당/월배당추정 분류 제외.
     """
     if isin not in history:
         return "분기배당이상"
 
     records = history[isin]
     dates = sorted(records.keys())
+    latest_date = dates[-1]
 
     if len(dates) < 2:
-        # 데이터 1건: 이름 기반 추정
+        # 데이터 1건: 최근성 확인 후 이름 기반 추정
+        if not is_recent(latest_date):
+            return "분기배당이상"
         name = list(records.values())[0].get("name", "")
         return classify_frequency_by_name(name)
 
@@ -184,6 +198,8 @@ def classify_frequency(isin: str, history: dict) -> str:
             pass
 
     if not gaps:
+        if not is_recent(latest_date):
+            return "분기배당이상"
         name = list(records.values())[0].get("name", "")
         return classify_frequency_by_name(name)
 
@@ -191,6 +207,9 @@ def classify_frequency(isin: str, history: dict) -> str:
     median_gap = gaps[len(gaps) // 2]
 
     if median_gap <= 45:
+        # 최근 60일 이내 지급 이력 없으면 월배당으로 분류하지 않음
+        if not is_recent(latest_date):
+            return "분기배당이상"
         return "월배당"
     else:
         return "분기배당이상"
