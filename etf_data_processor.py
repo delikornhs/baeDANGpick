@@ -197,10 +197,18 @@ def classify_frequency(isin: str, history: dict) -> str:
 
 
 def classify_frequency_by_name(name: str) -> str:
-    """이력 없을 때 이름 기반 추정 → 월배당추정 또는 분기배당이상"""
+    """이력 없을 때 이름 기반 추정 → 월배당추정 또는 분기배당이상
+    채권 ETF(이름에 '채권' 포함)는 월배당 추정 제외.
+    """
+    # 채권 ETF 제외: 이름에 '채권' 포함 시 추정 불가
+    bond_kw = ["채권"]
+    for kw in bond_kw:
+        if kw in name:
+            return "분기배당이상"
+
     monthly_kw = [
         "커버드콜", "배당다우존스", "배당귀족", "배당성장", "고배당",
-        "리츠", "하이일드", "회사채", "국채", "인컴", "위클리", "데일리",
+        "리츠", "하이일드", "인컴", "위클리", "데일리",
         "배당증가", "배당킹", "배당플러스", "배당TOP", "인프라",
     ]
     for kw in monthly_kw:
