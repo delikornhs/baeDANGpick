@@ -281,6 +281,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 .sc-etf-name{font-size:14px;font-weight:700;color:#1a1a18;line-height:1.4;word-break:keep-all}
 .sc-etf-meta{font-size:10px;color:#9a9a93;margin-top:4px;font-family:"DM Mono",monospace}
 .sc-stats{padding:12px 20px;border-bottom:1px solid #f0f0f0}
+.sc-stats-dist{padding:10px 20px;border-bottom:1px solid #f0f0f0;background:#f4f8f5}
 .sc-stat-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:12px}
 .sc-sl{color:#4a4a45}
 .sc-sv{font-weight:600;color:#1a1a18;font-family:"DM Mono",monospace}
@@ -508,8 +509,11 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     <div class="sc-etf-meta" id="scEtfMeta">—</div>
   </div>
   <div class="sc-stats">
-    <div class="sc-stat-row"><span class="sc-sl" id="scQtyLabel">보유 수량</span><span class="sc-sv" id="scQty">—</span></div>
+    <div class="sc-stat-row"><span class="sc-sl" id="scQtyLabel">매수 가능 수량</span><span class="sc-sv" id="scQty">—</span></div>
     <div class="sc-stat-row"><span class="sc-sl">현재 주가</span><span class="sc-sv" id="scPrice">—</span></div>
+    <div class="sc-stat-row"><span class="sc-sl" id="scAmtLabel">매입금액</span><span class="sc-sv" id="scAmt">—</span></div>
+  </div>
+  <div class="sc-stats sc-stats-dist">
     <div class="sc-stat-row"><span class="sc-sl">주당 분배금</span><span class="sc-sv" id="scDist">—</span></div>
     <div class="sc-stat-row"><span class="sc-sl">이번달 분배율</span><span class="sc-sv" id="scRate">—</span></div>
   </div>
@@ -1844,7 +1848,7 @@ function calcResult() {
   document.getElementById('rA').textContent=comma(actual)+'원';
   document.getElementById('rT').textContent=comma(total)+'원';
   document.getElementById('rR').textContent=e.rate+'%';
-  updateShareCard(e, qty, total, mode);
+  updateShareCard(e, qty, actual, total, mode);
   document.getElementById('calcShareBtns').style.display='flex';
 }
 function resetCalc(){
@@ -1899,7 +1903,7 @@ function _cardRef(etf) {
   return { label: `${d.getMonth()+1}월 기준`, showBanner: false };
 }
 
-function updateShareCard(etf, qty, total, mode) {
+function updateShareCard(etf, qty, actual, total, mode) {
   const ref = _cardRef(etf);
   document.getElementById('scBanner').style.display = ref.showBanner ? 'flex' : 'none';
   document.getElementById('scRef').textContent = ref.label;
@@ -1908,6 +1912,8 @@ function updateShareCard(etf, qty, total, mode) {
   document.getElementById('scQtyLabel').textContent = mode==='qty' ? '보유수량' : '매수 가능 수량';
   document.getElementById('scQty').textContent = comma(qty) + '주';
   document.getElementById('scPrice').textContent = comma(etf.price) + '원';
+  document.getElementById('scAmtLabel').textContent = mode==='qty' ? '평가금액' : '매입금액';
+  document.getElementById('scAmt').textContent = comma(actual) + '원';
   document.getElementById('scDist').textContent = comma(etf.dist) + '원';
   document.getElementById('scRate').textContent = etf.rate + '%';
   document.getElementById('scTotal').textContent = comma(total) + '원';
