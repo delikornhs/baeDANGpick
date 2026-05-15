@@ -462,8 +462,11 @@ function render(e) {
 
 // ── 초기화 ──
 (function() {
-  const params = new URLSearchParams(location.search);
-  const code   = params.get('code');
+  // Vercel 리라이트: 브라우저 URL이 /etf/069500 형태 → pathname에서 추출
+  const path = location.pathname; // "/etf/069500"
+  const code = path.startsWith('/etf/')
+    ? path.slice(5)
+    : (new URLSearchParams(location.search).get('code') || '');
   if(!code) { showError(); return; }
 
   // ETF_ALL은 etf_data.js에서 전역 변수로 로드됨
