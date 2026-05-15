@@ -53,4 +53,4 @@ jobs:
         env:
           APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
           NEWSLETTER_SECRET: ${{ secrets.NEWSLETTER_SECRET }}
-        run: python trigger_newsletter.py
+        run: python trigger_newsletter.py --type data

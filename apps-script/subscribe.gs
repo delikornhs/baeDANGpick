@@ -93,12 +93,20 @@ function handleSendNewsletter(data) {
     return jsonResponse({ result: 'error', message: 'unauthorized' });
   }
 
-  const sheet     = getOrCreateSheet();
-  const rows      = sheet.getDataRange().getValues();
-  const scriptUrl = ScriptApp.getService().getUrl();
-  const etfs      = data.etfs  || [];
-  const month     = data.month || '';
-  const subject   = `[배당픽] ${month} ETF 분배금 일정 업데이트`;
+  const sheet          = getOrCreateSheet();
+  const rows           = sheet.getDataRange().getValues();
+  const scriptUrl      = ScriptApp.getService().getUrl();
+  const month          = data.month  || '';
+  const timing         = data.timing || '';
+  const newsletterType = data.newsletterType || 'data';
+
+  // 제목 및 HTML 결정
+  let subject;
+  if (newsletterType === 'schedule') {
+    subject = `[배당픽] ${month} ${timing} 배당 주요 일정 안내`;
+  } else {
+    subject = `[배당픽] ${month} ${timing} 분배금액 공시`;
+  }
 
   let sent = 0, failed = 0;
 
@@ -109,7 +117,9 @@ function handleSendNewsletter(data) {
     if (status !== '활성') continue;
 
     try {
-      const html = buildNewsletterHtml(etfs, month, scriptUrl, token);
+      const html = newsletterType === 'schedule'
+        ? buildScheduleNewsletterHtml(month, timing, data.lastBuy, data.exDate, data.record, scriptUrl, token)
+        : buildDataNewsletterHtml(data.etfs || [], month, timing, scriptUrl, token);
       MailApp.sendEmail({ to: email, subject: subject, htmlBody: html, name: SENDER_NAME });
       sent++;
       Utilities.sleep(300);
@@ -154,17 +164,80 @@ function sendWelcomeEmail(email, token, scriptUrl) {
   });
 }
 
-// ── 뉴스레터 HTML 빌더 ─────────────────────────────────────────
-function buildNewsletterHtml(etfs, month, scriptUrl, token) {
+// ── 일정 안내 뉴스레터 (기준일·배당락일·최종매수일) ───────────
+function buildScheduleNewsletterHtml(month, timing, lastBuy, exDate, record, scriptUrl, token) {
   const unsubUrl = `${scriptUrl}?action=unsubscribe&token=${token}`;
+  return `<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f7f7f4;font-family:'Apple SD Gothic Neo',sans-serif">
+<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:24px 16px">
+<table width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e8e8e2">
+  <tr><td style="background:#1d6b38;padding:20px 28px">
+    <table width="100%" cellpadding="0" cellspacing="0"><tr>
+      <td style="color:#fff;font-size:17px;font-weight:700">₩ 배당픽</td>
+      <td style="text-align:right;color:rgba(255,255,255,.7);font-size:12px">${month} ${timing}</td>
+    </tr></table>
+  </td></tr>
+  <tr><td style="padding:24px 28px 20px">
+    <div style="font-size:18px;font-weight:700;color:#1a1a18;margin-bottom:6px">
+      ${month} ${timing} 배당 주요 일정이 확정되었습니다
+    </div>
+    <div style="font-size:12px;color:#9a9a93;margin-bottom:24px">분배금액은 공시 후 별도 안내드립니다</div>
+    <table width="100%" cellpadding="0" cellspacing="0"
+           style="border:1px solid #e8e8e2;border-radius:8px;overflow:hidden;border-collapse:collapse">
+      <tr style="background:#edf7f1">
+        <th style="padding:11px 16px;font-size:12px;color:#1d6b38;text-align:left;font-weight:700">일정</th>
+        <th style="padding:11px 16px;font-size:12px;color:#1d6b38;text-align:center;font-weight:700">날짜</th>
+      </tr>
+      <tr>
+        <td style="padding:11px 16px;border-bottom:1px solid #f0f0f0;font-size:13px;color:#1a1a18;font-weight:700">
+          🛒 최종 매수일
+        </td>
+        <td style="padding:11px 16px;border-bottom:1px solid #f0f0f0;font-size:13px;
+                   text-align:center;color:#1d6b38;font-weight:700;font-family:monospace">${lastBuy}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 16px;border-bottom:1px solid #f0f0f0;font-size:13px;color:#1a1a18">
+          📉 배당락일
+        </td>
+        <td style="padding:11px 16px;border-bottom:1px solid #f0f0f0;font-size:13px;
+                   text-align:center;color:#4a4a45;font-family:monospace">${exDate}</td>
+      </tr>
+      <tr>
+        <td style="padding:11px 16px;font-size:13px;color:#1a1a18">📋 기준일</td>
+        <td style="padding:11px 16px;font-size:13px;text-align:center;
+                   color:#4a4a45;font-family:monospace">${record}</td>
+      </tr>
+    </table>
+    <p style="font-size:12px;color:#9a9a93;margin-top:12px;line-height:1.7">
+      ※ <strong style="color:#1d6b38">${lastBuy}</strong>까지 매수해야 이번 달 분배금을 받을 수 있습니다.
+    </p>
+  </td></tr>
+  <tr><td style="padding:0 28px 28px;text-align:center">
+    <a href="https://bae-dang-pick.vercel.app"
+       style="display:inline-block;background:#1d6b38;color:#fff;text-decoration:none;
+              font-size:14px;font-weight:700;padding:13px 32px;border-radius:8px">
+      전체 일정 확인하기 →
+    </a>
+  </td></tr>
+  <tr><td style="background:#f7f7f4;padding:16px 28px;border-top:1px solid #e8e8e2;text-align:center">
+    <p style="font-size:11px;color:#9a9a93;margin:0;line-height:1.8">
+      본 정보는 참고 목적으로만 제공되며 투자의 최종 판단은 본인에게 있습니다.<br>
+      <a href="${unsubUrl}" style="color:#9a9a93;text-decoration:underline">수신거부</a>
+    </p>
+  </td></tr>
+</table></td></tr></table>
+</body></html>`;
+}
 
+// ── 분배금액 공시 뉴스레터 (지급일·분배금액) ──────────────────
+function buildDataNewsletterHtml(etfs, month, timing, scriptUrl, token) {
+  const unsubUrl = `${scriptUrl}?action=unsubscribe&token=${token}`;
   const rows = etfs.slice(0, 15).map(e => `
     <tr>
       <td style="padding:9px 12px;border-bottom:1px solid #f0f0f0;font-size:12px;color:#1a1a18">
         [${e.brand}] ${e.name}
       </td>
-      <td style="padding:9px 12px;border-bottom:1px solid #f0f0f0;font-size:12px;
-                 text-align:center;color:#4a4a45;font-family:monospace">${e.ex}</td>
       <td style="padding:9px 12px;border-bottom:1px solid #f0f0f0;font-size:12px;
                  text-align:center;color:#4a4a45;font-family:monospace">${e.pay}</td>
       <td style="padding:9px 12px;border-bottom:1px solid #f0f0f0;font-size:13px;
@@ -176,37 +249,27 @@ function buildNewsletterHtml(etfs, month, scriptUrl, token) {
     </tr>`).join('');
 
   return `<!DOCTYPE html>
-<html lang="ko"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f7f7f4;font-family:'Apple SD Gothic Neo',sans-serif">
-<table width="100%" cellpadding="0" cellspacing="0">
-<tr><td style="padding:24px 16px">
-<table width="100%" style="max-width:600px;margin:0 auto;background:#fff;
-       border-radius:12px;overflow:hidden;border:1px solid #e8e8e2">
-
-  <!-- 헤더 -->
+<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:24px 16px">
+<table width="100%" style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e8e8e2">
   <tr><td style="background:#1d6b38;padding:20px 28px">
     <table width="100%" cellpadding="0" cellspacing="0"><tr>
       <td style="color:#fff;font-size:17px;font-weight:700">₩ 배당픽</td>
-      <td style="text-align:right;color:rgba(255,255,255,.7);font-size:12px">${month} 업데이트</td>
+      <td style="text-align:right;color:rgba(255,255,255,.7);font-size:12px">${month} ${timing} 공시</td>
     </tr></table>
   </td></tr>
-
-  <!-- 제목 -->
   <tr><td style="padding:24px 28px 16px">
     <div style="font-size:18px;font-weight:700;color:#1a1a18;margin-bottom:6px">
-      ${month} ETF 분배금 일정이 업데이트되었습니다
+      ${month} ${timing} 분배금액이 공시되었습니다
     </div>
     <div style="font-size:12px;color:#9a9a93">분배율 상위 15개 ETF 기준 · 최근 공시 참고 수치</div>
   </td></tr>
-
-  <!-- 테이블 -->
   <tr><td style="padding:0 28px 20px">
     <table width="100%" cellpadding="0" cellspacing="0"
            style="border:1px solid #e8e8e2;border-radius:8px;overflow:hidden;border-collapse:collapse">
       <tr style="background:#edf7f1">
         <th style="padding:9px 12px;font-size:11px;color:#1d6b38;text-align:left;font-weight:700">ETF</th>
-        <th style="padding:9px 12px;font-size:11px;color:#1d6b38;text-align:center;font-weight:700">배당락일</th>
         <th style="padding:9px 12px;font-size:11px;color:#1d6b38;text-align:center;font-weight:700">지급일</th>
         <th style="padding:9px 12px;font-size:11px;color:#1d6b38;text-align:right;font-weight:700">주당분배금</th>
         <th style="padding:9px 12px;font-size:11px;color:#1d6b38;text-align:right;font-weight:700">분배율</th>
@@ -214,8 +277,6 @@ function buildNewsletterHtml(etfs, month, scriptUrl, token) {
       ${rows}
     </table>
   </td></tr>
-
-  <!-- CTA -->
   <tr><td style="padding:4px 28px 28px;text-align:center">
     <a href="https://bae-dang-pick.vercel.app"
        style="display:inline-block;background:#1d6b38;color:#fff;text-decoration:none;
@@ -223,17 +284,13 @@ function buildNewsletterHtml(etfs, month, scriptUrl, token) {
       전체 일정 확인하기 →
     </a>
   </td></tr>
-
-  <!-- 푸터 -->
   <tr><td style="background:#f7f7f4;padding:16px 28px;border-top:1px solid #e8e8e2;text-align:center">
     <p style="font-size:11px;color:#9a9a93;margin:0;line-height:1.8">
       본 정보는 참고 목적으로만 제공되며 투자의 최종 판단은 본인에게 있습니다.<br>
       <a href="${unsubUrl}" style="color:#9a9a93;text-decoration:underline">수신거부</a>
     </p>
   </td></tr>
-
-</table>
-</td></tr></table>
+</table></td></tr></table>
 </body></html>`;
 }
 

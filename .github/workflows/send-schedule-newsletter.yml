@@ -1,0 +1,59 @@
+name: Send Schedule Newsletter
+
+on:
+  workflow_dispatch:
+    inputs:
+      timing:
+        description: '월중 또는 월말'
+        required: true
+        type: choice
+        options:
+          - 월중
+          - 월말
+      last_buy:
+        description: '최종매수일 (YYYY-MM-DD)'
+        required: true
+        type: string
+      ex_date:
+        description: '배당락일 (YYYY-MM-DD)'
+        required: true
+        type: string
+      record:
+        description: '기준일 (YYYY-MM-DD)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONUTF8: 1
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Send schedule newsletter
+        env:
+          APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
+          NEWSLETTER_SECRET: ${{ secrets.NEWSLETTER_SECRET }}
+        run: |
+          python trigger_newsletter.py \
+            --type schedule \
+            --timing "${{ inputs.timing }}" \
+            --last-buy "${{ inputs.last_buy }}" \
+            --ex-date "${{ inputs.ex_date }}" \
+            --record "${{ inputs.record }}"
