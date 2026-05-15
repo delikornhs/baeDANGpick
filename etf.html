@@ -83,7 +83,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .ds-label{font-size:10px;color:var(--ink3);margin-bottom:3px}
 .ds-val{font-size:13px;font-weight:700;color:var(--ink)}
 /* ── stability ── */
-.stab-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.stab-row{display:flex;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
 .stab-row:last-child{border-bottom:none}
 .stab-label{font-size:12px;color:var(--ink3);width:90px;flex-shrink:0}
 .stab-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
@@ -485,18 +485,42 @@ function render(e) {
   document.getElementById('stabContent').innerHTML = `
     <div class="stab-row">
       <span class="stab-label">분배금 안정성</span>
-      ${stabScoreBadge(s.score)}
-      ${s.variation ? `<span style="font-size:11px;color:var(--ink3);margin-left:8px">변동폭 ${s.variation}%</span>` : ''}
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          ${stabScoreBadge(s.score)}
+          ${s.variation ? `<span style="font-size:11px;color:var(--ink3)">측정값 ${s.variation}%</span>` : ''}
+        </div>
+        <div style="font-size:10px;color:var(--ink4);margin-top:4px">
+          변동 적음 ~15% · 변동 보통 ~30% · 변동 큼 ~50% · 변동 매우 큼 50%+
+          <span style="color:var(--ink4);margin-left:4px">(최근 6개월 분배금 (최고-최저)/평균)</span>
+        </div>
+      </div>
     </div>
     <div class="stab-row">
       <span class="stab-label">분배금 추세</span>
-      ${stabTrendBadge(s.trend)}
-      ${s.trendPct ? `<span style="font-size:11px;color:var(--ink3);margin-left:8px">${s.trendPct > 0 ? '+' : ''}${s.trendPct}%</span>` : ''}
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          ${stabTrendBadge(s.trend)}
+          ${s.trendPct ? `<span style="font-size:11px;color:var(--ink3)">최근 3개월 ${s.trendPct > 0 ? '+' : ''}${s.trendPct}%</span>` : ''}
+        </div>
+        <div style="font-size:10px;color:var(--ink4);margin-top:4px">
+          증가 +10% 초과 · 유지 ±10% 이내 · 감소 -10% 미만
+          <span style="color:var(--ink4);margin-left:4px">(최근 3개월 평균 vs 이전 3개월 평균)</span>
+        </div>
+      </div>
     </div>
     <div class="stab-row">
       <span class="stab-label">분배율 수준</span>
-      ${stabLevelBadge(s.level)}
-      ${annualRate !== '-' ? `<span style="font-size:11px;color:var(--ink3);margin-left:8px">연환산 ${annualRate}</span>` : ''}
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          ${stabLevelBadge(s.level)}
+          ${annualRate !== '-' ? `<span style="font-size:11px;color:var(--ink3)">연환산 ${annualRate}</span>` : ''}
+        </div>
+        <div style="font-size:10px;color:var(--ink4);margin-top:4px">
+          저분배율 ~4% · 중분배율 ~10% · 고분배율 ~15% · 초고분배율 15%+
+          <span style="color:var(--ink4);margin-left:4px">(연간 분배금 합계 / 현재 주가)</span>
+        </div>
+      </div>
     </div>
     <div class="comment-box">${autoComment(e)}</div>
   `;
