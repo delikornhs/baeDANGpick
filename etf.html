@@ -274,6 +274,51 @@ function updateCompareUI() {
   document.getElementById('goCmpBtn').style.display = list.length >= 2 ? '' : 'none';
 }
 
+// ── trend 데이터로 안정성 지표 클라이언트 계산 (etf_data.js에 stab 필드 없을 때 fallback) ──
+function computeStab(e) {
+  const trend = (e.trend || []).slice().sort((a,b) => a.ex_date < b.ex_date ? -1 : 1);
+  const now   = new Date();
+  const msBefore = days => new Date(now - days * 86400000).toISOString().slice(0,10);
+  const d6 = msBefore(182), d3 = msBefore(91);
+
+  const six   = trend.filter(t => t.ex_date >= d6).map(t => t.dist);
+  const rec3  = trend.filter(t => t.ex_date >= d3).map(t => t.dist);
+  const prev3 = trend.filter(t => t.ex_date >= d6 && t.ex_date < d3).map(t => t.dist);
+  const year  = trend.map(t => t.dist);
+
+  const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
+
+  // 안정성
+  let score = '', variation = 0;
+  if(six.length >= 2) {
+    const a = avg(six);
+    if(a > 0) {
+      variation = parseFloat(((Math.max(...six) - Math.min(...six)) / a * 100).toFixed(1));
+      score = variation <= 5 ? '매우 안정' : variation <= 10 ? '안정' : variation <= 20 ? '보통' : '주의';
+    }
+  } else if(six.length === 1) { score = '데이터 부족'; }
+
+  // 추세
+  let trendLabel = '', trendPct = 0;
+  if(rec3.length && prev3.length) {
+    const pa = avg(prev3);
+    if(pa > 0) {
+      trendPct = parseFloat(((avg(rec3) - pa) / pa * 100).toFixed(1));
+      trendLabel = trendPct > 5 ? '증가' : trendPct < -5 ? '감소' : '유지';
+    }
+  } else if(rec3.length) { trendLabel = '데이터 부족'; }
+
+  // 분배율 수준
+  const annualDist = year.reduce((a,b)=>a+b,0);
+  let level = '';
+  if(e.price > 0 && annualDist > 0) {
+    const r = annualDist / e.price * 100;
+    level = r < 4 ? '보수적' : r < 8 ? '일반적' : r < 15 ? '공격적' : '주의';
+  }
+
+  return { score, variation, trend: trendLabel, trendPct, level, annualDist };
+}
+
 // ── 안정성 badge ──
 function stabScoreBadge(score) {
   if(!score) return '<span class="stab-badge sb-keep">-</span>';
@@ -433,8 +478,8 @@ function render(e) {
     document.getElementById('distStats').innerHTML = '<span style="font-size:12px;color:var(--ink3)">이력 데이터 없음</span>';
   }
 
-  // 안정성
-  const s = e.stab || {};
+  // 안정성 — stab 필드 없으면 trend 데이터로 클라이언트 계산
+  const s = (e.stab && e.stab.score) ? e.stab : computeStab(e);
   const annualRate = e.price > 0 && s.annualDist > 0
     ? (s.annualDist / e.price * 100).toFixed(2) + '%' : '-';
   document.getElementById('stabContent').innerHTML = `

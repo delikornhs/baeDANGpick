@@ -140,6 +140,37 @@ const PALETTE = [
 ];
 const CHIP_CLS  = ['chip-0','chip-1','chip-2'];
 
+function computeStab(e) {
+  const trend = (e.trend || []).slice().sort((a,b) => a.ex_date < b.ex_date ? -1 : 1);
+  const now   = new Date();
+  const msBefore = days => new Date(now - days * 86400000).toISOString().slice(0,10);
+  const d6 = msBefore(182), d3 = msBefore(91);
+  const six   = trend.filter(t => t.ex_date >= d6).map(t => t.dist);
+  const rec3  = trend.filter(t => t.ex_date >= d3).map(t => t.dist);
+  const prev3 = trend.filter(t => t.ex_date >= d6 && t.ex_date < d3).map(t => t.dist);
+  const year  = trend.map(t => t.dist);
+  const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
+  let score = '', variation = 0;
+  if(six.length >= 2) {
+    const a = avg(six);
+    if(a > 0) {
+      variation = parseFloat(((Math.max(...six)-Math.min(...six))/a*100).toFixed(1));
+      score = variation<=5?'매우 안정':variation<=10?'안정':variation<=20?'보통':'주의';
+    }
+  } else if(six.length===1) score='데이터 부족';
+  let trendLabel='', trendPct=0;
+  if(rec3.length && prev3.length) {
+    const pa=avg(prev3);
+    if(pa>0){ trendPct=parseFloat(((avg(rec3)-pa)/pa*100).toFixed(1));
+      trendLabel=trendPct>5?'증가':trendPct<-5?'감소':'유지'; }
+  } else if(rec3.length) trendLabel='데이터 부족';
+  const annualDist=year.reduce((a,b)=>a+b,0);
+  let level='';
+  if(e.price>0&&annualDist>0){const r=annualDist/e.price*100;
+    level=r<4?'보수적':r<8?'일반적':r<15?'공격적':'주의';}
+  return {score,variation,trend:trendLabel,trendPct,level,annualDist};
+}
+
 function stabBadge(score) {
   if(!score) return '<span class="badge sb-keep">-</span>';
   const cls = {'매우 안정':'sb-great','안정':'sb-good','보통':'sb-mid','주의':'sb-warn','데이터 부족':'sb-keep'}[score]||'sb-keep';
@@ -179,6 +210,9 @@ function renderAll(etfs) {
 
   // ── 요약 박스 ──
   const byDist  = [...etfs].sort((a,b) => b.dist - a.dist)[0];
+  // stab 필드 없으면 클라이언트 계산으로 보완
+  etfs.forEach(e => { if(!e.stab||!e.stab.score) e.stab = computeStab(e); });
+
   const byStab  = etfs.filter(e=>e.stab&&e.stab.score).sort((a,b) => {
     const order = {'매우 안정':0,'안정':1,'보통':2,'주의':3};
     return (order[a.stab.score]||9) - (order[b.stab.score]||9);
