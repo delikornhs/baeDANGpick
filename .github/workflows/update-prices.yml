@@ -54,6 +54,7 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             git commit -m "chore: daily price update $(date -u +%Y-%m-%d)"
+            git pull --rebase origin master
             git push
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
