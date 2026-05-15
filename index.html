@@ -1686,6 +1686,7 @@ function goPg(p) {
 function openModal(isin) {
   const e=ALL_ETF.find(x=>x.isin===isin);
   if(!e) return;
+  gtag('event','etf_card_click',{etf_name:e.name,etf_code:e.code});
   const lb=lastBuy(e.ex), st=status(e);
 
   document.getElementById('mTtl').textContent=e.name;
@@ -1819,6 +1820,14 @@ function clearCalcEtf() {
   resetCalc();
 }
 
+function amtRange(v) {
+  if(v < 1000000)  return '100만 미만';
+  if(v < 5000000)  return '100만~500만';
+  if(v < 10000000) return '500만~1000만';
+  if(v < 30000000) return '1000만~3000만';
+  if(v < 50000000) return '3000만~5000만';
+  return '5000만 이상';
+}
 function calcResult() {
   const isin=document.getElementById('cEtf').value;
   const amtV=parseInt(document.getElementById('cAmt').value)||0;
@@ -1851,6 +1860,7 @@ function calcResult() {
   document.getElementById('rR').textContent=e.rate+'%';
   updateShareCard(e, qty, actual, total, mode);
   document.getElementById('calcShareBtns').style.display='flex';
+  gtag('event','calc_etf_select',{etf_name:e.name,etf_code:e.code,amount_range:amtRange(actual)});
 }
 function resetCalc(){
   ['rP','rFreq','rQ','rA','rD','rT','rR'].forEach(id=>document.getElementById(id).textContent='—');
@@ -1866,6 +1876,7 @@ document.getElementById('typeTabs').addEventListener('click',e=>{
   if(!e.target.classList.contains('ftab')) return;
   document.querySelectorAll('#typeTabs .ftab').forEach(b=>b.classList.remove('on'));
   e.target.classList.add('on'); typeF=e.target.dataset.v; applyFilter();
+  gtag('event','filter_click',{filter_type:'유형',filter_value:typeF});
 });
 document.getElementById('freqTabs').addEventListener('click',e=>{
   if(!e.target.classList.contains('ftab')) return;
@@ -1877,11 +1888,13 @@ document.getElementById('freqTabs').addEventListener('click',e=>{
   timingF='전체';
   document.querySelectorAll('#timingTabs .ftab').forEach((b,i)=>{b.classList.toggle('on',i===0);});
   applyFilter();
+  gtag('event','filter_click',{filter_type:'분배주기',filter_value:freqF});
 });
 document.getElementById('timingTabs').addEventListener('click',e=>{
   if(!e.target.classList.contains('ftab')) return;
   document.querySelectorAll('#timingTabs .ftab').forEach(b=>b.classList.remove('on'));
   e.target.classList.add('on'); timingF=e.target.dataset.v; applyFilter();
+  gtag('event','filter_click',{filter_type:'지급시기',filter_value:timingF});
 });
 
 document.getElementById('cAmt').addEventListener('input',()=>{document.getElementById('cQty').value='';calcResult();});
