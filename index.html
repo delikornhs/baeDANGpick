@@ -2070,7 +2070,6 @@ async function submitSubscribe() {
   try {
     await fetch(SUBSCRIBE_URL, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({email, source: 'bae-dang-pick', consented: true}),
       mode: 'no-cors'
     });
