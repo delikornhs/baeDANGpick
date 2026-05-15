@@ -694,10 +694,10 @@ def calc_stability_metrics(isin: str, history: dict, current_price: int = 0) -> 
         if avg > 0:
             variation = (max(six_dists) - min(six_dists)) / avg * 100
             result["stab_variation"] = round(variation, 1)
-            if   variation <= 5:  result["stab_score"] = "매우 안정"
-            elif variation <= 10: result["stab_score"] = "안정"
-            elif variation <= 20: result["stab_score"] = "보통"
-            else:                 result["stab_score"] = "주의"
+            if   variation <= 15: result["stab_score"] = "변동 적음"
+            elif variation <= 30: result["stab_score"] = "변동 보통"
+            elif variation <= 50: result["stab_score"] = "변동 큼"
+            else:                 result["stab_score"] = "변동 매우 큼"
     elif six_dists:
         result["stab_score"] = "데이터 부족"
 
@@ -708,19 +708,19 @@ def calc_stability_metrics(isin: str, history: dict, current_price: int = 0) -> 
         if p_avg > 0:
             chg = (r_avg - p_avg) / p_avg * 100
             result["trend_change_pct"] = round(chg, 1)
-            if   chg >  5: result["stab_trend"] = "증가"
-            elif chg < -5: result["stab_trend"] = "감소"
-            else:          result["stab_trend"] = "유지"
+            if   chg >  10: result["stab_trend"] = "증가"
+            elif chg < -10: result["stab_trend"] = "감소"
+            else:           result["stab_trend"] = "유지"
     elif recent3:
         result["stab_trend"] = "데이터 부족"
 
     # ③ 분배율 수준: 연환산 기준
     if current_price > 0 and result["annual_dist"] > 0:
         annual_rate = result["annual_dist"] / current_price * 100
-        if   annual_rate <  4:  result["stab_level"] = "보수적"
-        elif annual_rate <  8:  result["stab_level"] = "일반적"
-        elif annual_rate < 15:  result["stab_level"] = "공격적"
-        else:                   result["stab_level"] = "주의"
+        if   annual_rate <  4:  result["stab_level"] = "저분배율"
+        elif annual_rate < 10:  result["stab_level"] = "중분배율"
+        elif annual_rate < 15:  result["stab_level"] = "고분배율"
+        else:                   result["stab_level"] = "초고분배율"
 
     return result
 

@@ -294,7 +294,7 @@ function computeStab(e) {
     const a = avg(six);
     if(a > 0) {
       variation = parseFloat(((Math.max(...six) - Math.min(...six)) / a * 100).toFixed(1));
-      score = variation <= 5 ? '매우 안정' : variation <= 10 ? '안정' : variation <= 20 ? '보통' : '주의';
+      score = variation <= 15 ? '변동 적음' : variation <= 30 ? '변동 보통' : variation <= 50 ? '변동 큼' : '변동 매우 큼';
     }
   } else if(six.length === 1) { score = '데이터 부족'; }
 
@@ -304,7 +304,7 @@ function computeStab(e) {
     const pa = avg(prev3);
     if(pa > 0) {
       trendPct = parseFloat(((avg(rec3) - pa) / pa * 100).toFixed(1));
-      trendLabel = trendPct > 5 ? '증가' : trendPct < -5 ? '감소' : '유지';
+      trendLabel = trendPct > 10 ? '증가' : trendPct < -10 ? '감소' : '유지';
     }
   } else if(rec3.length) { trendLabel = '데이터 부족'; }
 
@@ -313,7 +313,7 @@ function computeStab(e) {
   let level = '';
   if(e.price > 0 && annualDist > 0) {
     const r = annualDist / e.price * 100;
-    level = r < 4 ? '보수적' : r < 8 ? '일반적' : r < 15 ? '공격적' : '주의';
+    level = r < 4 ? '저분배율' : r < 10 ? '중분배율' : r < 15 ? '고분배율' : '초고분배율';
   }
 
   return { score, variation, trend: trendLabel, trendPct, level, annualDist };
@@ -323,8 +323,8 @@ function computeStab(e) {
 function stabScoreBadge(score) {
   if(!score) return '<span class="stab-badge sb-keep">-</span>';
   const cls = {
-    '매우 안정': 'sb-great', '안정': 'sb-good',
-    '보통': 'sb-mid', '주의': 'sb-warn', '데이터 부족': 'sb-keep'
+    '변동 적음': 'sb-great', '변동 보통': 'sb-good',
+    '변동 큼': 'sb-mid', '변동 매우 큼': 'sb-warn', '데이터 부족': 'sb-keep'
   }[score] || 'sb-keep';
   return `<span class="stab-badge ${cls}">${score}</span>`;
 }
@@ -336,7 +336,7 @@ function stabTrendBadge(trend) {
 }
 function stabLevelBadge(level) {
   if(!level) return '<span class="stab-badge sb-keep">-</span>';
-  const cls = {'보수적':'sb-keep','일반적':'sb-good','공격적':'sb-mid','주의':'sb-warn'}[level] || 'sb-keep';
+  const cls = {'저분배율':'sb-keep','중분배율':'sb-good','고분배율':'sb-mid','초고분배율':'sb-warn'}[level] || 'sb-keep';
   return `<span class="stab-badge ${cls}">${level}</span>`;
 }
 
@@ -345,18 +345,18 @@ function autoComment(e) {
   const s = e.stab || {};
   const parts = [];
   if(s.score && s.score !== '데이터 부족') {
-    if(s.score === '매우 안정' || s.score === '안정')
-      parts.push(`분배금이 ${s.score}적으로 유지되고 있습니다.`);
-    else if(s.score === '보통')
-      parts.push(`분배금 변동이 다소 있는 편입니다.`);
-    else
-      parts.push(`분배금 변동폭이 커 주의가 필요합니다.`);
+    const scoreDesc = {
+      '변동 적음':    `최근 6개월 분배금 변동폭이 15% 이내로 비교적 일정하게 지급되었습니다.`,
+      '변동 보통':    `최근 6개월 분배금 변동폭이 15~30% 수준입니다.`,
+      '변동 큼':      `최근 6개월 분배금 변동폭이 30~50% 수준으로 월별 차이가 있습니다.`,
+      '변동 매우 큼': `최근 6개월 분배금 변동폭이 50%를 초과합니다.`,
+    };
+    if(scoreDesc[s.score]) parts.push(scoreDesc[s.score]);
   }
-  if(s.trend === '증가') parts.push(`최근 분배금이 증가 추세입니다.`);
-  else if(s.trend === '감소') parts.push(`최근 분배금이 감소 추세이므로 지속 확인이 필요합니다.`);
-  if(s.level === '공격적') parts.push(`연환산 분배율이 높은 공격적 분배 ETF입니다.`);
-  else if(s.level === '주의') parts.push(`분배율이 매우 높아 원금 손실 가능성을 고려해야 합니다.`);
-  else if(s.level === '보수적') parts.push(`분배율이 낮은 보수적 성향의 ETF입니다.`);
+  if(s.trend === '증가') parts.push(`최근 3개월 평균 분배금이 이전 3개월 대비 10% 이상 증가했습니다.`);
+  else if(s.trend === '감소') parts.push(`최근 3개월 평균 분배금이 이전 3개월 대비 10% 이상 감소했습니다.`);
+  const annualRate = e.price > 0 && s.annualDist > 0 ? (s.annualDist / e.price * 100).toFixed(1) : null;
+  if(annualRate) parts.push(`연환산 분배율은 약 ${annualRate}%입니다.`);
   if(!parts.length) return '분배금 데이터가 충분히 쌓이면 자동 평가가 표시됩니다.';
   return parts.join(' ');
 }
