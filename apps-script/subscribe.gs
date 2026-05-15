@@ -7,8 +7,9 @@
 // [배포] 기존 배포 URL 유지 → 배포 관리 → 연필 아이콘 → 버전 새버전으로 교체
 // ================================================================
 
-const SHEET_NAME  = '구독자';
-const SENDER_NAME = '배당픽';
+const SHEET_NAME        = '구독자';
+const SENDER_NAME       = '배당픽';
+const NEWSLETTER_SECRET = 'baeDangpick2026';
 
 // ── GET: 수신거부 처리 ──────────────────────────────────────────
 function doGet(e) {
@@ -87,7 +88,7 @@ function handleUnsubscribe(token) {
 
 // ── 뉴스레터 발송 (GitHub Actions 트리거) ──────────────────────
 function handleSendNewsletter(data) {
-  const secret = PropertiesService.getScriptProperties().getProperty('NEWSLETTER_SECRET');
+  const secret = NEWSLETTER_SECRET;
   if (!secret || data.secret !== secret) {
     return jsonResponse({ result: 'error', message: 'unauthorized' });
   }
