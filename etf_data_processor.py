@@ -42,8 +42,9 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 RAW_DIR.mkdir(parents=True, exist_ok=True)
 
 HISTORY_FILE = OUT_DIR / "history.json"
-LATEST_FILE = OUT_DIR / "latest.json"
-JS_FILE = OUT_DIR / "etf_data.js"
+LATEST_FILE  = OUT_DIR / "latest.json"
+JS_FILE      = OUT_DIR / "etf_data.js"
+ETF_META_FILE = OUT_DIR / "etf_meta.json"
 
 
 # ── XLS 파싱 (KIND HTML-as-XLS 형식) ──
@@ -438,12 +439,28 @@ def build_js(latest: list, price_date: str = ""):
             name_esc = e["name"].replace("'", "\\'").replace('"', '&quot;')
             trend_js = json.dumps(e.get("trend", []), ensure_ascii=False)
             current_js = "true" if e.get("current") else "false"
+            stab_js = json.dumps({
+                "score":     e.get("stab_score",     ""),
+                "variation": e.get("stab_variation", 0),
+                "trend":     e.get("stab_trend",     ""),
+                "trendPct":  e.get("trend_change_pct", 0),
+                "level":     e.get("stab_level",     ""),
+                "annualDist":e.get("annual_dist",    0),
+            }, ensure_ascii=False)
             items.append(
                 f"{{isin:'{e['isin']}',code:'{e['code']}',name:'{name_esc}',"
-                f"brand:'{e['brand']}',type:'{e['type']}',freq:'{e['freq']}',timing:'{e.get('timing','')}', "
+                f"brand:'{e['brand']}',type:'{e['type']}',freq:'{e['freq']}',"
+                f"timing:'{e.get('timing','')}', "
                 f"ex:'{e['ex_date']}',pay:'{e['pay_date']}',"
                 f"dist:{e['dist']},price:{e['price']},rate:{e['rate']},"
-                f"current:{current_js},trend:{trend_js}}}"
+                f"indexName:'{e.get('index_name','')}',listedDate:'{e.get('listed_date','')}', "
+                f"ret1m:{e.get('return_1m',0)},ret3m:{e.get('return_3m',0)},"
+                f"ret6m:{e.get('return_6m',0)},ret1y:{e.get('return_1y',0)},"
+                f"retListed:{e.get('return_listed',0)},"
+                f"tret1m:{e.get('total_return_1m',0)},tret3m:{e.get('total_return_3m',0)},"
+                f"tret6m:{e.get('total_return_6m',0)},tret1y:{e.get('total_return_1y',0)},"
+                f"tretListed:{e.get('total_return_listed',0)},"
+                f"current:{current_js},trend:{trend_js},stab:{stab_js}}}"
             )
         return "const ETF_ALL = [\n" + ",\n".join(items) + "\n];"
 
@@ -500,6 +517,212 @@ def fetch_naver_historical_price(code: str, target_date: str, headers: dict) -> 
     except Exception:
         pass
     return 0
+
+
+def fetch_etf_meta(codes: list) -> dict:
+    """
+    네이버 금융 ETF 페이지에서 기초지수명·상장일 조회 후 etf_meta.json 캐시.
+    이미 캐시된 종목은 재조회하지 않음.
+    """
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "Accept": "text/html,application/xhtml+xml",
+        "Accept-Language": "ko-KR,ko;q=0.9",
+        "Referer": "https://finance.naver.com/",
+    }
+
+    # 기존 캐시 로드
+    meta: dict = {}
+    if ETF_META_FILE.exists():
+        with open(ETF_META_FILE, encoding="utf-8") as f:
+            meta = json.load(f)
+
+    missing = [c for c in codes if c not in meta or not meta[c].get("listed_date")]
+    if not missing:
+        return meta
+
+    print(f"\n메타 데이터 조회: {len(missing)}개 종목 (신규/미완성)")
+
+    for i, code in enumerate(missing):
+        try:
+            url = f"https://finance.naver.com/item/etf.nhn?code={code}"
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                content = resp.read().decode("utf-8", errors="replace")
+
+            # 기초지수 파싱
+            idx_m = re.search(
+                r'기초지수\s*(?:<[^>]+>)+\s*(?:<a[^>]*>)?([^<\n]{2,80})(?:</a>)?',
+                content)
+            # 상장일 파싱  (2002.10.14 형식)
+            date_m = re.search(
+                r'상장일\s*(?:<[^>]+>)+\s*([0-9]{4}[.\-][0-9]{2}[.\-][0-9]{2})',
+                content)
+
+            index_name = idx_m.group(1).strip() if idx_m else ""
+            listed_raw = date_m.group(1).strip() if date_m else ""
+            listed_date = listed_raw.replace(".", "-") if listed_raw else ""
+
+            meta[code] = {"index_name": index_name, "listed_date": listed_date}
+        except Exception:
+            meta[code] = {"index_name": "", "listed_date": ""}
+
+        time.sleep(0.2)
+        if (i + 1) % 50 == 0:
+            print(f"  진행: {i+1}/{len(missing)}")
+
+    with open(ETF_META_FILE, "w", encoding="utf-8") as f:
+        json.dump(meta, f, ensure_ascii=False, indent=2)
+    print(f"💾 메타 캐시 저장: {ETF_META_FILE}")
+    return meta
+
+
+def fetch_weekly_price_history(code: str, weeks: int, headers: dict) -> list:
+    """
+    네이버 fchart API로 주간 종가 이력 반환.
+    Returns: [(date_str 'YYYY-MM-DD', close_price int), ...] ascending
+    """
+    url = (f"https://fchart.stock.naver.com/sise.nhn"
+           f"?symbol={code}&timeframe=week&count={weeks}&requestType=0")
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            content = resp.read().decode("euc-kr", errors="replace")
+        result = []
+        for m in re.finditer(r'<item data="(\d{8})\|[^|]+\|[^|]+\|[^|]+\|(\d+)\|', content):
+            d = m.group(1)
+            price = int(m.group(2))
+            if price > 0:
+                result.append((f"{d[:4]}-{d[4:6]}-{d[6:]}", price))
+        return sorted(result)
+    except Exception:
+        return []
+
+
+def find_price_at_or_before(weekly: list, target_date: str) -> int:
+    """weekly 이력에서 target_date 이하 가장 최근 종가 반환."""
+    best = 0
+    for date_str, price in weekly:
+        if date_str <= target_date:
+            best = price
+        else:
+            break
+    return best
+
+
+def calc_returns(item: dict, weekly: list, history: dict) -> dict:
+    """
+    주간 이력으로 주가 수익률 및 분배금 포함 총수익률 계산.
+    periods: 1M(30일) / 3M(91일) / 6M(182일) / 1Y(365일)
+    """
+    current_price = item.get("price", 0)
+    if not current_price or not weekly:
+        return {}
+
+    isin = item["isin"]
+    now  = datetime.now()
+    ret  = {}
+
+    # 상장 이후 (가장 오래된 weekly 데이터 기준)
+    if weekly:
+        oldest_date, oldest_price = weekly[0]
+        if oldest_price > 0:
+            ret["price_listed"] = oldest_price
+            pr = round((current_price - oldest_price) / oldest_price * 100, 2)
+            ret["return_listed"] = pr
+            dist_sum = 0
+            if isin in history:
+                dist_sum = sum(
+                    rec["dist"] for ex_k, rec in history[isin].items()
+                    if ex_k >= oldest_date
+                )
+            ret["total_return_listed"] = round(
+                (current_price - oldest_price + dist_sum) / oldest_price * 100, 2)
+
+    for label, days in [("1m", 30), ("3m", 91), ("6m", 182), ("1y", 365)]:
+        target = (now - timedelta(days=days)).strftime("%Y-%m-%d")
+        past_price = find_price_at_or_before(weekly, target)
+        if not past_price:
+            continue
+        ret[f"price_{label}"] = past_price
+        pr = round((current_price - past_price) / past_price * 100, 2)
+        ret[f"return_{label}"] = pr
+        dist_sum = 0
+        if isin in history:
+            dist_sum = sum(
+                rec["dist"] for ex_k, rec in history[isin].items()
+                if ex_k >= target
+            )
+        ret[f"total_return_{label}"] = round(
+            (current_price - past_price + dist_sum) / past_price * 100, 2)
+
+    return ret
+
+
+def calc_stability_metrics(isin: str, history: dict, current_price: int = 0) -> dict:
+    """
+    분배금 안정성 지표 계산.
+    - stab_score  : 매우 안정 / 안정 / 보통 / 주의 / 데이터 부족
+    - stab_trend  : 증가 / 유지 / 감소 / 데이터 부족
+    - stab_level  : 보수적 / 일반적 / 공격적 / 주의
+    """
+    result = {
+        "stab_score": "", "stab_variation": 0.0,
+        "stab_trend": "", "trend_change_pct": 0.0,
+        "stab_level": "", "annual_dist": 0,
+    }
+    if isin not in history:
+        return result
+
+    records = history[isin]
+    now_str   = datetime.now().strftime("%Y-%m-%d")
+    year_ago  = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
+    six_ago   = (datetime.now() - timedelta(days=182)).strftime("%Y-%m-%d")
+    three_ago = (datetime.now() - timedelta(days=91)).strftime("%Y-%m-%d")
+
+    sorted_keys = sorted(records.keys())
+    year_dists  = [records[k]["dist"] for k in sorted_keys if k >= year_ago]
+    six_dists   = [records[k]["dist"] for k in sorted_keys if k >= six_ago]
+    recent3     = [records[k]["dist"] for k in sorted_keys if k >= three_ago]
+    prev3       = [records[k]["dist"] for k in sorted_keys if six_ago <= k < three_ago]
+
+    result["annual_dist"] = sum(year_dists)
+
+    # ① 안정성: 최근 6개월 변동폭 / 평균
+    if len(six_dists) >= 2:
+        avg = sum(six_dists) / len(six_dists)
+        if avg > 0:
+            variation = (max(six_dists) - min(six_dists)) / avg * 100
+            result["stab_variation"] = round(variation, 1)
+            if   variation <= 5:  result["stab_score"] = "매우 안정"
+            elif variation <= 10: result["stab_score"] = "안정"
+            elif variation <= 20: result["stab_score"] = "보통"
+            else:                 result["stab_score"] = "주의"
+    elif six_dists:
+        result["stab_score"] = "데이터 부족"
+
+    # ② 추세: 최근 3개월 vs 이전 3개월 평균
+    if recent3 and prev3:
+        r_avg = sum(recent3) / len(recent3)
+        p_avg = sum(prev3)  / len(prev3)
+        if p_avg > 0:
+            chg = (r_avg - p_avg) / p_avg * 100
+            result["trend_change_pct"] = round(chg, 1)
+            if   chg >  5: result["stab_trend"] = "증가"
+            elif chg < -5: result["stab_trend"] = "감소"
+            else:          result["stab_trend"] = "유지"
+    elif recent3:
+        result["stab_trend"] = "데이터 부족"
+
+    # ③ 분배율 수준: 연환산 기준
+    if current_price > 0 and result["annual_dist"] > 0:
+        annual_rate = result["annual_dist"] / current_price * 100
+        if   annual_rate <  4:  result["stab_level"] = "보수적"
+        elif annual_rate <  8:  result["stab_level"] = "일반적"
+        elif annual_rate < 15:  result["stab_level"] = "공격적"
+        else:                   result["stab_level"] = "주의"
+
+    return result
 
 
 def fetch_naver_prices(codes: list) -> tuple:
@@ -637,7 +860,22 @@ if __name__ == "__main__":
 
     args = sys.argv[1:]
 
-    # --prices-only: latest.json 기준 종가만 업데이트
+    # --fetch-meta: 기초지수명·상장일 캐시 갱신 (수동 또는 주 1회 실행 권장)
+    if "--fetch-meta" in args:
+        if not LATEST_FILE.exists():
+            print(f"❌ {LATEST_FILE} 없음.")
+            exit(1)
+        with open(LATEST_FILE, encoding="utf-8") as f:
+            latest = json.load(f)
+        codes = list({item["code"] for item in latest})
+        # 강제 재조회를 위해 기존 캐시 초기화
+        if ETF_META_FILE.exists():
+            ETF_META_FILE.unlink()
+        fetch_etf_meta(codes)
+        print("✅ 메타 데이터 갱신 완료")
+        exit(0)
+
+    # --prices-only: 종가 + 수익률 + 안정성 지표 업데이트
     if "--prices-only" in args:
         if not LATEST_FILE.exists():
             print(f"❌ {LATEST_FILE} 없음. 먼저 전체 실행하세요.")
@@ -646,14 +884,60 @@ if __name__ == "__main__":
         with open(LATEST_FILE, encoding="utf-8") as f:
             latest = json.load(f)
 
+        # history.json 로드 (총수익률·안정성 계산에 필요)
+        history_for_returns: dict = {}
+        if HISTORY_FILE.exists():
+            with open(HISTORY_FILE, encoding="utf-8") as f:
+                history_for_returns = json.load(f)
+
         codes = list({item["code"] for item in latest})
         price_map, price_date = fetch_naver_prices(codes)
 
-        # 현재 종가만 price 필드에 반영 (rate는 기존 공시일자 기준 값 유지)
+        # 현재 종가 반영
         for item in latest:
             p = price_map.get(item["code"]) or price_map.get(item["isin"])
             if p and p > 0:
                 item["price"] = p
+
+        # 주간 이력 조회 → 수익률 계산 (55주 ≈ 1년 + 여유)
+        hist_headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "Referer": "https://finance.naver.com/",
+        }
+        print(f"\n{'='*50}")
+        print("📈 주간 이력 조회 및 수익률 계산")
+        print(f"{'='*50}")
+        ret_ok = ret_fail = 0
+        for i, item in enumerate(latest):
+            code    = item["code"]
+            weekly  = fetch_weekly_price_history(code, 55, hist_headers)
+            if weekly:
+                rets = calc_returns(item, weekly, history_for_returns)
+                for k, v in rets.items():
+                    item[k] = v
+                ret_ok += 1
+            else:
+                ret_fail += 1
+            time.sleep(0.08)
+            if (i + 1) % 100 == 0:
+                print(f"  진행: {i+1}/{len(latest)} (성공 {ret_ok}개)")
+
+        print(f"수익률 계산: {ret_ok}개 성공 / {ret_fail}개 실패")
+
+        # 안정성 지표 계산
+        for item in latest:
+            stab = calc_stability_metrics(
+                item["isin"], history_for_returns, item.get("price", 0))
+            item.update(stab)
+
+        # 메타 데이터 병합 (기초지수, 상장일)
+        if ETF_META_FILE.exists():
+            with open(ETF_META_FILE, encoding="utf-8") as f:
+                meta_cache = json.load(f)
+            for item in latest:
+                m = meta_cache.get(item["code"], {})
+                item["index_name"]  = m.get("index_name",  "")
+                item["listed_date"] = m.get("listed_date", "")
 
         with open(LATEST_FILE, "w", encoding="utf-8") as f:
             json.dump(latest, f, ensure_ascii=False, indent=2)
@@ -661,7 +945,7 @@ if __name__ == "__main__":
         build_js(latest, price_date)
         inject_html()
 
-        print("\n✅ 종가 업데이트 완료!")
+        print("\n✅ 종가·수익률·안정성 업데이트 완료!")
         print(f"   - price_date : {price_date}")
         print(f"   - etf_data.js: {JS_FILE}")
         exit(0)

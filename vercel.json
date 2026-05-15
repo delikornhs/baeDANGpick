@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/etf/:code", "destination": "/etf.html?code=:code" },
+    { "source": "/compare",   "destination": "/compare.html" }
+  ]
+}

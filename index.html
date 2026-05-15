@@ -1693,7 +1693,7 @@ function renderGrid() {
   if(!sl.length){document.getElementById('etfGrid').innerHTML='<div class="empty-msg">검색 결과가 없습니다</div>';return;}
   document.getElementById('etfGrid').innerHTML=sl.map(e=>{
     const st=status(e), lb=lastBuy(e.ex);
-    return `<div class="etf-card" onclick="openModal('${e.isin}')">
+    return `<div class="etf-card" onclick="location.href='/etf/${e.code}'">
       <span class="status-pill ${st.cls}">${st.label}</span>
       <div class="card-top">
         <span class="card-brand">${e.brand}</span>

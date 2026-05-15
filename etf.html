@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETF 상세 - 배당픽</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="/data/output/etf_data.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f7f7f4;--white:#fff;--ink:#1a1a18;--ink2:#4a4a45;--ink3:#9a9a93;--ink4:#d4d4cc;
+  --accent:#1d6b38;--accent-bg:#edf7f1;--accent-mid:#6cba8b;
+  --blue:#1a56db;--blue-bg:#eff6ff;
+  --red:#c0392b;--red-bg:#fef2f2;
+  --border:#e8e8e2;--radius:10px;
+  --shadow:0 1px 4px rgba(0,0,0,.07);
+}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",sans-serif;min-height:100vh;line-height:1.6}
+/* ── nav ── */
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200}
+.nav-inner{max-width:1100px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:15px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--ink)}
+.logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.breadcrumb{font-size:12px;color:var(--ink3);display:flex;align-items:center;gap:4px}
+.breadcrumb a{color:var(--ink3);text-decoration:none}
+.breadcrumb a:hover{color:var(--ink)}
+/* ── layout ── */
+.wrap{max-width:1100px;margin:0 auto;padding:28px 20px 80px}
+.back-btn{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--ink3);text-decoration:none;margin-bottom:16px;transition:color .15s}
+.back-btn:hover{color:var(--ink)}
+/* ── header ── */
+.etf-header{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px}
+.etf-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.etf-name{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px;line-height:1.3}
+.etf-badges{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.badge{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;border:1px solid}
+.badge-brand{background:var(--accent-bg);color:var(--accent);border-color:#c5e8d2}
+.badge-type{background:#f0f4ff;color:#4361ee;border-color:#c7d5ff}
+.badge-freq{background:#fff8e1;color:#a0522d;border-color:#f5dfa0}
+.badge-code{background:var(--bg);color:var(--ink3);border-color:var(--border);font-family:"DM Mono",monospace}
+.compare-header-btn{flex-shrink:0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+/* ── grid ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid2.left-wide{grid-template-columns:1.1fr 0.9fr}
+@media(max-width:700px){.grid2,.grid2.left-wide{grid-template-columns:1fr}}
+/* ── card ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px}
+.card-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.card-title::before{content:'';display:inline-block;width:3px;height:14px;background:var(--accent);border-radius:2px}
+/* ── info rows ── */
+.info-row{display:flex;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.info-row:last-child{border-bottom:none}
+.info-label{font-size:12px;color:var(--ink3);width:90px;flex-shrink:0}
+.info-val{font-size:13px;color:var(--ink);font-weight:500;flex:1}
+.info-val.mono{font-family:"DM Mono",monospace}
+.info-val.green{color:var(--accent)}
+/* ── schedule ── */
+.sched-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sched-box{background:var(--bg);border-radius:8px;padding:12px 14px}
+.sched-box.highlight{background:var(--accent-bg);border:1px solid #c5e8d2}
+.sched-label{font-size:11px;color:var(--ink3);margin-bottom:4px}
+.sched-val{font-size:14px;font-weight:700;color:var(--ink);font-family:"DM Mono",monospace}
+.sched-box.highlight .sched-val{color:var(--accent)}
+.dist-row{display:flex;gap:10px;margin-top:10px}
+.dist-box{flex:1;background:var(--accent-bg);border-radius:8px;padding:12px 14px;text-align:center}
+.dist-box .sched-label{text-align:center}
+.dist-box .sched-val{font-size:18px;color:var(--accent)}
+/* ── returns table ── */
+.ret-table{width:100%;border-collapse:collapse;font-size:12px}
+.ret-table th{background:var(--bg);color:var(--ink3);font-weight:600;padding:8px 10px;text-align:center;border-bottom:1px solid var(--border)}
+.ret-table th:first-child{text-align:left}
+.ret-table td{padding:9px 10px;text-align:center;border-bottom:1px solid var(--border)}
+.ret-table td:first-child{text-align:left;color:var(--ink3);font-size:11px}
+.ret-table tr:last-child td{border-bottom:none}
+.pos{color:var(--accent);font-weight:700}
+.neg{color:var(--red);font-weight:700}
+.na{color:var(--ink4)}
+/* ── distribution chart ── */
+.chart-wrap{position:relative;height:160px}
+.dist-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.ds-box{background:var(--bg);border-radius:6px;padding:8px 10px;text-align:center}
+.ds-label{font-size:10px;color:var(--ink3);margin-bottom:3px}
+.ds-val{font-size:13px;font-weight:700;color:var(--ink)}
+/* ── stability ── */
+.stab-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.stab-row:last-child{border-bottom:none}
+.stab-label{font-size:12px;color:var(--ink3);width:90px;flex-shrink:0}
+.stab-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.sb-great{background:#dcfce7;color:#166534}
+.sb-good {background:var(--accent-bg);color:var(--accent)}
+.sb-mid  {background:#fff8e1;color:#92400e}
+.sb-warn {background:var(--red-bg);color:var(--red)}
+.sb-up   {background:#eff6ff;color:#1d4ed8}
+.sb-keep {background:var(--bg);color:var(--ink3);border:1px solid var(--border)}
+.sb-down {background:var(--red-bg);color:var(--red)}
+.comment-box{background:var(--accent-bg);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:12px 14px;font-size:12px;color:var(--ink2);line-height:1.7;margin-top:12px}
+/* ── compare buttons ── */
+.compare-section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:20px}
+.compare-list{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.compare-chip{display:inline-flex;align-items:center;gap:6px;background:var(--accent-bg);color:var(--accent);border:1px solid #c5e8d2;border-radius:20px;font-size:12px;font-weight:500;padding:4px 12px}
+.compare-chip button{background:none;border:none;cursor:pointer;color:var(--accent);font-size:14px;line-height:1;padding:0 0 0 2px}
+.compare-empty{font-size:12px;color:var(--ink3)}
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;text-decoration:none;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-outline{background:var(--white);color:var(--accent);border:1.5px solid var(--accent)}
+.btn-gray{background:var(--bg);color:var(--ink2);border:1px solid var(--border)}
+.btn-sm{padding:7px 14px;font-size:12px}
+/* ── footer ── */
+footer{text-align:center;padding:24px 20px;font-size:12px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8}
+footer a{color:var(--ink3);text-underline-offset:2px}
+/* ── error ── */
+.error-wrap{text-align:center;padding:80px 20px}
+.error-wrap h2{font-size:20px;color:var(--ink3);margin-bottom:8px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-mark">₩</div>배당픽</a>
+    <div class="breadcrumb">
+      <a href="/">홈</a><span>›</span><span id="bcName">ETF 상세</span>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="main" style="display:none">
+  <a href="/" class="back-btn">← 목록으로</a>
+
+  <!-- 헤더 -->
+  <div class="etf-header">
+    <div class="etf-header-top">
+      <div>
+        <div class="etf-name" id="hName"></div>
+        <div class="etf-badges" id="hBadges"></div>
+      </div>
+      <div class="compare-header-btn">
+        <button class="btn btn-outline btn-sm" onclick="toggleCompare()">
+          <span id="cmpBtnTxt">비교 목록에 추가</span>
+        </button>
+        <a id="goCmpBtn" href="#" class="btn btn-primary btn-sm" style="display:none" onclick="goCompare()">비교 페이지로 →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 좌/우 2열 -->
+  <div class="grid2 left-wide">
+    <!-- 좌 -->
+    <div>
+      <!-- 기본 정보 -->
+      <div class="card">
+        <div class="card-title">기본 정보</div>
+        <div id="basicInfo"></div>
+      </div>
+
+      <!-- 이번달 분배 일정 -->
+      <div class="card">
+        <div class="card-title">이번달 분배 일정</div>
+        <div class="sched-grid" id="schedGrid"></div>
+        <div class="dist-row" id="distRow"></div>
+      </div>
+
+      <!-- 수익률 -->
+      <div class="card">
+        <div class="card-title">수익률</div>
+        <table class="ret-table" id="retTable">
+          <thead>
+            <tr>
+              <th></th>
+              <th>1개월</th>
+              <th>3개월</th>
+              <th>6개월</th>
+              <th>1년</th>
+              <th>상장이후</th>
+            </tr>
+          </thead>
+          <tbody id="retBody"></tbody>
+        </table>
+        <p style="font-size:10px;color:var(--ink4);margin-top:8px">* 수익률은 매일 장 마감 후 업데이트됩니다. 상장이후는 최대 1년 주간 데이터 기준입니다.</p>
+      </div>
+    </div>
+
+    <!-- 우 -->
+    <div>
+      <!-- 분배금 히스토리 -->
+      <div class="card">
+        <div class="card-title">분배금 히스토리</div>
+        <div class="chart-wrap"><canvas id="distChart"></canvas></div>
+        <div class="dist-stats" id="distStats"></div>
+      </div>
+
+      <!-- 분배금 안정성 -->
+      <div class="card">
+        <div class="card-title">분배금 안정성</div>
+        <div id="stabContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 에러 -->
+<div class="error-wrap" id="errWrap" style="display:none">
+  <h2>ETF를 찾을 수 없습니다</h2>
+  <p style="color:var(--ink3);font-size:13px;margin-bottom:20px">종목코드를 확인해 주세요.</p>
+  <a href="/" class="btn btn-primary">목록으로 돌아가기</a>
+</div>
+
+<footer>
+  <a href="/">배당픽 홈으로</a> &nbsp;·&nbsp; <a href="/privacy.html">개인정보처리방침</a><br>
+  본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+// ── 유틸 ──
+const comma = n => n == null ? '-' : Number(n).toLocaleString('ko-KR');
+const fd    = s => {
+  if(!s) return '-';
+  const [y,m,d] = s.split('-');
+  return `${parseInt(m)}월 ${parseInt(d)}일`;
+};
+const retCls = v => {
+  if(v == null || v === 0) return 'na';
+  return v > 0 ? 'pos' : 'neg';
+};
+const retStr = v => {
+  if(v == null || v === 0) return '-';
+  return (v > 0 ? '+' : '') + v.toFixed(2) + '%';
+};
+
+function prevBizDay(dateStr) {
+  if(!dateStr) return '';
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() - 1);
+  while(d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() - 1);
+  return d.toISOString().slice(0, 10);
+}
+
+// ── 비교 목록 관리 ──
+function getCompareList() {
+  return JSON.parse(localStorage.getItem('compareList') || '[]');
+}
+function setCompareList(arr) {
+  localStorage.setItem('compareList', JSON.stringify(arr.slice(0,3)));
+}
+
+let ETF = null;
+
+function toggleCompare() {
+  const code = ETF.code;
+  let list = getCompareList();
+  if(list.includes(code)) {
+    list = list.filter(c => c !== code);
+    setCompareList(list);
+  } else {
+    if(list.length >= 3) { alert('최대 3개까지 비교할 수 있습니다.'); return; }
+    list.push(code);
+    setCompareList(list);
+  }
+  updateCompareUI();
+}
+
+function goCompare() {
+  const list = getCompareList();
+  if(list.length < 2) { alert('비교할 ETF를 2개 이상 선택하세요.'); return; }
+  location.href = '/compare?etf=' + list.join(',');
+}
+
+function updateCompareUI() {
+  const list = getCompareList();
+  const inList = list.includes(ETF.code);
+  document.getElementById('cmpBtnTxt').textContent = inList ? '비교 목록에서 제거' : '비교 목록에 추가';
+  document.getElementById('goCmpBtn').style.display = list.length >= 2 ? '' : 'none';
+}
+
+// ── 안정성 badge ──
+function stabScoreBadge(score) {
+  if(!score) return '<span class="stab-badge sb-keep">-</span>';
+  const cls = {
+    '매우 안정': 'sb-great', '안정': 'sb-good',
+    '보통': 'sb-mid', '주의': 'sb-warn', '데이터 부족': 'sb-keep'
+  }[score] || 'sb-keep';
+  return `<span class="stab-badge ${cls}">${score}</span>`;
+}
+function stabTrendBadge(trend) {
+  if(!trend) return '<span class="stab-badge sb-keep">-</span>';
+  const cls = {'증가':'sb-up','유지':'sb-keep','감소':'sb-down','데이터 부족':'sb-keep'}[trend] || 'sb-keep';
+  const icon = {'증가':'↑','유지':'→','감소':'↓'}[trend] || '';
+  return `<span class="stab-badge ${cls}">${icon} ${trend}</span>`;
+}
+function stabLevelBadge(level) {
+  if(!level) return '<span class="stab-badge sb-keep">-</span>';
+  const cls = {'보수적':'sb-keep','일반적':'sb-good','공격적':'sb-mid','주의':'sb-warn'}[level] || 'sb-keep';
+  return `<span class="stab-badge ${cls}">${level}</span>`;
+}
+
+// ── 한줄 평가 ──
+function autoComment(e) {
+  const s = e.stab || {};
+  const parts = [];
+  if(s.score && s.score !== '데이터 부족') {
+    if(s.score === '매우 안정' || s.score === '안정')
+      parts.push(`분배금이 ${s.score}적으로 유지되고 있습니다.`);
+    else if(s.score === '보통')
+      parts.push(`분배금 변동이 다소 있는 편입니다.`);
+    else
+      parts.push(`분배금 변동폭이 커 주의가 필요합니다.`);
+  }
+  if(s.trend === '증가') parts.push(`최근 분배금이 증가 추세입니다.`);
+  else if(s.trend === '감소') parts.push(`최근 분배금이 감소 추세이므로 지속 확인이 필요합니다.`);
+  if(s.level === '공격적') parts.push(`연환산 분배율이 높은 공격적 분배 ETF입니다.`);
+  else if(s.level === '주의') parts.push(`분배율이 매우 높아 원금 손실 가능성을 고려해야 합니다.`);
+  else if(s.level === '보수적') parts.push(`분배율이 낮은 보수적 성향의 ETF입니다.`);
+  if(!parts.length) return '분배금 데이터가 충분히 쌓이면 자동 평가가 표시됩니다.';
+  return parts.join(' ');
+}
+
+// ── 메인 렌더 ──
+function render(e) {
+  ETF = e;
+  document.title = e.name + ' - 배당픽';
+  document.getElementById('bcName').textContent = e.name;
+
+  // 헤더
+  document.getElementById('hName').textContent = e.name;
+  document.getElementById('hBadges').innerHTML =
+    `<span class="badge badge-brand">${e.brand}</span>` +
+    `<span class="badge badge-type">${e.type || '기타'}</span>` +
+    `<span class="badge badge-freq">${e.freq}</span>` +
+    `<span class="badge badge-code">${e.code}</span>`;
+
+  // 기본 정보
+  const indexName  = e.indexName  || '-';
+  const listedDate = e.listedDate || '-';
+  document.getElementById('basicInfo').innerHTML = `
+    <div class="info-row"><span class="info-label">운용사</span><span class="info-val">${e.brand}</span></div>
+    <div class="info-row"><span class="info-label">기초지수</span><span class="info-val">${indexName}</span></div>
+    <div class="info-row"><span class="info-label">상장일</span><span class="info-val mono">${listedDate}</span></div>
+    <div class="info-row"><span class="info-label">분배 주기</span><span class="info-val green">${e.freq}</span></div>
+    <div class="info-row"><span class="info-label">전날 종가</span><span class="info-val mono">${comma(e.price)}원</span></div>
+  `;
+
+  // 분배 일정
+  const lb  = prevBizDay(e.ex);
+  const ex  = e.ex  || '-';
+  const pay = e.pay || '-';
+  document.getElementById('schedGrid').innerHTML = `
+    <div class="sched-box highlight">
+      <div class="sched-label">🛒 최종 매수일</div>
+      <div class="sched-val">${fd(lb)}</div>
+    </div>
+    <div class="sched-box">
+      <div class="sched-label">📉 배당락일</div>
+      <div class="sched-val">${fd(ex)}</div>
+    </div>
+    <div class="sched-box">
+      <div class="sched-label">📋 기준일</div>
+      <div class="sched-val">${fd(ex)}</div>
+    </div>
+    <div class="sched-box">
+      <div class="sched-label">💸 지급일</div>
+      <div class="sched-val">${fd(pay)}</div>
+    </div>
+  `;
+  document.getElementById('distRow').innerHTML = `
+    <div class="dist-box">
+      <div class="sched-label">주당 분배금</div>
+      <div class="sched-val">${comma(e.dist)}원</div>
+    </div>
+    <div class="dist-box">
+      <div class="sched-label">이번달 분배율</div>
+      <div class="sched-val">${e.rate}%</div>
+    </div>
+  `;
+
+  // 수익률 표
+  const periods = ['1m','3m','6m','1y','listed'];
+  const priceRow = `<tr><td>주가 수익률</td>${periods.map(p=>{
+    const v = e[p==='listed'?'retListed':`ret${p.charAt(0).toUpperCase()+p.slice(1)}`];
+    const cls = retCls(v), str = retStr(v);
+    return `<td class="${cls}">${str}</td>`;
+  }).join('')}</tr>`;
+  const totalRow = `<tr><td>총수익률 (분배금 포함)</td>${periods.map(p=>{
+    const v = e[p==='listed'?'tretListed':`tret${p.charAt(0).toUpperCase()+p.slice(1)}`];
+    const cls = retCls(v), str = retStr(v);
+    return `<td class="${cls}">${str}</td>`;
+  }).join('')}</tr>`;
+  document.getElementById('retBody').innerHTML = priceRow + totalRow;
+
+  // 분배금 히스토리 차트
+  const trend = (e.trend || []).slice(-12);
+  if(trend.length) {
+    const labels = trend.map(t => {
+      const m = parseInt(t.ex_date.slice(5,7));
+      const y = t.ex_date.slice(2,4);
+      return `${y}'${m}월`;
+    });
+    const vals = trend.map(t => t.dist);
+    const avg  = Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+    const ctx  = document.getElementById('distChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          data: vals,
+          backgroundColor: vals.map(v => v >= avg ? '#1d6b38' : '#6cba8b'),
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false },
+          tooltip: { callbacks: { label: ctx => comma(ctx.raw) + '원' } } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#9a9a93' } },
+          y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 }, color: '#9a9a93',
+            callback: v => comma(v) + '원' } }
+        }
+      }
+    });
+
+    const max = Math.max(...vals), min = Math.min(...vals);
+    const variation = avg > 0 ? ((max - min) / avg * 100).toFixed(1) : '-';
+    document.getElementById('distStats').innerHTML = `
+      <div class="ds-box"><div class="ds-label">평균</div><div class="ds-val">${comma(avg)}원</div></div>
+      <div class="ds-box"><div class="ds-label">최고</div><div class="ds-val">${comma(max)}원</div></div>
+      <div class="ds-box"><div class="ds-label">최저</div><div class="ds-val">${comma(min)}원</div></div>
+      <div class="ds-box"><div class="ds-label">변동폭</div><div class="ds-val">${variation}%</div></div>
+    `;
+  } else {
+    document.getElementById('distStats').innerHTML = '<span style="font-size:12px;color:var(--ink3)">이력 데이터 없음</span>';
+  }
+
+  // 안정성
+  const s = e.stab || {};
+  const annualRate = e.price > 0 && s.annualDist > 0
+    ? (s.annualDist / e.price * 100).toFixed(2) + '%' : '-';
+  document.getElementById('stabContent').innerHTML = `
+    <div class="stab-row">
+      <span class="stab-label">분배금 안정성</span>
+      ${stabScoreBadge(s.score)}
+      ${s.variation ? `<span style="font-size:11px;color:var(--ink3);margin-left:8px">변동폭 ${s.variation}%</span>` : ''}
+    </div>
+    <div class="stab-row">
+      <span class="stab-label">분배금 추세</span>
+      ${stabTrendBadge(s.trend)}
+      ${s.trendPct ? `<span style="font-size:11px;color:var(--ink3);margin-left:8px">${s.trendPct > 0 ? '+' : ''}${s.trendPct}%</span>` : ''}
+    </div>
+    <div class="stab-row">
+      <span class="stab-label">분배율 수준</span>
+      ${stabLevelBadge(s.level)}
+      ${annualRate !== '-' ? `<span style="font-size:11px;color:var(--ink3);margin-left:8px">연환산 ${annualRate}</span>` : ''}
+    </div>
+    <div class="comment-box">${autoComment(e)}</div>
+  `;
+
+  updateCompareUI();
+  document.getElementById('main').style.display = '';
+}
+
+// ── 초기화 ──
+(function() {
+  const params = new URLSearchParams(location.search);
+  const code   = params.get('code');
+  if(!code) { showError(); return; }
+
+  // ETF_ALL은 etf_data.js에서 전역 변수로 로드됨
+  const e = (typeof ETF_ALL !== 'undefined' ? ETF_ALL : []).find(x => x.code === code);
+  if(!e) { showError(); return; }
+  render(e);
+})();
+
+function showError() {
+  document.getElementById('errWrap').style.display = '';
+}
+</script>
+</body>
+</html>
