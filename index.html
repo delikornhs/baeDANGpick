@@ -1697,9 +1697,10 @@ function renderGrid() {
   if(!sl.length){document.getElementById('etfGrid').innerHTML='<div class="empty-msg">검색 결과가 없습니다</div>';return;}
   document.getElementById('etfGrid').innerHTML=sl.map(e=>{
     const st=status(e), lb=lastBuy(e.ex);
-    const _npp = e.dist > 0 && e.rate > 0 ? (e.dist / e.rate * 100) : e.price;
-    const _ar  = _npp > 0 && e.stab && e.stab.annualDist > 0
-      ? (e.stab.annualDist / _npp * 100).toFixed(1) + '%' : '-';
+    const _npp  = e.dist > 0 && e.rate > 0 ? (e.dist / e.rate * 100) : e.price;
+    const _jan1 = new Date().getFullYear() + '-01-01';
+    const _ytd  = (e.trend || []).filter(t => t.ex_date >= _jan1).reduce((a, b) => a + b.dist, 0);
+    const _ar   = _npp > 0 && _ytd > 0 ? (_ytd / _npp * 100).toFixed(1) + '%' : '-';
     return `<div class="etf-card" onclick="location.href='/etf/${e.code}'">
       <span class="status-pill ${st.cls}">${st.label}</span>
       <div class="card-top">
