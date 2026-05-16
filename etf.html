@@ -291,9 +291,9 @@ function getPeerGroup(e) {
   const freq = e.freq || '';
   const typ  = e.type || '';
   if(freq === '월배당' || freq === '월배당추정') {
-    if(typ === '커버드콜') return '월배당+커버드콜';
-    if(typ === '리츠')     return '월배당+리츠';
-    return '월배당+일반배당';
+    if(typ === '커버드콜') return '월배당(커버드콜)';
+    if(typ === '리츠')     return '월배당(리츠)';
+    return '월배당(일반배당)';
   }
   return '분기배당이상';
 }
@@ -335,30 +335,48 @@ function computeStab(e) {
   const jan1 = new Date().getFullYear() + '-01-01';
   const annualDist = trend.filter(t => t.ex_date >= jan1).reduce((a,b) => a + b.dist, 0);
 
-  // 월분배 수준: 최근 6개월 평균 월분배율 → 동일유형 그룹 비교 (히스토리 통계와 기준 통일)
+  // 월분배 수준: 최근 6개월 평균 월분배율·분배금 → 동일유형 그룹 비교
   let avgMonthlyRate = 0, groupAvgRate = 0, level = '';
+  let avgMonthlyDist = 0, groupAvgDist = 0, levelDist = '';
   const peerGroup = getPeerGroup(e);
 
-  if(six.length > 0 && e.price > 0) {
-    avgMonthlyRate = parseFloat((avg(six) / e.price * 100).toFixed(3));
+  if(six.length > 0) {
+    avgMonthlyDist = parseFloat(avg(six).toFixed(1));
+    if(e.price > 0) {
+      avgMonthlyRate = parseFloat((avg(six) / e.price * 100).toFixed(3));
+    }
   }
-  if(typeof ETF_ALL !== 'undefined' && avgMonthlyRate > 0) {
-    const peerRates = ETF_ALL
-      .filter(x => getPeerGroup(x) === peerGroup)
-      .map(x => {
+  if(typeof ETF_ALL !== 'undefined') {
+    const peers = ETF_ALL.filter(x => getPeerGroup(x) === peerGroup);
+    if(avgMonthlyRate > 0) {
+      const peerRates = peers.map(x => {
         if(x.stab && x.stab.avgMonthlyRate > 0) return x.stab.avgMonthlyRate;
         const p6 = (x.trend || []).filter(t => t.ex_date >= d6).map(t => t.dist);
         return p6.length > 0 && x.price > 0 ? parseFloat((avg(p6) / x.price * 100).toFixed(3)) : 0;
       }).filter(r => r > 0);
-    if(peerRates.length > 0) {
-      groupAvgRate = parseFloat((peerRates.reduce((a,b)=>a+b,0) / peerRates.length).toFixed(3));
-      level = avgMonthlyRate > groupAvgRate * 1.1 ? '평균보다 높음'
-            : avgMonthlyRate < groupAvgRate * 0.9 ? '평균보다 낮음'
-            : '평균 수준';
+      if(peerRates.length > 0) {
+        groupAvgRate = parseFloat((peerRates.reduce((a,b)=>a+b,0) / peerRates.length).toFixed(3));
+        level = avgMonthlyRate > groupAvgRate * 1.1 ? '평균보다 높음'
+              : avgMonthlyRate < groupAvgRate * 0.9 ? '평균보다 낮음'
+              : '평균 수준';
+      }
+    }
+    if(avgMonthlyDist > 0) {
+      const peerDists = peers.map(x => {
+        if(x.stab && x.stab.avgMonthlyDist > 0) return x.stab.avgMonthlyDist;
+        const p6 = (x.trend || []).filter(t => t.ex_date >= d6).map(t => t.dist);
+        return p6.length > 0 ? parseFloat(avg(p6).toFixed(1)) : 0;
+      }).filter(d => d > 0);
+      if(peerDists.length > 0) {
+        groupAvgDist = parseFloat((peerDists.reduce((a,b)=>a+b,0) / peerDists.length).toFixed(1));
+        levelDist = avgMonthlyDist > groupAvgDist * 1.1 ? '평균보다 높음'
+                  : avgMonthlyDist < groupAvgDist * 0.9 ? '평균보다 낮음'
+                  : '평균 수준';
+      }
     }
   }
 
-  return { score, variation, trend: trendLabel, trendPct, level, annualDist, avgMonthlyRate, groupAvgRate, peerGroup };
+  return { score, variation, trend: trendLabel, trendPct, level, levelDist, annualDist, avgMonthlyRate, groupAvgRate, avgMonthlyDist, groupAvgDist, peerGroup };
 }
 
 // ── 안정성 badge ──
@@ -556,6 +574,8 @@ function render(e) {
   const s = (e.stab && e.stab.score) ? e.stab : computeStab(e);
   const stabAvgRate   = s.avgMonthlyRate  || 0;
   const stabGroupRate = s.groupAvgRate    || 0;
+  const stabAvgDist   = s.avgMonthlyDist  || 0;
+  const stabGroupDist = s.groupAvgDist    || 0;
   document.getElementById('stabContent').innerHTML = `
     <div class="stab-row">
       <span class="stab-label">분배금 안정성</span>
@@ -572,10 +592,17 @@ function render(e) {
       </div>
     </div>
     <div class="stab-row">
-      <span class="stab-label">월분배 수준</span>
+      <span class="stab-label">월분배 수준<br><span style="font-size:10px;font-weight:400;color:var(--ink4)">(분배율)</span></span>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         ${stabLevelBadge(s.level)}
         ${stabAvgRate ? `<span style="font-size:11px;color:var(--ink3)">월평균 ${stabAvgRate.toFixed(2)}% · 그룹평균 ${stabGroupRate ? stabGroupRate.toFixed(2) : '-'}%</span>` : ''}
+      </div>
+    </div>
+    <div class="stab-row">
+      <span class="stab-label">월분배 수준<br><span style="font-size:10px;font-weight:400;color:var(--ink4)">(분배금)</span></span>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        ${stabLevelBadge(s.levelDist)}
+        ${stabAvgDist ? `<span style="font-size:11px;color:var(--ink3)">월평균 ${stabAvgDist.toFixed(0)}원 · 그룹평균 ${stabGroupDist ? stabGroupDist.toFixed(0) : '-'}원</span>` : ''}
       </div>
     </div>
     <div class="comment-box">${autoComment(e)}</div>
@@ -601,9 +628,9 @@ function render(e) {
             <td>최근 3개월 평균 vs 이전 3개월 평균</td>
           </tr>
           <tr>
-            <td>월분배 수준</td>
+            <td>월분배 수준<br>(분배율 · 분배금)</td>
             <td>평균보다 높음 · 평균 수준 · 평균보다 낮음</td>
-            <td>최근 12개월 평균 월분배율을 동일 유형(월배당+커버드콜 / 월배당+리츠 / 월배당+일반배당 / 분기배당이상) 그룹 평균과 비교. ±10% 이내는 평균 수준</td>
+            <td>최근 6개월 평균 월분배율과 월분배금을 동일 유형(월배당(커버드콜) / 월배당(리츠) / 월배당(일반배당) / 분기배당이상) 그룹 평균과 각각 비교. ±10% 이내는 평균 수준</td>
           </tr>
         </tbody>
       </table>

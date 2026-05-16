@@ -144,9 +144,9 @@ function getPeerGroup(e) {
   const freq = e.freq || '';
   const typ  = e.type || '';
   if(freq === '월배당' || freq === '월배당추정') {
-    if(typ === '커버드콜') return '월배당+커버드콜';
-    if(typ === '리츠')     return '월배당+리츠';
-    return '월배당+일반배당';
+    if(typ === '커버드콜') return '월배당(커버드콜)';
+    if(typ === '리츠')     return '월배당(리츠)';
+    return '월배당(일반배당)';
   }
   return '분기배당이상';
 }
@@ -177,28 +177,44 @@ function computeStab(e) {
   const jan1=new Date().getFullYear()+'-01-01';
   const annualDist=trend.filter(t=>t.ex_date>=jan1).reduce((a,b)=>a+b.dist,0);
 
-  // 월분배 수준: 최근 6개월 평균 월분배율 → 동일유형 그룹 비교 (히스토리 통계와 기준 통일)
+  // 월분배 수준: 최근 6개월 평균 월분배율·분배금 → 동일유형 그룹 비교
   let avgMonthlyRate = 0, groupAvgRate = 0, level = '';
+  let avgMonthlyDist = 0, groupAvgDist = 0, levelDist = '';
   const peerGroup = getPeerGroup(e);
-  if(six.length > 0 && e.price > 0) {
-    avgMonthlyRate = parseFloat((avg(six) / e.price * 100).toFixed(3));
+  if(six.length > 0) {
+    avgMonthlyDist = parseFloat(avg(six).toFixed(1));
+    if(e.price > 0) avgMonthlyRate = parseFloat((avg(six)/e.price*100).toFixed(3));
   }
-  if(typeof ETF_ALL !== 'undefined' && avgMonthlyRate > 0) {
-    const peerRates = ETF_ALL
-      .filter(x => getPeerGroup(x) === peerGroup)
-      .map(x => {
+  if(typeof ETF_ALL !== 'undefined') {
+    const peers = ETF_ALL.filter(x => getPeerGroup(x) === peerGroup);
+    if(avgMonthlyRate > 0) {
+      const peerRates = peers.map(x => {
         if(x.stab && x.stab.avgMonthlyRate > 0) return x.stab.avgMonthlyRate;
         const p6 = (x.trend||[]).filter(t=>t.ex_date>=d6).map(t=>t.dist);
         return p6.length>0&&x.price>0 ? parseFloat((avg(p6)/x.price*100).toFixed(3)) : 0;
       }).filter(r => r > 0);
-    if(peerRates.length > 0) {
-      groupAvgRate = parseFloat((peerRates.reduce((a,b)=>a+b,0)/peerRates.length).toFixed(3));
-      level = avgMonthlyRate > groupAvgRate*1.1 ? '평균보다 높음'
-            : avgMonthlyRate < groupAvgRate*0.9 ? '평균보다 낮음'
-            : '평균 수준';
+      if(peerRates.length > 0) {
+        groupAvgRate = parseFloat((peerRates.reduce((a,b)=>a+b,0)/peerRates.length).toFixed(3));
+        level = avgMonthlyRate > groupAvgRate*1.1 ? '평균보다 높음'
+              : avgMonthlyRate < groupAvgRate*0.9 ? '평균보다 낮음'
+              : '평균 수준';
+      }
+    }
+    if(avgMonthlyDist > 0) {
+      const peerDists = peers.map(x => {
+        if(x.stab && x.stab.avgMonthlyDist > 0) return x.stab.avgMonthlyDist;
+        const p6 = (x.trend||[]).filter(t=>t.ex_date>=d6).map(t=>t.dist);
+        return p6.length > 0 ? parseFloat(avg(p6).toFixed(1)) : 0;
+      }).filter(d => d > 0);
+      if(peerDists.length > 0) {
+        groupAvgDist = parseFloat((peerDists.reduce((a,b)=>a+b,0)/peerDists.length).toFixed(1));
+        levelDist = avgMonthlyDist > groupAvgDist*1.1 ? '평균보다 높음'
+                  : avgMonthlyDist < groupAvgDist*0.9 ? '평균보다 낮음'
+                  : '평균 수준';
+      }
     }
   }
-  return {score,variation,trend:trendLabel,trendPct,level,annualDist,avgMonthlyRate,groupAvgRate,peerGroup};
+  return {score,variation,trend:trendLabel,trendPct,level,levelDist,annualDist,avgMonthlyRate,groupAvgRate,avgMonthlyDist,groupAvgDist,peerGroup};
 }
 
 function stabBadge(score) {
@@ -367,7 +383,7 @@ function renderAll(etfs) {
       const v = (e.stab||{})[getter];
       if(label==='안정성') return `<td>${stabBadge(v)}</td>`;
       if(label==='추세')   return `<td>${trendBadge(v)}</td>`;
-      if(label==='월분배 수준') return `<td>${levelBadge(v)}</td>`;
+      if(label.startsWith('월분배 수준')) return `<td>${levelBadge(v)}</td>`;
       return `<td>${v||'-'}</td>`;
     }).join('');
     return `<tr><td>${label}</td>${cells}</tr>`;
@@ -393,9 +409,10 @@ function renderAll(etfs) {
       ${row('변동폭',       etfs.map(varDist),              v=>v!=null?`${v}%`:'-', false)}
 
       ${sectionHead('분배금 안정성')}
-      ${stabRow('안정성',     'score')}
-      ${stabRow('추세',       'trend')}
-      ${stabRow('월분배 수준','level')}
+      ${stabRow('안정성',          'score')}
+      ${stabRow('추세',            'trend')}
+      ${stabRow('월분배 수준(분배율)','level')}
+      ${stabRow('월분배 수준(분배금)','levelDist')}
 
       ${sectionHead('수익률 — 주가')}
       ${retRow('1개월',   'ret1m')}

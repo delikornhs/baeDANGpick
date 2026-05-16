@@ -469,9 +469,12 @@ def build_js(latest: list, price_date: str = ""):
                 "trend":          e.get("stab_trend",      ""),
                 "trendPct":       e.get("trend_change_pct",0),
                 "level":          e.get("stab_level",      ""),
+                "levelDist":      e.get("stab_level_dist", ""),
                 "annualDist":     e.get("annual_dist",     0),
                 "avgMonthlyRate": e.get("avg_monthly_rate",0),
                 "groupAvgRate":   e.get("group_avg_rate",  0),
+                "avgMonthlyDist": e.get("avg_monthly_dist",0),
+                "groupAvgDist":   e.get("group_avg_dist",  0),
                 "peerGroup":      e.get("peer_group",      ""),
             }, ensure_ascii=False)
             manager_esc = e.get("manager", e["brand"]).replace("'", "\\'")
@@ -765,9 +768,9 @@ def get_peer_group(item: dict) -> str:
     freq = item.get("freq", "")
     typ  = item.get("type", "")
     if freq in ("월배당", "월배당추정"):
-        if typ == "커버드콜": return "월배당+커버드콜"
-        if typ == "리츠":     return "월배당+리츠"
-        return "월배당+일반배당"
+        if typ == "커버드콜": return "월배당(커버드콜)"
+        if typ == "리츠":     return "월배당(리츠)"
+        return "월배당(일반배당)"
     return "분기배당이상"
 
 
@@ -980,23 +983,34 @@ if __name__ == "__main__":
                 item["isin"], history_for_returns, notice_prev_price)
             item.update(stab)
 
-        # 피어그룹 평균 월분배율 계산 → stab_level 설정
+        # 피어그룹 평균 월분배율·월분배금 계산 → stab_level / stab_level_dist 설정
         peer_rates = defaultdict(list)
+        peer_dists = defaultdict(list)
         for item in latest:
+            g = get_peer_group(item)
             r = item.get("avg_monthly_rate", 0)
-            if r > 0:
-                peer_rates[get_peer_group(item)].append(r)
-        group_avg = {g: sum(v)/len(v) for g, v in peer_rates.items() if v}
+            d = item.get("avg_monthly_dist", 0)
+            if r > 0: peer_rates[g].append(r)
+            if d > 0: peer_dists[g].append(d)
+        group_avg_rate = {g: sum(v)/len(v) for g, v in peer_rates.items() if v}
+        group_avg_dist = {g: sum(v)/len(v) for g, v in peer_dists.items() if v}
         for item in latest:
-            g  = get_peer_group(item)
-            my = item.get("avg_monthly_rate", 0)
-            ga = group_avg.get(g, 0)
-            item["peer_group"]     = g
-            item["group_avg_rate"] = round(ga, 3)
-            if my > 0 and ga > 0:
-                if   my > ga * 1.1: item["stab_level"] = "평균보다 높음"
-                elif my < ga * 0.9: item["stab_level"] = "평균보다 낮음"
-                else:               item["stab_level"] = "평균 수준"
+            g        = get_peer_group(item)
+            my_rate  = item.get("avg_monthly_rate", 0)
+            ga_rate  = group_avg_rate.get(g, 0)
+            my_dist  = item.get("avg_monthly_dist", 0)
+            ga_dist  = group_avg_dist.get(g, 0)
+            item["peer_group"]      = g
+            item["group_avg_rate"]  = round(ga_rate, 3)
+            item["group_avg_dist"]  = round(ga_dist, 1)
+            if my_rate > 0 and ga_rate > 0:
+                if   my_rate > ga_rate * 1.1: item["stab_level"]      = "평균보다 높음"
+                elif my_rate < ga_rate * 0.9: item["stab_level"]      = "평균보다 낮음"
+                else:                          item["stab_level"]      = "평균 수준"
+            if my_dist > 0 and ga_dist > 0:
+                if   my_dist > ga_dist * 1.1: item["stab_level_dist"] = "평균보다 높음"
+                elif my_dist < ga_dist * 0.9: item["stab_level_dist"] = "평균보다 낮음"
+                else:                          item["stab_level_dist"] = "평균 수준"
 
         # 메타 데이터 병합 (기초지수, 상장일, 운용사)
         meta_cache = {}
