@@ -249,9 +249,15 @@ function renderAll(etfs) {
 
   const byStab  = etfs.filter(e=>e.stab&&e.stab.score).sort((a,b) => {
     const order = {'변동 적음':0,'변동 보통':1,'변동 큼':2,'변동 매우 큼':3,'데이터 부족':4};
-    return (order[a.stab.score]??9) - (order[b.stab.score]??9);
+    const scoreDiff = (order[a.stab.score]??9) - (order[b.stab.score]??9);
+    if(scoreDiff !== 0) return scoreDiff;
+    return (a.stab.variation||0) - (b.stab.variation||0); // 같은 등급이면 변동폭 수치 낮은 쪽 우선
   })[0];
   const byRate  = [...etfs].sort((a,b) => b.rate - a.rate)[0];
+
+  const stabDesc = byStab && byStab.stab
+    ? `${byStab.stab.score} · 변동폭 ${byStab.stab.variation}%`
+    : '';
 
   document.getElementById('summaryGrid').innerHTML = `
     <div class="sum-box">
@@ -262,7 +268,8 @@ function renderAll(etfs) {
     <div class="sum-box">
       <div class="sum-label">🛡 가장 안정적인 ETF</div>
       <div class="sum-val">${byStab ? byStab.name : '-'}</div>
-      <div class="sum-sub">${byStab && byStab.stab ? byStab.stab.score : ''}</div>
+      <div class="sum-sub">${stabDesc}</div>
+      <div style="font-size:10px;color:var(--ink4);margin-top:4px">최근 6개월 변동폭 기준 · 동등 시 수치 낮은 순</div>
     </div>
     <div class="sum-box">
       <div class="sum-label">📈 분배율 가장 높은 ETF</div>
