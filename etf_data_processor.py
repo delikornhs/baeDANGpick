@@ -749,11 +749,10 @@ def calc_stability_metrics(isin: str, history: dict, current_price: int = 0) -> 
     elif recent3:
         result["stab_trend"] = "데이터 부족"
 
-    # ③ 평균 월분배금·분배율 (최근 12개월, 동일유형 그룹비교용)
-    yr12_ago   = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
-    yr12_dists = [records[k]["dist"] for k in sorted_keys if k >= yr12_ago]
-    if yr12_dists:
-        avg_dist = sum(yr12_dists) / len(yr12_dists)
+    # ③ 평균 월분배금·분배율 (최근 6개월, 동일유형 그룹비교용)
+    yr6_dists = [records[k]["dist"] for k in sorted_keys if k >= six_ago]
+    if yr6_dists:
+        avg_dist = sum(yr6_dists) / len(yr6_dists)
         result["avg_monthly_dist"] = round(avg_dist, 1)
         if current_price > 0:
             result["avg_monthly_rate"] = round(avg_dist / current_price * 100, 3)

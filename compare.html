@@ -155,7 +155,7 @@ function computeStab(e) {
   const trend = (e.trend || []).slice().sort((a,b) => a.ex_date < b.ex_date ? -1 : 1);
   const now   = new Date();
   const msBefore = days => new Date(now - days * 86400000).toISOString().slice(0,10);
-  const d6 = msBefore(182), d3 = msBefore(91), d12 = msBefore(365);
+  const d6 = msBefore(182), d3 = msBefore(91);
   const six   = trend.filter(t => t.ex_date >= d6).map(t => t.dist);
   const rec3  = trend.filter(t => t.ex_date >= d3).map(t => t.dist);
   const prev3 = trend.filter(t => t.ex_date >= d6 && t.ex_date < d3).map(t => t.dist);
@@ -177,20 +177,19 @@ function computeStab(e) {
   const jan1=new Date().getFullYear()+'-01-01';
   const annualDist=trend.filter(t=>t.ex_date>=jan1).reduce((a,b)=>a+b.dist,0);
 
-  // 월분배 수준: 최근 12개월 평균 월분배율 → 동일유형 그룹 비교
-  const yr12_dists = trend.filter(t => t.ex_date >= d12).map(t => t.dist);
+  // 월분배 수준: 최근 6개월 평균 월분배율 → 동일유형 그룹 비교 (히스토리 통계와 기준 통일)
   let avgMonthlyRate = 0, groupAvgRate = 0, level = '';
   const peerGroup = getPeerGroup(e);
-  if(yr12_dists.length > 0 && e.price > 0) {
-    avgMonthlyRate = parseFloat((avg(yr12_dists) / e.price * 100).toFixed(3));
+  if(six.length > 0 && e.price > 0) {
+    avgMonthlyRate = parseFloat((avg(six) / e.price * 100).toFixed(3));
   }
   if(typeof ETF_ALL !== 'undefined' && avgMonthlyRate > 0) {
     const peerRates = ETF_ALL
       .filter(x => getPeerGroup(x) === peerGroup)
       .map(x => {
         if(x.stab && x.stab.avgMonthlyRate > 0) return x.stab.avgMonthlyRate;
-        const p12 = (x.trend||[]).filter(t=>t.ex_date>=d12).map(t=>t.dist);
-        return p12.length>0&&x.price>0 ? parseFloat((avg(p12)/x.price*100).toFixed(3)) : 0;
+        const p6 = (x.trend||[]).filter(t=>t.ex_date>=d6).map(t=>t.dist);
+        return p6.length>0&&x.price>0 ? parseFloat((avg(p6)/x.price*100).toFixed(3)) : 0;
       }).filter(r => r > 0);
     if(peerRates.length > 0) {
       groupAvgRate = parseFloat((peerRates.reduce((a,b)=>a+b,0)/peerRates.length).toFixed(3));
@@ -346,7 +345,7 @@ function renderAll(etfs) {
   };
 
   const avgDist = e => {
-    const t = (e.trend||[]).slice(-12);
+    const t = (e.trend||[]).slice(-6);
     return t.length ? Math.round(t.reduce((s,x)=>s+x.dist,0)/t.length) : 0;
   };
   const varDist = e => {
@@ -382,7 +381,7 @@ function renderAll(etfs) {
       ${row('주당 분배금', etfs.map(e=>e.dist),            v=>`${comma(v)}원`)}
       ${row('이번달 분배율', etfs.map(e=>e.rate),          v=>`${v}%`)}
 
-      ${sectionHead('분배금 통계 (12개월 기준)')}
+      ${sectionHead('분배금 통계 (6개월 기준)')}
       ${row('평균 분배금',  etfs.map(avgDist),              v=>`${comma(v)}원`)}
       ${row('변동폭',       etfs.map(varDist),              v=>v!=null?`${v}%`:'-', false)}
 
