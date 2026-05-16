@@ -427,7 +427,7 @@ function autoComment(e) {
   }
   if(s.trend === '증가') parts.push(`최근 3개월 평균 분배금이 이전 3개월 대비 10% 이상 증가했습니다.`);
   else if(s.trend === '감소') parts.push(`최근 3개월 평균 분배금이 이전 3개월 대비 10% 이상 감소했습니다.`);
-  const pg = s.peerGroup || getPeerGroup(e);
+  const pg = getPeerGroup(e);
   if(s.level === '평균보다 높음') parts.push(`동일 유형(${pg}) ETF 평균 대비 월분배율이 높은 편입니다.`);
   else if(s.level === '평균 수준') parts.push(`동일 유형(${pg}) ETF와 비슷한 수준의 월분배율입니다.`);
   else if(s.level === '평균보다 낮음') parts.push(`동일 유형(${pg}) ETF 평균 대비 월분배율이 낮은 편입니다.`);
