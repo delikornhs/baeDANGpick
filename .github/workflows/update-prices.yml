@@ -29,18 +29,19 @@ jobs:
       - name: Install dependencies
         run: pip install requests xlrd
 
-      - name: Fetch latest prices
-        run: python etf_data_processor.py --prices-only
-
-      - name: Fetch ETF meta (weekly, Monday only)
+      - name: Fetch ETF meta (Monday or manual trigger)
         run: |
           DOW=$(date -u +%u)
-          if [ "$DOW" = "1" ]; then
-            echo "월요일 — 메타 데이터 갱신"
+          EVENT="${{ github.event_name }}"
+          if [ "$DOW" = "1" ] || [ "$EVENT" = "workflow_dispatch" ]; then
+            echo "메타 데이터 갱신 (DOW=$DOW, event=$EVENT)"
             python etf_data_processor.py --fetch-meta
           else
             echo "평일(월 제외) — 메타 스킵"
           fi
+
+      - name: Fetch latest prices
+        run: python etf_data_processor.py --prices-only
 
       - name: Commit and push if changed
         id: commit

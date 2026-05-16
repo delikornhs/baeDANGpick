@@ -46,6 +46,30 @@ LATEST_FILE  = OUT_DIR / "latest.json"
 JS_FILE      = OUT_DIR / "etf_data.js"
 ETF_META_FILE = OUT_DIR / "etf_meta.json"
 
+# ── 브랜드 → 실제 운용사 매핑 ──
+BRAND_TO_COMPANY = {
+    "KODEX":      "삼성자산운용",
+    "TIGER":      "미래에셋자산운용",
+    "RISE":       "KB자산운용",
+    "SOL":        "신한자산운용",
+    "ACE":        "한국투자신탁운용",
+    "PLUS":       "한화자산운용",
+    "ARIRANG":    "한화자산운용",
+    "KIWOOM":     "키움투자자산운용",
+    "KOSEF":      "키움투자자산운용",
+    "HANARO":     "NH아문디자산운용",
+    "KoAct":      "교보악사자산운용",
+    "파워":        "교보악사자산운용",
+    "FOCUS":      "동양자산운용",
+    "마이티":      "흥국자산운용",
+    "WON":        "우리자산운용",
+    "TIMEFOLIO":  "타임폴리오자산운용",
+    "타임폴리오":  "타임폴리오자산운용",
+    "대신":        "대신자산운용",
+    "1Q":         "하나자산운용",
+    "HK":         "하이자산운용",
+}
+
 
 # ── XLS 파싱 (KIND HTML-as-XLS 형식) ──
 def parse_xls(xls_path: Path) -> list:
@@ -447,9 +471,11 @@ def build_js(latest: list, price_date: str = ""):
                 "level":     e.get("stab_level",     ""),
                 "annualDist":e.get("annual_dist",    0),
             }, ensure_ascii=False)
+            manager_esc = e.get("manager", e["brand"]).replace("'", "\\'")
             items.append(
                 f"{{isin:'{e['isin']}',code:'{e['code']}',name:'{name_esc}',"
-                f"brand:'{e['brand']}',type:'{e['type']}',freq:'{e['freq']}',"
+                f"brand:'{e['brand']}',manager:'{manager_esc}',"
+                f"type:'{e['type']}',freq:'{e['freq']}',"
                 f"timing:'{e.get('timing','')}', "
                 f"ex:'{e['ex_date']}',pay:'{e['pay_date']}',"
                 f"dist:{e['dist']},price:{e['price']},rate:{e['rate']},"
@@ -558,12 +584,17 @@ def fetch_etf_meta(codes: list) -> dict:
             date_m = re.search(
                 r'상장일\s*(?:<[^>]+>)+\s*([0-9]{4}[.\-][0-9]{2}[.\-][0-9]{2})',
                 content)
+            # 운용사 파싱
+            mgr_m = re.search(
+                r'운용사\s*(?:<[^>]+>)+\s*(?:<a[^>]*>)?([^<\n]{2,40})(?:</a>)?',
+                content)
 
             index_name = idx_m.group(1).strip() if idx_m else ""
             listed_raw = date_m.group(1).strip() if date_m else ""
             listed_date = listed_raw.replace(".", "-") if listed_raw else ""
+            manager = mgr_m.group(1).strip() if mgr_m else ""
 
-            meta[code] = {"index_name": index_name, "listed_date": listed_date}
+            meta[code] = {"index_name": index_name, "listed_date": listed_date, "manager": manager}
         except Exception:
             meta[code] = {"index_name": "", "listed_date": ""}
 
@@ -935,15 +966,20 @@ if __name__ == "__main__":
                 item["isin"], history_for_returns, notice_prev_price)
             item.update(stab)
 
-        # 메타 데이터 병합 (기초지수, 상장일)
+        # 메타 데이터 병합 (기초지수, 상장일, 운용사)
+        meta_cache = {}
         if ETF_META_FILE.exists():
             with open(ETF_META_FILE, encoding="utf-8") as f:
                 meta_cache = json.load(f)
-            for item in latest:
-                m = meta_cache.get(item["code"], {})
-                item["index_name"]  = m.get("index_name",  "")
-                item["listed_date"] = m.get("listed_date", "")
-
+        for item in latest:
+            m = meta_cache.get(item["code"], {})
+            item["index_name"]  = m.get("index_name",  "")
+            item["listed_date"] = m.get("listed_date", "")
+            # 운용사: 네이버 스크래핑 값 우선, 없으면 브랜드 매핑, 최종 fallback 브랜드명
+            item["manager"] = (
+                m.get("manager", "") or
+                BRAND_TO_COMPANY.get(item["brand"], item["brand"])
+            )
         with open(LATEST_FILE, "w", encoding="utf-8") as f:
             json.dump(latest, f, ensure_ascii=False, indent=2)
 
