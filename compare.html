@@ -164,9 +164,12 @@ function computeStab(e) {
     if(pa>0){ trendPct=parseFloat(((avg(rec3)-pa)/pa*100).toFixed(1));
       trendLabel=trendPct>10?'증가':trendPct<-10?'감소':'유지'; }
   } else if(rec3.length) trendLabel='데이터 부족';
-  const annualDist=year.reduce((a,b)=>a+b,0);
+  const jan1=new Date().getFullYear()+'-01-01';
+  const yearDists=trend.filter(t=>t.ex_date>=jan1).map(t=>t.dist);
+  const annualDist=yearDists.reduce((a,b)=>a+b,0);
   let level='';
-  if(e.price>0&&annualDist>0){const r=annualDist/e.price*100;
+  const noticePrevPrice=e.dist>0&&e.rate>0?(e.dist/e.rate*100):e.price;
+  if(noticePrevPrice>0&&annualDist>0){const r=annualDist/noticePrevPrice*100;
     level=r<4?'저분배율':r<10?'중분배율':r<15?'고분배율':'초고분배율';}
   return {score,variation,trend:trendLabel,trendPct,level,annualDist};
 }

@@ -676,12 +676,12 @@ def calc_stability_metrics(isin: str, history: dict, current_price: int = 0) -> 
 
     records = history[isin]
     now_str   = datetime.now().strftime("%Y-%m-%d")
-    year_ago  = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
+    jan1_str  = datetime.now().strftime("%Y-01-01")   # 올해 1월 1일
     six_ago   = (datetime.now() - timedelta(days=182)).strftime("%Y-%m-%d")
     three_ago = (datetime.now() - timedelta(days=91)).strftime("%Y-%m-%d")
 
     sorted_keys = sorted(records.keys())
-    year_dists  = [records[k]["dist"] for k in sorted_keys if k >= year_ago]
+    year_dists  = [records[k]["dist"] for k in sorted_keys if k >= jan1_str]  # 올해 누적
     six_dists   = [records[k]["dist"] for k in sorted_keys if k >= six_ago]
     recent3     = [records[k]["dist"] for k in sorted_keys if k >= three_ago]
     prev3       = [records[k]["dist"] for k in sorted_keys if six_ago <= k < three_ago]
@@ -714,13 +714,14 @@ def calc_stability_metrics(isin: str, history: dict, current_price: int = 0) -> 
     elif recent3:
         result["stab_trend"] = "데이터 부족"
 
-    # ③ 분배율 수준: 연환산 기준
+    # ③ 분배율 수준: 가장 최근 공시일자 전일 종가 기준 (current_price = 공시일전일종가로 전달)
     if current_price > 0 and result["annual_dist"] > 0:
         annual_rate = result["annual_dist"] / current_price * 100
         if   annual_rate <  4:  result["stab_level"] = "저분배율"
         elif annual_rate < 10:  result["stab_level"] = "중분배율"
         elif annual_rate < 15:  result["stab_level"] = "고분배율"
         else:                   result["stab_level"] = "초고분배율"
+        result["annual_rate"] = round(annual_rate, 2)
 
     return result
 
@@ -924,10 +925,14 @@ if __name__ == "__main__":
 
         print(f"수익률 계산: {ret_ok}개 성공 / {ret_fail}개 실패")
 
-        # 안정성 지표 계산
+        # 안정성 지표 계산 (분배율 수준은 공시일 전일 종가 기준)
         for item in latest:
+            notice_prev_price = (
+                int(item["dist"] / item["rate"] * 100)
+                if item.get("rate", 0) > 0 else item.get("price", 0)
+            )
             stab = calc_stability_metrics(
-                item["isin"], history_for_returns, item.get("price", 0))
+                item["isin"], history_for_returns, notice_prev_price)
             item.update(stab)
 
         # 메타 데이터 병합 (기초지수, 상장일)
