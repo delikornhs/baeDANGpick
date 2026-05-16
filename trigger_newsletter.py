@@ -90,7 +90,7 @@ def main():
             {
                 'name':   e['name'],
                 'brand':  e['brand'],
-                'pay':    e['pay'],
+                'pay':    e.get('pay_date', e.get('pay', '')),
                 'dist':   e['dist'],
                 'rate':   e['rate'],
             }
