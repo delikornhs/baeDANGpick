@@ -1732,7 +1732,7 @@ function renderGrid() {
     const _ytd  = (e.trend || []).filter(t => t.ex_date >= _jan1).reduce((a, b) => a + b.dist, 0);
     const _ar   = _npp > 0 && _ytd > 0 ? (_ytd / _npp * 100).toFixed(1) + '%' : '-';
     const _sel  = cmpList.includes(e.code);
-    return `<div class="etf-card" onclick="location.href='/etf/${e.code}'">
+    return `<div class="etf-card" onclick="goEtf('${e.code}');">
       <span class="status-pill ${st.cls}">${st.label}</span>
       <div class="card-top">
         <span class="card-brand">${e.brand}</span>
@@ -2184,11 +2184,62 @@ async function submitSubscribe() {
   }
 }
 
+// ── 필터 상태 저장·복원 (뒤로가기 유지) ──
+function saveFilterState() {
+  sessionStorage.setItem('etfFilterState', JSON.stringify({
+    q, sort, typeF, freqF, timingF, page,
+    calFilter: calFilter || null,
+    scrollY: window.scrollY
+  }));
+}
+
+function goEtf(code) {
+  saveFilterState();
+  location.href = '/etf/' + code;
+}
+
+function restoreFilterState() {
+  const raw = sessionStorage.getItem('etfFilterState');
+  if (!raw) return 0;
+  sessionStorage.removeItem('etfFilterState');
+  let state;
+  try { state = JSON.parse(raw); } catch(e) { return 0; }
+
+  q       = state.q       || '';
+  sort    = state.sort    || 'rate_d';
+  typeF   = state.typeF   || '전체';
+  freqF   = state.freqF   || '월배당';
+  timingF = state.timingF || '전체';
+  page    = state.page    || 1;
+  calFilter = state.calFilter || null;
+
+  document.getElementById('searchInput').value = q;
+  document.getElementById('sortSel').value = sort;
+  document.querySelectorAll('#typeTabs  .ftab').forEach(b => b.classList.toggle('on', b.dataset.v === typeF));
+  document.querySelectorAll('#freqTabs  .ftab').forEach(b => b.classList.toggle('on', b.dataset.v === freqF));
+  document.querySelectorAll('#timingTabs .ftab').forEach(b => b.classList.toggle('on', b.dataset.v === timingF));
+  const tr = document.getElementById('timingRow');
+  if (tr) tr.style.display = freqF === '월배당' ? 'flex' : 'none';
+
+  if (calFilter) {
+    const d = new Date(calFilter.dateStr);
+    const txt = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 ${calFilter.label} 해당 ETF`;
+    document.getElementById('calFilterText').textContent = txt;
+    document.getElementById('calFilterBar').style.display = 'flex';
+  }
+
+  return state.scrollY || 0;
+}
+
 // ── 초기화 ──
 renderCalendar();
+const _restoredScroll = restoreFilterState();
 applyFilter();
 updateCmpBar();
 initCalc();
+if (_restoredScroll) {
+  requestAnimationFrame(() => setTimeout(() => window.scrollTo({top: _restoredScroll, behavior: 'instant'}), 50));
+}
 
 let _toastTimer = null;
 function showToast(msg) {
