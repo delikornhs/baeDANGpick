@@ -435,14 +435,22 @@ function autoComment(e) {
   return parts.join(' ');
 }
 
+// ── HTML 엔티티 디코딩 ──
+function decodeHtml(s) {
+  const t = document.createElement('textarea');
+  t.innerHTML = s;
+  return t.value;
+}
+
 // ── 메인 렌더 ──
 function render(e) {
   ETF = e;
-  document.title = e.name + ' - 배당픽';
-  document.getElementById('bcName').textContent = e.name;
+  const name = decodeHtml(e.name);
+  document.title = name + ' - 배당픽';
+  document.getElementById('bcName').textContent = name;
 
   // 헤더
-  document.getElementById('hName').textContent = e.name;
+  document.getElementById('hName').textContent = name;
   document.getElementById('hBadges').innerHTML =
     `<span class="badge badge-brand">${e.brand}</span>` +
     `<span class="badge badge-type">${e.type || '기타'}</span>` +
