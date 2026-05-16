@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-70RCL5E7B8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-70RCL5E7B8');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETF 분배금 가이드 - 배당픽</title>
+<meta name="description" content="ETF 분배금이란 무엇인지, 배당락일과 최종 매수일의 의미, 분배율이 높으면 무조건 좋은지까지 완전 정리한 가이드입니다.">
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f7f7f4;--white:#fff;--ink:#1a1a18;--ink2:#4a4a45;--ink3:#9a9a93;--ink4:#d4d4cc;
+  --accent:#1d6b38;--accent-bg:#edf7f1;--accent-mid:#6cba8b;
+  --warn:#b45309;--warn-bg:#fffbeb;--red:#dc2626;--red-bg:#fef2f2;
+  --blue:#1d4ed8;--blue-bg:#eff6ff;--border:#e8e8e2;--radius:10px;
+}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",sans-serif;min-height:100vh}
+
+/* NAV */
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200}
+.nav-inner{max-width:1100px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:15px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:7px;flex-shrink:0;text-decoration:none;color:var(--ink)}
+.logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:16px;align-items:center}
+.nav-link{font-size:13px;color:var(--ink2);text-decoration:none;font-weight:500;padding:4px 0;border-bottom:2px solid transparent;transition:all .15s}
+.nav-link:hover,.nav-link.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* PAGE HEADER */
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:28px 20px 24px}
+.page-header-inner{max-width:1100px;margin:0 auto}
+.page-header h1{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
+.page-header p{font-size:13px;color:var(--ink3);line-height:1.6}
+
+/* SECTION */
+.section{max-width:1100px;margin:0 auto;padding:32px 20px}
+
+/* GUIDE CARDS */
+.guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.guide-card{display:block;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;text-decoration:none;color:var(--ink);transition:all .18s}
+.guide-card:hover{border-color:var(--accent-mid);box-shadow:0 4px 14px rgba(29,107,56,.08);transform:translateY(-1px)}
+.guide-num{font-size:10px;font-family:"DM Mono",monospace;color:var(--accent);font-weight:700;margin-bottom:8px}
+.guide-card-title{font-size:14px;font-weight:700;letter-spacing:-.3px;line-height:1.45;margin-bottom:5px}
+.guide-card-desc{font-size:12px;color:var(--ink3);margin-bottom:12px;line-height:1.5}
+.guide-read{font-size:12px;color:var(--accent);font-weight:500}
+
+@media(max-width:680px){
+  .guide-grid{grid-template-columns:1fr}
+  .nav-inner{height:auto;padding:8px 0;flex-direction:column;align-items:flex-start;gap:6px}
+  .nav-links{gap:12px}
+}
+
+footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-mark">&#8361;</div>배당픽</a>
+    <div class="nav-links">
+      <a href="/guide.html" class="nav-link on">가이드</a>
+      <a href="/calc.html" class="nav-link">계산기</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1>ETF 분배금 가이드</h1>
+    <p>ETF 분배금의 기초부터 실전 활용까지, 꼭 알아야 할 핵심만 정리했습니다.</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="guide-grid">
+    <a href="guide-1.html" class="guide-card">
+      <div class="guide-num">01</div>
+      <div class="guide-card-title">ETF 분배금이란?</div>
+      <div class="guide-card-desc">재원과 지급 방식 완전 정리</div>
+      <span class="guide-read">읽기 →</span>
+    </a>
+    <a href="guide-2.html" class="guide-card">
+      <div class="guide-num">02</div>
+      <div class="guide-card-title">배당락일과 최종 매수일</div>
+      <div class="guide-card-desc">왜 중요한가요?</div>
+      <span class="guide-read">읽기 →</span>
+    </a>
+    <a href="guide-3.html" class="guide-card">
+      <div class="guide-num">03</div>
+      <div class="guide-card-title">분배율이 높으면 무조건 좋을까?</div>
+      <div class="guide-card-desc">커버드콜 ETF 리스크</div>
+      <span class="guide-read">읽기 →</span>
+    </a>
+  </div>
+</div>
+
+<footer>
+  본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.
+  <br><a href="https://docs.google.com/forms/d/e/1FAIpQLSflCQap_v_YXjEwRVnjiaQhh9Nkppmw0HWK8YQ1HzR7lAKf9g/viewform?usp=publish-editor" target="_blank" rel="noopener" style="color:var(--ink3);text-decoration:underline;text-underline-offset:2px">오류 및 개선 의견 보내기</a>
+  &nbsp;·&nbsp;
+  <a href="/privacy.html" style="color:var(--ink3);text-decoration:underline;text-underline-offset:2px">개인정보처리방침</a>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-70RCL5E7B8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-70RCL5E7B8');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>분배금 계산기 - 배당픽</title>
+<meta name="description" content="ETF 분배금 계산기. 지금 매수하면 이번달 얼마 받는지 바로 계산하거나, 목표 월 분배금을 위한 투자 계획을 시뮬레이션하세요.">
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f7f7f4;--white:#fff;--ink:#1a1a18;--ink2:#4a4a45;--ink3:#9a9a93;--ink4:#d4d4cc;
+  --accent:#1d6b38;--accent-bg:#edf7f1;--accent-mid:#6cba8b;
+  --warn:#b45309;--warn-bg:#fffbeb;--red:#dc2626;--red-bg:#fef2f2;
+  --blue:#1d4ed8;--blue-bg:#eff6ff;--border:#e8e8e2;--radius:10px;
+}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",sans-serif;min-height:100vh}
+
+/* NAV */
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200}
+.nav-inner{max-width:1100px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:15px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:7px;flex-shrink:0;text-decoration:none;color:var(--ink)}
+.logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:16px;align-items:center}
+.nav-link{font-size:13px;color:var(--ink2);text-decoration:none;font-weight:500;padding:4px 0;border-bottom:2px solid transparent;transition:all .15s}
+.nav-link:hover,.nav-link.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* PAGE HEADER */
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:28px 20px 24px}
+.page-header-inner{max-width:1100px;margin:0 auto}
+.page-header h1{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
+.page-header p{font-size:13px;color:var(--ink3);line-height:1.6}
+
+/* SECTION */
+.section{max-width:1100px;margin:0 auto;padding:32px 20px}
+
+/* TOOL CARDS */
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:700px;margin:0 auto}
+.tool-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;cursor:pointer;transition:all .18s;text-decoration:none;color:var(--ink);display:block}
+.tool-card:hover{border-color:var(--accent-mid);box-shadow:0 4px 14px rgba(29,107,56,.08);transform:translateY(-2px)}
+.tool-card.disabled{cursor:default;opacity:.75}
+.tool-card.disabled:hover{transform:none;box-shadow:none;border-color:var(--border)}
+.tool-icon{font-size:28px;margin-bottom:12px}
+.tool-title{font-size:15px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px}
+.tool-desc{font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:12px}
+.tool-action{font-size:12px;font-weight:600;color:var(--accent)}
+.tool-badge{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:5px;font-size:10px;font-weight:600;color:var(--ink3);padding:2px 8px;margin-top:4px}
+
+@media(max-width:560px){
+  .tool-grid{grid-template-columns:1fr}
+  .nav-inner{height:auto;padding:8px 0;flex-direction:column;align-items:flex-start;gap:6px}
+  .nav-links{gap:12px}
+}
+
+footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8;margin-top:40px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-mark">&#8361;</div>배당픽</a>
+    <div class="nav-links">
+      <a href="/guide.html" class="nav-link">가이드</a>
+      <a href="/calc.html" class="nav-link on">계산기</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1>분배금 계산기</h1>
+    <p>투자 금액 또는 보유 수량을 입력해 분배금을 바로 확인하세요.</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="tool-grid">
+    <a href="/calc-now.html" class="tool-card">
+      <div class="tool-icon">💰</div>
+      <div class="tool-title">이번달 분배금 계산기</div>
+      <div class="tool-desc">지금 매수하면 이번달 얼마 받는지 바로 계산</div>
+      <div class="tool-action">계산하기 →</div>
+    </a>
+    <div class="tool-card disabled" onclick="showComingSoon(this)">
+      <div class="tool-icon">📊</div>
+      <div class="tool-title">월 분배금 플래너</div>
+      <div class="tool-desc">목표 월 분배금을 위한 투자 계획 시뮬레이션</div>
+      <div class="tool-badge" id="comingSoonBadge">서비스 준비 중</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.
+  <br><a href="https://docs.google.com/forms/d/e/1FAIpQLSflCQap_v_YXjEwRVnjiaQhh9Nkppmw0HWK8YQ1HzR7lAKf9g/viewform?usp=publish-editor" target="_blank" rel="noopener" style="color:var(--ink3);text-decoration:underline;text-underline-offset:2px">오류 및 개선 의견 보내기</a>
+  &nbsp;·&nbsp;
+  <a href="/privacy.html" style="color:var(--ink3);text-decoration:underline;text-underline-offset:2px">개인정보처리방침</a>
+</footer>
+
+<script>
+function showComingSoon(card) {
+  const badge = card.querySelector('.tool-badge');
+  const orig = badge.textContent;
+  badge.textContent = '서비스 준비 중입니다.';
+  badge.style.background = 'var(--warn-bg)';
+  badge.style.color = 'var(--warn)';
+  badge.style.borderColor = '#fcd34d';
+  setTimeout(() => {
+    badge.textContent = orig;
+    badge.style.background = '';
+    badge.style.color = '';
+    badge.style.borderColor = '';
+  }, 2000);
+}
+</script>
+</body>
+</html>

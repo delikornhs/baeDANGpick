@@ -24,7 +24,6 @@
 <meta name="twitter:title" content="배당픽 : ETF 분배금 일정 계산기">
 <meta name="twitter:description" content="국내 ETF 분배금 배당락일·지급일 일정과 분배율을 한눈에 확인하세요.">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -40,6 +39,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .nav-inner{max-width:1100px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-size:15px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:7px;flex-shrink:0}
 .logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:16px;align-items:center}
+.nav-link{font-size:13px;color:var(--ink2);text-decoration:none;font-weight:500;padding:4px 0;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+.nav-link:hover,.nav-link.on{color:var(--accent);border-bottom-color:var(--accent)}
 .nav-meta{font-size:11px;color:var(--ink3);font-family:"DM Mono",monospace;text-align:right;min-width:0}
 .nav-meta-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 .nav-meta-sub{font-size:10px;color:var(--ink3)}
@@ -50,6 +52,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .notice-badge.done{background:#edf7f1;color:#1d6b38;border:1px solid #6cba8b}
 @media(max-width:480px){
   .nav-inner{height:auto;padding:8px 0;flex-direction:column;align-items:flex-start;gap:3px}
+  .nav-links{gap:12px}
   .nav-meta{font-size:10px;text-align:left}
   .nav-meta-wrap{align-items:flex-start}
   .nav-badge-row{justify-content:flex-start}
@@ -260,6 +263,15 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 .sub-banner-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:"Noto Sans KR",sans-serif;flex-shrink:0}
 .sub-banner-btn:hover{background:#165a2e}
 
+/* CALC SHORTCUT */
+.calc-shortcut{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-top:12px;text-decoration:none;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.calc-shortcut:hover{border-color:var(--accent-mid);box-shadow:0 2px 10px rgba(29,107,56,.07)}
+.cs-left{display:flex;align-items:center;gap:14px}
+.cs-icon{font-size:22px;flex-shrink:0}
+.cs-title{font-size:13px;font-weight:700;margin-bottom:2px}
+.cs-desc{font-size:11px;color:var(--ink3);line-height:1.5}
+.cs-arrow{font-size:18px;color:var(--accent);flex-shrink:0}
+
 /* SUBSCRIBE MODAL */
 .sub-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:20px}
 .sub-modal-bg.open{display:flex}
@@ -343,7 +355,11 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 
 <nav>
   <div class="nav-inner">
-    <div class="logo"><div class="logo-mark">₩</div>배당픽<span style="font-size:13px;font-weight:500;color:var(--ink2);margin-left:5px">[ETF 분배금 일정 &amp; 계산기]</span></div>
+    <div class="logo"><div class="logo-mark">₩</div>배당픽</div>
+    <div class="nav-links">
+      <a href="/guide.html" class="nav-link">가이드</a>
+      <a href="/calc.html" class="nav-link">계산기</a>
+    </div>
     <div class="nav-meta" id="navMeta"></div>
   </div>
 </nav>
@@ -352,31 +368,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   <div class="hero-inner">
     <h1><span>언제까지</span> 사야 받고 <span>얼마나</span> 받을 수 있을까?</h1>
     <p>최종 매수일 · 배당락일 · 지급일 한눈에 확인</p>
-  </div>
-</div>
-
-<!-- ETF 가이드 -->
-<div class="section" style="padding-top:26px">
-  <div class="sec-title">ETF 분배금 가이드</div>
-  <div class="guide-grid">
-    <a href="guide-1.html" class="guide-card">
-      <div class="guide-num">01</div>
-      <div class="guide-card-title">ETF 분배금이란?</div>
-      <div class="guide-card-desc">재원과 지급 방식 완전 정리</div>
-      <span class="guide-read">읽기 →</span>
-    </a>
-    <a href="guide-2.html" class="guide-card">
-      <div class="guide-num">02</div>
-      <div class="guide-card-title">배당락일과 최종 매수일</div>
-      <div class="guide-card-desc">왜 중요한가요?</div>
-      <span class="guide-read">읽기 →</span>
-    </a>
-    <a href="guide-3.html" class="guide-card">
-      <div class="guide-num">03</div>
-      <div class="guide-card-title">분배율이 높으면 무조건 좋을까?</div>
-      <div class="guide-card-desc">커버드콜 ETF 리스크</div>
-      <span class="guide-read">읽기 →</span>
-    </a>
   </div>
 </div>
 
@@ -476,6 +467,18 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     </div>
     <button class="sub-banner-btn" onclick="openSubModal()">이메일 알림 신청</button>
   </div>
+
+  <!-- 계산기 바로가기 -->
+  <a href="/calc.html" class="calc-shortcut">
+    <div class="cs-left">
+      <div class="cs-icon">💰</div>
+      <div>
+        <div class="cs-title">분배금 계산기</div>
+        <div class="cs-desc">지금 매수하면 이번달 얼마 받는지 바로 계산해보세요</div>
+      </div>
+    </div>
+    <span class="cs-arrow">→</span>
+  </a>
 </div>
 
 <!-- 이메일 구독 모달 -->
@@ -491,60 +494,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     </label>
     <button class="sub-submit" id="subSubmitBtn" onclick="submitSubscribe()" disabled>신청하기</button>
     <div class="sub-msg" id="subMsg"></div>
-  </div>
-</div>
-
-<!-- 계산기 -->
-<div class="calc-sec">
-  <div class="calc-inner">
-    <div class="calc-title">💰 분배금 계산기</div>
-    <div class="calc-sub">ETF를 선택하고 투자 금액 또는 보유 수량을 입력하세요</div>
-    <div class="calc-layout">
-      <div>
-        <div class="c-label">ETF 선택</div>
-        <div class="c-search-wrap" id="cSearchWrap">
-          <span class="c-search-icon">🔍</span>
-          <input type="text" class="c-search-input" id="cSearch" placeholder="ETF명, 브랜드, 종목코드 검색..." autocomplete="off">
-          <div class="c-dropdown" id="cDropdown"></div>
-        </div>
-        <div class="c-selected-tag" id="cSelectedTag">
-          <span id="cSelectedName">—</span>
-          <span class="clear-btn" onclick="clearCalcEtf()">✕ 초기화</span>
-        </div>
-        <input type="hidden" id="cEtf" value="">
-        <div class="c-label">투자 금액</div>
-        <div class="c-row-wrap">
-          <input type="number" class="c-input" id="cAmt" placeholder="예: 10000000" style="margin:0">
-          <span class="c-unit">원</span>
-        </div>
-        <div class="c-label" style="margin-top:8px">또는 보유 수량</div>
-        <div class="c-row-wrap">
-          <input type="number" class="c-input" id="cQty" placeholder="예: 100" style="margin:0">
-          <span class="c-unit">주</span>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="c-right">
-          <div class="r-row"><span class="r-label">현재 주가<span style="font-size:10px;font-weight:400;opacity:.7;margin-left:4px">(어제 종가 기준)</span></span><span class="r-val" id="rP">—</span></div>
-          <div class="r-row"><span class="r-label">분배 주기</span><span class="r-val" id="rFreq">—</span></div>
-          <div class="r-row"><span class="r-label" id="rQLabel">매수 가능 수량</span><span class="r-val g" id="rQ">—</span></div>
-          <div class="r-row"><span class="r-label" id="rALabel">투자금액</span><span class="r-val" id="rA">—</span></div>
-        </div>
-        <div class="c-right">
-          <div class="r-row"><span class="r-label">주당 분배금</span><span class="r-val" id="rD">—</span></div>
-          <div class="r-row"><span class="r-label" style="color:#fff;font-weight:700">이번달 예상 분배금</span><span class="r-val big" id="rT">—</span></div>
-          <div class="r-row"><span class="r-label">이번달 분배율</span><span class="r-val g" id="rR">—</span></div>
-          <p style="font-size:10px;color:#888;line-height:1.6;margin-top:10px">
-            분배율은 가장 최근 공시된 분배금액과 공시일자 전일 종가로 산출한 참고 수치입니다.<br>
-            상단에 표시된 공시일자를 함께 확인하세요.
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="share-btns" id="calcShareBtns" style="display:none">
-      <button class="share-btn share-btn-img" onclick="saveCalcCard()">📸 이미지 저장</button>
-      <button class="share-btn share-btn-kako" onclick="kakaoShare()">💬 카카오톡 공유</button>
-    </div>
   </div>
 </div>
 
@@ -565,40 +514,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
       <div class="bars" id="tBars"></div>
       <div class="trend-avg" id="tAvg"></div>
     </div>
-  </div>
-</div>
-
-<!-- 공유 카드 (off-screen, html2canvas 대상) -->
-<div id="shareCard">
-  <div class="sc-banner" id="scBanner">⚠ 직전 분배금 기준 데이터입니다</div>
-  <div class="sc-head">
-    <div class="sc-logo-row">
-      <div class="sc-logo-mark">₩</div>
-      <span class="sc-logo-text">배당픽</span>
-    </div>
-    <span class="sc-ref-badge" id="scRef">—</span>
-  </div>
-  <div class="sc-etf-block">
-    <div class="sc-etf-name" id="scEtfName">—</div>
-    <div class="sc-etf-meta" id="scEtfMeta">—</div>
-  </div>
-  <div class="sc-stats">
-    <div class="sc-stat-row"><span class="sc-sl" id="scQtyLabel">매수 가능 수량</span><span class="sc-sv" id="scQty">—</span></div>
-    <div class="sc-stat-row"><span class="sc-sl">현재 주가</span><span class="sc-sv" id="scPrice">—</span></div>
-    <div class="sc-stat-row"><span class="sc-sl" id="scAmtLabel">매입금액</span><span class="sc-sv" id="scAmt">—</span></div>
-  </div>
-  <div class="sc-stats sc-stats-dist">
-    <div class="sc-stat-row"><span class="sc-sl">주당 분배금</span><span class="sc-sv" id="scDist">—</span></div>
-    <div class="sc-stat-row"><span class="sc-sl">이번달 분배율</span><span class="sc-sv" id="scRate">—</span></div>
-  </div>
-  <div class="sc-total-block">
-    <div class="sc-total-label">이번달 예상 분배금</div>
-    <div class="sc-total-val" id="scTotal">—</div>
-    <div class="sc-total-sub" id="scTotalSub"></div>
-  </div>
-  <div class="sc-foot">
-    <span id="scPriceDate"></span>
-    <span>bae-dang-pick.vercel.app</span>
   </div>
 </div>
 
@@ -1878,263 +1793,6 @@ function openModal(isin) {
 }
 function closeModal(){document.getElementById('modalBg').classList.remove('open');document.body.style.overflow='';}
 
-// ── 계산기 ──
-function initCalc() {
-  const input = document.getElementById('cSearch');
-  const dropdown = document.getElementById('cDropdown');
-  let focusIdx = -1;
-
-  function renderDropdown(q) {
-    const lq = q.toLowerCase().trim();
-    const results = lq
-      ? ALL_ETF.filter(e =>
-          e.name.toLowerCase().includes(lq) ||
-          e.brand.toLowerCase().includes(lq) ||
-          e.code.includes(lq)
-        ).slice(0, 30)
-      : ALL_ETF.slice().sort((a,b)=>a.name.localeCompare(b.name,'ko')).slice(0, 30);
-
-    if (!results.length) {
-      dropdown.innerHTML = '<div class="c-dropdown-item" style="color:#666;cursor:default">검색 결과 없음</div>';
-    } else {
-      dropdown.innerHTML = results.map((e,i) =>
-        `<div class="c-dropdown-item" data-isin="${e.isin}" data-idx="${i}">
-          <div class="item-name">[${e.brand}] ${e.name}</div>
-          <div class="item-meta">${e.code} · ${e.type} · ${e.freq} · ${comma(e.dist)}원</div>
-        </div>`
-      ).join('');
-    }
-    focusIdx = -1;
-    dropdown.classList.add('open');
-  }
-
-  input.addEventListener('focus', () => renderDropdown(input.value));
-  input.addEventListener('input', () => renderDropdown(input.value));
-
-  input.addEventListener('keydown', e => {
-    const items = dropdown.querySelectorAll('.c-dropdown-item[data-isin]');
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      focusIdx = Math.min(focusIdx+1, items.length-1);
-      items.forEach((el,i) => el.classList.toggle('focused', i===focusIdx));
-      items[focusIdx]?.scrollIntoView({block:'nearest'});
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      focusIdx = Math.max(focusIdx-1, 0);
-      items.forEach((el,i) => el.classList.toggle('focused', i===focusIdx));
-      items[focusIdx]?.scrollIntoView({block:'nearest'});
-    } else if (e.key === 'Enter' && focusIdx >= 0) {
-      e.preventDefault();
-      const isin = items[focusIdx]?.dataset.isin;
-      if (isin) selectCalcEtf(isin);
-    } else if (e.key === 'Escape') {
-      dropdown.classList.remove('open');
-    }
-  });
-
-  dropdown.addEventListener('click', e => {
-    const item = e.target.closest('.c-dropdown-item[data-isin]');
-    if (item) selectCalcEtf(item.dataset.isin);
-  });
-
-  document.addEventListener('click', e => {
-    if (!document.getElementById('cSearchWrap').contains(e.target)) {
-      dropdown.classList.remove('open');
-    }
-  });
-}
-
-function selectCalcEtf(isin) {
-  const e = ALL_ETF.find(x => x.isin === isin);
-  if (!e) return;
-  document.getElementById('cEtf').value = isin;
-  document.getElementById('cSearch').value = '';
-  document.getElementById('cDropdown').classList.remove('open');
-  const tag = document.getElementById('cSelectedTag');
-  document.getElementById('cSelectedName').textContent = `[${e.brand}] ${e.name} · ${comma(e.dist)}원`;
-  tag.style.display = 'flex';
-  calcResult();
-  if (e.freq === '분기배당이상' || e.freq === '분기배당' || e.freq === '연배당') {
-    showToast('월배당 ETF에 최적화된 계산기입니다. 분기·연 배당 ETF는 매달 지급되지 않으므로, 표시된 분배금과 분배율은 최근 공시 기준 참고값으로만 활용하세요.');
-  }
-}
-
-function clearCalcEtf() {
-  document.getElementById('cEtf').value = '';
-  document.getElementById('cSearch').value = '';
-  document.getElementById('cSelectedTag').style.display = 'none';
-  document.getElementById('cAmt').value = '';
-  document.getElementById('cQty').value = '';
-  resetCalc();
-}
-
-function amtRange(v) {
-  if(v < 1000000)  return '100만 미만';
-  if(v < 5000000)  return '100만~500만';
-  if(v < 10000000) return '500만~1000만';
-  if(v < 30000000) return '1000만~3000만';
-  if(v < 50000000) return '3000만~5000만';
-  return '5000만 이상';
-}
-function calcResult() {
-  const isin=document.getElementById('cEtf').value;
-  const amtV=parseInt(document.getElementById('cAmt').value)||0;
-  const qtyV=parseInt(document.getElementById('cQty').value)||0;
-  if(!isin){resetCalc();return;}
-  const e=ALL_ETF.find(x=>x.isin===isin);
-  document.getElementById('rP').textContent=comma(e.price)+'원';
-  document.getElementById('rFreq').innerHTML=`<span style="font-size:11px">${freqBadges(e)}</span>`;
-  document.getElementById('rD').textContent=comma(e.dist)+'원';
-
-  let qty=0, mode='none';
-  if(qtyV>0){qty=qtyV;document.getElementById('cAmt').value='';mode='qty';}
-  else if(amtV>0){qty=Math.floor(amtV/e.price);mode='amt';}
-
-  if(mode==='qty'){
-    document.getElementById('rQLabel').textContent='보유수량';
-    document.getElementById('rALabel').textContent='평가금액';
-  } else {
-    document.getElementById('rQLabel').textContent='매수 가능 수량';
-    document.getElementById('rALabel').textContent='매입금액';
-  }
-
-  if(qty<=0){['rQ','rA','rT','rR'].forEach(id=>document.getElementById(id).textContent='—');
-    document.getElementById('calcShareBtns').style.display='none';return;}
-
-  const actual=qty*e.price, total=qty*e.dist;
-  document.getElementById('rQ').textContent=comma(qty)+'주';
-  document.getElementById('rA').textContent=comma(actual)+'원';
-  document.getElementById('rT').textContent=comma(total)+'원';
-  document.getElementById('rR').textContent=e.rate+'%';
-  updateShareCard(e, qty, actual, total, mode);
-  document.getElementById('calcShareBtns').style.display='flex';
-  gtag('event','calc_etf_select',{etf_name:e.name,etf_code:e.code,amount_range:amtRange(actual)});
-}
-function resetCalc(){
-  ['rP','rFreq','rQ','rA','rD','rT','rR'].forEach(id=>document.getElementById(id).textContent='—');
-  document.getElementById('rQLabel').textContent='매수 가능 수량';
-  document.getElementById('rALabel').textContent='투자금액';
-  document.getElementById('calcShareBtns').style.display='none';
-}
-
-// ── 이벤트 ──
-document.getElementById('searchInput').addEventListener('input',e=>{q=e.target.value.trim();applyFilter();});
-document.getElementById('sortSel').addEventListener('change',e=>{sort=e.target.value;applyFilter();});
-document.getElementById('typeTabs').addEventListener('click',e=>{
-  if(!e.target.classList.contains('ftab')) return;
-  document.querySelectorAll('#typeTabs .ftab').forEach(b=>b.classList.remove('on'));
-  e.target.classList.add('on'); typeF=e.target.dataset.v; applyFilter();
-  gtag('event','filter_click',{filter_type:'유형',filter_value:typeF});
-});
-document.getElementById('freqTabs').addEventListener('click',e=>{
-  if(!e.target.classList.contains('ftab')) return;
-  document.querySelectorAll('#freqTabs .ftab').forEach(b=>b.classList.remove('on'));
-  e.target.classList.add('on'); freqF=e.target.dataset.v;
-  // 월배당 선택 시 타이밍 행 표시, 아니면 숨기고 초기화
-  const tr=document.getElementById('timingRow');
-  tr.style.display=freqF==='월배당'?'flex':'none';
-  timingF='전체';
-  document.querySelectorAll('#timingTabs .ftab').forEach((b,i)=>{b.classList.toggle('on',i===0);});
-  applyFilter();
-  gtag('event','filter_click',{filter_type:'분배주기',filter_value:freqF});
-});
-document.getElementById('timingTabs').addEventListener('click',e=>{
-  if(!e.target.classList.contains('ftab')) return;
-  document.querySelectorAll('#timingTabs .ftab').forEach(b=>b.classList.remove('on'));
-  e.target.classList.add('on'); timingF=e.target.dataset.v; applyFilter();
-  gtag('event','filter_click',{filter_type:'지급시기',filter_value:timingF});
-});
-
-document.getElementById('cAmt').addEventListener('input',()=>{document.getElementById('cQty').value='';calcResult();});
-document.getElementById('cQty').addEventListener('input',()=>{document.getElementById('cAmt').value='';calcResult();});
-
-// ── 공유 카드 ──
-function _cardRef(etf) {
-  let nd = null;
-  if (etf.timing === '월중') nd = _midNotice;
-  else if (etf.timing === '월말') nd = _endNotice;
-  if (nd) {
-    const d = new Date(nd);
-    const refM = d.getMonth()+1, refY = d.getFullYear();
-    const curY = TODAY.getFullYear(), curM = TODAY.getMonth()+1;
-    const isCurrent = refY===curY && refM===curM;
-    return { label: `${refM}월 기준`, showBanner: !isCurrent };
-  }
-  // 분기/연배당 → 직전 공시 기준
-  const d = new Date(etf.ex);
-  return { label: `${d.getMonth()+1}월 기준`, showBanner: false };
-}
-
-function updateShareCard(etf, qty, actual, total, mode) {
-  const ref = _cardRef(etf);
-  document.getElementById('scBanner').style.display = ref.showBanner ? 'flex' : 'none';
-  document.getElementById('scRef').textContent = ref.label;
-  document.getElementById('scEtfName').textContent = `[${etf.brand}] ${etf.name}`;
-  document.getElementById('scEtfMeta').textContent = `${etf.code} · ${etf.type} · ${etf.freq}`;
-  document.getElementById('scQtyLabel').textContent = mode==='qty' ? '보유수량' : '매수 가능 수량';
-  document.getElementById('scQty').textContent = comma(qty) + '주';
-  document.getElementById('scPrice').textContent = comma(etf.price) + '원';
-  document.getElementById('scAmtLabel').textContent = mode==='qty' ? '평가금액' : '매입금액';
-  document.getElementById('scAmt').textContent = comma(actual) + '원';
-  document.getElementById('scDist').textContent = comma(etf.dist) + '원';
-  document.getElementById('scRate').textContent = etf.rate + '%';
-  document.getElementById('scTotal').textContent = comma(total) + '원';
-  document.getElementById('scTotalSub').textContent = `${comma(qty)}주 × 주당 ${comma(etf.dist)}원`;
-  document.getElementById('scPriceDate').textContent = typeof PRICE_DATE!=='undefined'&&PRICE_DATE ? `주가 ${PRICE_DATE} 기준` : '';
-}
-
-function captureCard() {
-  const card = document.getElementById('shareCard');
-  return html2canvas(card, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
-}
-
-function saveCalcCard() {
-  const btn = event.currentTarget;
-  const orig = btn.innerHTML;
-  btn.innerHTML = '⏳ 저장 중...'; btn.disabled = true;
-  captureCard().then(canvas => {
-    const a = document.createElement('a');
-    a.download = '배당픽_분배금.png';
-    a.href = canvas.toDataURL('image/png');
-    a.click();
-    btn.innerHTML = '✅ 저장 완료';
-    setTimeout(()=>{btn.innerHTML=orig;btn.disabled=false;},1800);
-  }).catch(()=>{btn.innerHTML=orig;btn.disabled=false;alert('이미지 저장에 실패했습니다.');});
-}
-
-function kakaoShare() {
-  const btn = event.currentTarget;
-  const orig = btn.innerHTML;
-  btn.innerHTML = '⏳ 생성 중...'; btn.disabled = true;
-  captureCard().then(canvas => {
-    canvas.toBlob(blob => {
-      btn.innerHTML = orig; btn.disabled = false;
-      if (!blob) { alert('이미지 생성에 실패했습니다.'); return; }
-      const file = new File([blob], '배당픽_분배금.png', { type: 'image/png' });
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({ files: [file], title: '배당픽 분배금 계산 결과' })
-          .catch(e => { if (e.name !== 'AbortError') alert('공유에 실패했습니다.'); });
-      } else {
-        // 데스크톱: 이미지 다운로드 후 안내
-        const a = document.createElement('a');
-        a.download = '배당픽_분배금.png';
-        a.href = URL.createObjectURL(blob);
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(a.href), 3000);
-        showToast('이미지를 저장했습니다.\n카카오톡에서 [파일 첨부]로 공유해 주세요.');
-      }
-    }, 'image/png');
-  }).catch(()=>{btn.innerHTML=orig;btn.disabled=false;alert('이미지 생성에 실패했습니다.');});
-}
-
-// 카카오 공유 버튼: navigator.share 파일 공유 지원 환경에서만 표시
-(function(){
-  const testFile = new File([''], 't.png', {type:'image/png'});
-  if (navigator.share && navigator.canShare && navigator.canShare({files:[testFile]})) {
-    document.querySelector('.share-btn-kako').style.display = 'inline-flex';
-  }
-})();
-
 // ── 이메일 구독 ──
 // Google Apps Script 웹앱 URL (배포 후 아래 값을 실제 URL로 교체)
 const SUBSCRIBE_URL = 'https://script.google.com/macros/s/AKfycbwFAMgvKHIEMxI0Fn6y1q8ygxPAZE0pc8COIf7LCT5XAZSQqHJFMyExRJd43VidTkGZIQ/exec';
@@ -2236,7 +1894,6 @@ renderCalendar();
 const _restoredScroll = restoreFilterState();
 applyFilter();
 updateCmpBar();
-initCalc();
 if (_restoredScroll) {
   requestAnimationFrame(() => setTimeout(() => window.scrollTo({top: _restoredScroll, behavior: 'instant'}), 50));
 }
