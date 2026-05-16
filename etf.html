@@ -424,11 +424,9 @@ function render(e) {
     `<span class="badge badge-code">${e.code}</span>`;
 
   // 기본 정보
-  const indexName  = e.indexName  || '-';
   const listedDate = e.listedDate || '-';
   document.getElementById('basicInfo').innerHTML = `
     <div class="info-row"><span class="info-label">운용사</span><span class="info-val">${e.manager || e.brand}</span></div>
-    <div class="info-row"><span class="info-label">기초지수</span><span class="info-val">${indexName}</span></div>
     <div class="info-row"><span class="info-label">상장일</span><span class="info-val mono">${listedDate}</span></div>
     <div class="info-row"><span class="info-label">분배 주기</span><span class="info-val green">${e.freq}</span></div>
     <div class="info-row"><span class="info-label">전날 종가</span><span class="info-val mono">${comma(e.price)}원</span></div>

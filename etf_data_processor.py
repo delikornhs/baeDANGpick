@@ -482,7 +482,7 @@ def build_js(latest: list, price_date: str = ""):
                 f"timing:'{e.get('timing','')}', "
                 f"ex:'{e['ex_date']}',pay:'{e['pay_date']}',"
                 f"dist:{e['dist']},price:{e['price']},rate:{e['rate']},"
-                f"indexName:'{e.get('index_name','')}',listedDate:'{e.get('listed_date','')}', "
+                f"listedDate:'{e.get('listed_date','')}', "
                 f"ret1m:{e.get('return_1m',0)},ret3m:{e.get('return_3m',0)},"
                 f"ret6m:{e.get('return_6m',0)},ret1y:{e.get('return_1y',0)},"
                 f"retListed:{e.get('return_listed',0)},"
@@ -574,32 +574,31 @@ def fetch_etf_meta(codes: list) -> dict:
 
     for i, code in enumerate(missing):
         try:
-            url = f"https://finance.naver.com/item/etf.nhn?code={code}"
+            url = f"https://finance.naver.com/item/main.nhn?code={code}"
             req = urllib.request.Request(url, headers=headers)
             with urllib.request.urlopen(req, timeout=10) as resp:
                 content = resp.read().decode("utf-8", errors="replace")
 
-            # 기초지수 파싱
-            idx_m = re.search(
-                r'기초지수\s*(?:<[^>]+>)+\s*(?:<a[^>]*>)?([^<\n]{2,80})(?:</a>)?',
-                content)
-            # 상장일 파싱  (2002.10.14 형식)
+            # 상장일 파싱 (2002년 10월 14일 형식)
             date_m = re.search(
-                r'상장일\s*(?:<[^>]+>)+\s*([0-9]{4}[.\-][0-9]{2}[.\-][0-9]{2})',
-                content)
-            # 운용사 파싱
+                r'상장일.*?<td>(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일',
+                content, re.DOTALL)
+            # 운용사 파싱 (title 속성에서 추출)
             mgr_m = re.search(
-                r'운용사\s*(?:<[^>]+>)+\s*(?:<a[^>]*>)?([^<\n]{2,40})(?:</a>)?',
-                content)
+                r'운용사.*?title="([^"]{2,40})"',
+                content, re.DOTALL)
 
-            index_name = idx_m.group(1).strip() if idx_m else ""
-            listed_raw = date_m.group(1).strip() if date_m else ""
-            listed_date = listed_raw.replace(".", "-") if listed_raw else ""
-            manager = mgr_m.group(1).strip() if mgr_m else ""
+            if date_m:
+                listed_date = f"{date_m.group(1)}-{int(date_m.group(2)):02d}-{int(date_m.group(3)):02d}"
+            else:
+                listed_date = ""
+            mgr_raw = mgr_m.group(1).strip() if mgr_m else ""
+            # "(주)", "(유)" 등 법인형태 제거
+            manager = re.sub(r'\s*[（(][가-힣]{1,2}[)）]\s*$', '', mgr_raw).strip()
 
-            meta[code] = {"index_name": index_name, "listed_date": listed_date, "manager": manager}
+            meta[code] = {"listed_date": listed_date, "manager": manager}
         except Exception:
-            meta[code] = {"index_name": "", "listed_date": ""}
+            meta[code] = {"listed_date": "", "manager": ""}
 
         time.sleep(0.2)
         if (i + 1) % 50 == 0:
@@ -1006,7 +1005,6 @@ if __name__ == "__main__":
                 meta_cache = json.load(f)
         for item in latest:
             m = meta_cache.get(item["code"], {})
-            item["index_name"]  = m.get("index_name",  "")
             item["listed_date"] = m.get("listed_date", "")
             # 운용사: 네이버 스크래핑 값 우선, 없으면 브랜드 매핑, 최종 fallback 브랜드명
             item["manager"] = (

@@ -82,7 +82,7 @@ def main():
             e for e in latest
             if e.get('current')
             and e.get('freq') in ('월배당', '월배당추정')
-            and (args.timing is None or e.get('timing') == args.timing)
+            and e.get('timing') == timing_label
         ]
         current.sort(key=lambda x: float(x.get('rate', 0)), reverse=True)
 

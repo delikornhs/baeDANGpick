@@ -248,8 +248,8 @@ function renderAll(etfs) {
   etfs.forEach(e => { if(!e.stab||!e.stab.score) e.stab = computeStab(e); });
 
   const byStab  = etfs.filter(e=>e.stab&&e.stab.score).sort((a,b) => {
-    const order = {'매우 안정':0,'안정':1,'보통':2,'주의':3};
-    return (order[a.stab.score]||9) - (order[b.stab.score]||9);
+    const order = {'변동 적음':0,'변동 보통':1,'변동 큼':2,'변동 매우 큼':3,'데이터 부족':4};
+    return (order[a.stab.score]??9) - (order[b.stab.score]??9);
   })[0];
   const byRate  = [...etfs].sort((a,b) => b.rate - a.rate)[0];
 
@@ -373,9 +373,9 @@ function renderAll(etfs) {
     <thead><tr><th></th>${hdrCols}</tr></thead>
     <tbody>
       ${sectionHead('기본 정보')}
-      ${row('기초지수',  etfs.map(e=>e.indexName||'-'),   v=>`<span style="font-size:11px">${v}</span>`, false)}
-      ${row('분배 주기', etfs.map(e=>e.freq),              v=>v, false)}
-      ${row('전날 종가', etfs.map(e=>e.price),             v=>`${comma(v)}원`, false)}
+      ${row('분배 주기', etfs.map(e=>e.freq),  v=>v, false)}
+      ${row('상장일',   etfs.map(e=>e.listedDate||'-'), v=>v, false)}
+      ${row('전날 종가', etfs.map(e=>e.price), v=>`${comma(v)}원`, true)}
 
       ${sectionHead('이번달 분배')}
       ${row('주당 분배금', etfs.map(e=>e.dist),            v=>`${comma(v)}원`)}
