@@ -397,7 +397,7 @@ function renderAll(etfs) {
     <tbody>
       ${sectionHead('기본 정보')}
       ${row('분배 주기', etfs.map(e=>e.freq),  v=>v, false)}
-      ${row('상장일',   etfs.map(e=>e.listedDate||'-'), v=>v, false)}
+      ${(()=>{const cells=etfs.map(e=>`<td>${e.listedDate||'-'}</td>`).join('');return`<tr><td>상장일</td>${cells}</tr>`;})()}
       ${row('전날 종가', etfs.map(e=>e.price), v=>`${comma(v)}원`, true)}
 
       ${sectionHead('이번달 분배')}
