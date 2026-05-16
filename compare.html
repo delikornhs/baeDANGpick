@@ -140,15 +140,25 @@ const PALETTE = [
 ];
 const CHIP_CLS  = ['chip-0','chip-1','chip-2'];
 
+function getPeerGroup(e) {
+  const freq = e.freq || '';
+  const typ  = e.type || '';
+  if(freq === '월배당' || freq === '월배당추정') {
+    if(typ === '커버드콜') return '월배당+커버드콜';
+    if(typ === '리츠')     return '월배당+리츠';
+    return '월배당+일반배당';
+  }
+  return '분기배당이상';
+}
+
 function computeStab(e) {
   const trend = (e.trend || []).slice().sort((a,b) => a.ex_date < b.ex_date ? -1 : 1);
   const now   = new Date();
   const msBefore = days => new Date(now - days * 86400000).toISOString().slice(0,10);
-  const d6 = msBefore(182), d3 = msBefore(91);
+  const d6 = msBefore(182), d3 = msBefore(91), d12 = msBefore(365);
   const six   = trend.filter(t => t.ex_date >= d6).map(t => t.dist);
   const rec3  = trend.filter(t => t.ex_date >= d3).map(t => t.dist);
   const prev3 = trend.filter(t => t.ex_date >= d6 && t.ex_date < d3).map(t => t.dist);
-  const year  = trend.map(t => t.dist);
   const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
   let score = '', variation = 0;
   if(six.length >= 2) {
@@ -165,13 +175,31 @@ function computeStab(e) {
       trendLabel=trendPct>10?'증가':trendPct<-10?'감소':'유지'; }
   } else if(rec3.length) trendLabel='데이터 부족';
   const jan1=new Date().getFullYear()+'-01-01';
-  const yearDists=trend.filter(t=>t.ex_date>=jan1).map(t=>t.dist);
-  const annualDist=yearDists.reduce((a,b)=>a+b,0);
-  let level='';
-  const noticePrevPrice=e.dist>0&&e.rate>0?(e.dist/e.rate*100):e.price;
-  if(noticePrevPrice>0&&annualDist>0){const r=annualDist/noticePrevPrice*100;
-    level=r<4?'저분배율':r<10?'중분배율':r<15?'고분배율':'초고분배율';}
-  return {score,variation,trend:trendLabel,trendPct,level,annualDist};
+  const annualDist=trend.filter(t=>t.ex_date>=jan1).reduce((a,b)=>a+b.dist,0);
+
+  // 월분배 수준: 최근 12개월 평균 월분배율 → 동일유형 그룹 비교
+  const yr12_dists = trend.filter(t => t.ex_date >= d12).map(t => t.dist);
+  let avgMonthlyRate = 0, groupAvgRate = 0, level = '';
+  const peerGroup = getPeerGroup(e);
+  if(yr12_dists.length > 0 && e.price > 0) {
+    avgMonthlyRate = parseFloat((avg(yr12_dists) / e.price * 100).toFixed(3));
+  }
+  if(typeof ETF_ALL !== 'undefined' && avgMonthlyRate > 0) {
+    const peerRates = ETF_ALL
+      .filter(x => getPeerGroup(x) === peerGroup)
+      .map(x => {
+        if(x.stab && x.stab.avgMonthlyRate > 0) return x.stab.avgMonthlyRate;
+        const p12 = (x.trend||[]).filter(t=>t.ex_date>=d12).map(t=>t.dist);
+        return p12.length>0&&x.price>0 ? parseFloat((avg(p12)/x.price*100).toFixed(3)) : 0;
+      }).filter(r => r > 0);
+    if(peerRates.length > 0) {
+      groupAvgRate = parseFloat((peerRates.reduce((a,b)=>a+b,0)/peerRates.length).toFixed(3));
+      level = avgMonthlyRate > groupAvgRate*1.1 ? '평균보다 높음'
+            : avgMonthlyRate < groupAvgRate*0.9 ? '평균보다 낮음'
+            : '평균 수준';
+    }
+  }
+  return {score,variation,trend:trendLabel,trendPct,level,annualDist,avgMonthlyRate,groupAvgRate,peerGroup};
 }
 
 function stabBadge(score) {
@@ -187,7 +215,11 @@ function trendBadge(trend) {
 }
 function levelBadge(level) {
   if(!level) return '<span class="badge sb-keep">-</span>';
-  const cls = {'저분배율':'sb-keep','중분배율':'sb-good','고분배율':'sb-mid','초고분배율':'sb-warn'}[level]||'sb-keep';
+  const cls = {
+    '평균보다 높음': 'sb-good',
+    '평균 수준':     'sb-keep',
+    '평균보다 낮음': 'sb-mid',
+  }[level] || 'sb-keep';
   return `<span class="badge ${cls}">${level}</span>`;
 }
 
@@ -329,7 +361,7 @@ function renderAll(etfs) {
       const v = (e.stab||{})[getter];
       if(label==='안정성') return `<td>${stabBadge(v)}</td>`;
       if(label==='추세')   return `<td>${trendBadge(v)}</td>`;
-      if(label==='분배율 수준') return `<td>${levelBadge(v)}</td>`;
+      if(label==='월분배 수준') return `<td>${levelBadge(v)}</td>`;
       return `<td>${v||'-'}</td>`;
     }).join('');
     return `<tr><td>${label}</td>${cells}</tr>`;
@@ -355,9 +387,9 @@ function renderAll(etfs) {
       ${row('변동폭',       etfs.map(varDist),              v=>v!=null?`${v}%`:'-', false)}
 
       ${sectionHead('분배금 안정성')}
-      ${stabRow('안정성',    'score')}
-      ${stabRow('추세',      'trend')}
-      ${stabRow('분배율 수준','level')}
+      ${stabRow('안정성',     'score')}
+      ${stabRow('추세',       'trend')}
+      ${stabRow('월분배 수준','level')}
 
       ${sectionHead('수익률 — 주가')}
       ${retRow('1개월',   'ret1m')}

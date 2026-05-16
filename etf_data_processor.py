@@ -464,12 +464,15 @@ def build_js(latest: list, price_date: str = ""):
             trend_js = json.dumps(e.get("trend", []), ensure_ascii=False)
             current_js = "true" if e.get("current") else "false"
             stab_js = json.dumps({
-                "score":     e.get("stab_score",     ""),
-                "variation": e.get("stab_variation", 0),
-                "trend":     e.get("stab_trend",     ""),
-                "trendPct":  e.get("trend_change_pct", 0),
-                "level":     e.get("stab_level",     ""),
-                "annualDist":e.get("annual_dist",    0),
+                "score":          e.get("stab_score",      ""),
+                "variation":      e.get("stab_variation",  0),
+                "trend":          e.get("stab_trend",      ""),
+                "trendPct":       e.get("trend_change_pct",0),
+                "level":          e.get("stab_level",      ""),
+                "annualDist":     e.get("annual_dist",     0),
+                "avgMonthlyRate": e.get("avg_monthly_rate",0),
+                "groupAvgRate":   e.get("group_avg_rate",  0),
+                "peerGroup":      e.get("peer_group",      ""),
             }, ensure_ascii=False)
             manager_esc = e.get("manager", e["brand"]).replace("'", "\\'")
             items.append(
@@ -701,6 +704,7 @@ def calc_stability_metrics(isin: str, history: dict, current_price: int = 0) -> 
         "stab_score": "", "stab_variation": 0.0,
         "stab_trend": "", "trend_change_pct": 0.0,
         "stab_level": "", "annual_dist": 0,
+        "avg_monthly_dist": 0.0, "avg_monthly_rate": 0.0,
     }
     if isin not in history:
         return result
@@ -745,16 +749,28 @@ def calc_stability_metrics(isin: str, history: dict, current_price: int = 0) -> 
     elif recent3:
         result["stab_trend"] = "데이터 부족"
 
-    # ③ 분배율 수준: 가장 최근 공시일자 전일 종가 기준 (current_price = 공시일전일종가로 전달)
-    if current_price > 0 and result["annual_dist"] > 0:
-        annual_rate = result["annual_dist"] / current_price * 100
-        if   annual_rate <  4:  result["stab_level"] = "저분배율"
-        elif annual_rate < 10:  result["stab_level"] = "중분배율"
-        elif annual_rate < 15:  result["stab_level"] = "고분배율"
-        else:                   result["stab_level"] = "초고분배율"
-        result["annual_rate"] = round(annual_rate, 2)
+    # ③ 평균 월분배금·분배율 (최근 12개월, 동일유형 그룹비교용)
+    yr12_ago   = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
+    yr12_dists = [records[k]["dist"] for k in sorted_keys if k >= yr12_ago]
+    if yr12_dists:
+        avg_dist = sum(yr12_dists) / len(yr12_dists)
+        result["avg_monthly_dist"] = round(avg_dist, 1)
+        if current_price > 0:
+            result["avg_monthly_rate"] = round(avg_dist / current_price * 100, 3)
+    # stab_level 은 전체 ETF 처리 후 그룹 평균 대비로 별도 설정
 
     return result
+
+
+def get_peer_group(item: dict) -> str:
+    """ETF 동일유형 그룹 분류 (월분배 수준 비교용)"""
+    freq = item.get("freq", "")
+    typ  = item.get("type", "")
+    if freq in ("월배당", "월배당추정"):
+        if typ == "커버드콜": return "월배당+커버드콜"
+        if typ == "리츠":     return "월배당+리츠"
+        return "월배당+일반배당"
+    return "분기배당이상"
 
 
 def fetch_naver_prices(codes: list) -> tuple:
@@ -965,6 +981,24 @@ if __name__ == "__main__":
             stab = calc_stability_metrics(
                 item["isin"], history_for_returns, notice_prev_price)
             item.update(stab)
+
+        # 피어그룹 평균 월분배율 계산 → stab_level 설정
+        peer_rates = defaultdict(list)
+        for item in latest:
+            r = item.get("avg_monthly_rate", 0)
+            if r > 0:
+                peer_rates[get_peer_group(item)].append(r)
+        group_avg = {g: sum(v)/len(v) for g, v in peer_rates.items() if v}
+        for item in latest:
+            g  = get_peer_group(item)
+            my = item.get("avg_monthly_rate", 0)
+            ga = group_avg.get(g, 0)
+            item["peer_group"]     = g
+            item["group_avg_rate"] = round(ga, 3)
+            if my > 0 and ga > 0:
+                if   my > ga * 1.1: item["stab_level"] = "평균보다 높음"
+                elif my < ga * 0.9: item["stab_level"] = "평균보다 낮음"
+                else:               item["stab_level"] = "평균 수준"
 
         # 메타 데이터 병합 (기초지수, 상장일, 운용사)
         meta_cache = {}
