@@ -65,7 +65,13 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .hero-inner{max-width:1100px;margin:0 auto}
 .hero h1{font-size:24px;font-weight:700;letter-spacing:-.5px;line-height:1.35;margin-bottom:8px}
 .hero h1 span{color:#6cba8b}
-.hero p{font-size:13px;color:#999;line-height:1.7;margin-bottom:14px}
+.hero p{font-size:13px;color:#999;line-height:1.7;margin-bottom:20px}
+.hero-links{display:flex;flex-direction:column;gap:8px}
+.hero-link{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px 14px;text-decoration:none;color:#fff;transition:background .15s,border-color .15s}
+.hero-link:hover{background:rgba(108,186,139,.15);border-color:rgba(108,186,139,.4)}
+.hero-link-label{font-size:13px;font-weight:700;white-space:nowrap;color:#6cba8b}
+.hero-link-desc{font-size:11px;color:#aaa;line-height:1.4}
+.hero-link-arrow{margin-left:auto;font-size:14px;color:#6cba8b;flex-shrink:0}
 
 /* SECTION */
 .section{max-width:1100px;margin:0 auto;padding:24px 20px 0}
@@ -265,8 +271,8 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 .sub-banner-btn:hover{background:#165a2e}
 
 /* CALC SHORTCUT */
-.calc-shortcut{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-top:12px;text-decoration:none;color:var(--ink);transition:border-color .15s,box-shadow .15s}
-.calc-shortcut:hover{border-color:var(--accent-mid);box-shadow:0 2px 10px rgba(29,107,56,.07)}
+.calc-shortcut{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--accent-bg);border:1px solid var(--accent-mid);border-radius:var(--radius);padding:16px 20px;margin-top:12px;text-decoration:none;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.calc-shortcut:hover{border-color:var(--accent);box-shadow:0 2px 10px rgba(29,107,56,.12)}
 .cs-left{display:flex;align-items:center;gap:14px}
 .cs-icon{font-size:22px;flex-shrink:0}
 .cs-title{font-size:13px;font-weight:700;margin-bottom:2px}
@@ -357,10 +363,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <nav>
   <div class="nav-inner">
     <div class="logo"><div class="logo-mark">₩</div>배당픽</div>
-    <div class="nav-links">
-      <a href="/guide.html" class="nav-link">가이드</a>
-      <a href="/calc.html" class="nav-link">계산기</a>
-    </div>
     <div class="nav-meta" id="navMeta"></div>
   </div>
 </nav>
@@ -369,6 +371,18 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   <div class="hero-inner">
     <h1><span>언제까지</span> 사야 받고 <span>얼마나</span> 받을 수 있을까?</h1>
     <p>최종 매수일 · 배당락일 · 지급일 한눈에 확인</p>
+    <div class="hero-links">
+      <a href="/guide.html" class="hero-link">
+        <span class="hero-link-label">ETF 분배금 가이드</span>
+        <span class="hero-link-desc">ETF 분배금의 기초부터 실전 활용까지, 꼭 알아야 할 핵심이 궁금하다면 클릭</span>
+        <span class="hero-link-arrow">→</span>
+      </a>
+      <a href="/calc.html" class="hero-link">
+        <span class="hero-link-label">분배금 계산기</span>
+        <span class="hero-link-desc">지금 매수하면 얼마나 받을 수 있을지 궁금하면 클릭</span>
+        <span class="hero-link-arrow">→</span>
+      </a>
+    </div>
   </div>
 </div>
 
@@ -1793,6 +1807,33 @@ function openModal(isin) {
   document.body.style.overflow='hidden';
 }
 function closeModal(){document.getElementById('modalBg').classList.remove('open');document.body.style.overflow='';}
+
+// ── 이벤트 ──
+document.getElementById('searchInput').addEventListener('input',e=>{q=e.target.value.trim();page=1;applyFilter();});
+document.getElementById('sortSel').addEventListener('change',e=>{sort=e.target.value;applyFilter();});
+document.getElementById('typeTabs').addEventListener('click',e=>{
+  if(!e.target.classList.contains('ftab')) return;
+  document.querySelectorAll('#typeTabs .ftab').forEach(b=>b.classList.remove('on'));
+  e.target.classList.add('on'); typeF=e.target.dataset.v; page=1; applyFilter();
+  gtag('event','filter_click',{filter_type:'유형',filter_value:typeF});
+});
+document.getElementById('freqTabs').addEventListener('click',e=>{
+  if(!e.target.classList.contains('ftab')) return;
+  document.querySelectorAll('#freqTabs .ftab').forEach(b=>b.classList.remove('on'));
+  e.target.classList.add('on'); freqF=e.target.dataset.v;
+  const tr=document.getElementById('timingRow');
+  tr.style.display=freqF==='월배당'?'flex':'none';
+  timingF='전체';
+  document.querySelectorAll('#timingTabs .ftab').forEach((b,i)=>{b.classList.toggle('on',i===0);});
+  page=1; applyFilter();
+  gtag('event','filter_click',{filter_type:'분배주기',filter_value:freqF});
+});
+document.getElementById('timingTabs').addEventListener('click',e=>{
+  if(!e.target.classList.contains('ftab')) return;
+  document.querySelectorAll('#timingTabs .ftab').forEach(b=>b.classList.remove('on'));
+  e.target.classList.add('on'); timingF=e.target.dataset.v; page=1; applyFilter();
+  gtag('event','filter_click',{filter_type:'지급시기',filter_value:timingF});
+});
 
 // ── 이메일 구독 ──
 // Google Apps Script 웹앱 URL (배포 후 아래 값을 실제 URL로 교체)
