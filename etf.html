@@ -523,21 +523,65 @@ function render(e) {
     });
     const vals = trend.map(t => t.dist);
     const avg  = Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+
+    // 3개월 이동평균 (MA3) — 3개 이상일 때만 계산
+    const hasMA = vals.length >= 3;
+    const ma3 = vals.map((_, i) =>
+      i < 2 ? null : Math.round((vals[i-2] + vals[i-1] + vals[i]) / 3)
+    );
+
+    // 바 색상: MA선 기준 (위=짙은 초록, 아래=연한 초록) / MA없으면 전체평균 기준
+    const barColors = vals.map((v, i) => {
+      const ref = (hasMA && ma3[i] != null) ? ma3[i] : avg;
+      return v >= ref ? '#1d6b38' : '#6cba8b';
+    });
+
+    const datasets = [{
+      label: '분배금',
+      data: vals,
+      backgroundColor: barColors,
+      borderRadius: 4,
+      order: 2,
+    }];
+    if(hasMA) {
+      datasets.push({
+        type: 'line',
+        label: '3개월 이동평균',
+        data: ma3,
+        borderColor: 'rgba(154,154,147,0.85)',
+        borderWidth: 1.5,
+        borderDash: [4, 3],
+        pointRadius: 0,
+        pointHoverRadius: 3,
+        fill: false,
+        tension: 0.3,
+        order: 1,
+      });
+    }
+
     const ctx  = document.getElementById('distChart').getContext('2d');
     new Chart(ctx, {
       type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          data: vals,
-          backgroundColor: vals.map(v => v >= avg ? '#1d6b38' : '#6cba8b'),
-          borderRadius: 4,
-        }]
-      },
+      data: { labels, datasets },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false },
-          tooltip: { callbacks: { label: ctx => comma(ctx.raw) + '원' } } },
+        plugins: {
+          legend: {
+            display: hasMA,
+            labels: {
+              font: { size: 10 }, color: '#9a9a93', boxWidth: 18, padding: 8,
+              filter: item => item.text === '3개월 이동평균',
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                if(ctx.dataset.label === '3개월 이동평균') return '3MA: ' + (ctx.raw != null ? comma(ctx.raw) + '원' : '-');
+                return comma(ctx.raw) + '원';
+              }
+            }
+          }
+        },
         scales: {
           x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#9a9a93' } },
           y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 }, color: '#9a9a93',
