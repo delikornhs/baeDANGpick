@@ -190,6 +190,40 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 .sim-table tr:last-child td{border-bottom:none}
 .sim-table tr.highlight td{background:var(--accent-bg);font-weight:700}
 .sim-disclaimer{font-size:10px;color:var(--ink3);line-height:1.6;text-align:center;padding:12px 0 4px}
+
+/* CALC INFO TOGGLE */
+.calc-info-box{background:var(--accent-bg);border:1px solid #c5e8d2;border-radius:10px;margin-bottom:18px;overflow:hidden}
+.calc-info-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 16px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;color:var(--accent);text-align:left}
+.calc-info-arrow{font-size:10px;transition:transform .22s;flex-shrink:0}
+.calc-info-body{padding:0 16px 14px;font-size:12px;color:var(--ink2);line-height:1.75}
+.calc-formula-line{background:var(--white);border:1px solid #c5e8d2;border-radius:7px;padding:9px 13px;margin:8px 0;font-family:"DM Mono",monospace;font-size:11px;color:var(--ink2);line-height:2}
+.calc-note{font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.75}
+
+/* DETAIL BTN */
+.detail-btn{font-size:10px;font-weight:700;color:var(--accent);background:var(--accent-bg);border:1px solid #c5e8d2;border-radius:4px;padding:2px 7px;cursor:pointer;margin-left:5px;font-family:inherit;vertical-align:middle;white-space:nowrap;line-height:1.6}
+.detail-btn:hover{background:#d1f0e0}
+
+/* MODAL */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:1000;align-items:flex-end;justify-content:center}
+.modal-ov.open{display:flex}
+.modal-box{background:var(--white);border-radius:18px 18px 0 0;width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 -6px 32px rgba(0,0,0,.14)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 13px;border-bottom:1px solid var(--border);flex-shrink:0}
+.modal-head h3{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.modal-close{background:none;border:none;cursor:pointer;font-size:22px;color:var(--ink3);line-height:1;padding:0 4px}
+.modal-body{overflow-y:auto;padding:14px 20px 28px;-webkit-overflow-scrolling:touch}
+.modal-fnote{background:var(--accent-bg);border-radius:8px;padding:10px 14px;font-size:11px;color:var(--ink2);line-height:1.9;margin-bottom:12px;font-family:"DM Mono",monospace}
+.modal-fnote b{font-family:"Noto Sans KR",sans-serif;font-weight:700;display:block;margin-bottom:4px;font-size:12px;color:var(--accent)}
+.dtable{width:100%;border-collapse:collapse;font-size:12px}
+.dtable th{background:var(--bg);padding:7px 10px;text-align:right;font-size:11px;font-weight:700;color:var(--ink3);border-bottom:1px solid var(--border);white-space:nowrap}
+.dtable th:first-child{text-align:center}
+.dtable td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--ink2);font-family:"DM Mono",monospace;font-size:11px;white-space:nowrap}
+.dtable td:first-child{text-align:center;font-family:inherit;font-weight:700;color:var(--ink);font-size:12px}
+.dtable tr:last-child td{border-bottom:none;background:var(--accent-bg);color:var(--accent);font-weight:700}
+@media(max-width:560px){
+  .modal-box{max-height:86vh;border-radius:14px 14px 0 0}
+  .sim-table td,.sim-table th{padding:7px 6px}
+  .detail-btn{padding:2px 5px}
+}
 .inline-amt{font-size:11px;color:var(--ink3);margin-top:3px;display:block;min-height:16px;font-style:italic}
 @media(max-width:560px){
   .sim-input-grid{grid-template-columns:1fr}
@@ -369,6 +403,26 @@ footer a{color:var(--ink3);text-underline-offset:2px}
         <div style="position:relative;height:220px;margin-bottom:20px">
           <canvas id="simChart"></canvas>
         </div>
+        <div class="calc-info-box">
+          <button class="calc-info-toggle" onclick="toggleCalcInfo(this)" aria-expanded="false">
+            <span>💡 이렇게 계산해요</span>
+            <span class="calc-info-arrow">▼</span>
+          </button>
+          <div class="calc-info-body" id="calcInfoBody" style="display:none">
+            <div>매달 두 단계로 계산합니다.</div>
+            <div class="calc-formula-line">
+              ① 평가금액 = 전달 평가금액 × (1 + 월 주가 변동) + 월 납입금<br>
+              ② 월 분배금 = 이달 평가금액 × 월 분배율
+            </div>
+            <div class="calc-note">
+              → 평가금액이 커질수록 주가 상승분의 절대값도 커져 <strong>가속도</strong>가 붙습니다.<br>
+              → 재투자 ON: 분배금을 바로 재매수 → NAV 하락 상쇄 → 평가금액 유지<br>
+              → 재투자 OFF: 분배금 수령 → NAV 하락 → 평가금액 감소<br>
+              → 각 연도 행의 <strong>상세</strong> 버튼으로 월별 계산을 확인할 수 있습니다.
+            </div>
+          </div>
+        </div>
+
         <div class="sim-table-wrap">
           <table class="sim-table">
             <thead>
@@ -397,6 +451,20 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   <h2>ETF를 찾을 수 없습니다</h2>
   <p style="color:var(--ink3);font-size:13px;margin-bottom:20px">종목코드를 확인해 주세요.</p>
   <a href="/" class="btn btn-primary">목록으로 돌아가기</a>
+</div>
+
+<!-- 월별 상세 모달 -->
+<div class="modal-ov" id="detailModal" onclick="closeDetailOv(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="detailTitle"></h3>
+      <button class="modal-close" onclick="closeDetail()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-fnote" id="detailFormula"></div>
+      <table class="dtable" id="detailTable"></table>
+    </div>
+  </div>
 </div>
 
 <footer>
@@ -945,8 +1013,63 @@ function fmtWon2(n) {
   return n.toLocaleString() + '원';
 }
 
-// ── 시뮬레이션 차트 인스턴스 ──
+// ── 시뮬레이션 차트 인스턴스 / 데이터 (모듈 스코프) ──
 let simChartInst = null;
+let monthData    = [];   // 월별 시뮬레이션 결과 (팝업에서 참조)
+let simParams    = {};   // 마지막 실행 파라미터 (팝업 공식 표시용)
+
+// ── 계산 설명 토글 ──
+function toggleCalcInfo(btn) {
+  const body  = document.getElementById('calcInfoBody');
+  const arrow = btn.querySelector('.calc-info-arrow');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : '';
+  arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+
+// ── 월별 상세 팝업 ──
+function showDetail(startM, endM, label) {
+  const months = monthData.slice(startM - 1, endM);
+  if (!months.length) return;
+
+  document.getElementById('detailTitle').textContent = label + ' 월별 상세';
+
+  const g  = (simParams.priceChange || 0) / 100;
+  const r  = (simParams.rate || 0) / 100;
+  const ma = simParams.monthlyAdd || 0;
+  document.getElementById('detailFormula').innerHTML =
+    `<b>📐 계산 방식</b>` +
+    `① 평가금액 = 전달 평가금액 × ${(1 + g).toFixed(2)} + ${fmtWon2(ma)}<br>` +
+    `② 월 분배금 = 이달 평가금액 × ${simParams.rate}%`;
+
+  let rows = '';
+  months.forEach((d, i) => {
+    const isLast = i === months.length - 1;
+    rows += `<tr${isLast ? '' : ''}>
+      <td>${d.month}개월</td>
+      <td>${fmtWon2(d.portfolio)}</td>
+      <td>${fmtWon2(d.dist)}</td>
+    </tr>`;
+  });
+  document.getElementById('detailTable').innerHTML =
+    `<thead><tr>
+      <th style="text-align:center">월</th>
+      <th>ETF 평가금액</th>
+      <th>월 분배금</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>`;
+
+  document.getElementById('detailModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDetail() {
+  document.getElementById('detailModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeDetailOv(e) {
+  if (e.target === document.getElementById('detailModal')) closeDetail();
+}
 
 // ── 시뮬레이션 실행 ──
 function runSimulation() {
@@ -960,6 +1083,9 @@ function runSimulation() {
   if (targetDist <= 0) { alert('목표 월 분배금을 입력해주세요.'); return; }
   if (rate <= 0)       { alert('월평균 분배율을 입력해주세요.'); return; }
 
+  // 파라미터 저장 (팝업 공식 표시용)
+  simParams = { currentInvest, monthlyAdd, rate, priceChange, reinvest };
+
   const r = rate / 100;
   const g = priceChange / 100;
 
@@ -968,57 +1094,57 @@ function runSimulation() {
   //   재투자 ON: 분배금은 NAV 하락분 상쇄 → 포트폴리오 순증가 없음 (납입금·주가변동만)
   //   재투자 OFF: 분배금만큼 NAV 하락 → 포트폴리오 감소
   let portfolio = currentInvest;
-  const monthData = [];
+  monthData = [];   // 모듈 스코프 초기화
   let reachedMonth = null;
 
   for (let m = 1; m <= 600; m++) {
-    // 주가 변동 반영 + 월 납입금 추가
     portfolio = portfolio * (1 + g) + monthlyAdd;
-    // 이달 분배금 (포트폴리오 기준)
     const dist = Math.round(portfolio * r);
-    if (!reinvest) {
-      // 재투자 안 하면 NAV 하락 → 포트폴리오에서 차감
-      portfolio = portfolio - dist;
-    }
-    // 재투자 ON: 분배금이 NAV 하락분을 채우므로 portfolio 변동 없음
+    if (!reinvest) portfolio = portfolio - dist;
     monthData.push({ month: m, portfolio: Math.round(portfolio), dist });
-
     if (reachedMonth == null && dist >= targetDist) {
       reachedMonth = m;
-      break; // 목표 달성 시점에서 멈춤
+      break;
     }
   }
 
-  const totalMonths  = reachedMonth || monthData.length;
-  const reachedData  = reachedMonth ? monthData[reachedMonth - 1] : null;
+  const totalMonths = reachedMonth || monthData.length;
+  const reachedData = reachedMonth ? monthData[reachedMonth - 1] : null;
 
   // ── 연도별 테이블 데이터 ──
   const tableRows = [];
   const years = Math.ceil(totalMonths / 12);
   for (let y = 1; y <= years; y++) {
-    const endMonth = Math.min(y * 12, totalMonths);
-    const d = monthData[endMonth - 1];
+    const endMonth   = Math.min(y * 12, totalMonths);
+    const d          = monthData[endMonth - 1];
     if (!d) break;
     const sliceStart = (y - 1) * 12;
     const annualDist = monthData.slice(sliceStart, endMonth).reduce((s, v) => s + v.dist, 0);
-    const isGoal = reachedMonth && endMonth >= reachedMonth;
+    const isGoal     = !!(reachedMonth && endMonth >= reachedMonth);
+    const startM     = sliceStart + 1;
+    const endM       = endMonth;
     tableRows.push({
       label: endMonth < totalMonths ? y + '년' : (endMonth % 12 === 0 ? y + '년' : endMonth + '개월'),
-      portfolio: d.portfolio, monthDist: d.dist, annualDist, isGoal
+      portfolio: d.portfolio, monthDist: d.dist, annualDist, isGoal, startM, endM
     });
   }
-  // 달성 월이 연 단위와 다르면 마지막 행 추가
+
+  // 달성 월이 연 단위가 아닐 때 ★ 처리
   if (reachedMonth && reachedMonth % 12 !== 0) {
-    const d = monthData[reachedMonth - 1];
+    const d          = monthData[reachedMonth - 1];
     const annualDist = Math.round(d.dist * 12); // 연환산
-    // 이미 추가됐는지 확인 (마지막 행이 달성 월과 같으면 생략)
-    const lastRow = tableRows[tableRows.length - 1];
+    const lastRow    = tableRows[tableRows.length - 1];
     if (!lastRow || lastRow.monthDist !== d.dist) {
-      tableRows.push({ label: reachedMonth + '개월 ★', portfolio: d.portfolio, monthDist: d.dist, annualDist, isGoal: true, annualNote: true });
+      // 별도 행 추가 (거의 발생 안 하지만 안전장치)
+      const startM = Math.floor((reachedMonth - 1) / 12) * 12 + 1;
+      tableRows.push({ label: reachedMonth + '개월 ★', portfolio: d.portfolio, monthDist: d.dist,
+        annualDist, isGoal: true, annualNote: true, startM, endM: reachedMonth });
     } else {
-      lastRow.label += ' ★';
-      lastRow.isGoal = true;
-      // 연 단위 달성의 경우 annualDist는 12개월 합산 = 정확 (별도 처리 불필요)
+      // 루프 마지막 행이 이미 달성 월 → ★ 추가 및 연환산 수정
+      lastRow.label     += ' ★';
+      lastRow.isGoal     = true;
+      lastRow.annualDist = annualDist;  // 부분합 → 연환산으로 교체
+      lastRow.annualNote = true;
     }
   }
 
@@ -1050,13 +1176,18 @@ function runSimulation() {
   document.getElementById('simSummary').innerHTML = summaryHtml;
 
   // ── 표 출력 ──
-  document.getElementById('simTableBody').innerHTML = tableRows.map(row => `
-    <tr class="${row.isGoal ? 'highlight' : ''}">
+  document.getElementById('simTableBody').innerHTML = tableRows.map(row => {
+    const lbl = row.label.replace(' ★', '').trim();
+    return `<tr class="${row.isGoal ? 'highlight' : ''}">
       <td>${row.label}</td>
-      <td>${fmtWon2(row.portfolio)}</td>
+      <td style="white-space:nowrap">
+        ${fmtWon2(row.portfolio)}
+        <button class="detail-btn" onclick="showDetail(${row.startM},${row.endM},'${lbl}')">상세</button>
+      </td>
       <td>${fmtWon2(row.monthDist)}</td>
       <td>${fmtWon2(row.annualDist)}${row.annualNote ? '<span style="font-size:10px;color:var(--ink3);margin-left:3px">연환산</span>' : ''}</td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 
   // ── 차트 ──
   if (simChartInst) { simChartInst.destroy(); simChartInst = null; }
