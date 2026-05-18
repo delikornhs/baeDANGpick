@@ -170,9 +170,10 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 .sim-opt-input input{width:70px;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;font-weight:500;font-family:inherit;background:var(--white);outline:none;text-align:center}
 .sim-opt-input input:focus{border-color:var(--accent-mid)}
 .sim-opt-input .sim-unit{font-size:11px;color:var(--ink2)}
-.sim-reinvest{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:8px;margin-bottom:4px}
-.sim-reinvest label{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12px;font-weight:600;color:var(--blue)}
-.sim-reinvest input[type=checkbox]{width:14px;height:14px;accent-color:var(--blue);cursor:pointer}
+.sim-reinvest{display:flex;flex-direction:column;gap:5px;padding:10px 12px;background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:8px;margin-bottom:4px}
+.sim-reinvest label{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12px;font-weight:600;color:var(--blue);white-space:nowrap}
+.sim-reinvest input[type=checkbox]{width:14px;height:14px;accent-color:var(--blue);cursor:pointer;flex-shrink:0}
+.sim-reinvest-note{font-size:11px;color:#3b82f6;line-height:1.6}
 .sim-run-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;transition:all .15s}
 .sim-run-btn:hover{background:#155228}
 /* sim results */
@@ -197,7 +198,10 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 .calc-info-arrow{font-size:10px;transition:transform .22s;flex-shrink:0}
 .calc-info-body{padding:0 16px 14px;font-size:12px;color:var(--ink2);line-height:1.75}
 .calc-formula-line{background:var(--white);border:1px solid #c5e8d2;border-radius:7px;padding:9px 13px;margin:8px 0;font-family:"DM Mono",monospace;font-size:11px;color:var(--ink2);line-height:2}
-.calc-note{font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.75}
+.calc-note{margin-top:10px}
+.calc-note-item{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--ink3);line-height:1.65;padding:3px 0}
+.calc-note-item .cni-bullet{flex-shrink:0;color:var(--accent);font-weight:700}
+.calc-note-item .cni-text{word-break:keep-all}
 
 /* DETAIL BTN */
 .detail-btn{font-size:10px;font-weight:700;color:var(--accent);background:var(--accent-bg);border:1px solid #c5e8d2;border-radius:4px;padding:2px 7px;cursor:pointer;margin-left:5px;font-family:inherit;vertical-align:middle;white-space:nowrap;line-height:1.6}
@@ -378,7 +382,7 @@ footer a{color:var(--ink3);text-underline-offset:2px}
             <input type="checkbox" id="simReinvest" checked>
             분배금 재투자
           </label>
-          <span style="font-size:11px;color:#3b82f6">재투자: 분배금은 지급 즉시 동일 ETF에 재투자됩니다 (NAV 유지, 순수익 없음)</span>
+          <span class="sim-reinvest-note">분배금은 지급 즉시 동일 ETF에 재투자됩니다 (NAV 유지, 순수익 없음)</span>
         </div>
       </div>
 
@@ -409,16 +413,28 @@ footer a{color:var(--ink3);text-underline-offset:2px}
             <span class="calc-info-arrow">▼</span>
           </button>
           <div class="calc-info-body" id="calcInfoBody" style="display:none">
-            <div>매달 두 단계로 계산합니다.</div>
+            <div style="font-size:12px;margin-bottom:4px">매달 두 단계로 계산합니다.</div>
             <div class="calc-formula-line">
               ① 평가금액 = 전달 평가금액 × (1 + 월 주가 변동) + 월 납입금<br>
               ② 월 분배금 = 이달 평가금액 × 월 분배율
             </div>
             <div class="calc-note">
-              → 평가금액이 커질수록 주가 상승분의 절대값도 커져 <strong>가속도</strong>가 붙습니다.<br>
-              → 재투자 ON: 분배금을 바로 재매수 → NAV 하락 상쇄 → 평가금액 유지<br>
-              → 재투자 OFF: 분배금 수령 → NAV 하락 → 평가금액 감소<br>
-              → 각 연도 행의 <strong>상세</strong> 버튼으로 월별 계산을 확인할 수 있습니다.
+              <div class="calc-note-item">
+                <span class="cni-bullet">·</span>
+                <span class="cni-text">평가금액이 커질수록 주가 상승분의 절대값도 커져 <strong>가속도</strong>가 붙습니다.</span>
+              </div>
+              <div class="calc-note-item">
+                <span class="cni-bullet">·</span>
+                <span class="cni-text"><strong>재투자 ON</strong>: 분배금을 바로 재매수, NAV 하락 상쇄 → 평가금액 유지</span>
+              </div>
+              <div class="calc-note-item">
+                <span class="cni-bullet">·</span>
+                <span class="cni-text"><strong>재투자 OFF</strong>: 분배금 수령, NAV 하락 → 평가금액 감소</span>
+              </div>
+              <div class="calc-note-item">
+                <span class="cni-bullet">·</span>
+                <span class="cni-text">각 연도 행의 <strong>상세</strong> 버튼으로 월별 계산을 확인할 수 있습니다.</span>
+              </div>
             </div>
           </div>
         </div>
