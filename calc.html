@@ -92,12 +92,12 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
       <div class="tool-desc">지금 매수하면 이번달 얼마 받는지 바로 계산</div>
       <div class="tool-action">계산하기 →</div>
     </a>
-    <div class="tool-card disabled" onclick="showComingSoon(this)">
+    <a href="/calc-planner.html" class="tool-card">
       <div class="tool-icon">📊</div>
       <div class="tool-title">월 분배금 플래너</div>
       <div class="tool-desc">목표 월 분배금을 위한 투자 계획 시뮬레이션</div>
-      <div class="tool-badge" id="comingSoonBadge">서비스 준비 중</div>
-    </div>
+      <div class="tool-action">플래너 시작 →</div>
+    </a>
   </div>
 </div>
 
@@ -108,21 +108,5 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   <a href="/privacy.html" style="color:var(--ink3);text-decoration:underline;text-underline-offset:2px">개인정보처리방침</a>
 </footer>
 
-<script>
-function showComingSoon(card) {
-  const badge = card.querySelector('.tool-badge');
-  const orig = badge.textContent;
-  badge.textContent = '서비스 준비 중입니다.';
-  badge.style.background = 'var(--warn-bg)';
-  badge.style.color = 'var(--warn)';
-  badge.style.borderColor = '#fcd34d';
-  setTimeout(() => {
-    badge.textContent = orig;
-    badge.style.background = '';
-    badge.style.color = '';
-    badge.style.borderColor = '';
-  }, 2000);
-}
-</script>
 </body>
 </html>

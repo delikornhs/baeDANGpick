@@ -138,6 +138,64 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 /* ── error ── */
 .error-wrap{text-align:center;padding:80px 20px}
 .error-wrap h2{font-size:20px;color:var(--ink3);margin-bottom:8px}
+/* ── tabs ── */
+.tab-nav{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px}
+.tab-btn{font-size:13px;font-weight:600;padding:10px 20px;border:none;background:transparent;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;font-family:inherit;letter-spacing:-.2px}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.on{color:var(--accent);border-bottom-color:var(--accent)}
+/* ── simulation tab ── */
+.sim-wrap{max-width:700px}
+.sim-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px}
+.sim-input-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.sim-input-item label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:6px}
+.sim-input-box{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0 12px;transition:border-color .15s}
+.sim-input-box:focus-within{border-color:var(--accent-mid)}
+.sim-input-box input{flex:1;border:none;background:transparent;padding:10px 0;font-size:14px;font-family:inherit;font-weight:500;outline:none;min-width:0}
+.sim-input-box input::placeholder{color:var(--ink4)}
+.sim-unit{font-size:12px;color:var(--ink3);white-space:nowrap}
+.sim-assumption{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.sim-assumption-item{flex:1;min-width:140px}
+.sim-assumption-item label{display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:5px}
+.sim-assumption-item .sim-input-box{background:var(--blue-bg);border-color:#bfdbfe}
+.sim-assumption-item .sim-input-box input{font-size:13px}
+.sim-assumption-note{font-size:10px;color:var(--ink3);margin-top:4px;line-height:1.4}
+.sim-opt-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.sim-opt-item{border:1px solid var(--border);border-radius:8px;padding:12px;background:var(--bg);transition:border-color .15s}
+.sim-opt-item.active{border-color:var(--accent-mid);background:var(--accent-bg)}
+.sim-opt-check-label{display:flex;align-items:center;gap:7px;cursor:pointer;margin-bottom:8px}
+.sim-opt-check-label input[type=checkbox]{width:14px;height:14px;accent-color:var(--accent);cursor:pointer}
+.sim-opt-check-text{font-size:12px;font-weight:600;color:var(--ink2)}
+.sim-opt-input{display:flex;align-items:center;gap:6px;opacity:.4;pointer-events:none;transition:opacity .15s}
+.sim-opt-input.enabled{opacity:1;pointer-events:auto}
+.sim-opt-input input{width:70px;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;font-weight:500;font-family:inherit;background:var(--white);outline:none;text-align:center}
+.sim-opt-input input:focus{border-color:var(--accent-mid)}
+.sim-opt-input .sim-unit{font-size:11px;color:var(--ink2)}
+.sim-reinvest{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:8px;margin-bottom:4px}
+.sim-reinvest label{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12px;font-weight:600;color:var(--blue)}
+.sim-reinvest input[type=checkbox]{width:14px;height:14px;accent-color:var(--blue);cursor:pointer}
+.sim-run-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;transition:all .15s}
+.sim-run-btn:hover{background:#155228}
+/* sim results */
+.sim-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.sim-sum-box{background:var(--accent-bg);border-radius:8px;padding:12px 14px}
+.sim-sum-label{font-size:11px;color:var(--accent);margin-bottom:4px}
+.sim-sum-val{font-size:18px;font-weight:700;color:var(--accent);font-family:"DM Mono",monospace}
+.sim-sum-sub{font-size:10px;color:var(--accent-mid);margin-top:2px}
+.sim-table-wrap{overflow-x:auto}
+.sim-table{width:100%;border-collapse:collapse;font-size:12px}
+.sim-table th{background:var(--bg);color:var(--ink3);font-weight:600;padding:8px 10px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap}
+.sim-table th:first-child{text-align:left}
+.sim-table td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--border);font-family:"DM Mono",monospace;font-size:11px}
+.sim-table td:first-child{text-align:left;font-family:inherit;color:var(--ink2);font-weight:600}
+.sim-table tr:last-child td{border-bottom:none}
+.sim-table tr.highlight td{background:var(--accent-bg);font-weight:700}
+.sim-disclaimer{font-size:10px;color:var(--ink3);line-height:1.6;text-align:center;padding:12px 0 4px}
+@media(max-width:560px){
+  .sim-input-grid{grid-template-columns:1fr}
+  .sim-opt-row{grid-template-columns:1fr}
+  .sim-summary{grid-template-columns:1fr}
+  .tab-btn{font-size:12px;padding:8px 14px}
+}
 </style>
 </head>
 <body>
@@ -169,6 +227,14 @@ footer a{color:var(--ink3);text-underline-offset:2px}
     </div>
   </div>
 
+  <!-- 탭 네비게이션 -->
+  <div class="tab-nav">
+    <button class="tab-btn on" id="tabBtnInfo" onclick="switchTab('info')">기본 정보</button>
+    <button class="tab-btn" id="tabBtnSim" onclick="switchTab('sim')">📊 시뮬레이션</button>
+  </div>
+
+  <!-- 탭: 기본 정보 -->
+  <div id="tabInfo">
   <!-- 좌/우 2열 -->
   <div class="grid2 left-wide">
     <!-- 좌 -->
@@ -225,6 +291,114 @@ footer a{color:var(--ink3);text-underline-offset:2px}
       </div>
     </div>
   </div>
+  </div><!-- /tabInfo -->
+
+  <!-- 탭: 시뮬레이션 -->
+  <div id="tabSim" style="display:none">
+    <div class="sim-wrap">
+
+      <!-- 조건 입력 -->
+      <div class="sim-card">
+        <div class="card-title">투자 조건</div>
+        <div class="sim-input-grid">
+          <div class="sim-input-item">
+            <label for="simCurrentInvest">현재 투자금</label>
+            <div class="sim-input-box">
+              <input type="number" id="simCurrentInvest" placeholder="0" min="0">
+              <span class="sim-unit">원</span>
+            </div>
+          </div>
+          <div class="sim-input-item">
+            <label for="simMonthlyAdd">월 납입금</label>
+            <div class="sim-input-box">
+              <input type="number" id="simMonthlyAdd" placeholder="0" min="0">
+              <span class="sim-unit">원</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-title" style="margin-bottom:10px">가정 설정</div>
+        <div class="sim-assumption">
+          <div class="sim-assumption-item">
+            <label>월평균 분배율</label>
+            <div class="sim-input-box" style="background:var(--blue-bg);border-color:#bfdbfe">
+              <input type="number" id="simRate" step="0.01" min="0" max="10" placeholder="0.00">
+              <span class="sim-unit">%</span>
+            </div>
+            <div class="sim-assumption-note">기본값: 이 ETF의 과거 평균 분배율</div>
+          </div>
+          <div class="sim-assumption-item">
+            <label>월 주가 변동</label>
+            <div class="sim-input-box" style="background:var(--blue-bg);border-color:#bfdbfe">
+              <input type="number" id="simPriceChange" step="0.1" min="-10" max="10" value="0">
+              <span class="sim-unit">%</span>
+            </div>
+            <div class="sim-assumption-note">0% = 주가 변동 없다고 가정</div>
+          </div>
+        </div>
+
+        <div class="sim-reinvest">
+          <label>
+            <input type="checkbox" id="simReinvest" checked>
+            분배금 재투자
+          </label>
+          <span style="font-size:11px;color:#3b82f6">재투자 시 분배금이 원금에 합산되어 복리 효과가 적용됩니다</span>
+        </div>
+      </div>
+
+      <!-- 시뮬레이션 옵션 -->
+      <div class="sim-card">
+        <div class="card-title">시뮬레이션 옵션</div>
+        <div class="sim-opt-row">
+          <div class="sim-opt-item" id="simOpt1Wrap">
+            <label class="sim-opt-check-label">
+              <input type="checkbox" id="simOpt1Check">
+              <span class="sim-opt-check-text">옵션 1 · 목표 기간</span>
+            </label>
+            <div class="sim-opt-input" id="simOpt1Input">
+              <input type="number" id="simOpt1Period" value="24" min="1" max="600">
+              <span class="sim-unit">개월 후 예상 월 분배금</span>
+            </div>
+          </div>
+          <div class="sim-opt-item" id="simOpt2Wrap">
+            <label class="sim-opt-check-label">
+              <input type="checkbox" id="simOpt2Check">
+              <span class="sim-opt-check-text">옵션 2 · 목표 월 분배금</span>
+            </label>
+            <div class="sim-opt-input" id="simOpt2Input">
+              <input type="number" id="simOpt2Target" placeholder="500000" min="0">
+              <span class="sim-unit">원 달성까지</span>
+            </div>
+          </div>
+        </div>
+        <button class="sim-run-btn" onclick="runSimulation()">시뮬레이션 실행</button>
+      </div>
+
+      <!-- 결과 -->
+      <div class="sim-card" id="simResultCard" style="display:none">
+        <div class="card-title">시뮬레이션 결과</div>
+        <div class="sim-summary" id="simSummary"></div>
+        <div class="sim-table-wrap">
+          <table class="sim-table">
+            <thead>
+              <tr>
+                <th>기간</th>
+                <th>포트폴리오 가치</th>
+                <th>월 분배금</th>
+                <th>연간 분배금</th>
+              </tr>
+            </thead>
+            <tbody id="simTableBody"></tbody>
+          </table>
+        </div>
+        <div class="sim-disclaimer">
+          ※ 본 시뮬레이션은 설정한 가정값 기반의 수치이며 실제 분배금과 다를 수 있습니다. 과거 분배율이 미래에도 유지된다는 보장은 없습니다.
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /tabSim -->
+
 </div>
 
 <!-- 에러 -->
@@ -722,6 +896,151 @@ function render(e) {
 
   updateCompareUI();
   document.getElementById('main').style.display = '';
+
+  // 시뮬레이션 기본값: 이 ETF의 평균 분배율 세팅
+  const avgRate = (e.stab && e.stab.avgMonthlyRate > 0) ? e.stab.avgMonthlyRate : (e.rate || 0);
+  if(avgRate > 0) document.getElementById('simRate').value = avgRate.toFixed(2);
+
+  // 옵션 체크박스 초기화
+  initSimOptionCheck('simOpt1Check','simOpt1Wrap','simOpt1Input');
+  initSimOptionCheck('simOpt2Check','simOpt2Wrap','simOpt2Input');
+
+  // ?tab=sim 파라미터로 들어온 경우 자동으로 시뮬레이션 탭 활성화
+  const tabParam = new URLSearchParams(location.search).get('tab');
+  if(tabParam === 'sim') switchTab('sim');
+}
+
+// ── 탭 전환 ──
+function switchTab(tab) {
+  const isInfo = tab === 'info';
+  document.getElementById('tabInfo').style.display   = isInfo ? '' : 'none';
+  document.getElementById('tabSim').style.display    = isInfo ? 'none' : '';
+  document.getElementById('tabBtnInfo').classList.toggle('on', isInfo);
+  document.getElementById('tabBtnSim').classList.toggle('on', !isInfo);
+  // URL 파라미터 갱신 (히스토리 교체)
+  const url = new URL(location.href);
+  if(tab === 'sim') url.searchParams.set('tab','sim');
+  else url.searchParams.delete('tab');
+  history.replaceState(null, '', url.toString());
+}
+
+// ── 시뮬레이션 옵션 체크박스 ──
+function initSimOptionCheck(checkId, wrapId, inputId) {
+  const chk  = document.getElementById(checkId);
+  const wrap = document.getElementById(wrapId);
+  const inp  = document.getElementById(inputId);
+  function update() {
+    if(chk.checked) { wrap.classList.add('active'); inp.classList.add('enabled'); }
+    else { wrap.classList.remove('active'); inp.classList.remove('enabled'); }
+  }
+  chk.addEventListener('change', update);
+  update();
+}
+
+// ── 시뮬레이션 실행 ──
+function runSimulation() {
+  const currentInvest = parseInt(document.getElementById('simCurrentInvest').value) || 0;
+  const monthlyAdd    = parseInt(document.getElementById('simMonthlyAdd').value) || 0;
+  const rate          = parseFloat(document.getElementById('simRate').value) || 0;
+  const priceChange   = parseFloat(document.getElementById('simPriceChange').value) || 0;
+  const reinvest      = document.getElementById('simReinvest').checked;
+  const opt1          = document.getElementById('simOpt1Check').checked;
+  const opt2          = document.getElementById('simOpt2Check').checked;
+  const period        = parseInt(document.getElementById('simOpt1Period').value) || 24;
+  const targetDist    = parseInt(document.getElementById('simOpt2Target').value) || 0;
+
+  if(!opt1 && !opt2) { alert('옵션 1 또는 옵션 2를 선택해주세요.'); return; }
+  if(opt2 && targetDist <= 0) { alert('목표 월 분배금을 입력해주세요.'); return; }
+  if(rate <= 0) { alert('월평균 분배율을 입력해주세요.'); return; }
+
+  const r = rate / 100;
+  const g = priceChange / 100;
+
+  // 기간 결정: opt1이면 period개월, opt2이면 최대 600개월
+  const simMonths = opt1 ? period : 600;
+
+  // 월별 시뮬
+  let portfolio = currentInvest;
+  let monthData = [];
+  let opt2ReachedMonth = null;
+
+  for(let m = 1; m <= simMonths; m++) {
+    portfolio = portfolio * (1 + g) + monthlyAdd;
+    const dist = portfolio * r;
+    if(reinvest) portfolio += dist;
+    monthData.push({ month: m, portfolio: Math.round(portfolio), dist: Math.round(dist) });
+    if(opt2 && opt2ReachedMonth == null && dist >= targetDist) {
+      opt2ReachedMonth = m;
+      if(!opt1) break; // opt2만 선택했으면 달성 시점에서 멈춤
+    }
+  }
+
+  // 결과 표: 연 단위 (1년, 2년, ...) + 마지막 달
+  const tableRows = [];
+  const yearsToShow = Math.ceil(simMonths / 12);
+  for(let y = 1; y <= yearsToShow; y++) {
+    const idx = Math.min(y * 12, monthData.length) - 1;
+    if(idx < 0) break;
+    const d = monthData[idx];
+    const annualDist = monthData.slice(Math.max(0,(y-1)*12), y*12).reduce((s,v)=>s+v.dist,0);
+    tableRows.push({ label: y + '년', m: d.month, portfolio: d.portfolio, monthDist: d.dist, annualDist, isTarget: opt1 && d.month === period });
+  }
+  // 마지막 달이 연 단위와 안 맞으면 추가
+  const last = monthData[monthData.length - 1];
+  if(last && last.month % 12 !== 0) {
+    const annualDist = monthData.slice(-(last.month % 12)).reduce((s,v)=>s+v.dist,0);
+    tableRows.push({ label: `${last.month}개월`, m: last.month, portfolio: last.portfolio, monthDist: last.dist, annualDist, isTarget: true });
+  }
+
+  // 요약 박스
+  const finalRow = tableRows[tableRows.length - 1];
+  let summaryHtml = '';
+  if(opt1) {
+    const targetRow = monthData[period - 1];
+    if(targetRow) summaryHtml += `
+      <div class="sim-sum-box">
+        <div class="sim-sum-label">${period}개월 후 예상 월 분배금</div>
+        <div class="sim-sum-val">${fmtWon2(targetRow.dist)}</div>
+        <div class="sim-sum-sub">포트폴리오: ${fmtWon2(targetRow.portfolio)}</div>
+      </div>`;
+  }
+  if(opt2) {
+    if(opt2ReachedMonth) {
+      const yrs = Math.floor(opt2ReachedMonth / 12);
+      const mos = opt2ReachedMonth % 12;
+      const dur = yrs > 0 ? `${yrs}년 ${mos > 0 ? mos+'개월' : ''}` : `${mos}개월`;
+      summaryHtml += `
+        <div class="sim-sum-box">
+          <div class="sim-sum-label">목표 ${fmtWon2(targetDist)} 달성까지</div>
+          <div class="sim-sum-val">${dur.trim()}</div>
+          <div class="sim-sum-sub">${opt2ReachedMonth}개월 소요</div>
+        </div>`;
+    } else {
+      summaryHtml += `
+        <div class="sim-sum-box">
+          <div class="sim-sum-label">목표 ${fmtWon2(targetDist)} 달성</div>
+          <div class="sim-sum-val" style="font-size:14px">달성 어려움</div>
+          <div class="sim-sum-sub">50년 내 목표 달성 불가</div>
+        </div>`;
+    }
+  }
+
+  document.getElementById('simSummary').innerHTML = summaryHtml;
+  document.getElementById('simTableBody').innerHTML = tableRows.map(row => `
+    <tr class="${row.isTarget ? 'highlight' : ''}">
+      <td>${row.label}</td>
+      <td>${fmtWon2(row.portfolio)}</td>
+      <td>${fmtWon2(row.monthDist)}</td>
+      <td>${fmtWon2(row.annualDist)}</td>
+    </tr>`).join('');
+  document.getElementById('simResultCard').style.display = '';
+  document.getElementById('simResultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function fmtWon2(n) {
+  if(n >= 100000000) return (n / 100000000).toFixed(1) + '억';
+  if(n >= 10000) return Math.round(n / 10000) + '만';
+  return n.toLocaleString();
 }
 
 // ── 초기화 ──
