@@ -103,6 +103,24 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .no-results{text-align:center;padding:48px 20px;color:var(--ink3)}
 .no-results p{font-size:14px;margin-bottom:6px}
 
+/* INTRO SECTION */
+.intro-section{max-width:800px;margin:0 auto;padding:24px 20px 0}
+.intro-banner{background:linear-gradient(135deg,#1d6b38 0%,#2d8a50 100%);border-radius:14px;padding:28px 28px 24px;color:#fff;margin-bottom:20px}
+.intro-banner-label{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;opacity:.75;margin-bottom:10px}
+.intro-banner-title{font-size:19px;font-weight:700;letter-spacing:-.5px;line-height:1.4;margin-bottom:14px}
+.intro-banner-title em{font-style:normal;color:#a8dfc0}
+.intro-steps{display:flex;gap:10px;flex-wrap:wrap}
+.intro-step{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:12px 14px;flex:1;min-width:140px}
+.intro-step-num{font-size:10px;font-weight:700;opacity:.65;margin-bottom:4px;letter-spacing:.5px}
+.intro-step-text{font-size:12px;font-weight:600;line-height:1.45}
+.intro-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.intro-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.intro-card-icon{font-size:20px;margin-bottom:8px}
+.intro-card-title{font-size:13px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px}
+.intro-card-desc{font-size:11px;color:var(--ink3);line-height:1.6}
+.intro-card-desc strong{color:var(--ink2)}
+@media(max-width:560px){.intro-cards{grid-template-columns:1fr}.intro-steps{flex-direction:column}}
+
 /* DISCLAIMER */
 .disclaimer{max-width:800px;margin:0 auto;padding:0 20px 32px;font-size:11px;color:var(--ink3);line-height:1.7;text-align:center}
 
@@ -135,11 +153,38 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   </div>
 </div>
 
+<div class="intro-section">
+
+  <div class="intro-banner">
+    <div class="intro-banner-label">월 분배금 플래너</div>
+    <div class="intro-banner-title">원하는 조건의 ETF를 찾고,<br><em>목표 월 분배금</em> 달성까지 시뮬레이션</div>
+    <div class="intro-steps">
+      <div class="intro-step"><div class="intro-step-num">STEP 1</div><div class="intro-step-text">상품 조건 선택<br>(유형·주기·변동성)</div></div>
+      <div class="intro-step"><div class="intro-step-num">STEP 2</div><div class="intro-step-text">조건에 맞는<br>ETF 목록 확인</div></div>
+      <div class="intro-step"><div class="intro-step-num">STEP 3</div><div class="intro-step-text">ETF 클릭 →<br>상세 시뮬레이션</div></div>
+    </div>
+  </div>
+
+  <div class="intro-cards">
+    <div class="intro-card">
+      <div class="intro-card-icon">📐</div>
+      <div class="intro-card-title">시뮬레이션 방식</div>
+      <div class="intro-card-desc">해당 ETF의 <strong>과거 평균 분배율</strong>을 기준으로, 초기 투자금과 월 납입금이 쌓이면서 <strong>월 분배금이 어떻게 늘어나는지</strong> 계산합니다.</div>
+    </div>
+    <div class="intro-card">
+      <div class="intro-card-icon">🎯</div>
+      <div class="intro-card-title">목표 달성 시점 확인</div>
+      <div class="intro-card-desc">목표 월 분배금을 입력하면 <strong>몇 개월 후 달성 가능한지</strong> 월별 예상 분배금 표와 차트로 보여줍니다.</div>
+    </div>
+  </div>
+
+</div>
+
 <div class="section">
 
   <div class="filter-card">
     <div class="filter-card-title">상품 조건 선택</div>
-    <div class="filter-card-desc">원하는 항목을 선택하세요. 선택하지 않은 항목은 전체 포함됩니다.</div>
+    <div class="filter-card-desc">원하는 항목을 선택하세요. 선택한 항목만 필터링됩니다.</div>
 
     <div class="filter-group">
       <div class="filter-label">유형</div>
