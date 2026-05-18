@@ -190,9 +190,9 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 .sim-table tr:last-child td{border-bottom:none}
 .sim-table tr.highlight td{background:var(--accent-bg);font-weight:700}
 .sim-disclaimer{font-size:10px;color:var(--ink3);line-height:1.6;text-align:center;padding:12px 0 4px}
+.inline-amt{font-size:11px;color:var(--ink3);margin-top:3px;display:block;min-height:16px;font-style:italic}
 @media(max-width:560px){
   .sim-input-grid{grid-template-columns:1fr}
-  .sim-opt-row{grid-template-columns:1fr}
   .sim-summary{grid-template-columns:1fr}
   .tab-btn{font-size:12px;padding:8px 14px}
 }
@@ -297,23 +297,25 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   <div id="tabSim" style="display:none">
     <div class="sim-wrap">
 
-      <!-- 조건 입력 -->
+      <!-- 투자 조건 -->
       <div class="sim-card">
         <div class="card-title">투자 조건</div>
         <div class="sim-input-grid">
           <div class="sim-input-item">
             <label for="simCurrentInvest">현재 투자금</label>
             <div class="sim-input-box">
-              <input type="number" id="simCurrentInvest" placeholder="0" min="0">
+              <input type="number" id="simCurrentInvest" placeholder="0" min="0" oninput="updateInlineAmt(this,'dispCurrentInvest')">
               <span class="sim-unit">원</span>
             </div>
+            <span class="inline-amt" id="dispCurrentInvest"></span>
           </div>
           <div class="sim-input-item">
             <label for="simMonthlyAdd">월 납입금</label>
             <div class="sim-input-box">
-              <input type="number" id="simMonthlyAdd" placeholder="0" min="0">
+              <input type="number" id="simMonthlyAdd" placeholder="0" min="0" oninput="updateInlineAmt(this,'dispMonthlyAdd')">
               <span class="sim-unit">원</span>
             </div>
+            <span class="inline-amt" id="dispMonthlyAdd"></span>
           </div>
         </div>
 
@@ -342,42 +344,31 @@ footer a{color:var(--ink3);text-underline-offset:2px}
             <input type="checkbox" id="simReinvest" checked>
             분배금 재투자
           </label>
-          <span style="font-size:11px;color:#3b82f6">재투자 시 분배금이 원금에 합산되어 복리 효과가 적용됩니다</span>
+          <span style="font-size:11px;color:#3b82f6">재투자: 분배금은 지급 즉시 동일 ETF에 재투자됩니다 (NAV 유지, 순수익 없음)</span>
         </div>
       </div>
 
-      <!-- 시뮬레이션 옵션 -->
+      <!-- 목표 월 분배금 -->
       <div class="sim-card">
-        <div class="card-title">시뮬레이션 옵션</div>
-        <div class="sim-opt-row">
-          <div class="sim-opt-item" id="simOpt1Wrap">
-            <label class="sim-opt-check-label">
-              <input type="checkbox" id="simOpt1Check">
-              <span class="sim-opt-check-text">옵션 1 · 목표 기간</span>
-            </label>
-            <div class="sim-opt-input" id="simOpt1Input">
-              <input type="number" id="simOpt1Period" value="24" min="1" max="600">
-              <span class="sim-unit">개월 후 예상 월 분배금</span>
-            </div>
+        <div class="card-title">목표 월 분배금</div>
+        <p style="font-size:12px;color:var(--ink3);margin-bottom:14px">목표 월 분배금을 입력하면 달성까지 몇 개월이 걸리는지 시뮬레이션합니다.</p>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="sim-input-box" style="flex:1;min-width:160px">
+            <input type="number" id="simOpt2Target" placeholder="500000" min="0" style="font-size:15px;font-weight:700" oninput="updateInlineAmt(this,'dispOpt2Target')">
+            <span class="sim-unit">원 / 월</span>
           </div>
-          <div class="sim-opt-item" id="simOpt2Wrap">
-            <label class="sim-opt-check-label">
-              <input type="checkbox" id="simOpt2Check">
-              <span class="sim-opt-check-text">옵션 2 · 목표 월 분배금</span>
-            </label>
-            <div class="sim-opt-input" id="simOpt2Input">
-              <input type="number" id="simOpt2Target" placeholder="500000" min="0">
-              <span class="sim-unit">원 달성까지</span>
-            </div>
-          </div>
+          <span class="inline-amt" id="dispOpt2Target" style="font-size:12px"></span>
         </div>
-        <button class="sim-run-btn" onclick="runSimulation()">시뮬레이션 실행</button>
+        <button class="sim-run-btn" onclick="runSimulation()" style="margin-top:16px">시뮬레이션 실행</button>
       </div>
 
       <!-- 결과 -->
       <div class="sim-card" id="simResultCard" style="display:none">
         <div class="card-title">시뮬레이션 결과</div>
         <div class="sim-summary" id="simSummary"></div>
+        <div style="position:relative;height:220px;margin-bottom:20px">
+          <canvas id="simChart"></canvas>
+        </div>
         <div class="sim-table-wrap">
           <table class="sim-table">
             <thead>
@@ -392,7 +383,7 @@ footer a{color:var(--ink3);text-underline-offset:2px}
           </table>
         </div>
         <div class="sim-disclaimer">
-          ※ 본 시뮬레이션은 설정한 가정값 기반의 수치이며 실제 분배금과 다를 수 있습니다. 과거 분배율이 미래에도 유지된다는 보장은 없습니다.
+          ※ 본 시뮬레이션은 설정한 가정값 기반 수치입니다. 재투자 가정 시 분배금은 NAV 하락분을 상쇄하므로 포트폴리오 가치 상승은 납입금·주가 변동에 의한 것입니다. 실제 분배금과 다를 수 있으며, 투자 판단의 최종 책임은 본인에게 있습니다.
         </div>
       </div>
 
@@ -901,10 +892,6 @@ function render(e) {
   const avgRate = (e.stab && e.stab.avgMonthlyRate > 0) ? e.stab.avgMonthlyRate : (e.rate || 0);
   if(avgRate > 0) document.getElementById('simRate').value = avgRate.toFixed(2);
 
-  // 옵션 체크박스 초기화
-  initSimOptionCheck('simOpt1Check','simOpt1Wrap','simOpt1Input');
-  initSimOptionCheck('simOpt2Check','simOpt2Wrap','simOpt2Input');
-
   // ?tab=sim 파라미터로 들어온 경우 자동으로 시뮬레이션 탭 활성화
   const tabParam = new URLSearchParams(location.search).get('tab');
   if(tabParam === 'sim') switchTab('sim');
@@ -924,18 +911,42 @@ function switchTab(tab) {
   history.replaceState(null, '', url.toString());
 }
 
-// ── 시뮬레이션 옵션 체크박스 ──
-function initSimOptionCheck(checkId, wrapId, inputId) {
-  const chk  = document.getElementById(checkId);
-  const wrap = document.getElementById(wrapId);
-  const inp  = document.getElementById(inputId);
-  function update() {
-    if(chk.checked) { wrap.classList.add('active'); inp.classList.add('enabled'); }
-    else { wrap.classList.remove('active'); inp.classList.remove('enabled'); }
+// ── 한국어 금액 인라인 표시 ──
+function fmtWonKor(n) {
+  if (!n || n <= 0) return '';
+  const parts = [];
+  const eok   = Math.floor(n / 100000000);
+  const man   = Math.floor((n % 100000000) / 10000);
+  const rest  = n % 10000;
+  if (eok > 0) parts.push(eok + '억');
+  if (man > 0) parts.push(man + '만');
+  if (rest > 0) {
+    const ch = Math.floor(rest / 1000);
+    const bk = Math.floor((rest % 1000) / 100);
+    const sp = Math.floor((rest % 100) / 10);
+    const il = rest % 10;
+    if (ch > 0) parts.push(ch + '천');
+    if (bk > 0) parts.push(bk + '백');
+    if (sp > 0) parts.push(sp + '십');
+    if (il > 0) parts.push(il);
   }
-  chk.addEventListener('change', update);
-  update();
+  return '(' + parts.join(' ') + '원)';
 }
+function updateInlineAmt(input, dispId) {
+  const n = parseInt(input.value) || 0;
+  document.getElementById(dispId).textContent = fmtWonKor(n);
+}
+
+// ── 금액 포맷 (표 출력용) ──
+function fmtWon2(n) {
+  if (n == null) return '-';
+  if (n >= 100000000) return (n / 100000000).toFixed(1) + '억원';
+  if (n >= 10000)     return Math.round(n / 10000) + '만원';
+  return n.toLocaleString() + '원';
+}
+
+// ── 시뮬레이션 차트 인스턴스 ──
+let simChartInst = null;
 
 // ── 시뮬레이션 실행 ──
 function runSimulation() {
@@ -944,103 +955,177 @@ function runSimulation() {
   const rate          = parseFloat(document.getElementById('simRate').value) || 0;
   const priceChange   = parseFloat(document.getElementById('simPriceChange').value) || 0;
   const reinvest      = document.getElementById('simReinvest').checked;
-  const opt1          = document.getElementById('simOpt1Check').checked;
-  const opt2          = document.getElementById('simOpt2Check').checked;
-  const period        = parseInt(document.getElementById('simOpt1Period').value) || 24;
   const targetDist    = parseInt(document.getElementById('simOpt2Target').value) || 0;
 
-  if(!opt1 && !opt2) { alert('옵션 1 또는 옵션 2를 선택해주세요.'); return; }
-  if(opt2 && targetDist <= 0) { alert('목표 월 분배금을 입력해주세요.'); return; }
-  if(rate <= 0) { alert('월평균 분배율을 입력해주세요.'); return; }
+  if (targetDist <= 0) { alert('목표 월 분배금을 입력해주세요.'); return; }
+  if (rate <= 0)       { alert('월평균 분배율을 입력해주세요.'); return; }
 
   const r = rate / 100;
   const g = priceChange / 100;
 
-  // 기간 결정: opt1이면 period개월, opt2이면 최대 600개월
-  const simMonths = opt1 ? period : 600;
-
-  // 월별 시뮬
+  // ── 월별 시뮬레이션 (최대 600개월) ──
+  // 핵심 모델:
+  //   재투자 ON: 분배금은 NAV 하락분 상쇄 → 포트폴리오 순증가 없음 (납입금·주가변동만)
+  //   재투자 OFF: 분배금만큼 NAV 하락 → 포트폴리오 감소
   let portfolio = currentInvest;
-  let monthData = [];
-  let opt2ReachedMonth = null;
+  const monthData = [];
+  let reachedMonth = null;
 
-  for(let m = 1; m <= simMonths; m++) {
+  for (let m = 1; m <= 600; m++) {
+    // 주가 변동 반영 + 월 납입금 추가
     portfolio = portfolio * (1 + g) + monthlyAdd;
-    const dist = portfolio * r;
-    if(reinvest) portfolio += dist;
-    monthData.push({ month: m, portfolio: Math.round(portfolio), dist: Math.round(dist) });
-    if(opt2 && opt2ReachedMonth == null && dist >= targetDist) {
-      opt2ReachedMonth = m;
-      if(!opt1) break; // opt2만 선택했으면 달성 시점에서 멈춤
+    // 이달 분배금 (포트폴리오 기준)
+    const dist = Math.round(portfolio * r);
+    if (!reinvest) {
+      // 재투자 안 하면 NAV 하락 → 포트폴리오에서 차감
+      portfolio = portfolio - dist;
+    }
+    // 재투자 ON: 분배금이 NAV 하락분을 채우므로 portfolio 변동 없음
+    monthData.push({ month: m, portfolio: Math.round(portfolio), dist });
+
+    if (reachedMonth == null && dist >= targetDist) {
+      reachedMonth = m;
+      break; // 목표 달성 시점에서 멈춤
     }
   }
 
-  // 결과 표: 연 단위 (1년, 2년, ...) + 마지막 달
+  const totalMonths  = reachedMonth || monthData.length;
+  const reachedData  = reachedMonth ? monthData[reachedMonth - 1] : null;
+
+  // ── 연도별 테이블 데이터 ──
   const tableRows = [];
-  const yearsToShow = Math.ceil(simMonths / 12);
-  for(let y = 1; y <= yearsToShow; y++) {
-    const idx = Math.min(y * 12, monthData.length) - 1;
-    if(idx < 0) break;
-    const d = monthData[idx];
-    const annualDist = monthData.slice(Math.max(0,(y-1)*12), y*12).reduce((s,v)=>s+v.dist,0);
-    tableRows.push({ label: y + '년', m: d.month, portfolio: d.portfolio, monthDist: d.dist, annualDist, isTarget: opt1 && d.month === period });
+  const years = Math.ceil(totalMonths / 12);
+  for (let y = 1; y <= years; y++) {
+    const endMonth = Math.min(y * 12, totalMonths);
+    const d = monthData[endMonth - 1];
+    if (!d) break;
+    const sliceStart = (y - 1) * 12;
+    const annualDist = monthData.slice(sliceStart, endMonth).reduce((s, v) => s + v.dist, 0);
+    const isGoal = reachedMonth && endMonth >= reachedMonth;
+    tableRows.push({
+      label: endMonth < totalMonths ? y + '년' : (endMonth % 12 === 0 ? y + '년' : endMonth + '개월'),
+      portfolio: d.portfolio, monthDist: d.dist, annualDist, isGoal
+    });
   }
-  // 마지막 달이 연 단위와 안 맞으면 추가
-  const last = monthData[monthData.length - 1];
-  if(last && last.month % 12 !== 0) {
-    const annualDist = monthData.slice(-(last.month % 12)).reduce((s,v)=>s+v.dist,0);
-    tableRows.push({ label: `${last.month}개월`, m: last.month, portfolio: last.portfolio, monthDist: last.dist, annualDist, isTarget: true });
+  // 달성 월이 연 단위와 다르면 마지막 행 추가
+  if (reachedMonth && reachedMonth % 12 !== 0) {
+    const d = monthData[reachedMonth - 1];
+    const sliceStart = Math.floor((reachedMonth - 1) / 12) * 12;
+    const annualDist = monthData.slice(sliceStart, reachedMonth).reduce((s, v) => s + v.dist, 0);
+    // 이미 추가됐는지 확인 (마지막 행이 달성 월과 같으면 생략)
+    const lastRow = tableRows[tableRows.length - 1];
+    if (!lastRow || lastRow.monthDist !== d.dist) {
+      tableRows.push({ label: reachedMonth + '개월 ★', portfolio: d.portfolio, monthDist: d.dist, annualDist, isGoal: true });
+    } else {
+      lastRow.label += ' ★';
+      lastRow.isGoal = true;
+    }
   }
 
-  // 요약 박스
-  const finalRow = tableRows[tableRows.length - 1];
+  // ── 요약 박스 ──
   let summaryHtml = '';
-  if(opt1) {
-    const targetRow = monthData[period - 1];
-    if(targetRow) summaryHtml += `
+  if (reachedMonth) {
+    const yrs = Math.floor(reachedMonth / 12);
+    const mos = reachedMonth % 12;
+    const dur = yrs > 0 ? `${yrs}년${mos > 0 ? ' ' + mos + '개월' : ''}` : `${mos}개월`;
+    summaryHtml += `
       <div class="sim-sum-box">
-        <div class="sim-sum-label">${period}개월 후 예상 월 분배금</div>
-        <div class="sim-sum-val">${fmtWon2(targetRow.dist)}</div>
-        <div class="sim-sum-sub">포트폴리오: ${fmtWon2(targetRow.portfolio)}</div>
+        <div class="sim-sum-label">목표 달성까지</div>
+        <div class="sim-sum-val">${dur}</div>
+        <div class="sim-sum-sub">${reachedMonth}개월 소요</div>
+      </div>
+      <div class="sim-sum-box">
+        <div class="sim-sum-label">달성 시점 월 분배금</div>
+        <div class="sim-sum-val">${fmtWon2(reachedData.dist)}</div>
+        <div class="sim-sum-sub">포트폴리오: ${fmtWon2(reachedData.portfolio)}</div>
+      </div>`;
+  } else {
+    summaryHtml += `
+      <div class="sim-sum-box" style="background:var(--red-bg);border:1px solid #fecaca">
+        <div class="sim-sum-label" style="color:var(--red)">50년 내 달성 불가</div>
+        <div class="sim-sum-val" style="font-size:14px;color:var(--red)">조건 재검토 필요</div>
+        <div class="sim-sum-sub" style="color:#f87171">투자금·납입금 조정 또는 목표 하향 권장</div>
       </div>`;
   }
-  if(opt2) {
-    if(opt2ReachedMonth) {
-      const yrs = Math.floor(opt2ReachedMonth / 12);
-      const mos = opt2ReachedMonth % 12;
-      const dur = yrs > 0 ? `${yrs}년 ${mos > 0 ? mos+'개월' : ''}` : `${mos}개월`;
-      summaryHtml += `
-        <div class="sim-sum-box">
-          <div class="sim-sum-label">목표 ${fmtWon2(targetDist)} 달성까지</div>
-          <div class="sim-sum-val">${dur.trim()}</div>
-          <div class="sim-sum-sub">${opt2ReachedMonth}개월 소요</div>
-        </div>`;
-    } else {
-      summaryHtml += `
-        <div class="sim-sum-box">
-          <div class="sim-sum-label">목표 ${fmtWon2(targetDist)} 달성</div>
-          <div class="sim-sum-val" style="font-size:14px">달성 어려움</div>
-          <div class="sim-sum-sub">50년 내 목표 달성 불가</div>
-        </div>`;
-    }
-  }
-
   document.getElementById('simSummary').innerHTML = summaryHtml;
+
+  // ── 표 출력 ──
   document.getElementById('simTableBody').innerHTML = tableRows.map(row => `
-    <tr class="${row.isTarget ? 'highlight' : ''}">
+    <tr class="${row.isGoal ? 'highlight' : ''}">
       <td>${row.label}</td>
       <td>${fmtWon2(row.portfolio)}</td>
       <td>${fmtWon2(row.monthDist)}</td>
       <td>${fmtWon2(row.annualDist)}</td>
     </tr>`).join('');
+
+  // ── 차트 ──
+  if (simChartInst) { simChartInst.destroy(); simChartInst = null; }
+
+  // 차트 데이터: 연도별 스냅샷
+  const chartLabels = tableRows.map(r => r.label);
+  const chartDists  = tableRows.map(r => r.monthDist);
+  const goalLine    = tableRows.map(() => targetDist);
+
+  const ctx = document.getElementById('simChart').getContext('2d');
+  simChartInst = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: chartLabels,
+      datasets: [
+        {
+          label: '월 분배금',
+          data: chartDists,
+          borderColor: '#1d6b38',
+          backgroundColor: 'rgba(29,107,56,0.08)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: chartLabels.map((_, i) => tableRows[i].isGoal ? 7 : 4),
+          pointBackgroundColor: chartLabels.map((_, i) => tableRows[i].isGoal ? '#dc2626' : '#1d6b38'),
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+        },
+        {
+          label: '목표 분배금 ' + fmtWon2(targetDist),
+          data: goalLine,
+          borderColor: '#dc2626',
+          borderDash: [6, 4],
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: { font: { size: 11 }, color: '#4a4a45', boxWidth: 20, padding: 12 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.dataset.label.split(' ')[0] + ': ' + (ctx.raw || 0).toLocaleString() + '원'
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#9a9a93' } },
+        y: {
+          grid: { color: '#f0f0f0' },
+          ticks: {
+            font: { size: 10 }, color: '#9a9a93',
+            callback: v => v >= 10000 ? Math.round(v / 10000) + '만원' : v.toLocaleString() + '원'
+          }
+        }
+      }
+    }
+  });
+
   document.getElementById('simResultCard').style.display = '';
   document.getElementById('simResultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function fmtWon2(n) {
-  if(n >= 100000000) return (n / 100000000).toFixed(1) + '억';
-  if(n >= 10000) return Math.round(n / 10000) + '만';
-  return n.toLocaleString();
 }
 
 // ── 초기화 ──
