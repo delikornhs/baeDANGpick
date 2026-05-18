@@ -145,12 +145,13 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 .tab-btn.on{color:var(--accent);border-bottom-color:var(--accent)}
 /* ── simulation tab ── */
 .sim-wrap{max-width:700px}
-.sim-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px}
+.sim-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px;overflow:hidden}
 .sim-input-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.sim-input-item{min-width:0}
 .sim-input-item label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:6px}
-.sim-input-box{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0 12px;transition:border-color .15s}
+.sim-input-box{display:flex;align-items:center;gap:6px;width:100%;min-width:0;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0 12px;transition:border-color .15s;box-sizing:border-box}
 .sim-input-box:focus-within{border-color:var(--accent-mid)}
-.sim-input-box input{flex:1;border:none;background:transparent;padding:10px 0;font-size:14px;font-family:inherit;font-weight:500;outline:none;min-width:0}
+.sim-input-box input{flex:1;border:none;background:transparent;padding:10px 0;font-size:14px;font-family:inherit;font-weight:500;outline:none;min-width:0;width:0}
 .sim-input-box input::placeholder{color:var(--ink4)}
 .sim-unit{font-size:12px;color:var(--ink3);white-space:nowrap}
 .sim-assumption{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
