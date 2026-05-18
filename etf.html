@@ -1010,15 +1010,15 @@ function runSimulation() {
   // 달성 월이 연 단위와 다르면 마지막 행 추가
   if (reachedMonth && reachedMonth % 12 !== 0) {
     const d = monthData[reachedMonth - 1];
-    const sliceStart = Math.floor((reachedMonth - 1) / 12) * 12;
-    const annualDist = monthData.slice(sliceStart, reachedMonth).reduce((s, v) => s + v.dist, 0);
+    const annualDist = Math.round(d.dist * 12); // 연환산
     // 이미 추가됐는지 확인 (마지막 행이 달성 월과 같으면 생략)
     const lastRow = tableRows[tableRows.length - 1];
     if (!lastRow || lastRow.monthDist !== d.dist) {
-      tableRows.push({ label: reachedMonth + '개월 ★', portfolio: d.portfolio, monthDist: d.dist, annualDist, isGoal: true });
+      tableRows.push({ label: reachedMonth + '개월 ★', portfolio: d.portfolio, monthDist: d.dist, annualDist, isGoal: true, annualNote: true });
     } else {
       lastRow.label += ' ★';
       lastRow.isGoal = true;
+      // 연 단위 달성의 경우 annualDist는 12개월 합산 = 정확 (별도 처리 불필요)
     }
   }
 
@@ -1055,7 +1055,7 @@ function runSimulation() {
       <td>${row.label}</td>
       <td>${fmtWon2(row.portfolio)}</td>
       <td>${fmtWon2(row.monthDist)}</td>
-      <td>${fmtWon2(row.annualDist)}</td>
+      <td>${fmtWon2(row.annualDist)}${row.annualNote ? '<span style="font-size:10px;color:var(--ink3);margin-left:3px">연환산</span>' : ''}</td>
     </tr>`).join('');
 
   // ── 차트 ──
