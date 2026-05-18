@@ -414,10 +414,11 @@ footer a{color:var(--ink3);text-underline-offset:2px}
           </button>
           <div class="calc-info-body" id="calcInfoBody" style="display:none">
             <div style="font-size:12px;margin-bottom:4px">매달 두 단계로 계산합니다.</div>
-            <div class="calc-formula-line">
+            <div class="calc-formula-line" id="calcFormulaLine">
               ① 평가금액 = 전달 평가금액 × (1 + 월 주가 변동) + 월 납입금<br>
               ② 월 분배금 = 이달 평가금액 × 월 분배율
             </div>
+            <div id="calcFormulaNote" style="display:none;font-size:11px;color:var(--ink3);margin-top:4px">시뮬레이션 실행 시 입력값이 위 공식에 반영됩니다.</div>
             <div class="calc-note">
               <div class="calc-note-item">
                 <span class="cni-bullet">·</span>
@@ -1034,6 +1035,13 @@ let simChartInst = null;
 let monthData    = [];   // 월별 시뮬레이션 결과 (팝업에서 참조)
 let simParams    = {};   // 마지막 실행 파라미터 (팝업 공식 표시용)
 
+// ── 배율 표시 (trailing zero 제거) ──
+// 예: priceChange=0 → "1", 0.5 → "1.005", 1 → "1.01", 2 → "1.02"
+function fmtMultiplier(priceChange) {
+  if (!priceChange || priceChange === 0) return '1';
+  return parseFloat((1 + priceChange / 100).toFixed(5)).toString();
+}
+
 // ── 계산 설명 토글 ──
 function toggleCalcInfo(btn) {
   const body  = document.getElementById('calcInfoBody');
@@ -1051,12 +1059,11 @@ function showDetail(startM, endM, label) {
 
   document.getElementById('detailTitle').textContent = label + ' 월별 상세';
 
-  const g  = (simParams.priceChange || 0) / 100;
-  const r  = (simParams.rate || 0) / 100;
-  const ma = simParams.monthlyAdd || 0;
+  const ma  = simParams.monthlyAdd || 0;
+  const mul = fmtMultiplier(simParams.priceChange || 0);
   document.getElementById('detailFormula').innerHTML =
     `<b>📐 계산 방식</b>` +
-    `① 평가금액 = 전달 평가금액 × ${(1 + g).toFixed(2)} + ${fmtWon2(ma)}<br>` +
+    `① 평가금액 = 전달 평가금액 × ${mul}${simParams.priceChange ? ` <span style="font-size:10px;opacity:.75">(주가 +${simParams.priceChange}%/월)</span>` : ''} + ${fmtWon2(ma)}<br>` +
     `② 월 분배금 = 이달 평가금액 × ${simParams.rate}%`;
 
   let rows = '';
@@ -1273,6 +1280,14 @@ function runSimulation() {
 
   document.getElementById('simResultCard').style.display = '';
   document.getElementById('simResultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // ── "이렇게 계산해요" 공식을 실제 입력값으로 업데이트 ──
+  const mul = fmtMultiplier(priceChange);
+  const pcNote = priceChange ? ` <span style="color:var(--accent-mid);font-size:10px">(주가 +${priceChange}%/월)</span>` : '';
+  document.getElementById('calcFormulaLine').innerHTML =
+    `① 평가금액 = 전달 평가금액 × ${mul}${pcNote} + ${fmtWon2(monthlyAdd)}<br>` +
+    `② 월 분배금 = 이달 평가금액 × ${rate}%`;
+  document.getElementById('calcFormulaNote').style.display = 'none';
 }
 
 // ── 초기화 ──
