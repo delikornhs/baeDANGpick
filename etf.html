@@ -460,6 +460,9 @@ function render(e) {
   const name = decodeHtml(e.name);
   document.title = name + ' - 배당픽';
   document.getElementById('bcName').textContent = name;
+  if(typeof gtag !== 'undefined') {
+    gtag('event', 'page_view', { page_title: document.title, page_location: location.href });
+  }
 
   // 헤더
   document.getElementById('hName').textContent = name;
