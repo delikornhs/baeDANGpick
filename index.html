@@ -271,13 +271,15 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 .sub-banner-btn:hover{background:#165a2e}
 
 /* CALC SHORTCUT */
-.calc-shortcut{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--accent-bg);border:1px solid var(--accent-mid);border-radius:var(--radius);padding:16px 20px;margin-top:12px;text-decoration:none;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.calc-shortcut-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.calc-shortcut{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--accent-bg);border:1px solid var(--accent-mid);border-radius:var(--radius);padding:14px 16px;text-decoration:none;color:var(--ink);transition:border-color .15s,box-shadow .15s}
 .calc-shortcut:hover{border-color:var(--accent);box-shadow:0 2px 10px rgba(29,107,56,.12)}
-.cs-left{display:flex;align-items:center;gap:14px}
-.cs-icon{font-size:22px;flex-shrink:0}
-.cs-title{font-size:13px;font-weight:700;margin-bottom:2px}
-.cs-desc{font-size:11px;color:var(--ink3);line-height:1.5}
-.cs-arrow{font-size:18px;color:var(--accent);flex-shrink:0}
+.cs-left{display:flex;align-items:center;gap:12px}
+.cs-icon{font-size:20px;flex-shrink:0}
+.cs-title{font-size:12px;font-weight:700;margin-bottom:2px}
+.cs-desc{font-size:11px;color:var(--ink3);line-height:1.45}
+.cs-arrow{font-size:16px;color:var(--accent);flex-shrink:0}
+@media(max-width:480px){.calc-shortcut-grid{grid-template-columns:1fr}}
 
 /* SUBSCRIBE MODAL */
 .sub-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:20px}
@@ -377,9 +379,14 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
         <span class="hero-link-desc">ETF 분배금의 기초부터 실전 활용까지, 꼭 알아야 할 핵심이 궁금하다면 클릭</span>
         <span class="hero-link-arrow">→</span>
       </a>
-      <a href="/calc.html" class="hero-link">
-        <span class="hero-link-label">분배금 계산기</span>
-        <span class="hero-link-desc">지금 매수하면 얼마나 받을 수 있을지 궁금하면 클릭</span>
+      <a href="/calc-now.html" class="hero-link">
+        <span class="hero-link-label">이번달 분배금 계산기</span>
+        <span class="hero-link-desc">지금 매수하면 이번달 얼마 받는지 바로 계산해보고 싶다면 클릭</span>
+        <span class="hero-link-arrow">→</span>
+      </a>
+      <a href="/calc-planner.html" class="hero-link">
+        <span class="hero-link-label">월 분배금 플래너</span>
+        <span class="hero-link-desc">목표 월 분배금까지 몇 개월이면 달성할 수 있는지 시뮬레이션해보고 싶다면 클릭</span>
         <span class="hero-link-arrow">→</span>
       </a>
     </div>
@@ -484,16 +491,28 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   </div>
 
   <!-- 계산기 바로가기 -->
-  <a href="/calc.html" class="calc-shortcut">
-    <div class="cs-left">
-      <div class="cs-icon">💰</div>
-      <div>
-        <div class="cs-title">분배금 계산기</div>
-        <div class="cs-desc">지금 매수하면 이번달 얼마 받는지 바로 계산해보세요</div>
+  <div class="calc-shortcut-grid">
+    <a href="/calc-now.html" class="calc-shortcut">
+      <div class="cs-left">
+        <div class="cs-icon">💰</div>
+        <div>
+          <div class="cs-title">이번달 분배금 계산기</div>
+          <div class="cs-desc">지금 매수하면 이번달 얼마 받는지 바로 계산</div>
+        </div>
       </div>
-    </div>
-    <span class="cs-arrow">→</span>
-  </a>
+      <span class="cs-arrow">→</span>
+    </a>
+    <a href="/calc-planner.html" class="calc-shortcut">
+      <div class="cs-left">
+        <div class="cs-icon">📊</div>
+        <div>
+          <div class="cs-title">월 분배금 플래너</div>
+          <div class="cs-desc">목표 월 분배금 달성까지 시뮬레이션</div>
+        </div>
+      </div>
+      <span class="cs-arrow">→</span>
+    </a>
+  </div>
 </div>
 
 <!-- 이메일 구독 모달 -->
