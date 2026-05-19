@@ -1062,10 +1062,16 @@ function showDetail(startM, endM, label) {
 
   const ma  = simParams.monthlyAdd || 0;
   const mul = fmtMultiplier(simParams.priceChange || 0);
+  const pcNote = simParams.priceChange
+    ? ` <span style="font-size:10px;opacity:.75">(주가 +${simParams.priceChange}%/월)</span>` : '';
+  const reinvestLine = simParams.reinvest
+    ? `③ 분배금 재매수 → NAV 하락 상쇄 → 평가금액 유지`
+    : `③ 평가금액 = 이달 평가금액 - 월 분배금 <span style="font-size:10px;opacity:.75">(분배금 수령, NAV 하락 반영)</span>`;
   document.getElementById('detailFormula').innerHTML =
-    `<b>📐 계산 방식</b>` +
-    `① 평가금액 = 전달 평가금액 × ${mul}${simParams.priceChange ? ` <span style="font-size:10px;opacity:.75">(주가 +${simParams.priceChange}%/월)</span>` : ''} + ${fmtWon2(ma)}<br>` +
-    `② 월 분배금 = 이달 평가금액 × ${simParams.rate}%`;
+    `<b>📐 계산 방식 · 재투자 ${simParams.reinvest ? 'ON' : 'OFF'}</b>` +
+    `① 평가금액 = 전달 평가금액 × ${mul}${pcNote} + ${fmtWon2(ma)}<br>` +
+    `② 월 분배금 = 이달 평가금액 × ${simParams.rate}%<br>` +
+    reinvestLine;
 
   let rows = '';
   months.forEach((d, i) => {
@@ -1285,9 +1291,13 @@ function runSimulation() {
   // ── "이렇게 계산해요" 공식을 실제 입력값으로 업데이트 ──
   const mul = fmtMultiplier(priceChange);
   const pcNote = priceChange ? ` <span style="color:var(--accent-mid);font-size:10px">(주가 +${priceChange}%/월)</span>` : '';
+  const reinvestLine3 = reinvest
+    ? `③ 분배금 재매수 → NAV 하락 상쇄 → 평가금액 유지`
+    : `③ 평가금액 = 이달 평가금액 - 월 분배금`;
   document.getElementById('calcFormulaLine').innerHTML =
     `① 평가금액 = 전달 평가금액 × ${mul}${pcNote} + ${fmtWon2(monthlyAdd)}<br>` +
-    `② 월 분배금 = 이달 평가금액 × ${rate}%`;
+    `② 월 분배금 = 이달 평가금액 × ${rate}%<br>` +
+    reinvestLine3;
   document.getElementById('calcFormulaNote').style.display = 'none';
 }
 
