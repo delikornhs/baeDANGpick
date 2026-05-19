@@ -53,15 +53,29 @@ jobs:
           if git diff --cached --quiet; then
             echo "변경 없음, 스킵"
             echo "changed=false" >> $GITHUB_OUTPUT
+            echo "dist_changed=false" >> $GITHUB_OUTPUT
           else
+            # 커밋 전 해시 저장 (분배금 필드 변경 여부 비교용)
+            OLD_HASH=$(git rev-parse HEAD)
             git commit -m "chore: daily price update $(date -u +%Y-%m-%d)"
             git pull --rebase origin master
             git push
             echo "changed=true" >> $GITHUB_OUTPUT
+            # 분배금 공시 고유 필드(dist·ex_date·pay_date·notice_date·timing)만 변경됐는지 확인
+            # price·rate는 가격 업데이트 시 매일 바뀌므로 제외
+            if git diff "$OLD_HASH" HEAD -- data/output/latest.json \
+               | grep -E '^\+[^+].*"(dist|ex_date|pay_date|notice_date|timing)"' \
+               | grep -qv '"timing": ""'; then
+              echo "dist_changed=true" >> $GITHUB_OUTPUT
+              echo "분배금 공시 데이터 변경 감지 → 뉴스레터 발송"
+            else
+              echo "dist_changed=false" >> $GITHUB_OUTPUT
+              echo "가격만 변경됨 → 뉴스레터 스킵"
+            fi
           fi
 
-      - name: Send newsletter (공시 데이터 변경 시에만)
-        if: steps.commit.outputs.changed == 'true' && env.NEWSLETTER_SECRET != ''
+      - name: Send newsletter (분배금 공시 데이터 변경 시에만)
+        if: steps.commit.outputs.dist_changed == 'true' && env.NEWSLETTER_SECRET != ''
         env:
           APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
           NEWSLETTER_SECRET: ${{ secrets.NEWSLETTER_SECRET }}
