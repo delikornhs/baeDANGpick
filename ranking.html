@@ -416,7 +416,7 @@ function distItem(e, rank) {
       <span class="rank-meta-item">지급 ${fmtDate(e.pay)}</span>`;
   }
   return `
-    <a href="/etf/${e.code}" class="rank-item">
+    <a href="/etf/${e.code}" class="rank-item" id="dist-rank-${e.code}" onclick="saveState('${e.code}')">
       <div class="rank-num${rank <= 3 ? ' top' : ''}">${rank}</div>
       <div class="rank-body">
         <div class="rank-name">${e.name}${timingBadge}${typeBadge}</div>
@@ -438,7 +438,7 @@ function retItem(e, rank) {
   const freqBadge = isMonthly(e) ? `<span class="badge badge-freq">월배당</span>` : '';
   const typeBadge = `<span class="badge badge-type">${getCategory(e)}</span>`;
   return `
-    <a href="/etf/${e.code}" class="rank-item">
+    <a href="/etf/${e.code}" class="rank-item" id="ret-rank-${e.code}" onclick="saveState('${e.code}')">
       <div class="rank-num${rank <= 3 ? ' top' : ''}">${rank}</div>
       <div class="rank-body">
         <div class="rank-name">${e.name}${typeBadge}${freqBadge}</div>
@@ -497,7 +497,7 @@ function updateRetStats(data) {
 }
 
 // ── 분배율/분배금 데이터 로드 ──
-async function runDistRanking() {
+async function runDistRanking(restoreOpts) {
   const isAnnual = distPeriod === '연환산';
   const isDist   = distMetric === '분배금';
 
@@ -554,29 +554,41 @@ async function runDistRanking() {
   }
 
   updateDistStats(distBaseData);
-  distShown = PAGE_SIZE;
-  distTypeFilter = 'all';
+  distShown      = (restoreOpts && restoreOpts.shownCount)  || PAGE_SIZE;
+  distTypeFilter = (restoreOpts && restoreOpts.typeFilter)  || 'all';
   document.querySelectorAll('[data-section="dist"]').forEach(b =>
-    b.classList.toggle('on', b.dataset.v === 'all'));
+    b.classList.toggle('on', b.dataset.v === distTypeFilter));
   renderList('dist');
 }
 
 // ── 수익률 데이터 로드 ──
-function runRetRanking() {
+function runRetRanking(restoreOpts) {
   const field = retMetric === '주가' ? 'ret1w' : 'tret1w';
   retBaseData = (ETF_ALL || [])
     .filter(e => e.price > 0)
     .sort((a,b) => (b[field] ?? 0) - (a[field] ?? 0));
   updateRetStats(retBaseData);
-  retShown = PAGE_SIZE;
-  retTypeFilter = 'all';
+  retShown      = (restoreOpts && restoreOpts.shownCount)  || PAGE_SIZE;
+  retTypeFilter = (restoreOpts && restoreOpts.typeFilter)  || 'all';
   document.querySelectorAll('[data-section="ret"]').forEach(b =>
-    b.classList.toggle('on', b.dataset.v === 'all'));
+    b.classList.toggle('on', b.dataset.v === retTypeFilter));
   renderList('ret');
 }
 
+// ── 상태 저장 (ETF 클릭 시) ──
+function saveState(code) {
+  sessionStorage.setItem('rankState', JSON.stringify({
+    tab:            activeTab,
+    distMetric,     distPeriod,     distTypeFilter, distShown,
+    retMetric,      retTypeFilter,  retShown,
+    lastCode:       code,
+    distRan:        distBaseData.length > 0,
+    retRan:         retBaseData.length  > 0,
+  }));
+}
+
 // ── 초기화 ──
-(function init() {
+(async function init() {
   // 업데이트 날짜
   if (typeof PRICE_DATE !== 'undefined')
     document.getElementById('updateBadge').textContent = `가격 기준 ${PRICE_DATE.replace(/-/g,'.')}`;
@@ -589,6 +601,48 @@ function runRetRanking() {
   // 주간 범위 배지
   document.getElementById('weekRangeLabel').textContent =
     `${fmtWeekBadge(_ws)}~${fmtWeekBadge(_we)}`;
+
+  // ── 뒤로 가기 상태 복원 ──
+  const saved = sessionStorage.getItem('rankState');
+  if (!saved) return;
+  sessionStorage.removeItem('rankState');
+  const s = JSON.parse(saved);
+
+  // 옵션 UI 복원
+  if (s.distMetric) {
+    distMetric = s.distMetric;
+    document.querySelectorAll('[data-og="distMetric"]').forEach(b =>
+      b.classList.toggle('on', b.dataset.v === distMetric));
+  }
+  if (s.distPeriod) {
+    distPeriod = s.distPeriod;
+    document.querySelectorAll('[data-og="distPeriod"]').forEach(b =>
+      b.classList.toggle('on', b.dataset.v === distPeriod));
+  }
+  if (s.retMetric) {
+    retMetric = s.retMetric;
+    document.querySelectorAll('[data-og="retMetric"]').forEach(b =>
+      b.classList.toggle('on', b.dataset.v === retMetric));
+  }
+
+  // 랭킹 데이터 재로드
+  if (s.distRan) {
+    await runDistRanking({ shownCount: s.distShown, typeFilter: s.distTypeFilter });
+  }
+  if (s.retRan) {
+    runRetRanking({ shownCount: s.retShown, typeFilter: s.retTypeFilter });
+  }
+
+  // 탭 복원
+  switchTab(s.tab || 'dist');
+
+  // 마지막으로 클릭한 ETF 위치로 스크롤
+  if (s.lastCode) {
+    requestAnimationFrame(() => {
+      const el = document.getElementById(`${s.tab || 'dist'}-rank-${s.lastCode}`);
+      if (el) el.scrollIntoView({ behavior: 'auto', block: 'center' });
+    });
+  }
 })();
 </script>
 </body>
