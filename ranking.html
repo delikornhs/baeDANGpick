@@ -508,7 +508,9 @@ async function runDistRanking() {
     }).map(e => {
       const ytd      = e.trend.filter(t => t.ex_date >= jan1);
       const annualDist = ytd.reduce((a, t) => a + t.dist, 0);
-      const annualRate = parseFloat((annualDist / e.price * 100).toFixed(2));
+      // ETF 상세 페이지와 동일: 공시 기준가(dist/rate*100) 사용
+      const basePrice  = (e.dist > 0 && e.rate > 0) ? (e.dist / e.rate * 100) : e.price;
+      const annualRate = basePrice > 0 ? parseFloat((annualDist / basePrice * 100).toFixed(2)) : 0;
       return { ...e, annualDist, annualRate };
     }).sort((a,b) => isDist ? b.annualDist - a.annualDist : b.annualRate - a.annualRate);
   } else {
