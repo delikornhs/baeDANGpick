@@ -275,14 +275,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 .sub-banner-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:"Noto Sans KR",sans-serif;flex-shrink:0}
 .sub-banner-btn:hover{background:#165a2e}
 
-/* CALC SHORTCUT */
-.calc-shortcut{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--accent-bg);border:1px solid var(--accent-mid);border-radius:var(--radius);padding:16px 20px;margin-top:12px;text-decoration:none;color:var(--ink);transition:border-color .15s,box-shadow .15s}
-.calc-shortcut:hover{border-color:var(--accent);box-shadow:0 2px 10px rgba(29,107,56,.12)}
-.cs-left{display:flex;align-items:center;gap:14px}
-.cs-icon{font-size:22px;flex-shrink:0}
-.cs-title{font-size:13px;font-weight:700;margin-bottom:2px}
-.cs-desc{font-size:11px;color:var(--ink3);line-height:1.5}
-.cs-arrow{font-size:18px;color:var(--accent);flex-shrink:0}
 
 /* SUBSCRIBE MODAL */
 .sub-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:20px}
@@ -509,17 +501,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     <button class="sub-banner-btn" onclick="openSubModal()">이메일 알림 신청</button>
   </div>
 
-  <!-- 바로가기 -->
-  <a href="/calc.html" class="calc-shortcut">
-    <div class="cs-left">
-      <div class="cs-icon">💰</div>
-      <div>
-        <div class="cs-title">분배금 계산기</div>
-        <div class="cs-desc">이번달 분배금 즉시 계산 · 목표 월 분배금 달성 시뮬레이션</div>
-      </div>
-    </div>
-    <span class="cs-arrow">→</span>
-  </a>
 </div>
 
 <!-- 이메일 구독 모달 -->
