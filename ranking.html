@@ -155,7 +155,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   <div class="page-header-inner">
     <div>
       <h1>분배율ㆍ수익률 랭킹</h1>
-      <p class="page-header-sub">월배당 ETF 분배율ㆍ분배금 · 배당 ETF 주간 수익률</p>
+      <p class="page-header-sub">월배당 ETF 분배율ㆍ분배금 랭킹, 배당 ETF 주간 수익률 랭킹</p>
     </div>
     <div class="update-badge" id="updateBadge">업데이트 중...</div>
   </div>
@@ -164,8 +164,8 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <!-- 탭 -->
 <div class="tab-wrap">
   <div class="tab-inner">
-    <button class="tab-btn on" id="tabDist" onclick="switchTab('dist')">📊 월배당 분배율ㆍ분배금</button>
-    <button class="tab-btn" id="tabRet" onclick="switchTab('ret')">📈 배당 수익률</button>
+    <button class="tab-btn on" id="tabDist" onclick="switchTab('dist')">📊 월배당 ETF 분배율ㆍ분배금</button>
+    <button class="tab-btn" id="tabRet" onclick="switchTab('ret')">📈 배당 ETF 수익률</button>
   </div>
 </div>
 
@@ -207,7 +207,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     <div class="result-meta" id="dResultMeta"></div>
   </div>
 
-  <div class="ranking-wrap" id="distList"></div>
+  <div class="ranking-wrap" id="distList"><div class="empty"><p>옵션을 선택하고 확인하기를 눌러주세요.</p></div></div>
   <div class="loadmore-wrap" id="distMoreWrap" style="display:none">
     <button class="loadmore-btn" onclick="loadMore('dist')">더보기</button>
   </div>
@@ -223,6 +223,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
           <button class="otog on" data-og="retMetric" data-v="주가" onclick="setRetOpt('retMetric','주가')">주가 수익률</button>
           <button class="otog"    data-og="retMetric" data-v="총"   onclick="setRetOpt('retMetric','총')">총수익률</button>
           <span class="opt-sep">|</span>
+          <span class="opt-label" style="width:auto">기준 주간</span>
           <span class="week-range" id="weekRangeLabel">-</span>
         </div>
       </div>
@@ -248,7 +249,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     <div class="result-meta" id="rResultMeta"></div>
   </div>
 
-  <div class="ranking-wrap" id="retList"></div>
+  <div class="ranking-wrap" id="retList"><div class="empty"><p>옵션을 선택하고 확인하기를 눌러주세요.</p></div></div>
   <div class="loadmore-wrap" id="retMoreWrap" style="display:none">
     <button class="loadmore-btn" onclick="loadMore('ret')">더보기</button>
   </div>
@@ -461,7 +462,7 @@ function updateDistStats(data) {
   const endC = data.filter(e => e.timing === '월말').length;
 
   document.getElementById('dStatCount').textContent = data.length + '개';
-  document.getElementById('dStatSub').textContent   = isAnnual ? '연환산 기준' : `월중 ${midC}개 · 월말 ${endC}개`;
+  document.getElementById('dStatSub').textContent   = isAnnual ? `${priceYear}년 누적 기준` : `월중 ${midC}개 · 월말 ${endC}개`;
 
   const maxLbl = isDist ? (isAnnual ? '최고 연환산 분배금' : '최고 분배금') : (isAnnual ? '최고 연환산 분배율' : '최고 분배율');
   const avgLbl = isDist ? (isAnnual ? '평균 연환산 분배금' : '평균 분배금') : (isAnnual ? '평균 연환산 분배율' : '평균 분배율');
@@ -499,16 +500,17 @@ async function runDistRanking() {
   const isDist   = distMetric === '분배금';
 
   if (isAnnual) {
-    // 연환산: ETF_ALL stab 필드 사용
+    // 연환산: ETF 상세 페이지와 동일 — 올해 누적 분배금 / 현재가 × 100
+    const jan1 = `${priceYear}-01-01`;
     distBaseData = (ETF_ALL || []).filter(e => {
-      if (!isMonthly(e)) return false;
-      const s = e.stab || {};
-      return (s.annualDist > 0 || s.avgMonthlyRate > 0);
-    }).map(e => ({
-      ...e,
-      annualRate: parseFloat(((e.stab?.avgMonthlyRate ?? 0) * 12).toFixed(2)),
-      annualDist: e.stab?.annualDist ?? 0,
-    })).sort((a,b) => isDist ? b.annualDist - a.annualDist : b.annualRate - a.annualRate);
+      if (!isMonthly(e) || !e.price || !e.trend?.length) return false;
+      return e.trend.some(t => t.ex_date >= jan1 && t.dist > 0);
+    }).map(e => {
+      const ytd      = e.trend.filter(t => t.ex_date >= jan1);
+      const annualDist = ytd.reduce((a, t) => a + t.dist, 0);
+      const annualRate = parseFloat((annualDist / e.price * 100).toFixed(2));
+      return { ...e, annualDist, annualRate };
+    }).sort((a,b) => isDist ? b.annualDist - a.annualDist : b.annualRate - a.annualRate);
   } else {
     // 이번달
     if (distIsComplete) {
@@ -583,10 +585,6 @@ function runRetRanking() {
   // 주간 범위 배지
   document.getElementById('weekRangeLabel').textContent =
     `${fmtWeekBadge(_ws)}~${fmtWeekBadge(_we)}`;
-
-  // 기본 렌더
-  runDistRanking();
-  runRetRanking();
 })();
 </script>
 </body>
