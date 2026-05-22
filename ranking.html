@@ -222,8 +222,10 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
           <span class="opt-label">기준</span>
           <button class="otog on" data-og="retMetric" data-v="주가" onclick="setRetOpt('retMetric','주가')">주가 수익률</button>
           <button class="otog"    data-og="retMetric" data-v="총"   onclick="setRetOpt('retMetric','총')">총수익률</button>
-          <span class="opt-sep">|</span>
-          <span class="opt-label" style="width:auto">기준 주간</span>
+        </div>
+        <div class="opt-row">
+          <span class="opt-label">기간</span>
+          <span class="otog on" style="cursor:default;pointer-events:none">주간</span>
           <span class="week-range" id="weekRangeLabel">-</span>
         </div>
       </div>
@@ -408,7 +410,7 @@ function distItem(e, rank) {
     metaItems = `<span class="rank-meta-item">${e.brand}</span>`;
   } else {
     mainVal  = isDist ? fmtWon(e.dist) : e.rate + '%';
-    subVal   = isDist ? e.rate + '%'   : fmtWon(e.dist) + '/좌';
+    subVal   = isDist ? e.rate + '%/월' : fmtWon(e.dist) + '/좌';
     metaItems = `<span class="rank-meta-item">${e.brand}</span>
       <span class="rank-meta-item">배당락 ${fmtDate(e.ex)}</span>
       <span class="rank-meta-item">지급 ${fmtDate(e.pay)}</span>`;
