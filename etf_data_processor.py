@@ -486,19 +486,27 @@ def build_js(latest: list, price_date: str = ""):
                 f"ex:'{e['ex_date']}',pay:'{e['pay_date']}',"
                 f"dist:{e['dist']},price:{e['price']},rate:{e['rate']},"
                 f"listedDate:'{e.get('listed_date','')}', "
-                f"ret1m:{e.get('return_1m',0)},ret3m:{e.get('return_3m',0)},"
+                f"ret1w:{e.get('return_1w',0)},ret1m:{e.get('return_1m',0)},ret3m:{e.get('return_3m',0)},"
                 f"ret6m:{e.get('return_6m',0)},ret1y:{e.get('return_1y',0)},"
                 f"retListed:{e.get('return_listed',0)},"
-                f"tret1m:{e.get('total_return_1m',0)},tret3m:{e.get('total_return_3m',0)},"
+                f"tret1w:{e.get('total_return_1w',0)},tret1m:{e.get('total_return_1m',0)},tret3m:{e.get('total_return_3m',0)},"
                 f"tret6m:{e.get('total_return_6m',0)},tret1y:{e.get('total_return_1y',0)},"
                 f"tretListed:{e.get('total_return_listed',0)},"
                 f"current:{current_js},trend:{trend_js},stab:{stab_js}}}"
             )
         return "const ETF_ALL = [\n" + ",\n".join(items) + "\n];"
 
+    # 주간 범위 계산 (price_date 기준 월~금)
+    price_dt = datetime.strptime(price_date, "%Y-%m-%d")
+    mon_offset = price_dt.weekday()          # 0=월 … 4=금
+    week_start = (price_dt - timedelta(days=mon_offset)).strftime("%Y-%m-%d")
+    week_end   = (price_dt + timedelta(days=max(0, 4 - mon_offset))).strftime("%Y-%m-%d")
+
     header = f'const PRICE_DATE = "{price_date}";\n'
     header += f'const MID_NOTICE_DATE = "{mid_notice}";\n'
-    header += f'const END_NOTICE_DATE = "{end_notice}";\n\n'
+    header += f'const END_NOTICE_DATE = "{end_notice}";\n'
+    header += f'const WEEK_START = "{week_start}";\n'
+    header += f'const WEEK_END = "{week_end}";\n\n'
     # ETF_END, ETF_MID는 JS에서 ETF_ALL로부터 파생
     derive = ('const ETF_END = ETF_ALL.filter(e => e.current && e.timing === "월말");\n'
               'const ETF_MID = ETF_ALL.filter(e => e.current && e.timing === "월중");\n')
@@ -675,7 +683,7 @@ def calc_returns(item: dict, weekly: list, history: dict) -> dict:
             ret["total_return_listed"] = round(
                 (current_price - oldest_price + dist_sum) / oldest_price * 100, 2)
 
-    for label, days in [("1m", 30), ("3m", 91), ("6m", 182), ("1y", 365)]:
+    for label, days in [("1w", 7), ("1m", 30), ("3m", 91), ("6m", 182), ("1y", 365)]:
         target = (now - timedelta(days=days)).strftime("%Y-%m-%d")
         past_price = find_price_at_or_before(weekly, target)
         if not past_price:

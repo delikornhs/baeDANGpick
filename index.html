@@ -67,7 +67,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .hero h1 span{color:#6cba8b}
 .hero p{font-size:13px;color:#999;line-height:1.7;margin-bottom:20px}
 .hero-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
-.hero-card{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 14px;text-decoration:none;color:#fff;transition:background .15s,border-color .15s}
+.hero-card{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);border-radius:10px;padding:11px 14px;text-decoration:none;color:#fff;transition:background .15s,border-color .15s}
 .hero-card:hover{background:rgba(108,186,139,.15);border-color:rgba(108,186,139,.4)}
 .hc-icon{font-size:17px;flex-shrink:0}
 .hc-body{flex:1;min-width:0}
@@ -394,10 +394,9 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
         <span class="hc-icon">🏆</span>
         <div class="hc-body">
           <div class="hc-top">
-            <span class="hc-label">이번달 월배당 분배율 랭킹</span>
-            <span class="hc-badge" id="rankBadge"></span>
+            <span class="hc-label">분배율ㆍ수익률 랭킹</span>
           </div>
-          <div class="hc-desc">월중·월말 통합 분배율 순위</div>
+          <div class="hc-desc">월배당 분배율ㆍ분배금 · 배당 수익률</div>
         </div>
         <span class="hc-arrow">→</span>
       </a>
@@ -1980,18 +1979,6 @@ function closeToast() {
   clearTimeout(_toastTimer);
 }
 
-// ── 랭킹 월 배지 ──
-(function() {
-  const midM = (typeof MID_NOTICE_DATE !== 'undefined' && MID_NOTICE_DATE)
-    ? MID_NOTICE_DATE.slice(0,7) : '';
-  const endM = (typeof END_NOTICE_DATE !== 'undefined' && END_NOTICE_DATE)
-    ? END_NOTICE_DATE.slice(0,7) : '';
-  const targetM = (midM && endM && midM === endM) ? midM : endM;
-  if (targetM) {
-    const badge = document.getElementById('rankBadge');
-    if (badge) badge.textContent = parseInt(targetM.split('-')[1]) + '월';
-  }
-})();
 </script>
 
 <div class="toast" id="toast">

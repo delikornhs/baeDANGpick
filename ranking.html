@@ -11,8 +11,8 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>이번달 월배당 분배율 랭킹 - 배당픽</title>
-<meta name="description" content="이번달 월배당 ETF 분배율 랭킹. 월중·월말 분배금 공시를 통합해 분배율 높은 순으로 확인하세요.">
+<title>분배율ㆍ수익률 랭킹 - 배당픽</title>
+<meta name="description" content="월배당 ETF 분배율ㆍ분배금 랭킹과 배당 ETF 주간 수익률 랭킹을 한눈에 확인하세요.">
 <meta name="robots" content="index, follow">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="/data/output/etf_data.js"></script>
@@ -37,63 +37,104 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .nav-link.on{color:var(--accent);border-color:var(--accent);background:var(--accent-bg)}
 
 /* PAGE HEADER */
-.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:24px 20px 20px}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:20px 20px 16px}
 .page-header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.page-header h1{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.page-header h1{font-size:21px;font-weight:700;letter-spacing:-.5px;margin-bottom:3px}
 .page-header-sub{font-size:12px;color:var(--ink3)}
 .update-badge{font-size:11px;color:var(--ink3);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:4px 10px;white-space:nowrap;font-family:"DM Mono",monospace}
 
+/* TABS */
+.tab-wrap{background:var(--white);border-bottom:2px solid var(--border);padding:0 20px}
+.tab-inner{max-width:1100px;margin:0 auto;display:flex;gap:0}
+.tab-btn{font-size:13px;font-weight:700;padding:13px 20px;border:none;background:none;cursor:pointer;color:var(--ink3);border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .15s;font-family:inherit;white-space:nowrap}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* OPTIONS PANEL */
+.opt-wrap{max-width:1100px;margin:0 auto;padding:16px 20px 0}
+.opt-panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.opt-rows{display:flex;flex-direction:column;gap:10px;flex:1}
+.opt-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.opt-label{font-size:11px;font-weight:700;color:var(--ink3);width:44px;flex-shrink:0}
+.otog{font-size:12px;font-weight:600;padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--ink3);cursor:pointer;transition:all .15s;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+.otog.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.otog:hover:not(.on){border-color:var(--ink4);color:var(--ink2)}
+.opt-badge{font-size:10px;font-weight:700;background:rgba(29,107,56,.12);border-radius:8px;padding:1px 6px;color:var(--accent)}
+.otog.on .opt-badge{background:rgba(29,107,56,.15)}
+.opt-sep{color:var(--ink4);font-size:13px}
+.week-range{font-size:11px;color:var(--ink3);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-family:"DM Mono",monospace}
+.confirm-btn{font-size:12px;font-weight:700;padding:9px 20px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:background .15s;flex-shrink:0}
+.confirm-btn:hover{background:#165a2e}
+
+/* INFO TIP */
+.info-tip{position:relative;cursor:help;color:var(--ink3);font-size:11px;display:inline-flex;align-items:center}
+.info-tip::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100%+6px);transform:translateX(-50%);background:#2a2a28;color:#fff;padding:6px 10px;border-radius:6px;font-size:10px;line-height:1.5;width:240px;text-align:left;pointer-events:none;opacity:0;transition:opacity .15s;z-index:300;font-weight:400}
+.info-tip:hover::after{opacity:1}
+
 /* STATS */
-.stats-row{max-width:1100px;margin:0 auto;padding:16px 20px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.stat-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 18px}
-.stat-label{font-size:11px;color:var(--ink3);margin-bottom:4px}
-.stat-val{font-size:20px;font-weight:700;color:var(--ink);font-family:"DM Mono",monospace;letter-spacing:-.5px}
+.stats-row{max-width:1100px;margin:0 auto;padding:12px 20px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 16px}
+.stat-label{font-size:11px;color:var(--ink3);margin-bottom:3px}
+.stat-val{font-size:18px;font-weight:700;color:var(--ink);font-family:"DM Mono",monospace;letter-spacing:-.5px}
 .stat-val.accent{color:var(--accent)}
-.stat-sub{font-size:11px;color:var(--ink3);margin-top:2px}
+.stat-sub{font-size:11px;color:var(--ink3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* FILTER */
-.filter-wrap{max-width:1100px;margin:0 auto;padding:16px 20px 0}
-.filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-.filter-row-label{font-size:11px;font-weight:700;color:var(--ink3);width:52px;flex-shrink:0}
-.ftog{font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--ink3);cursor:pointer;transition:all .15s;font-family:inherit}
+.filter-wrap{max-width:1100px;margin:0 auto;padding:12px 20px 0}
+.filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.filter-label{font-size:11px;font-weight:700;color:var(--ink3);flex-shrink:0}
+.ftog{font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--ink3);cursor:pointer;transition:all .15s;font-family:inherit}
 .ftog.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
 .ftog:hover:not(.on){border-color:var(--ink4);color:var(--ink2)}
-.result-meta{font-size:12px;color:var(--ink3);padding:10px 0 4px}
+.result-meta{font-size:12px;color:var(--ink3);padding:8px 0 2px}
 
 /* RANKING LIST */
-.ranking-wrap{max-width:1100px;margin:0 auto;padding:0 20px 48px}
-.rank-item{display:flex;align-items:center;gap:14px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:8px;text-decoration:none;color:inherit;transition:all .15s}
+.ranking-wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.rank-item{display:flex;align-items:center;gap:14px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:13px 16px;margin-bottom:7px;text-decoration:none;color:inherit;transition:all .15s}
 .rank-item:hover{border-color:var(--accent-mid);box-shadow:0 2px 10px rgba(29,107,56,.07);transform:translateY(-1px)}
-.rank-num{font-size:16px;font-weight:700;color:var(--ink4);font-family:"DM Mono",monospace;width:28px;text-align:center;flex-shrink:0}
+.rank-num{font-size:15px;font-weight:700;color:var(--ink4);font-family:"DM Mono",monospace;width:26px;text-align:center;flex-shrink:0}
 .rank-num.top{color:var(--accent)}
 .rank-body{flex:1;min-width:0}
-.rank-name{font-size:14px;font-weight:700;letter-spacing:-.3px;margin-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.rank-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rank-name{font-size:14px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.rank-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .rank-meta-item{font-size:11px;color:var(--ink3)}
 .rank-right{text-align:right;flex-shrink:0}
-.rank-rate{font-size:20px;font-weight:700;color:var(--accent);font-family:"DM Mono",monospace;letter-spacing:-.5px}
-.rank-dist{font-size:11px;color:var(--ink3);margin-top:3px}
+.rank-main{font-size:19px;font-weight:700;font-family:"DM Mono",monospace;letter-spacing:-.5px}
+.rank-main.accent{color:var(--accent)}
+.rank-main.pos{color:#1d6b38}
+.rank-main.neg{color:var(--red)}
+.rank-main.na{color:var(--ink3)}
+.rank-sub{font-size:11px;color:var(--ink3);margin-top:3px}
 
 /* BADGES */
-.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;border:1px solid;white-space:nowrap}
+.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;border:1px solid;white-space:nowrap}
 .badge-mid{background:#fffbeb;color:#b45309;border-color:#fde68a}
 .badge-end{background:var(--blue-bg);color:var(--blue);border-color:#bfdbfe}
 .badge-type{background:#f0f4ff;color:#4361ee;border-color:#c7d5ff}
 .badge-freq{background:var(--bg);color:var(--ink3);border-color:var(--border)}
 
+/* LOAD MORE */
+.loadmore-wrap{max-width:1100px;margin:0 auto;padding:8px 20px 40px;text-align:center}
+.loadmore-btn{font-size:13px;font-weight:600;padding:10px 32px;border:1px solid var(--border);background:var(--white);border-radius:8px;cursor:pointer;color:var(--ink2);font-family:inherit;transition:all .15s}
+.loadmore-btn:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-bg)}
+
 /* EMPTY */
-.empty{text-align:center;padding:60px 20px;color:var(--ink3)}
-.empty p{font-size:14px;margin-bottom:6px}
+.empty{text-align:center;padding:48px 20px;color:var(--ink3)}
+.empty p{font-size:14px;margin-bottom:4px}
+.empty small{font-size:12px}
 
 footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8;margin-top:8px}
 
-@media(max-width:560px){
+@media(max-width:600px){
   .nav-inner{height:auto;padding:8px 0;flex-direction:column;align-items:flex-start;gap:6px}
   .nav-links{gap:6px}
   .stats-row{grid-template-columns:1fr 1fr}
   .stats-row .stat-card:last-child{grid-column:span 2}
-  .rank-rate{font-size:17px}
   .page-header-inner{flex-direction:column;align-items:flex-start}
+  .opt-panel{flex-direction:column;align-items:flex-start}
+  .confirm-btn{width:100%}
+  .rank-main{font-size:16px}
+  .tab-btn{font-size:12px;padding:11px 14px}
 }
 </style>
 </head>
@@ -113,44 +154,105 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <div class="page-header">
   <div class="page-header-inner">
     <div>
-      <h1 id="pageTitle">이번달 월배당 분배율 랭킹</h1>
-      <p class="page-header-sub" id="pageSubTitle">월중·월말 분배금 공시를 통합한 월배당 ETF 랭킹입니다.</p>
+      <h1>분배율ㆍ수익률 랭킹</h1>
+      <p class="page-header-sub">월배당 ETF 분배율ㆍ분배금 · 배당 ETF 주간 수익률</p>
     </div>
     <div class="update-badge" id="updateBadge">업데이트 중...</div>
   </div>
 </div>
 
-<div class="stats-row" id="statsRow">
-  <div class="stat-card">
-    <div class="stat-label">집계 ETF 수</div>
-    <div class="stat-val accent" id="statCount">-</div>
-    <div class="stat-sub" id="statSub">월중 + 월말</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-label">최고 분배율</div>
-    <div class="stat-val accent" id="statMax">-</div>
-    <div class="stat-sub" id="statMaxName">-</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-label">평균 분배율</div>
-    <div class="stat-val" id="statAvg">-</div>
-    <div class="stat-sub">월배당 ETF 기준</div>
+<!-- 탭 -->
+<div class="tab-wrap">
+  <div class="tab-inner">
+    <button class="tab-btn on" id="tabDist" onclick="switchTab('dist')">📊 월배당 분배율ㆍ분배금</button>
+    <button class="tab-btn" id="tabRet" onclick="switchTab('ret')">📈 배당 수익률</button>
   </div>
 </div>
 
-<div class="filter-wrap">
-  <div class="filter-row">
-    <span class="filter-row-label">유형</span>
-    <button class="ftog on" data-group="type" data-v="all" onclick="setFilter('type','all')">전체</button>
-    <button class="ftog" data-group="type" data-v="커버드콜" onclick="setFilter('type','커버드콜')">커버드콜</button>
-    <button class="ftog" data-group="type" data-v="리츠" onclick="setFilter('type','리츠')">리츠</button>
-    <button class="ftog" data-group="type" data-v="일반배당" onclick="setFilter('type','일반배당')">일반배당</button>
-    <button class="ftog" data-group="type" data-v="기타" onclick="setFilter('type','기타')">기타</button>
+<!-- ═══ 섹션 1: 분배율/분배금 ═══ -->
+<div id="distSection">
+  <div class="opt-wrap">
+    <div class="opt-panel">
+      <div class="opt-rows">
+        <div class="opt-row">
+          <span class="opt-label">항목</span>
+          <button class="otog on" data-og="distMetric" data-v="분배율" onclick="setDistOpt('distMetric','분배율')">분배율</button>
+          <button class="otog"    data-og="distMetric" data-v="분배금" onclick="setDistOpt('distMetric','분배금')">분배금</button>
+        </div>
+        <div class="opt-row">
+          <span class="opt-label">기간</span>
+          <button class="otog on" data-og="distPeriod" data-v="이번달" onclick="setDistOpt('distPeriod','이번달')">이번달 <span class="opt-badge" id="distMonthBadge"></span></button>
+          <button class="otog"    data-og="distPeriod" data-v="연환산" onclick="setDistOpt('distPeriod','연환산')">연환산 <span class="opt-badge" id="distYearBadge"></span> <span class="info-tip" data-tip="ETF가 연중에 상장된 경우 분배 기간이 짧아 합계 및 연환산 분배율이 낮게 나타날 수 있습니다.">ⓘ</span></button>
+        </div>
+      </div>
+      <button class="confirm-btn" onclick="runDistRanking()">확인하기</button>
+    </div>
   </div>
-  <div class="result-meta" id="resultMeta"></div>
+
+  <div class="stats-row" id="distStatsRow">
+    <div class="stat-card"><div class="stat-label">집계 ETF 수</div><div class="stat-val accent" id="dStatCount">-</div><div class="stat-sub" id="dStatSub">월중 + 월말</div></div>
+    <div class="stat-card"><div class="stat-label" id="dStatMaxLabel">최고 분배율</div><div class="stat-val accent" id="dStatMax">-</div><div class="stat-sub" id="dStatMaxName">-</div></div>
+    <div class="stat-card"><div class="stat-label" id="dStatAvgLabel">평균 분배율</div><div class="stat-val" id="dStatAvg">-</div><div class="stat-sub">월배당 ETF 기준</div></div>
+  </div>
+
+  <div class="filter-wrap">
+    <div class="filter-row">
+      <span class="filter-label">유형</span>
+      <button class="ftog on" data-section="dist" data-v="all"    onclick="setTypeFilter('dist','all')">전체</button>
+      <button class="ftog"    data-section="dist" data-v="커버드콜" onclick="setTypeFilter('dist','커버드콜')">커버드콜</button>
+      <button class="ftog"    data-section="dist" data-v="리츠"    onclick="setTypeFilter('dist','리츠')">리츠</button>
+      <button class="ftog"    data-section="dist" data-v="일반배당" onclick="setTypeFilter('dist','일반배당')">일반배당</button>
+      <button class="ftog"    data-section="dist" data-v="기타"    onclick="setTypeFilter('dist','기타')">기타</button>
+    </div>
+    <div class="result-meta" id="dResultMeta"></div>
+  </div>
+
+  <div class="ranking-wrap" id="distList"></div>
+  <div class="loadmore-wrap" id="distMoreWrap" style="display:none">
+    <button class="loadmore-btn" onclick="loadMore('dist')">더보기</button>
+  </div>
 </div>
 
-<div class="ranking-wrap" id="rankingList"></div>
+<!-- ═══ 섹션 2: 수익률 ═══ -->
+<div id="retSection" style="display:none">
+  <div class="opt-wrap">
+    <div class="opt-panel">
+      <div class="opt-rows">
+        <div class="opt-row">
+          <span class="opt-label">기준</span>
+          <button class="otog on" data-og="retMetric" data-v="주가" onclick="setRetOpt('retMetric','주가')">주가 수익률</button>
+          <button class="otog"    data-og="retMetric" data-v="총"   onclick="setRetOpt('retMetric','총')">총수익률</button>
+          <span class="opt-sep">|</span>
+          <span class="week-range" id="weekRangeLabel">-</span>
+        </div>
+      </div>
+      <button class="confirm-btn" onclick="runRetRanking()">확인하기</button>
+    </div>
+  </div>
+
+  <div class="stats-row" id="retStatsRow">
+    <div class="stat-card"><div class="stat-label">집계 ETF 수</div><div class="stat-val accent" id="rStatCount">-</div><div class="stat-sub">전체 배당 ETF</div></div>
+    <div class="stat-card"><div class="stat-label" id="rStatMaxLabel">최고 수익률</div><div class="stat-val accent" id="rStatMax">-</div><div class="stat-sub" id="rStatMaxName">-</div></div>
+    <div class="stat-card"><div class="stat-label" id="rStatAvgLabel">평균 수익률</div><div class="stat-val" id="rStatAvg">-</div><div class="stat-sub">가격 있는 ETF 기준</div></div>
+  </div>
+
+  <div class="filter-wrap">
+    <div class="filter-row">
+      <span class="filter-label">유형</span>
+      <button class="ftog on" data-section="ret" data-v="all"    onclick="setTypeFilter('ret','all')">전체</button>
+      <button class="ftog"    data-section="ret" data-v="커버드콜" onclick="setTypeFilter('ret','커버드콜')">커버드콜</button>
+      <button class="ftog"    data-section="ret" data-v="리츠"    onclick="setTypeFilter('ret','리츠')">리츠</button>
+      <button class="ftog"    data-section="ret" data-v="일반배당" onclick="setTypeFilter('ret','일반배당')">일반배당</button>
+      <button class="ftog"    data-section="ret" data-v="기타"    onclick="setTypeFilter('ret','기타')">기타</button>
+    </div>
+    <div class="result-meta" id="rResultMeta"></div>
+  </div>
+
+  <div class="ranking-wrap" id="retList"></div>
+  <div class="loadmore-wrap" id="retMoreWrap" style="display:none">
+    <button class="loadmore-btn" onclick="loadMore('ret')">더보기</button>
+  </div>
+</div>
 
 <footer>
   본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.
@@ -162,167 +264,330 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <script>
 // ── 유틸 ──
 function getCategory(e) {
-  const t = (e.type || '');
+  const t = e.type || '';
   if (t.includes('커버드콜')) return '커버드콜';
   if (t.includes('리츠'))    return '리츠';
   if (t.includes('배당'))    return '일반배당';
   return '기타';
 }
-function isMonthly(e) {
-  return e.freq === '월배당' || e.freq === '월배당추정';
-}
+function isMonthly(e) { return e.freq === '월배당' || e.freq === '월배당추정'; }
 function fmtDate(s) {
   if (!s) return '-';
   const [,m,d] = s.split('-');
   return `${parseInt(m)}.${parseInt(d)}`;
 }
-
-// ── 기준 월 결정 ──
-// MID·END 공시일이 같은 달 = 이번달 완료, 다른 달 = 이전 달 기준
-const _midM = (typeof MID_NOTICE_DATE !== 'undefined' && MID_NOTICE_DATE)
-  ? MID_NOTICE_DATE.slice(0,7) : '';
-const _endM = (typeof END_NOTICE_DATE !== 'undefined' && END_NOTICE_DATE)
-  ? END_NOTICE_DATE.slice(0,7) : '';
-const isComplete = Boolean(_midM && _endM && _midM === _endM);
-const targetMonth = isComplete ? _midM : _endM;                 // "YYYY-MM"
-const targetMonthLabel = targetMonth
-  ? `${parseInt(targetMonth.split('-')[1])}월` : '';
-
-// ── 필터 상태 ──
-let filterType = 'all';
-let allData    = [];   // 데이터 로드 후 채워짐
-
-function setFilter(group, val) {
-  if (group === 'type') filterType = val;
-  document.querySelectorAll(`[data-group="${group}"]`).forEach(b => {
-    b.classList.toggle('on', b.dataset.v === val);
-  });
-  render();
+function fmtWon(n) { return Math.round(n).toLocaleString() + '원'; }
+function retCls(v) { return v == null || v === 0 ? 'na' : v > 0 ? 'pos' : 'neg'; }
+function retStr(v) {
+  if (v == null || v === 0) return '-';
+  return (v > 0 ? '+' : '') + v.toFixed(2) + '%';
 }
 
-// ── 렌더 ──
-function render() {
-  let data = [...allData];
-  if (filterType !== 'all') data = data.filter(e => getCategory(e) === filterType);
-  data.sort((a, b) => b.rate - a.rate);
+// ── 기준 월 결정 (분배율 섹션) ──
+const _midM = (typeof MID_NOTICE_DATE !== 'undefined' && MID_NOTICE_DATE) ? MID_NOTICE_DATE.slice(0,7) : '';
+const _endM = (typeof END_NOTICE_DATE !== 'undefined' && END_NOTICE_DATE) ? END_NOTICE_DATE.slice(0,7) : '';
+const distIsComplete = Boolean(_midM && _endM && _midM === _endM);
+const distTargetMonth = distIsComplete ? _midM : _endM;  // "YYYY-MM"
+const distMonthNum    = distTargetMonth ? parseInt(distTargetMonth.split('-')[1]) : 0;
+const priceYear       = (typeof PRICE_DATE !== 'undefined' && PRICE_DATE) ? parseInt(PRICE_DATE.slice(0,4)) : new Date().getFullYear();
 
-  document.getElementById('resultMeta').textContent = `총 ${data.length}개 ETF`;
-
-  if (!data.length) {
-    document.getElementById('rankingList').innerHTML =
-      `<div class="empty"><p>조건에 맞는 ETF가 없습니다.</p></div>`;
-    return;
-  }
-
-  const html = data.map((e, i) => {
-    const rank = i + 1;
-    const timingBadge = e.timing === '월중'
-      ? `<span class="badge badge-mid">월중</span>`
-      : e.timing === '월말'
-      ? `<span class="badge badge-end">월말</span>`
-      : '';
-    const typeBadge = `<span class="badge badge-type">${getCategory(e)}</span>`;
-    return `
-      <a href="/etf/${e.code}" class="rank-item">
-        <div class="rank-num${rank <= 3 ? ' top' : ''}">${rank}</div>
-        <div class="rank-body">
-          <div class="rank-name">${e.name}${timingBadge}${typeBadge}</div>
-          <div class="rank-meta">
-            <span class="rank-meta-item">${e.brand}</span>
-            <span class="rank-meta-item">배당락 ${fmtDate(e.ex)}</span>
-            <span class="rank-meta-item">지급 ${fmtDate(e.pay)}</span>
-          </div>
-        </div>
-        <div class="rank-right">
-          <div class="rank-rate">${e.rate}%</div>
-          <div class="rank-dist">${e.dist.toLocaleString()}원/좌</div>
-        </div>
-      </a>`;
-  }).join('');
-
-  document.getElementById('rankingList').innerHTML = html;
+// 주간 범위
+function deriveWeekRange(pd) {
+  const d = new Date(pd);
+  const dow = d.getDay(); // 0=일,1=월,...,5=금,6=토
+  const toMon = dow === 0 ? -6 : 1 - dow;
+  const mon = new Date(d); mon.setDate(d.getDate() + toMon);
+  const fri = new Date(mon); fri.setDate(mon.getDate() + 4);
+  const fmt = dt => dt.toISOString().slice(0,10);
+  return [fmt(mon), fmt(fri)];
+}
+const [_ws, _we] = (typeof WEEK_START !== 'undefined' && typeof WEEK_END !== 'undefined')
+  ? [WEEK_START, WEEK_END]
+  : deriveWeekRange(typeof PRICE_DATE !== 'undefined' ? PRICE_DATE : new Date().toISOString().slice(0,10));
+function fmtWeekBadge(s) {
+  return `'${s.slice(2,4)}.${parseInt(s.slice(5,7))}.${parseInt(s.slice(8,10))}.`;
 }
 
-// ── 통계 ──
-function updateStats(data) {
-  const midCount = data.filter(e => e.timing === '월중').length;
-  const endCount = data.filter(e => e.timing === '월말').length;
-  document.getElementById('statCount').textContent = data.length + '개';
-  document.getElementById('statSub').textContent   = `월중 ${midCount}개 · 월말 ${endCount}개`;
+// ── 상태 ──
+const PAGE_SIZE = 20;
+let activeTab      = 'dist';
+let distMetric     = '분배율';
+let distPeriod     = '이번달';
+let distTypeFilter = 'all';
+let distBaseData   = [];   // 필터 전 전체 데이터
+let distShown      = 0;
 
-  if (data.length) {
-    const top     = [...data].sort((a,b) => b.rate - a.rate)[0];
-    const topName = top.name.length > 14 ? top.name.slice(0,13)+'…' : top.name;
-    document.getElementById('statMax').textContent     = top.rate + '%';
-    document.getElementById('statMaxName').textContent = topName;
-    const avg = data.reduce((s,e) => s + e.rate, 0) / data.length;
-    document.getElementById('statAvg').textContent = avg.toFixed(2) + '%';
-  }
+let retMetric      = '주가';
+let retTypeFilter  = 'all';
+let retBaseData    = [];
+let retShown       = 0;
+
+// ── 탭 전환 ──
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('distSection').style.display = tab === 'dist' ? '' : 'none';
+  document.getElementById('retSection').style.display  = tab === 'ret'  ? '' : 'none';
+  document.getElementById('tabDist').classList.toggle('on', tab === 'dist');
+  document.getElementById('tabRet').classList.toggle('on', tab === 'ret');
 }
 
-// ── 데이터 로드 ──
-async function loadAndRender() {
-  // 헤더 업데이트
-  if (targetMonthLabel) {
-    document.getElementById('pageTitle').textContent     = `${targetMonthLabel} 월배당 분배율 랭킹`;
-    document.getElementById('pageSubTitle').textContent  = `${targetMonthLabel} 월중·월말 분배금 공시 기준 월배당 ETF 랭킹입니다.`;
-    document.title = `${targetMonthLabel} 월배당 분배율 랭킹 - 배당픽`;
-  }
-  if (typeof PRICE_DATE !== 'undefined') {
-    document.getElementById('updateBadge').textContent = `가격 기준 ${PRICE_DATE.replace(/-/g,'.')}`;
-  }
+// ── 옵션 토글 ──
+function setDistOpt(group, val) {
+  if (group === 'distMetric') distMetric = val;
+  if (group === 'distPeriod') distPeriod = val;
+  document.querySelectorAll(`[data-og="${group}"]`).forEach(b =>
+    b.classList.toggle('on', b.dataset.v === val));
+}
+function setRetOpt(group, val) {
+  if (group === 'retMetric') retMetric = val;
+  document.querySelectorAll(`[data-og="${group}"]`).forEach(b =>
+    b.classList.toggle('on', b.dataset.v === val));
+}
+function setTypeFilter(section, val) {
+  if (section === 'dist') distTypeFilter = val;
+  if (section === 'ret')  retTypeFilter  = val;
+  document.querySelectorAll(`[data-section="${section}"]`).forEach(b =>
+    b.classList.toggle('on', b.dataset.v === val));
+  renderFiltered(section);
+}
 
-  if (isComplete) {
-    // 이번달 완료 → ETF_ALL 직접 사용
-    allData = (ETF_ALL || []).filter(e =>
-      e.current && isMonthly(e) &&
-      (e.timing === '월중' || e.timing === '월말') && e.dist > 0
-    );
+// ── 더보기 ──
+function loadMore(section) {
+  if (section === 'dist') { distShown += PAGE_SIZE; renderList('dist'); }
+  if (section === 'ret')  { retShown  += PAGE_SIZE; renderList('ret');  }
+}
+
+// ── 필터 적용 후 렌더 ──
+function renderFiltered(section) {
+  if (section === 'dist') {
+    distShown = PAGE_SIZE;
+    renderList('dist');
   } else {
-    // 이전 달 기준 → 월말은 ETF_ALL, 월중은 history.json
-    const endData   = (ETF_ALL || []).filter(e =>
-      e.current && isMonthly(e) && e.timing === '월말' && e.dist > 0
-    );
-    const endISINs  = new Set(endData.map(e => e.isin));
-    const priceMap  = {};
-    (ETF_ALL || []).forEach(e => { if (e.price > 0) priceMap[e.isin] = e; });
-
-    let midData = [];
-    if (targetMonth) {
-      try {
-        const resp    = await fetch('/data/output/history.json');
-        const history = await resp.json();
-        for (const [isin, entries] of Object.entries(history)) {
-          if (endISINs.has(isin)) continue;           // 월말 중복 방지
-          const etf = priceMap[isin];
-          if (!etf || !isMonthly(etf)) continue;      // 월배당만
-          for (const [dateKey, entry] of Object.entries(entries)) {
-            if (!dateKey.startsWith(targetMonth)) continue;
-            if (!entry.dist || entry.dist <= 0) continue;
-            const rate = parseFloat((entry.dist / etf.price * 100).toFixed(2));
-            if (rate <= 0) continue;
-            const day = parseInt(dateKey.split('-')[2]);
-            midData.push({
-              isin, code: entry.code, name: entry.name,
-              brand: etf.brand, type: etf.type, freq: etf.freq,
-              ex: entry.ex, pay: entry.pay,
-              dist: entry.dist, price: etf.price, rate,
-              timing: day <= 20 ? '월중' : '월말'
-            });
-          }
-        }
-      } catch(err) {
-        console.warn('history.json 로딩 실패:', err);
-      }
-    }
-    allData = [...endData, ...midData];
+    retShown = PAGE_SIZE;
+    renderList('ret');
   }
-
-  updateStats(allData);
-  render();
 }
 
-loadAndRender();
+// ── 실제 목록 렌더 ──
+function renderList(section) {
+  if (section === 'dist') {
+    const typeF = distTypeFilter;
+    let data = distBaseData.filter(e => typeF === 'all' || getCategory(e) === typeF);
+    document.getElementById('dResultMeta').textContent = `총 ${data.length}개 ETF`;
+    const shown = data.slice(0, distShown);
+    document.getElementById('distList').innerHTML = shown.length
+      ? shown.map((e,i) => distItem(e, i+1)).join('')
+      : `<div class="empty"><p>조건에 맞는 ETF가 없습니다.</p></div>`;
+    const moreWrap = document.getElementById('distMoreWrap');
+    moreWrap.style.display = data.length > distShown ? '' : 'none';
+  } else {
+    const typeF = retTypeFilter;
+    let data = retBaseData.filter(e => typeF === 'all' || getCategory(e) === typeF);
+    document.getElementById('rResultMeta').textContent = `총 ${data.length}개 ETF`;
+    const shown = data.slice(0, retShown);
+    document.getElementById('retList').innerHTML = shown.length
+      ? shown.map((e,i) => retItem(e, i+1)).join('')
+      : `<div class="empty"><p>조건에 맞는 ETF가 없습니다.</p></div>`;
+    const moreWrap = document.getElementById('retMoreWrap');
+    moreWrap.style.display = data.length > retShown ? '' : 'none';
+  }
+}
+
+// ── 분배율/분배금 아이템 렌더 ──
+function distItem(e, rank) {
+  const isAnnual   = distPeriod === '연환산';
+  const isDist     = distMetric === '분배금';
+  const timingBadge = e.timing === '월중' ? `<span class="badge badge-mid">월중</span>`
+    : e.timing === '월말' ? `<span class="badge badge-end">월말</span>` : '';
+  const typeBadge  = `<span class="badge badge-type">${getCategory(e)}</span>`;
+  let mainVal, subVal, metaItems;
+  if (isAnnual) {
+    mainVal  = isDist ? fmtWon(e.annualDist)                : (e.annualRate?.toFixed(2) ?? '0.00') + '%';
+    subVal   = isDist ? (e.annualRate?.toFixed(2) ?? '-') + '%/년' : fmtWon(e.annualDist) + '/년';
+    metaItems = `<span class="rank-meta-item">${e.brand}</span>`;
+  } else {
+    mainVal  = isDist ? fmtWon(e.dist) : e.rate + '%';
+    subVal   = isDist ? e.rate + '%'   : fmtWon(e.dist) + '/좌';
+    metaItems = `<span class="rank-meta-item">${e.brand}</span>
+      <span class="rank-meta-item">배당락 ${fmtDate(e.ex)}</span>
+      <span class="rank-meta-item">지급 ${fmtDate(e.pay)}</span>`;
+  }
+  return `
+    <a href="/etf/${e.code}" class="rank-item">
+      <div class="rank-num${rank <= 3 ? ' top' : ''}">${rank}</div>
+      <div class="rank-body">
+        <div class="rank-name">${e.name}${timingBadge}${typeBadge}</div>
+        <div class="rank-meta">${metaItems}</div>
+      </div>
+      <div class="rank-right">
+        <div class="rank-main accent">${mainVal}</div>
+        <div class="rank-sub">${subVal}</div>
+      </div>
+    </a>`;
+}
+
+// ── 수익률 아이템 렌더 ──
+function retItem(e, rank) {
+  const field  = retMetric === '주가' ? 'ret1w' : 'tret1w';
+  const val    = e[field] ?? 0;
+  const cls    = retCls(val);
+  const str    = retStr(val);
+  const freqBadge = isMonthly(e) ? `<span class="badge badge-freq">월배당</span>` : '';
+  const typeBadge = `<span class="badge badge-type">${getCategory(e)}</span>`;
+  return `
+    <a href="/etf/${e.code}" class="rank-item">
+      <div class="rank-num${rank <= 3 ? ' top' : ''}">${rank}</div>
+      <div class="rank-body">
+        <div class="rank-name">${e.name}${typeBadge}${freqBadge}</div>
+        <div class="rank-meta">
+          <span class="rank-meta-item">${e.brand}</span>
+          <span class="rank-meta-item">${e.price ? e.price.toLocaleString()+'원' : '-'}</span>
+        </div>
+      </div>
+      <div class="rank-right">
+        <div class="rank-main ${cls}">${str}</div>
+        <div class="rank-sub">${retMetric === '주가' ? '주가 수익률' : '총수익률'}</div>
+      </div>
+    </a>`;
+}
+
+// ── 통계 업데이트 ──
+function updateDistStats(data) {
+  const isAnnual = distPeriod === '연환산';
+  const isDist   = distMetric === '분배금';
+  const key      = isAnnual ? (isDist ? 'annualDist' : 'annualRate') : (isDist ? 'dist' : 'rate');
+  const sorted   = [...data].sort((a,b) => (b[key]??0) - (a[key]??0));
+  const midC = data.filter(e => e.timing === '월중').length;
+  const endC = data.filter(e => e.timing === '월말').length;
+
+  document.getElementById('dStatCount').textContent = data.length + '개';
+  document.getElementById('dStatSub').textContent   = isAnnual ? '연환산 기준' : `월중 ${midC}개 · 월말 ${endC}개`;
+
+  const maxLbl = isDist ? (isAnnual ? '최고 연환산 분배금' : '최고 분배금') : (isAnnual ? '최고 연환산 분배율' : '최고 분배율');
+  const avgLbl = isDist ? (isAnnual ? '평균 연환산 분배금' : '평균 분배금') : (isAnnual ? '평균 연환산 분배율' : '평균 분배율');
+  document.getElementById('dStatMaxLabel').textContent = maxLbl;
+  document.getElementById('dStatAvgLabel').textContent = avgLbl;
+
+  if (sorted.length) {
+    const top = sorted[0];
+    const topVal = isDist ? fmtWon(top[key]??0) : (top[key]??0).toFixed(2) + '%';
+    document.getElementById('dStatMax').textContent = topVal;
+    const n = top.name; document.getElementById('dStatMaxName').textContent = n.length > 14 ? n.slice(0,13)+'…' : n;
+    const avg = data.reduce((s,e) => s + (e[key]??0), 0) / data.length;
+    document.getElementById('dStatAvg').textContent = isDist ? fmtWon(avg) : avg.toFixed(2) + '%';
+  }
+}
+function updateRetStats(data) {
+  const field = retMetric === '주가' ? 'ret1w' : 'tret1w';
+  const valid = data.filter(e => e[field] != null);
+  const sorted = [...valid].sort((a,b) => (b[field]??0) - (a[field]??0));
+  document.getElementById('rStatCount').textContent = valid.length + '개';
+  const lbl = retMetric === '주가' ? '주가 수익률' : '총수익률';
+  document.getElementById('rStatMaxLabel').textContent = '최고 ' + lbl;
+  document.getElementById('rStatAvgLabel').textContent = '평균 ' + lbl;
+  if (sorted.length) {
+    document.getElementById('rStatMax').textContent = retStr(sorted[0][field]);
+    const n = sorted[0].name; document.getElementById('rStatMaxName').textContent = n.length > 14 ? n.slice(0,13)+'…' : n;
+    const avg = valid.reduce((s,e) => s + (e[field]??0), 0) / valid.length;
+    document.getElementById('rStatAvg').textContent = retStr(Math.round(avg * 100) / 100);
+  }
+}
+
+// ── 분배율/분배금 데이터 로드 ──
+async function runDistRanking() {
+  const isAnnual = distPeriod === '연환산';
+  const isDist   = distMetric === '분배금';
+
+  if (isAnnual) {
+    // 연환산: ETF_ALL stab 필드 사용
+    distBaseData = (ETF_ALL || []).filter(e => {
+      if (!isMonthly(e)) return false;
+      const s = e.stab || {};
+      return (s.annualDist > 0 || s.avgMonthlyRate > 0);
+    }).map(e => ({
+      ...e,
+      annualRate: parseFloat(((e.stab?.avgMonthlyRate ?? 0) * 12).toFixed(2)),
+      annualDist: e.stab?.annualDist ?? 0,
+    })).sort((a,b) => isDist ? b.annualDist - a.annualDist : b.annualRate - a.annualRate);
+  } else {
+    // 이번달
+    if (distIsComplete) {
+      distBaseData = (ETF_ALL || []).filter(e =>
+        e.current && isMonthly(e) && (e.timing === '월중' || e.timing === '월말') && e.dist > 0
+      );
+    } else {
+      const endData  = (ETF_ALL || []).filter(e => e.current && isMonthly(e) && e.timing === '월말' && e.dist > 0);
+      const endISINs = new Set(endData.map(e => e.isin));
+      const priceMap = {};
+      (ETF_ALL || []).forEach(e => { if (e.price > 0) priceMap[e.isin] = e; });
+      let midData = [];
+      if (distTargetMonth) {
+        try {
+          const resp = await fetch('/data/output/history.json');
+          const history = await resp.json();
+          for (const [isin, entries] of Object.entries(history)) {
+            if (endISINs.has(isin)) continue;
+            const etf = priceMap[isin];
+            if (!etf || !isMonthly(etf)) continue;
+            for (const [dk, entry] of Object.entries(entries)) {
+              if (!dk.startsWith(distTargetMonth) || !entry.dist || entry.dist <= 0) continue;
+              const rate = parseFloat((entry.dist / etf.price * 100).toFixed(2));
+              if (rate <= 0) continue;
+              midData.push({ isin, code: entry.code, name: entry.name,
+                brand: etf.brand, type: etf.type, freq: etf.freq,
+                ex: entry.ex, pay: entry.pay, dist: entry.dist,
+                price: etf.price, rate,
+                timing: parseInt(dk.split('-')[2]) <= 20 ? '월중' : '월말' });
+            }
+          }
+        } catch(e) { console.warn('history.json 로딩 실패:', e); }
+      }
+      distBaseData = [...endData, ...midData];
+    }
+    distBaseData.sort((a,b) => isDist ? b.dist - a.dist : b.rate - a.rate);
+  }
+
+  updateDistStats(distBaseData);
+  distShown = PAGE_SIZE;
+  distTypeFilter = 'all';
+  document.querySelectorAll('[data-section="dist"]').forEach(b =>
+    b.classList.toggle('on', b.dataset.v === 'all'));
+  renderList('dist');
+}
+
+// ── 수익률 데이터 로드 ──
+function runRetRanking() {
+  const field = retMetric === '주가' ? 'ret1w' : 'tret1w';
+  retBaseData = (ETF_ALL || [])
+    .filter(e => e.price > 0)
+    .sort((a,b) => (b[field] ?? 0) - (a[field] ?? 0));
+  updateRetStats(retBaseData);
+  retShown = PAGE_SIZE;
+  retTypeFilter = 'all';
+  document.querySelectorAll('[data-section="ret"]').forEach(b =>
+    b.classList.toggle('on', b.dataset.v === 'all'));
+  renderList('ret');
+}
+
+// ── 초기화 ──
+(function init() {
+  // 업데이트 날짜
+  if (typeof PRICE_DATE !== 'undefined')
+    document.getElementById('updateBadge').textContent = `가격 기준 ${PRICE_DATE.replace(/-/g,'.')}`;
+
+  // 분배 관련 배지
+  if (distMonthNum)
+    document.getElementById('distMonthBadge').textContent = distMonthNum + '월';
+  document.getElementById('distYearBadge').textContent = priceYear + '년';
+
+  // 주간 범위 배지
+  document.getElementById('weekRangeLabel').textContent =
+    `${fmtWeekBadge(_ws)}~${fmtWeekBadge(_we)}`;
+
+  // 기본 렌더
+  runDistRanking();
+  runRetRanking();
+})();
 </script>
 </body>
 </html>
