@@ -11,8 +11,8 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>이번달 분배율 랭킹 - 배당픽</title>
-<meta name="description" content="이번달 ETF 분배율 랭킹. 월중·월말 분배금 공시를 통합해 분배율 높은 순으로 확인하세요.">
+<title>이번달 월배당 분배율 랭킹 - 배당픽</title>
+<meta name="description" content="이번달 월배당 ETF 분배율 랭킹. 월중·월말 분배금 공시를 통합해 분배율 높은 순으로 확인하세요.">
 <meta name="robots" content="index, follow">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="/data/output/etf_data.js"></script>
@@ -113,8 +113,8 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <div class="page-header">
   <div class="page-header-inner">
     <div>
-      <h1 id="pageTitle">이번달 분배율 랭킹</h1>
-      <p class="page-header-sub">월중·월말 분배금 공시를 통합한 이번달 전체 랭킹입니다.</p>
+      <h1 id="pageTitle">이번달 월배당 분배율 랭킹</h1>
+      <p class="page-header-sub" id="pageSubTitle">월중·월말 분배금 공시를 통합한 월배당 ETF 랭킹입니다.</p>
     </div>
     <div class="update-badge" id="updateBadge">업데이트 중...</div>
   </div>
@@ -147,12 +147,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     <button class="ftog" data-group="type" data-v="일반배당" onclick="setFilter('type','일반배당')">일반배당</button>
     <button class="ftog" data-group="type" data-v="기타" onclick="setFilter('type','기타')">기타</button>
   </div>
-  <div class="filter-row">
-    <span class="filter-row-label">분배주기</span>
-    <button class="ftog on" data-group="freq" data-v="all" onclick="setFilter('freq','all')">전체</button>
-    <button class="ftog" data-group="freq" data-v="월배당" onclick="setFilter('freq','월배당')">월배당</button>
-    <button class="ftog" data-group="freq" data-v="분기배당이상" onclick="setFilter('freq','분기배당이상')">분기배당이상</button>
-  </div>
   <div class="result-meta" id="resultMeta"></div>
 </div>
 
@@ -182,76 +176,57 @@ function fmtDate(s) {
   const [,m,d] = s.split('-');
   return `${parseInt(m)}.${parseInt(d)}`;
 }
-function fmtMonth(priceDate) {
-  if (!priceDate) return '';
-  const [y, m] = priceDate.split('-');
-  return `${y}년 ${parseInt(m)}월`;
-}
+
+// ── 기준 월 결정 ──
+// MID·END 공시일이 같은 달 = 이번달 완료, 다른 달 = 이전 달 기준
+const _midM = (typeof MID_NOTICE_DATE !== 'undefined' && MID_NOTICE_DATE)
+  ? MID_NOTICE_DATE.slice(0,7) : '';
+const _endM = (typeof END_NOTICE_DATE !== 'undefined' && END_NOTICE_DATE)
+  ? END_NOTICE_DATE.slice(0,7) : '';
+const isComplete = Boolean(_midM && _endM && _midM === _endM);
+const targetMonth = isComplete ? _midM : _endM;                 // "YYYY-MM"
+const targetMonthLabel = targetMonth
+  ? `${parseInt(targetMonth.split('-')[1])}월` : '';
 
 // ── 필터 상태 ──
 let filterType = 'all';
-let filterFreq = 'all';
+let allData    = [];   // 데이터 로드 후 채워짐
 
 function setFilter(group, val) {
   if (group === 'type') filterType = val;
-  if (group === 'freq') filterFreq = val;
-  // 버튼 토글
   document.querySelectorAll(`[data-group="${group}"]`).forEach(b => {
     b.classList.toggle('on', b.dataset.v === val);
   });
   render();
 }
 
-// ── 메인 렌더 ──
+// ── 렌더 ──
 function render() {
-  // current=true, dist>0 인 ETF만
-  let data = (ETF_ALL || []).filter(e => e.current && e.dist > 0);
-
-  // 필터 적용
+  let data = [...allData];
   if (filterType !== 'all') data = data.filter(e => getCategory(e) === filterType);
-  if (filterFreq !== 'all') {
-    if (filterFreq === '월배당') {
-      data = data.filter(e => isMonthly(e));
-    } else {
-      data = data.filter(e => !isMonthly(e));
-    }
-  }
-
-  // 분배율 내림차순
   data.sort((a, b) => b.rate - a.rate);
 
-  // 결과 메타
-  document.getElementById('resultMeta').textContent =
-    `총 ${data.length}개 ETF`;
+  document.getElementById('resultMeta').textContent = `총 ${data.length}개 ETF`;
 
-  // 빈 결과
   if (!data.length) {
     document.getElementById('rankingList').innerHTML =
       `<div class="empty"><p>조건에 맞는 ETF가 없습니다.</p></div>`;
     return;
   }
 
-  // 랭킹 렌더
   const html = data.map((e, i) => {
-    const rank   = i + 1;
-    const cat    = getCategory(e);
+    const rank = i + 1;
     const timingBadge = e.timing === '월중'
       ? `<span class="badge badge-mid">월중</span>`
       : e.timing === '월말'
       ? `<span class="badge badge-end">월말</span>`
       : '';
-    const typeBadge = `<span class="badge badge-type">${cat}</span>`;
-    const freqBadge = isMonthly(e)
-      ? '' : `<span class="badge badge-freq">분기배당이상</span>`;
-
+    const typeBadge = `<span class="badge badge-type">${getCategory(e)}</span>`;
     return `
       <a href="/etf/${e.code}" class="rank-item">
         <div class="rank-num${rank <= 3 ? ' top' : ''}">${rank}</div>
         <div class="rank-body">
-          <div class="rank-name">
-            ${e.name}
-            ${timingBadge}${typeBadge}${freqBadge}
-          </div>
+          <div class="rank-name">${e.name}${timingBadge}${typeBadge}</div>
           <div class="rank-meta">
             <span class="rank-meta-item">${e.brand}</span>
             <span class="rank-meta-item">배당락 ${fmtDate(e.ex)}</span>
@@ -268,45 +243,86 @@ function render() {
   document.getElementById('rankingList').innerHTML = html;
 }
 
-// ── 초기화 ──
-(function init() {
-  // 페이지 타이틀에 이번달 표시
-  const monthLabel = fmtMonth(typeof PRICE_DATE !== 'undefined' ? PRICE_DATE : '');
-  if (monthLabel) {
-    document.getElementById('pageTitle').textContent = `${monthLabel} 분배율 랭킹`;
-    document.title = `${monthLabel} 분배율 랭킹 - 배당픽`;
-  }
+// ── 통계 ──
+function updateStats(data) {
+  const midCount = data.filter(e => e.timing === '월중').length;
+  const endCount = data.filter(e => e.timing === '월말').length;
+  document.getElementById('statCount').textContent = data.length + '개';
+  document.getElementById('statSub').textContent   = `월중 ${midCount}개 · 월말 ${endCount}개`;
 
-  // 업데이트 날짜
-  if (typeof PRICE_DATE !== 'undefined') {
-    document.getElementById('updateBadge').textContent =
-      `가격 기준 ${PRICE_DATE.replace(/-/g,'.')}`;
-  }
-
-  // 통계 (전체 current 월배당 기준)
-  const all = (ETF_ALL || []).filter(e => e.current && e.dist > 0);
-  const monthly = all.filter(e => isMonthly(e));
-  const midCount = all.filter(e => e.timing === '월중').length;
-  const endCount = all.filter(e => e.timing === '월말').length;
-
-  document.getElementById('statCount').textContent = all.length + '개';
-  document.getElementById('statSub').textContent =
-    `월중 ${midCount}개 · 월말 ${endCount}개`;
-
-  if (all.length) {
-    const top = [...all].sort((a,b) => b.rate - a.rate)[0];
-    document.getElementById('statMax').textContent = top.rate + '%';
+  if (data.length) {
+    const top     = [...data].sort((a,b) => b.rate - a.rate)[0];
     const topName = top.name.length > 14 ? top.name.slice(0,13)+'…' : top.name;
+    document.getElementById('statMax').textContent     = top.rate + '%';
     document.getElementById('statMaxName').textContent = topName;
-  }
-
-  if (monthly.length) {
-    const avg = monthly.reduce((s, e) => s + e.rate, 0) / monthly.length;
+    const avg = data.reduce((s,e) => s + e.rate, 0) / data.length;
     document.getElementById('statAvg').textContent = avg.toFixed(2) + '%';
   }
+}
 
+// ── 데이터 로드 ──
+async function loadAndRender() {
+  // 헤더 업데이트
+  if (targetMonthLabel) {
+    document.getElementById('pageTitle').textContent     = `${targetMonthLabel} 월배당 분배율 랭킹`;
+    document.getElementById('pageSubTitle').textContent  = `${targetMonthLabel} 월중·월말 분배금 공시 기준 월배당 ETF 랭킹입니다.`;
+    document.title = `${targetMonthLabel} 월배당 분배율 랭킹 - 배당픽`;
+  }
+  if (typeof PRICE_DATE !== 'undefined') {
+    document.getElementById('updateBadge').textContent = `가격 기준 ${PRICE_DATE.replace(/-/g,'.')}`;
+  }
+
+  if (isComplete) {
+    // 이번달 완료 → ETF_ALL 직접 사용
+    allData = (ETF_ALL || []).filter(e =>
+      e.current && isMonthly(e) &&
+      (e.timing === '월중' || e.timing === '월말') && e.dist > 0
+    );
+  } else {
+    // 이전 달 기준 → 월말은 ETF_ALL, 월중은 history.json
+    const endData   = (ETF_ALL || []).filter(e =>
+      e.current && isMonthly(e) && e.timing === '월말' && e.dist > 0
+    );
+    const endISINs  = new Set(endData.map(e => e.isin));
+    const priceMap  = {};
+    (ETF_ALL || []).forEach(e => { if (e.price > 0) priceMap[e.isin] = e; });
+
+    let midData = [];
+    if (targetMonth) {
+      try {
+        const resp    = await fetch('/data/output/history.json');
+        const history = await resp.json();
+        for (const [isin, entries] of Object.entries(history)) {
+          if (endISINs.has(isin)) continue;           // 월말 중복 방지
+          const etf = priceMap[isin];
+          if (!etf || !isMonthly(etf)) continue;      // 월배당만
+          for (const [dateKey, entry] of Object.entries(entries)) {
+            if (!dateKey.startsWith(targetMonth)) continue;
+            if (!entry.dist || entry.dist <= 0) continue;
+            const rate = parseFloat((entry.dist / etf.price * 100).toFixed(2));
+            if (rate <= 0) continue;
+            const day = parseInt(dateKey.split('-')[2]);
+            midData.push({
+              isin, code: entry.code, name: entry.name,
+              brand: etf.brand, type: etf.type, freq: etf.freq,
+              ex: entry.ex, pay: entry.pay,
+              dist: entry.dist, price: etf.price, rate,
+              timing: day <= 20 ? '월중' : '월말'
+            });
+          }
+        }
+      } catch(err) {
+        console.warn('history.json 로딩 실패:', err);
+      }
+    }
+    allData = [...endData, ...midData];
+  }
+
+  updateStats(allData);
   render();
-})();
+}
+
+loadAndRender();
 </script>
 </body>
 </html>

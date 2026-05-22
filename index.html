@@ -66,12 +66,16 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .hero h1{font-size:24px;font-weight:700;letter-spacing:-.5px;line-height:1.35;margin-bottom:8px}
 .hero h1 span{color:#6cba8b}
 .hero p{font-size:13px;color:#999;line-height:1.7;margin-bottom:20px}
-.hero-links{display:flex;flex-direction:column;gap:8px}
-.hero-link{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px 14px;text-decoration:none;color:#fff;transition:background .15s,border-color .15s}
-.hero-link:hover{background:rgba(108,186,139,.15);border-color:rgba(108,186,139,.4)}
-.hero-link-label{font-size:13px;font-weight:700;white-space:nowrap;color:#6cba8b}
-.hero-link-desc{font-size:11px;color:#aaa;line-height:1.4}
-.hero-link-arrow{margin-left:auto;font-size:14px;color:#6cba8b;flex-shrink:0}
+.hero-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
+.hero-card{display:flex;flex-direction:column;gap:6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:16px;text-decoration:none;color:#fff;transition:background .15s,border-color .15s}
+.hero-card:hover{background:rgba(108,186,139,.15);border-color:rgba(108,186,139,.4)}
+.hc-top{display:flex;align-items:center;gap:8px}
+.hc-icon{font-size:18px;flex-shrink:0}
+.hc-label{font-size:13px;font-weight:700;color:#6cba8b;flex:1;line-height:1.3}
+.hc-badge{font-size:10px;background:rgba(108,186,139,.2);border:1px solid rgba(108,186,139,.35);border-radius:10px;padding:1px 8px;color:#a8dfc0;white-space:nowrap;flex-shrink:0}
+.hc-desc{font-size:11px;color:#9a9a9a;line-height:1.5;flex:1}
+.hc-arrow{font-size:12px;color:#6cba8b;text-align:right;margin-top:2px}
+@media(max-width:640px){.hero-cards{grid-template-columns:1fr;gap:7px}}
 
 /* SECTION */
 .section{max-width:1100px;margin:0 auto;padding:24px 20px 0}
@@ -376,21 +380,31 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   <div class="hero-inner">
     <h1><span>언제까지</span> 사야 받고 <span>얼마나</span> 받을 수 있을까?</h1>
     <p>최종 매수일 · 배당락일 · 지급일 한눈에 확인</p>
-    <div class="hero-links">
-      <a href="/guide.html" class="hero-link">
-        <span class="hero-link-label">ETF 분배금 가이드</span>
-        <span class="hero-link-desc">ETF 분배금의 기초부터 실전 활용까지, 꼭 알아야 할 핵심이 궁금하다면 클릭</span>
-        <span class="hero-link-arrow">→</span>
+    <div class="hero-cards">
+      <a href="/guide.html" class="hero-card">
+        <div class="hc-top">
+          <span class="hc-icon">📖</span>
+          <span class="hc-label">ETF 분배금 가이드</span>
+        </div>
+        <div class="hc-desc">기초부터 실전 활용까지, 꼭 알아야 할 핵심</div>
+        <div class="hc-arrow">→</div>
       </a>
-      <a href="/ranking.html" class="hero-link">
-        <span class="hero-link-label">이번달 분배율 랭킹</span>
-        <span class="hero-link-desc">월중·월말 분배금 공시를 통합해 분배율 높은 순으로 한눈에 확인하려면 클릭</span>
-        <span class="hero-link-arrow">→</span>
+      <a href="/ranking.html" class="hero-card">
+        <div class="hc-top">
+          <span class="hc-icon">🏆</span>
+          <span class="hc-label">이번달 월배당 분배율 랭킹</span>
+          <span class="hc-badge" id="rankBadge"></span>
+        </div>
+        <div class="hc-desc">월중·월말 통합 분배율 높은 순 정렬</div>
+        <div class="hc-arrow">→</div>
       </a>
-      <a href="/calc.html" class="hero-link">
-        <span class="hero-link-label">분배금 계산기</span>
-        <span class="hero-link-desc">지금 매수하면 이번달 얼마 받는지 계산하거나, 목표 월 분배금까지 달성 시뮬레이션이 궁금하면 클릭</span>
-        <span class="hero-link-arrow">→</span>
+      <a href="/calc.html" class="hero-card">
+        <div class="hc-top">
+          <span class="hc-icon">💰</span>
+          <span class="hc-label">분배금 계산기</span>
+        </div>
+        <div class="hc-desc">이번달 즉시 계산 · 목표 달성 시뮬레이션</div>
+        <div class="hc-arrow">→</div>
       </a>
     </div>
   </div>
@@ -498,7 +512,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     <div class="cs-left">
       <div class="cs-icon">🏆</div>
       <div>
-        <div class="cs-title">이번달 분배율 랭킹</div>
+        <div class="cs-title">이번달 월배당 분배율 랭킹</div>
         <div class="cs-desc">월중·월말 분배금 공시 통합 · 분배율 높은 순 정렬</div>
       </div>
     </div>
@@ -1972,6 +1986,19 @@ function closeToast() {
   document.getElementById('toast').classList.remove('show');
   clearTimeout(_toastTimer);
 }
+
+// ── 랭킹 월 배지 ──
+(function() {
+  const midM = (typeof MID_NOTICE_DATE !== 'undefined' && MID_NOTICE_DATE)
+    ? MID_NOTICE_DATE.slice(0,7) : '';
+  const endM = (typeof END_NOTICE_DATE !== 'undefined' && END_NOTICE_DATE)
+    ? END_NOTICE_DATE.slice(0,7) : '';
+  const targetM = (midM && endM && midM === endM) ? midM : endM;
+  if (targetM) {
+    const badge = document.getElementById('rankBadge');
+    if (badge) badge.textContent = parseInt(targetM.split('-')[1]) + '월';
+  }
+})();
 </script>
 
 <div class="toast" id="toast">
