@@ -27,7 +27,10 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests xlrd
+        run: pip install requests xlrd Pillow
+
+      - name: Install Korean font
+        run: sudo apt-get install -y fonts-nanum 2>/dev/null || true
 
       - name: Fetch ETF meta (Monday or manual trigger)
         run: |
@@ -80,3 +83,21 @@ jobs:
           APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
           NEWSLETTER_SECRET: ${{ secrets.NEWSLETTER_SECRET }}
         run: python trigger_newsletter.py --type data
+
+      - name: Generate Threads post (분배금 공시 데이터 변경 시에만)
+        if: steps.commit.outputs.dist_changed == 'true'
+        run: python generate_post.py
+
+      - name: Commit generated post files
+        if: steps.commit.outputs.dist_changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add posts/
+          if git diff --cached --quiet; then
+            echo "포스트 파일 변경 없음"
+          else
+            git commit -m "chore: auto-generate threads post $(date -u +%Y-%m-%d)"
+            git pull --rebase origin master
+            git push
+          fi
