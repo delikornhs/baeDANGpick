@@ -621,6 +621,18 @@ def fetch_etf_meta(codes: list) -> dict:
     return meta
 
 
+def weeks_since_listed(listed_date_str: str, fallback: int = 60) -> int:
+    """상장일로부터 현재까지 필요한 주 수 계산. 최대 600주(약 11.5년)."""
+    if not listed_date_str:
+        return fallback
+    try:
+        listed = datetime.strptime(listed_date_str, "%Y-%m-%d")
+        weeks = int((datetime.now() - listed).days / 7) + 4  # 여유 4주
+        return min(max(weeks, fallback), 600)
+    except Exception:
+        return fallback
+
+
 def fetch_weekly_price_history(code: str, weeks: int, headers: dict) -> list:
     """
     네이버 fchart API로 주간 종가 이력 반환.
@@ -956,7 +968,7 @@ if __name__ == "__main__":
             if p and p > 0:
                 item["price"] = p
 
-        # 주간 이력 조회 → 수익률 계산 (55주 ≈ 1년 + 여유)
+        # 주간 이력 조회 → 수익률 계산 (상장일 기준 필요 주 수만큼 동적 조회)
         hist_headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
             "Referer": "https://finance.naver.com/",
@@ -967,7 +979,8 @@ if __name__ == "__main__":
         ret_ok = ret_fail = 0
         for i, item in enumerate(latest):
             code    = item["code"]
-            weekly  = fetch_weekly_price_history(code, 55, hist_headers)
+            needed  = weeks_since_listed(item.get("listed_date", ""))
+            weekly  = fetch_weekly_price_history(code, needed, hist_headers)
             if weekly:
                 rets = calc_returns(item, weekly, history_for_returns)
                 for k, v in rets.items():
