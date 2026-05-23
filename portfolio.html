@@ -103,10 +103,19 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .legend-name{flex:1;font-size:12px;color:var(--ink2);font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .legend-pct{font-size:11px;font-family:"DM Mono",monospace;color:var(--ink3);flex-shrink:0}
 
+/* PORTFOLIO CARD HEADER */
+.pf-card-hdr{background:linear-gradient(135deg,#1a5e31 0%,#1d6b38 60%,#2a8047 100%);color:#fff;padding:18px 22px;margin:-20px -22px 0;display:flex;justify-content:space-between;align-items:flex-end}
+.pf-card-hdr-label{font-size:10px;color:rgba(255,255,255,.7);margin-bottom:4px;letter-spacing:.3px}
+.pf-card-hdr-total{font-size:24px;font-weight:700;font-family:"DM Mono",monospace;letter-spacing:-.5px;line-height:1.1}
+.pf-card-hdr-sub{font-size:10px;color:rgba(255,255,255,.6);margin-top:3px}
+.pf-card-hdr-right{text-align:right;flex-shrink:0}
+.pf-card-hdr-dist{font-size:16px;font-weight:700;font-family:"DM Mono",monospace;line-height:1.2}
+.pf-card-items-label{font-size:11px;color:var(--ink3);font-weight:600;letter-spacing:.5px;padding:14px 0 4px;text-transform:uppercase}
+
 /* PORTFOLIO LIST */
-.pf-item{padding:16px 0;border-bottom:1px solid var(--border)}
-.pf-item:last-child{border-bottom:none;padding-bottom:0}
-.pf-item-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:11px}
+.pf-item{padding:14px 0 14px 14px;border-bottom:1px solid var(--border);border-left:3px solid transparent}
+.pf-item:last-child{border-bottom:none;padding-bottom:4px}
+.pf-item-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
 .pf-item-info{flex:1;min-width:0}
 .pf-item-name{font-size:14px;font-weight:700;letter-spacing:-.3px;margin-bottom:5px}
 .pf-item-badges{display:flex;gap:5px;flex-wrap:wrap}
@@ -147,56 +156,21 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 /* IMAGE MODAL */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:center;justify-content:center;padding:16px}
 .modal-bg.open{display:flex}
-.img-modal{background:var(--white);border-radius:14px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
+.img-modal{background:var(--white);border-radius:14px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;display:flex;flex-direction:column}
 .img-modal-hdr{padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--white);z-index:10}
 .img-modal-hdr span{font-size:14px;font-weight:700}
 .img-modal-hdr button{width:26px;height:26px;border:1px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink3)}
 .img-modal-hdr button:hover{background:var(--bg)}
-.img-modal-body{padding:16px 20px}
-.img-modal-foot{padding:12px 20px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.img-modal-body{padding:16px 20px;overflow-x:auto}
+.img-modal-foot{padding:12px 20px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;position:sticky;bottom:0;background:var(--white)}
 .img-modal-foot button{border:none;border-radius:7px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:"Noto Sans KR",sans-serif}
 #downloadBtn{background:var(--accent);color:#fff}
 #downloadBtn:hover{background:#165a2e}
+#downloadBtn:disabled{background:var(--ink4);cursor:not-allowed}
 .img-modal-foot button:last-child{background:var(--bg);color:var(--ink2);border:1px solid var(--border)}
 
-/* SHARE CARD (off-screen) */
-#pfShareCard{position:absolute;left:-9999px;top:0;width:360px;background:#fff;font-family:"Noto Sans KR",-apple-system,sans-serif;border-radius:16px;overflow:hidden}
-.psc-head{background:#1d6b38;color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
-.psc-logo-row{display:flex;align-items:center;gap:8px}
-.psc-logo-mark{width:24px;height:24px;background:rgba(255,255,255,.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
-.psc-logo-text{font-size:15px;font-weight:700}
-.psc-date{font-size:10px;color:rgba(255,255,255,.7)}
-.psc-summary{padding:14px 20px;border-bottom:1px solid #f0f0f0}
-.psc-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.psc-scard{background:#f7f7f4;border-radius:8px;padding:10px 12px}
-.psc-slabel{font-size:10px;color:#9a9a93;margin-bottom:4px}
-.psc-sval{font-size:14px;font-weight:700;color:#1a1a18;font-family:"DM Mono",monospace}
-.psc-sval.green{color:#1d6b38}
-.psc-holdings{padding:12px 20px}
-.psc-h-title{font-size:11px;font-weight:700;color:#9a9a93;letter-spacing:.5px;margin-bottom:8px}
-.psc-h-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:12px}
-.psc-h-item:last-child{border-bottom:none}
-.psc-h-name{color:#1a1a18;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px}
-.psc-h-val{color:#4a4a45;font-family:"DM Mono",monospace;flex-shrink:0}
-.psc-foot{background:#f7f7f4;padding:9px 16px;font-size:9px;color:#9a9a93;display:flex;justify-content:space-between;align-items:center}
-
-/* PREVIEW SHARE CARD (in modal) */
-.preview-psc-head{background:#1d6b38;color:#fff;padding:14px 18px;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;align-items:center}
-.preview-inner{border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.preview-psc-summary{padding:12px 18px;border-bottom:1px solid var(--border)}
-.preview-psc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-.preview-psc-scard{background:var(--bg);border-radius:7px;padding:9px 11px}
-.preview-psc-slabel{font-size:10px;color:var(--ink3);margin-bottom:3px}
-.preview-psc-sval{font-size:13px;font-weight:700;color:var(--ink);font-family:"DM Mono",monospace}
-.preview-psc-sval.green{color:var(--accent)}
-.preview-psc-holdings{padding:10px 18px}
-.preview-psc-h-title{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.5px;margin-bottom:7px}
-.preview-psc-h-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
-.preview-psc-h-item:last-child{border-bottom:none}
-.preview-psc-h-name{color:var(--ink);font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px}
-.preview-psc-h-val{color:var(--ink2);font-family:"DM Mono",monospace;flex-shrink:0}
-.preview-psc-foot{background:var(--bg);padding:8px 14px;font-size:10px;color:var(--ink3);display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border)}
-.preview-psc-foot a{color:var(--accent);text-decoration:none;font-weight:600}
+/* PRINT AREA (off-screen – html2canvas target) */
+#pfPrintArea{position:absolute;left:-9999px;top:0;width:760px;background:#f7f7f4;font-family:"Noto Sans KR",-apple-system,sans-serif}
 
 /* FOOTER */
 footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8;margin-top:8px}
@@ -292,8 +266,8 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   </div>
 </div>
 
-<!-- 이미지 캡처용 공유 카드 (off-screen) -->
-<div id="pfShareCard"></div>
+<!-- 이미지 캡처용 (off-screen) -->
+<div id="pfPrintArea"></div>
 
 <footer>
   본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.
@@ -513,7 +487,7 @@ function render() {
     const weight = totalValue > 0 ? (item.value / totalValue * 100) : 0;
     const color  = PALETTE[idx % PALETTE.length];
     return `
-      <div class="pf-item">
+      <div class="pf-item" style="border-left-color:${color}">
         <div class="pf-item-header">
           <div class="pf-item-info">
             <div class="pf-item-name">${item.etf.name}</div>
@@ -559,14 +533,25 @@ function render() {
       </div>
     </div>`;
 
-  area.innerHTML =
-    summaryHtml +
-    noteHtml +
-    `<div class="card">
-      <div class="card-title">보유 ETF (${enriched.length}종목)</div>
-      ${itemsHtml}
-    </div>` +
-    chartHtml;
+  // 보유 ETF 카드: 그린 헤더 + 종목 목록
+  const holdingsCard = `
+    <div class="card" style="padding-top:0;overflow:hidden">
+      <div class="pf-card-hdr">
+        <div>
+          <div class="pf-card-hdr-label">보유 ETF · ${enriched.length}종목</div>
+          <div class="pf-card-hdr-total">${comma(totalValue)}<span style="font-size:14px;font-weight:400;margin-left:3px">원</span></div>
+          <div class="pf-card-hdr-sub">총 평가금액</div>
+        </div>
+        <div class="pf-card-hdr-right">
+          <div class="pf-card-hdr-label">이번달 예상 분배금</div>
+          <div class="pf-card-hdr-dist">+${comma(totalDist)}원</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:2px">${monthlyRate}%/월</div>
+        </div>
+      </div>
+      <div style="padding:4px 0">${itemsHtml}</div>
+    </div>`;
+
+  area.innerHTML = summaryHtml + noteHtml + holdingsCard + chartHtml;
 
   // ── 파이 차트 렌더 ──
   if (pieChart) { pieChart.destroy(); pieChart = null; }
@@ -604,6 +589,73 @@ function render() {
     </div>`).join('');
 }
 
+// ── 이미지용 HTML 빌더 (preview/print 공용) ──
+function buildPrintHTML(enriched, totalValue, totalDist, monthlyRate, forPreview) {
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+  const siteUrl = 'bae-dang-pick.vercel.app';
+
+  const holdingsHTML = enriched.map((item, idx) => {
+    const weight = totalValue > 0 ? (item.value / totalValue * 100) : 0;
+    const color  = PALETTE[idx % PALETTE.length];
+    const distLine = item.distAmt > 0
+      ? `<span style="color:#1d6b38;font-weight:700">+${comma(item.distAmt)}원/월</span>`
+      : '';
+    const distStat = item.di.dist > 0 ? ` · 주당 ${comma(item.di.dist)}원` : '';
+    return `
+      <div style="display:flex;align-items:stretch;gap:10px;padding:12px 0;border-bottom:1px solid #ebebeb">
+        <div style="width:4px;background:${color};border-radius:2px;flex-shrink:0;align-self:stretch"></div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:5px">
+            <div style="font-size:13px;font-weight:700;color:#1a1a18;line-height:1.3;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.etf.name}</div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-size:14px;font-weight:700;font-family:monospace;color:#1a1a18">${comma(item.value)}원</div>
+              ${item.distAmt > 0 ? `<div style="font-size:11px;color:#1d6b38;font-weight:700;margin-top:2px">+${comma(item.distAmt)}원/월</div>` : ''}
+            </div>
+          </div>
+          <div style="font-size:11px;color:#9a9a93;margin-bottom:7px">
+            현재가 ${comma(item.etf.price)}원 · ${item.qty.toLocaleString()}주${distStat}
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="flex:1;height:4px;background:#e8e8e2;border-radius:2px;overflow:hidden">
+              <div style="width:${weight.toFixed(1)}%;height:100%;background:${color};border-radius:2px"></div>
+            </div>
+            <span style="font-size:11px;font-family:monospace;color:#9a9a93;width:38px;text-align:right;flex-shrink:0">${weight.toFixed(1)}%</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const urlEl = forPreview
+    ? `<a href="https://${siteUrl}" target="_blank" style="color:#1d6b38;font-weight:700;text-decoration:none">${siteUrl}</a>`
+    : `<span>${siteUrl}</span>`;
+
+  return `
+    <div style="background:linear-gradient(135deg,#1a5e31,#2a8047);color:#fff;padding:20px 24px;display:flex;justify-content:space-between;align-items:flex-end">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div style="width:24px;height:24px;background:rgba(255,255,255,.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">₩</div>
+          <span style="font-size:15px;font-weight:700">배당픽 포트폴리오</span>
+        </div>
+        <div style="font-size:24px;font-weight:700;font-family:monospace;letter-spacing:-.5px;line-height:1">${comma(totalValue)}원</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:4px">총 평가금액 · ${enriched.length}종목</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:10px;color:rgba(255,255,255,.65);margin-bottom:4px">${dateStr}</div>
+        <div style="font-size:16px;font-weight:700;font-family:monospace">+${comma(totalDist)}원</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:3px">이번달 예상 분배금 · ${monthlyRate}%/월</div>
+      </div>
+    </div>
+    <div style="background:#fff;padding:0 24px 4px">
+      <div style="font-size:10px;font-weight:700;color:#9a9a93;letter-spacing:.8px;padding:14px 0 4px;text-transform:uppercase">보유 ETF · ${enriched.length}종목</div>
+      ${holdingsHTML}
+    </div>
+    <div style="background:#f7f7f4;padding:10px 20px;border-top:1px solid #e8e8e2;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#9a9a93">
+      <span>배당픽 · ETF 분배금 일정 &amp; 계산기</span>
+      ${urlEl}
+    </div>`;
+}
+
 // ── 이미지 저장 ──
 function saveAsImage() {
   const items = load();
@@ -618,97 +670,20 @@ function saveAsImage() {
     return { code: item.code, qty: item.qty, etf, di, value, distAmt };
   }).filter(Boolean).sort((a, b) => b.value - a.value);
 
-  const totalValue = enriched.reduce((s, i) => s + i.value, 0);
-  const totalDist  = enriched.reduce((s, i) => s + i.distAmt, 0);
+  const totalValue  = enriched.reduce((s, i) => s + i.value, 0);
+  const totalDist   = enriched.reduce((s, i) => s + i.distAmt, 0);
   const monthlyRate = totalValue > 0 ? (totalDist / totalValue * 100).toFixed(2) : '0.00';
 
-  const now = new Date();
-  const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+  // off-screen 캡처용 div 채우기
+  const printArea = document.getElementById('pfPrintArea');
+  printArea.innerHTML = buildPrintHTML(enriched, totalValue, totalDist, monthlyRate, false);
 
-  const displayItems = enriched.slice(0, 8);
-  const moreCount = enriched.length - displayItems.length;
-
-  // Off-screen capture card
-  const shareCard = document.getElementById('pfShareCard');
-  shareCard.innerHTML = `
-    <div class="psc-head">
-      <div class="psc-logo-row">
-        <div class="psc-logo-mark">₩</div>
-        <div class="psc-logo-text">배당픽 포트폴리오</div>
-      </div>
-      <div class="psc-date">${dateStr}</div>
+  // 모달 미리보기 채우기 (URL 클릭 가능)
+  document.getElementById('imgPreview').innerHTML =
+    `<div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;font-family:'Noto Sans KR',sans-serif">
+      ${buildPrintHTML(enriched, totalValue, totalDist, monthlyRate, true)}
     </div>
-    <div class="psc-summary">
-      <div class="psc-summary-grid">
-        <div class="psc-scard">
-          <div class="psc-slabel">총 평가금액</div>
-          <div class="psc-sval">${comma(totalValue)}원</div>
-        </div>
-        <div class="psc-scard">
-          <div class="psc-slabel">이번달 분배금</div>
-          <div class="psc-sval green">${comma(totalDist)}원</div>
-        </div>
-        <div class="psc-scard">
-          <div class="psc-slabel">월분배율</div>
-          <div class="psc-sval green">${monthlyRate}%</div>
-        </div>
-      </div>
-    </div>
-    <div class="psc-holdings">
-      <div class="psc-h-title">보유 ETF (${enriched.length}종목)</div>
-      ${displayItems.map(item => `
-        <div class="psc-h-item">
-          <div class="psc-h-name">${item.etf.name}</div>
-          <div class="psc-h-val">${item.qty}주 · ${comma(item.value)}원</div>
-        </div>`).join('')}
-      ${moreCount > 0 ? `<div style="font-size:10px;color:#9a9a93;padding-top:5px">외 ${moreCount}종목</div>` : ''}
-    </div>
-    <div class="psc-foot">
-      <span>bae-dang-pick.vercel.app</span>
-      <span>배당픽</span>
-    </div>`;
-
-  // Preview in modal
-  const preview = document.getElementById('imgPreview');
-  preview.innerHTML = `
-    <div class="preview-inner">
-      <div class="preview-psc-head">
-        <div style="display:flex;align-items:center;gap:8px">
-          <div style="width:22px;height:22px;background:rgba(255,255,255,.2);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">₩</div>
-          <span style="font-size:14px;font-weight:700;color:#fff">배당픽 포트폴리오</span>
-        </div>
-        <span style="font-size:10px;color:rgba(255,255,255,.7)">${dateStr}</span>
-      </div>
-      <div class="preview-psc-summary">
-        <div class="preview-psc-grid">
-          <div class="preview-psc-scard">
-            <div class="preview-psc-slabel">총 평가금액</div>
-            <div class="preview-psc-sval">${comma(totalValue)}원</div>
-          </div>
-          <div class="preview-psc-scard">
-            <div class="preview-psc-slabel">이번달 분배금</div>
-            <div class="preview-psc-sval green">${comma(totalDist)}원</div>
-          </div>
-          <div class="preview-psc-scard">
-            <div class="preview-psc-slabel">월분배율</div>
-            <div class="preview-psc-sval green">${monthlyRate}%</div>
-          </div>
-        </div>
-      </div>
-      <div class="preview-psc-holdings">
-        <div class="preview-psc-h-title">보유 ETF (${enriched.length}종목)</div>
-        ${displayItems.map(item => `
-          <div class="preview-psc-h-item">
-            <div class="preview-psc-h-name">${item.etf.name}</div>
-            <div class="preview-psc-h-val">${item.qty}주 · ${comma(item.value)}원</div>
-          </div>`).join('')}
-        ${moreCount > 0 ? `<div style="font-size:10px;color:var(--ink3);padding-top:5px">외 ${moreCount}종목</div>` : ''}
-      </div>
-      <div class="preview-psc-foot">
-        <span>배당픽 · ETF 분배금 일정 &amp; 계산기</span>
-        <a href="https://bae-dang-pick.vercel.app" target="_blank">bae-dang-pick.vercel.app</a>
-      </div>
-    </div>`;
+    <p style="text-align:center;font-size:11px;color:var(--ink3);margin-top:10px">미리보기 — 위 URL을 클릭하면 사이트로 이동합니다</p>`;
 
   document.getElementById('imgModal').classList.add('open');
 }
@@ -721,16 +696,17 @@ function downloadImg() {
   const btn = document.getElementById('downloadBtn');
   btn.textContent = '⏳ 생성 중...';
   btn.disabled = true;
-  html2canvas(document.getElementById('pfShareCard'), {
+
+  html2canvas(document.getElementById('pfPrintArea'), {
     scale: 2,
-    backgroundColor: '#fff',
+    backgroundColor: '#f7f7f4',
     useCORS: true,
     allowTaint: true,
+    logging: false,
   }).then(canvas => {
     const link = document.createElement('a');
     const now = new Date();
-    const fname = `배당픽_포트폴리오_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.png`;
-    link.download = fname;
+    link.download = `배당픽_포트폴리오_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
     btn.textContent = '📥 이미지 다운로드';
