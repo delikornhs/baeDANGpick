@@ -1691,23 +1691,17 @@ function renderGrid() {
     const isMon = isMonthlyETF(e);
     const monConfirmed = !isMon || isCurrentMonthDist(e);
 
-    let st, distVal, rateVal, dateBadges;
-    if (isMon && !monConfirmed) {
-      st = {label: '공시 대기', cls: 'done'};
-      distVal = '<span style="color:var(--ink4)">미확정</span>';
-      rateVal = '<span style="color:var(--ink4)">미확정</span>';
-      dateBadges = `<div class="dbadge buy" style="opacity:.45">🛒 미정</div>
-        <div class="dbadge ex" style="opacity:.45">📉 미정</div>
-        <div class="dbadge pay" style="opacity:.45">💰 미정</div>`;
-    } else {
-      st = status(e);
-      const lb = lastBuy(e.ex);
-      distVal = `${comma(e.dist)}원`;
-      rateVal = `${e.rate}%`;
-      dateBadges = `<div class="dbadge buy">🛒 ${fd(lb)}</div>
-        <div class="dbadge ex">📉 ${fd(exDate(e.ex))}</div>
-        <div class="dbadge pay">💰 ${fds(e.pay)}</div>`;
-    }
+    const lb = lastBuy(e.ex);
+    const st = (isMon && !monConfirmed) ? {label:'공시 대기',cls:'done'} : status(e);
+    const distVal = `${comma(e.dist)}원`;
+    const rateVal = `${e.rate}%`;
+    const pendingTag = (isMon && !monConfirmed)
+      ? `<div style="font-size:10px;color:var(--ink3);margin-top:5px;padding-left:2px">⏳ 공시 대기 중 · 직전 공시 정보 표시</div>`
+      : '';
+    const dateBadges = `<div class="dbadge buy">🛒 ${fd(lb)}</div>
+      <div class="dbadge ex">📉 ${fd(exDate(e.ex))}</div>
+      <div class="dbadge pay">💰 ${fds(e.pay)}</div>
+      ${pendingTag}`;
 
     return `<div class="etf-card" onclick="goEtf('${e.code}');">
       <span class="status-pill ${st.cls}">${st.label}</span>

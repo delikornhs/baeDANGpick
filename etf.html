@@ -752,31 +752,22 @@ function render(e) {
   }
   const thisMonthOK = !isMonthlyE || isCurrentMonthDistE(e);
 
-  let schedDates, pendingNoteHtml;
-  if (thisMonthOK) {
-    const lb  = prevBizDay(e.ex);
-    const ex  = e.ex  || '-';
-    const pay = e.pay || '-';
-    schedDates = { lb: fd(lb), ex: fd(ex), pay: fd(pay) };
-    pendingNoteHtml = '';
-  } else {
-    schedDates = { lb: '미정', ex: '미정', pay: '미정' };
-    pendingNoteHtml = `<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:9px 14px;font-size:12px;color:#b45309;margin-bottom:10px">
-      ⏳ 이번달 분배금 일정이 아직 공시되지 않았습니다. 일정이 등록되면 자동으로 반영됩니다.
-    </div>`;
-  }
+  const lb  = prevBizDay(e.ex);
+  const ex  = e.ex  || '-';
+  const pay = e.pay || '-';
+  const schedDates = { lb: fd(lb), ex: fd(ex), pay: fd(pay) };
+  const distAmt  = `${comma(e.dist)}원`;
+  const distRate = `${e.rate}%`;
 
-  const distAmt  = thisMonthOK ? `${comma(e.dist)}원` : '<span style="color:var(--ink4);font-style:italic">공시 전</span>';
-  const distRate = thisMonthOK ? `${e.rate}%` : '<span style="color:var(--ink4);font-style:italic">공시 전</span>';
-
+  // 공시 대기 안내: 직전 공시 정보 표시 중임을 알림
   const schedParent = document.getElementById('schedGrid').parentNode;
-  // Insert pending note before schedGrid if needed
   let existingNote = schedParent.querySelector('.sched-pending-note');
   if (existingNote) existingNote.remove();
-  if (pendingNoteHtml) {
+  if (isMonthlyE && !thisMonthOK) {
     const noteEl = document.createElement('div');
     noteEl.className = 'sched-pending-note';
-    noteEl.innerHTML = pendingNoteHtml;
+    noteEl.style.cssText = 'background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:9px 14px;font-size:12px;color:#b45309;margin-bottom:10px';
+    noteEl.textContent = '⏳ 공시 대기 중으로 직전 공시 정보가 표시됩니다. 이번달 일정·분배금 공시 시 자동으로 반영됩니다.';
     schedParent.insertBefore(noteEl, document.getElementById('schedGrid'));
   }
 
