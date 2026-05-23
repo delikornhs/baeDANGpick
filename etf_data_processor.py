@@ -496,11 +496,13 @@ def build_js(latest: list, price_date: str = ""):
             )
         return "const ETF_ALL = [\n" + ",\n".join(items) + "\n];"
 
-    # 주간 범위 계산 (price_date 기준 월~금)
-    price_dt = datetime.strptime(price_date, "%Y-%m-%d")
-    mon_offset = price_dt.weekday()          # 0=월 … 4=금
-    week_start = (price_dt - timedelta(days=mon_offset)).strftime("%Y-%m-%d")
-    week_end   = (price_dt + timedelta(days=max(0, 4 - mon_offset))).strftime("%Y-%m-%d")
+    # 주간 범위 계산: 1주 수익률 기준 (지난 금요일 → 이번 금요일)
+    price_dt   = datetime.strptime(price_date, "%Y-%m-%d")
+    fri_offset = (price_dt.weekday() - 4) % 7   # 가장 최근 금요일까지 일수
+    this_friday = price_dt - timedelta(days=fri_offset)
+    last_friday = this_friday - timedelta(days=7)
+    week_start  = last_friday.strftime("%Y-%m-%d")
+    week_end    = this_friday.strftime("%Y-%m-%d")
 
     header = f'const PRICE_DATE = "{price_date}";\n'
     header += f'const MID_NOTICE_DATE = "{mid_notice}";\n'
@@ -667,10 +669,23 @@ def find_price_at_or_before(daily: list, target_date: str) -> int:
     return best
 
 
+def find_friday_price(daily: list, on_or_before: str) -> tuple:
+    """daily 이력에서 on_or_before 이하 가장 최근 금요일 종가 반환. (date_str, price)"""
+    best_date, best_price = "", 0
+    for date_str, price in daily:
+        if date_str > on_or_before:
+            break
+        if datetime.strptime(date_str, "%Y-%m-%d").weekday() == 4:  # 금요일
+            best_date, best_price = date_str, price
+    return best_date, best_price
+
+
 def calc_returns(item: dict, daily: list, history: dict) -> dict:
     """
     일별 이력으로 주가 수익률 및 분배금 포함 총수익률 계산.
-    periods: 1W(7일) / 1M(30일) / 3M(91일) / 6M(182일) / 1Y(365일)
+    - 1주: 금요일 종가 기준 (이번 주 금요일 vs 지난 주 금요일) — 주간 고정
+    - 1M/3M/6M/1Y: 정확한 일별 종가 기준
+    - 상장이후: 상장 첫날 종가 기준
     """
     current_price = item.get("price", 0)
     if not current_price or not daily:
@@ -696,7 +711,25 @@ def calc_returns(item: dict, daily: list, history: dict) -> dict:
             ret["total_return_listed"] = round(
                 (current_price - oldest_price + dist_sum) / oldest_price * 100, 2)
 
-    for label, days in [("1w", 7), ("1m", 30), ("3m", 91), ("6m", 182), ("1y", 365)]:
+    # 1주 수익률: 금요일 종가 기준 (이번 주 금요일 vs 지난 주 금요일)
+    today_str = now.strftime("%Y-%m-%d")
+    this_fri_date, this_fri_price = find_friday_price(daily, today_str)
+    if this_fri_price > 0:
+        last_fri_target = (datetime.strptime(this_fri_date, "%Y-%m-%d") - timedelta(days=7)).strftime("%Y-%m-%d")
+        last_fri_date, last_fri_price = find_friday_price(daily, last_fri_target)
+        if last_fri_price > 0:
+            ret["return_1w"] = round((this_fri_price - last_fri_price) / last_fri_price * 100, 2)
+            dist_sum = 0
+            if isin in history:
+                dist_sum = sum(
+                    rec["dist"] for ex_k, rec in history[isin].items()
+                    if last_fri_date < ex_k <= this_fri_date
+                )
+            ret["total_return_1w"] = round(
+                (this_fri_price - last_fri_price + dist_sum) / last_fri_price * 100, 2)
+
+    # 1개월 이상: 정확한 일별 종가 기준
+    for label, days in [("1m", 30), ("3m", 91), ("6m", 182), ("1y", 365)]:
         target = (now - timedelta(days=days)).strftime("%Y-%m-%d")
         past_price = find_price_at_or_before(daily, target)
         if not past_price:
