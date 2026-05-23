@@ -12,7 +12,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>분배율ㆍ수익률 랭킹 - 배당픽</title>
-<meta name="description" content="월배당 ETF 분배율ㆍ분배금 랭킹과 배당 ETF 주간 수익률 랭킹을 한눈에 확인하세요.">
+<meta name="description" content="월배당 ETF 분배율ㆍ분배금 랭킹과 전체 ETF 주간 수익률 랭킹을 한눈에 확인하세요.">
 <meta name="robots" content="index, follow">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="/data/output/etf_data.js"></script>
@@ -155,7 +155,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   <div class="page-header-inner">
     <div>
       <h1>분배율ㆍ수익률 랭킹</h1>
-      <p class="page-header-sub">월배당 ETF 분배율ㆍ분배금 랭킹, 배당 ETF 주간 수익률 랭킹</p>
+      <p class="page-header-sub">월배당 ETF 분배율ㆍ분배금 랭킹, 전체 ETF 주간 수익률 랭킹</p>
     </div>
     <div class="update-badge" id="updateBadge">업데이트 중...</div>
   </div>
@@ -165,7 +165,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <div class="tab-wrap">
   <div class="tab-inner">
     <button class="tab-btn on" id="tabDist" onclick="switchTab('dist')">📊 월배당 ETF 분배율ㆍ분배금</button>
-    <button class="tab-btn" id="tabRet" onclick="switchTab('ret')">📈 배당 ETF 수익률</button>
+    <button class="tab-btn" id="tabRet" onclick="switchTab('ret')">📈 전체 ETF 주간 수익률</button>
   </div>
 </div>
 
@@ -224,8 +224,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
           <button class="otog"    data-og="retMetric" data-v="총"   onclick="setRetOpt('retMetric','총')">총수익률</button>
         </div>
         <div class="opt-row">
-          <span class="opt-label">기간</span>
-          <span class="otog on" style="cursor:default;pointer-events:none">주간</span>
+          <span class="opt-label">대상기간</span>
           <span class="week-range" id="weekRangeLabel">-</span>
         </div>
       </div>
