@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-70RCL5E7B8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-70RCL5E7B8');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>내 포트폴리오 - 배당픽</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="/data/output/etf_data.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f7f7f4;--white:#fff;--ink:#1a1a18;--ink2:#4a4a45;--ink3:#9a9a93;--ink4:#d4d4cc;
+  --accent:#1d6b38;--accent-bg:#edf7f1;--accent-mid:#6cba8b;
+  --warn:#b45309;--warn-bg:#fffbeb;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --blue:#1d4ed8;--blue-bg:#eff6ff;--border:#e8e8e2;--radius:10px;
+}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",sans-serif;min-height:100vh}
+
+/* NAV */
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200}
+.nav-inner{max-width:1100px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:15px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--ink)}
+.logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.nav-tag{font-size:11px;color:var(--ink3);background:var(--bg);padding:3px 10px;border-radius:20px;border:1px solid var(--border)}
+
+/* WRAP */
+.wrap{max-width:800px;margin:0 auto;padding:28px 20px 80px}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:20px}
+.page-header h1{font-size:21px;font-weight:700;letter-spacing:-.5px;margin-bottom:5px}
+.page-header-sub{font-size:12px;color:var(--ink3);line-height:1.6}
+
+/* CARD 공통 */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:14px}
+.card-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.card-title::before{content:'';display:inline-block;width:3px;height:14px;background:var(--accent);border-radius:2px}
+
+/* ADD SECTION */
+.add-row{display:flex;gap:8px;align-items:flex-start}
+.search-wrap{position:relative;flex:1;min-width:0}
+.search-input{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;font-family:inherit;outline:none;background:var(--bg);transition:border-color .15s}
+.search-input:focus{border-color:var(--accent-mid);background:var(--white)}
+.search-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--white);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1);z-index:300;max-height:240px;overflow-y:auto;display:none}
+.search-dropdown.open{display:block}
+.search-result-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s}
+.search-result-item:last-child{border-bottom:none}
+.search-result-item:hover{background:var(--accent-bg)}
+.sri-name{font-size:13px;font-weight:600;color:var(--ink)}
+.sri-meta{font-size:11px;color:var(--ink3);margin-top:2px}
+.qty-input{width:88px;border:1px solid var(--border);border-radius:8px;padding:10px 8px;font-size:13px;font-family:inherit;outline:none;background:var(--bg);text-align:center;flex-shrink:0;transition:border-color .15s}
+.qty-input:focus{border-color:var(--accent-mid);background:var(--white)}
+.add-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0;transition:background .15s}
+.add-btn:hover{background:#165a2e}
+.add-btn:disabled{background:var(--ink4);cursor:not-allowed}
+.selected-chip{margin-top:8px;display:none;align-items:center;gap:8px;background:var(--accent-bg);border:1px solid #c5e8d2;border-radius:8px;padding:8px 12px}
+.selected-chip.show{display:flex}
+.selected-chip-name{font-size:12px;font-weight:700;color:var(--accent);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.selected-chip-clear{background:none;border:none;cursor:pointer;color:var(--ink3);font-size:15px;padding:0;line-height:1;flex-shrink:0}
+
+/* EMPTY STATE */
+.empty-state{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:56px 20px;text-align:center;margin-bottom:14px}
+.empty-icon{font-size:38px;margin-bottom:12px}
+.empty-title{font-size:15px;font-weight:700;margin-bottom:6px}
+.empty-desc{font-size:12px;color:var(--ink3);line-height:1.7}
+
+/* SUMMARY */
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.sum-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+.sum-label{font-size:11px;color:var(--ink3);margin-bottom:5px}
+.sum-val{font-size:20px;font-weight:700;font-family:"DM Mono",monospace;color:var(--ink);letter-spacing:-.5px;line-height:1.2}
+.sum-val .unit{font-size:12px;font-weight:400;font-family:"Noto Sans KR",sans-serif}
+.sum-val.accent{color:var(--accent)}
+.sum-sub{font-size:11px;color:var(--ink3);margin-top:4px}
+
+/* DIST NOTE */
+.dist-note{border-radius:8px;padding:11px 14px;margin-bottom:14px;font-size:12px;line-height:1.7}
+.dist-note.mixed{background:var(--warn-bg);border:1px solid #fde68a;color:var(--warn)}
+.dist-note.estimated{background:var(--warn-bg);border:1px solid #fde68a;color:var(--warn)}
+.dist-note.confirmed{background:var(--accent-bg);border:1px solid #c5e8d2;color:var(--accent)}
+.dist-note.has-unknown{background:var(--red-bg);border:1px solid #fecaca;color:var(--red)}
+
+/* CHART */
+.chart-inner{display:flex;align-items:center;gap:24px}
+.chart-donut-wrap{position:relative;width:180px;height:180px;flex-shrink:0}
+.chart-legend{flex:1;display:flex;flex-direction:column;gap:7px;min-width:0}
+.legend-item{display:flex;align-items:center;gap:8px}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.legend-name{flex:1;font-size:12px;color:var(--ink2);font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.legend-pct{font-size:11px;font-family:"DM Mono",monospace;color:var(--ink3);flex-shrink:0}
+
+/* PORTFOLIO LIST */
+.pf-item{padding:16px 0;border-bottom:1px solid var(--border)}
+.pf-item:last-child{border-bottom:none;padding-bottom:0}
+.pf-item-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:11px}
+.pf-item-info{flex:1;min-width:0}
+.pf-item-name{font-size:14px;font-weight:700;letter-spacing:-.3px;margin-bottom:5px}
+.pf-item-badges{display:flex;gap:5px;flex-wrap:wrap}
+.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;border:1px solid;white-space:nowrap}
+.badge-freq{background:var(--bg);color:var(--ink3);border-color:var(--border)}
+.badge-confirmed{background:#dcfce7;color:#166534;border-color:#bbf7d0}
+.badge-estimated{background:var(--warn-bg);color:var(--warn);border-color:#fde68a}
+.badge-nonmonthly{background:var(--bg);color:var(--ink4);border-color:var(--border)}
+.badge-unknown{background:var(--red-bg);color:var(--red);border-color:#fecaca}
+.pf-item-values{text-align:right;flex-shrink:0}
+.pf-item-eval{font-size:16px;font-weight:700;font-family:"DM Mono",monospace;color:var(--ink)}
+.pf-item-dist-amt{font-size:12px;font-weight:600;color:var(--accent);margin-top:3px}
+.pf-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px}
+.pf-stat{background:var(--bg);border-radius:6px;padding:8px 10px}
+.pf-stat-label{font-size:10px;color:var(--ink3);margin-bottom:3px}
+.pf-stat-val{font-size:12px;font-weight:700;color:var(--ink);font-family:"DM Mono",monospace}
+.weight-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.weight-color-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.weight-bar-bg{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.weight-bar-fill{height:100%;border-radius:3px}
+.weight-pct{font-size:11px;font-family:"DM Mono",monospace;color:var(--ink3);width:36px;text-align:right;flex-shrink:0}
+.pf-item-actions{display:flex;align-items:center;gap:8px}
+.qty-wrap{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink3)}
+.qty-edit{width:70px;border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;text-align:center;font-family:inherit;outline:none;background:var(--white)}
+.qty-edit:focus{border-color:var(--accent-mid)}
+.qty-save{font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);border:1px solid #c5e8d2;border-radius:5px;padding:4px 10px;cursor:pointer;font-family:inherit;transition:background .15s}
+.qty-save:hover{background:#d1f0e0}
+.pf-delete{font-size:11px;color:var(--ink3);background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:4px 10px;cursor:pointer;margin-left:auto;font-family:inherit;transition:all .15s}
+.pf-delete:hover{color:var(--red);border-color:#fecaca;background:var(--red-bg)}
+
+/* FOOTER */
+footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8;margin-top:8px}
+footer a{color:var(--ink3);text-underline-offset:2px}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .summary-grid{grid-template-columns:1fr 1fr}
+  .summary-grid .sum-card:last-child{grid-column:span 2}
+  .add-row{flex-wrap:wrap}
+  .qty-input,.add-btn{width:calc(50% - 4px)}
+  .chart-inner{flex-direction:column}
+  .chart-donut-wrap{width:160px;height:160px}
+  .pf-stat-grid{grid-template-columns:repeat(2,1fr)}
+  .sum-val{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-mark">&#8361;</div>배당픽</a>
+    <span class="nav-tag">💼 내 포트폴리오</span>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <div class="page-header">
+    <h1>💼 내 포트폴리오</h1>
+    <p class="page-header-sub">보유 ETF를 추가하면 이번달 예상 분배금을 자동으로 계산합니다.<br>데이터는 이 브라우저에만 저장되며 로그인이 필요 없습니다.</p>
+  </div>
+
+  <!-- ETF 추가 -->
+  <div class="card">
+    <div class="card-title">ETF 추가</div>
+    <div class="add-row">
+      <div class="search-wrap">
+        <input type="text" class="search-input" id="searchInput"
+          placeholder="ETF 종목명 또는 코드 검색" autocomplete="off"
+          oninput="onSearch(this.value)" onblur="hideDropdown()">
+        <div class="search-dropdown" id="searchDropdown"></div>
+      </div>
+      <input type="number" class="qty-input" id="qtyInput" placeholder="수량" min="1">
+      <button class="add-btn" id="addBtn" onclick="addItem()" disabled>추가</button>
+    </div>
+    <div class="selected-chip" id="selectedChip">
+      <span class="selected-chip-name" id="selectedChipName"></span>
+      <button class="selected-chip-clear" onclick="clearSelected()" title="선택 취소">✕</button>
+    </div>
+  </div>
+
+  <!-- 콘텐츠 영역 (JS 렌더) -->
+  <div id="contentArea"></div>
+
+</div>
+
+<footer>
+  본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.
+  <br><a href="/privacy.html">개인정보처리방침</a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+const STORAGE_KEY = 'bdp_portfolio';
+
+const PALETTE = [
+  '#1d6b38','#3b82f6','#f59e0b','#ec4899','#8b5cf6',
+  '#06b6d4','#10b981','#f97316','#6366f1','#84cc16',
+  '#ef4444','#a855f7','#14b8a6','#fb923c','#64748b',
+];
+
+// ── 스토리지 ──
+const load = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+const save = items => localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+
+// ── ETF 유틸 ──
+const findETF  = code => (ETF_ALL || []).find(e => e.code === code);
+const isMonthly = e  => e.freq === '월배당' || e.freq === '월배당추정';
+const comma     = n  => n == null ? '-' : Math.round(n).toLocaleString('ko-KR');
+
+function getAvgDist(etf) {
+  if (etf.stab && etf.stab.avgMonthlyDist > 0) return etf.stab.avgMonthlyDist;
+  const d6 = new Date(Date.now() - 182 * 86400000).toISOString().slice(0, 10);
+  const recent = (etf.trend || []).filter(t => t.ex_date >= d6);
+  if (!recent.length) return 0;
+  return recent.reduce((s, t) => s + t.dist, 0) / recent.length;
+}
+
+function getDistInfo(etf) {
+  if (!isMonthly(etf))              return { dist: 0, status: 'non-monthly' };
+  if (etf.current && etf.dist > 0)  return { dist: etf.dist, status: 'confirmed' };
+  const avg = getAvgDist(etf);
+  if (avg > 0)                       return { dist: avg, status: 'estimated' };
+  return { dist: 0, status: 'unknown' };
+}
+
+const distBadge = s => ({
+  confirmed:     '<span class="badge badge-confirmed">확정</span>',
+  estimated:     '<span class="badge badge-estimated">추정</span>',
+  'non-monthly': '<span class="badge badge-nonmonthly">월배당 아님</span>',
+  unknown:       '<span class="badge badge-unknown">데이터 없음</span>',
+}[s] || '');
+
+// ── 검색 ──
+let selectedCode = null;
+
+function onSearch(val) {
+  const q = val.trim().toLowerCase();
+  const dd = document.getElementById('searchDropdown');
+  if (!q) { dd.classList.remove('open'); return; }
+  const results = (ETF_ALL || [])
+    .filter(e => e.name.toLowerCase().includes(q) || e.code.includes(q))
+    .slice(0, 8);
+  dd.innerHTML = results.length
+    ? results.map(e => `
+        <div class="search-result-item" onmousedown="selectETF('${e.code}')">
+          <div class="sri-name">${e.name}</div>
+          <div class="sri-meta">${e.code} · ${e.brand} · ${e.freq} · ${e.price ? comma(e.price)+'원' : '-'}</div>
+        </div>`).join('')
+    : '<div style="padding:12px 14px;font-size:12px;color:var(--ink3)">검색 결과 없음</div>';
+  dd.classList.add('open');
+}
+
+function selectETF(code) {
+  const etf = findETF(code);
+  if (!etf) return;
+  selectedCode = code;
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchDropdown').classList.remove('open');
+  document.getElementById('selectedChipName').textContent = `[${etf.brand}] ${etf.name}`;
+  document.getElementById('selectedChip').classList.add('show');
+  document.getElementById('addBtn').disabled = false;
+  document.getElementById('qtyInput').focus();
+}
+
+function clearSelected() {
+  selectedCode = null;
+  document.getElementById('selectedChip').classList.remove('show');
+  document.getElementById('addBtn').disabled = true;
+  document.getElementById('searchInput').value = '';
+}
+
+function hideDropdown() {
+  setTimeout(() => document.getElementById('searchDropdown').classList.remove('open'), 150);
+}
+
+// ── 추가 ──
+function addItem() {
+  if (!selectedCode) return;
+  const qty = parseInt(document.getElementById('qtyInput').value) || 0;
+  if (qty <= 0) { alert('수량을 입력해주세요.'); return; }
+  const items = load();
+  const existing = items.find(i => i.code === selectedCode);
+  if (existing) { existing.qty += qty; }
+  else { items.push({ code: selectedCode, qty }); }
+  save(items);
+  clearSelected();
+  document.getElementById('qtyInput').value = '';
+  render();
+}
+
+// ── 수량 수정 ──
+function updateQty(code) {
+  const qty = parseInt(document.getElementById('qty-' + code).value) || 0;
+  if (qty <= 0) { alert('수량은 1 이상이어야 합니다.'); return; }
+  const items = load();
+  const item = items.find(i => i.code === code);
+  if (item) { item.qty = qty; save(items); render(); }
+}
+
+// ── 삭제 ──
+function removeItem(code) {
+  if (!confirm('포트폴리오에서 삭제하시겠습니까?')) return;
+  save(load().filter(i => i.code !== code));
+  render();
+}
+
+// ── 차트 인스턴스 ──
+let pieChart = null;
+
+// ── 렌더 ──
+function render() {
+  const items = load();
+  const area  = document.getElementById('contentArea');
+
+  if (!items.length) {
+    if (pieChart) { pieChart.destroy(); pieChart = null; }
+    area.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <div class="empty-title">보유 ETF가 없습니다</div>
+        <div class="empty-desc">위에서 ETF를 검색해 추가하면<br>이번달 예상 분배금을 바로 확인할 수 있습니다.</div>
+      </div>`;
+    return;
+  }
+
+  // ── 데이터 계산 ──
+  const enriched = items.map(item => {
+    const etf = findETF(item.code);
+    if (!etf) return null;
+    const di    = getDistInfo(etf);
+    const value = (etf.price || 0) * item.qty;
+    const distAmt = di.dist * item.qty;
+    return { code: item.code, qty: item.qty, etf, di, value, distAmt };
+  }).filter(Boolean).sort((a, b) => b.value - a.value);
+
+  const totalValue = enriched.reduce((s, i) => s + i.value, 0);
+  const totalDist  = enriched.reduce((s, i) => s + i.distAmt, 0);
+  const monthlyRate = totalValue > 0 ? (totalDist / totalValue * 100).toFixed(2) : '0.00';
+
+  const confirmedDist = enriched.filter(i => i.di.status === 'confirmed').reduce((s, i) => s + i.distAmt, 0);
+  const estimatedDist = enriched.filter(i => i.di.status === 'estimated').reduce((s, i) => s + i.distAmt, 0);
+
+  const monthlyItems   = enriched.filter(i => isMonthly(i.etf));
+  const hasConfirmed   = monthlyItems.some(i => i.di.status === 'confirmed');
+  const hasEstimated   = monthlyItems.some(i => i.di.status === 'estimated');
+  const hasUnknown     = monthlyItems.some(i => i.di.status === 'unknown');
+  const allConfirmed   = monthlyItems.length > 0 && monthlyItems.every(i => i.di.status === 'confirmed');
+
+  // ── 안내 메시지 ──
+  let noteHtml = '';
+  if (hasUnknown) {
+    noteHtml = `<div class="dist-note has-unknown">⚠️ 일부 종목은 과거 분배금 데이터가 없어 예상 분배금 계산에서 제외됐습니다.</div>`;
+  } else if (hasEstimated && hasConfirmed) {
+    noteHtml = `<div class="dist-note mixed">
+      ℹ️ <b>확정</b> ${comma(confirmedDist)}원 + <b>추정</b> ${comma(estimatedDist)}원 = 합계 ${comma(totalDist)}원<br>
+      추정 항목은 이번달 분배가 아직 공시되지 않아 최근 6개월 평균 분배금 기준입니다.
+    </div>`;
+  } else if (hasEstimated) {
+    noteHtml = `<div class="dist-note estimated">ℹ️ 이번달 분배가 아직 공시되지 않아 최근 6개월 평균 분배금으로 추정합니다.</div>`;
+  } else if (allConfirmed) {
+    noteHtml = `<div class="dist-note confirmed">✅ 보유 월배당 ETF 전체의 이번달 분배금이 확정됐습니다.</div>`;
+  }
+
+  // ── 요약 카드 ──
+  const summaryHtml = `
+    <div class="summary-grid">
+      <div class="sum-card">
+        <div class="sum-label">총 평가금액</div>
+        <div class="sum-val">${comma(totalValue)}<span class="unit">원</span></div>
+        <div class="sum-sub">${enriched.length}개 종목</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-label">이번달 예상 분배금</div>
+        <div class="sum-val accent">${comma(totalDist)}<span class="unit">원</span></div>
+        <div class="sum-sub">${hasEstimated ? '확정+추정 합계' : allConfirmed ? '전체 확정' : '-'}</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-label">포트폴리오 월분배율</div>
+        <div class="sum-val">${monthlyRate}<span class="unit">%</span></div>
+        <div class="sum-sub">예상 분배금 / 평가금액</div>
+      </div>
+    </div>`;
+
+  // ── 차트 ──
+  const chartHtml = `
+    <div class="card">
+      <div class="card-title">평가금액 비중</div>
+      <div class="chart-inner">
+        <div class="chart-donut-wrap"><canvas id="pfPie"></canvas></div>
+        <div class="chart-legend" id="pfLegend"></div>
+      </div>
+    </div>`;
+
+  // ── ETF 목록 ──
+  const itemsHtml = enriched.map((item, idx) => {
+    const weight = totalValue > 0 ? (item.value / totalValue * 100) : 0;
+    const color  = PALETTE[idx % PALETTE.length];
+    return `
+      <div class="pf-item">
+        <div class="pf-item-header">
+          <div class="pf-item-info">
+            <div class="pf-item-name">${item.etf.name}</div>
+            <div class="pf-item-badges">
+              <span class="badge badge-freq">${item.etf.freq}</span>
+              ${distBadge(item.di.status)}
+            </div>
+          </div>
+          <div class="pf-item-values">
+            <div class="pf-item-eval">${comma(item.value)}원</div>
+            ${item.distAmt > 0 ? `<div class="pf-item-dist-amt">+${comma(item.distAmt)}원/월</div>` : ''}
+          </div>
+        </div>
+        <div class="pf-stat-grid">
+          <div class="pf-stat"><div class="pf-stat-label">현재가</div><div class="pf-stat-val">${comma(item.etf.price)}원</div></div>
+          <div class="pf-stat"><div class="pf-stat-label">보유 수량</div><div class="pf-stat-val">${item.qty.toLocaleString()}주</div></div>
+          <div class="pf-stat"><div class="pf-stat-label">주당 분배금</div><div class="pf-stat-val">${item.di.dist > 0 ? comma(item.di.dist)+'원' : '-'}</div></div>
+          <div class="pf-stat"><div class="pf-stat-label">이번달 분배율</div><div class="pf-stat-val">${item.etf.rate ? item.etf.rate+'%' : '-'}</div></div>
+        </div>
+        <div class="weight-bar-row">
+          <div class="weight-color-dot" style="background:${color}"></div>
+          <div class="weight-bar-bg"><div class="weight-bar-fill" style="width:${weight.toFixed(1)}%;background:${color}"></div></div>
+          <div class="weight-pct">${weight.toFixed(1)}%</div>
+        </div>
+        <div class="pf-item-actions">
+          <div class="qty-wrap">
+            수량
+            <input type="number" class="qty-edit" id="qty-${item.code}" value="${item.qty}" min="1">
+            <button class="qty-save" onclick="updateQty('${item.code}')">수정</button>
+          </div>
+          <button class="pf-delete" onclick="removeItem('${item.code}')">삭제</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  area.innerHTML = summaryHtml + noteHtml + chartHtml + `
+    <div class="card">
+      <div class="card-title">보유 ETF (${enriched.length}종목)</div>
+      ${itemsHtml}
+    </div>`;
+
+  // ── 파이 차트 렌더 ──
+  if (pieChart) { pieChart.destroy(); pieChart = null; }
+  pieChart = new Chart(document.getElementById('pfPie').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: enriched.map(i => i.etf.name),
+      datasets: [{
+        data: enriched.map(i => i.value),
+        backgroundColor: enriched.map((_, idx) => PALETTE[idx % PALETTE.length]),
+        borderWidth: 2,
+        borderColor: '#fff',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: c => ` ${comma(c.raw)}원 (${totalValue > 0 ? (c.raw / totalValue * 100).toFixed(1) : 0}%)`
+          }
+        }
+      },
+      cutout: '58%',
+    }
+  });
+
+  document.getElementById('pfLegend').innerHTML = enriched.map((item, idx) => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${PALETTE[idx % PALETTE.length]}"></div>
+      <div class="legend-name">${item.etf.name}</div>
+      <div class="legend-pct">${totalValue > 0 ? (item.value / totalValue * 100).toFixed(1) : 0}%</div>
+    </div>`).join('');
+}
+
+render();
+</script>
+</body>
+</html>
