@@ -15,6 +15,7 @@
 <meta name="robots" content="noindex">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="/data/output/etf_data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -37,9 +38,12 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .wrap{max-width:800px;margin:0 auto;padding:28px 20px 80px}
 
 /* PAGE HEADER */
-.page-header{margin-bottom:20px}
+.page-header{margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.page-header-left{flex:1;min-width:0}
 .page-header h1{font-size:21px;font-weight:700;letter-spacing:-.5px;margin-bottom:5px}
 .page-header-sub{font-size:12px;color:var(--ink3);line-height:1.6}
+.save-img-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:"Noto Sans KR",sans-serif;flex-shrink:0;transition:background .15s}
+.save-img-btn:hover{background:#165a2e}
 
 /* CARD 공통 */
 .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:14px}
@@ -133,6 +137,67 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .pf-delete{font-size:11px;color:var(--ink3);background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:4px 10px;cursor:pointer;margin-left:auto;font-family:inherit;transition:all .15s}
 .pf-delete:hover{color:var(--red);border-color:#fecaca;background:var(--red-bg)}
 
+/* STORAGE NOTE */
+.storage-note{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:14px}
+.storage-note-title{font-size:11px;font-weight:700;color:var(--ink3);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.storage-note ul{list-style:none;padding:0}
+.storage-note li{font-size:11px;color:var(--ink3);line-height:1.7;padding-left:14px;position:relative}
+.storage-note li::before{content:'•';position:absolute;left:0;color:var(--ink4)}
+
+/* IMAGE MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-bg.open{display:flex}
+.img-modal{background:var(--white);border-radius:14px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
+.img-modal-hdr{padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--white);z-index:10}
+.img-modal-hdr span{font-size:14px;font-weight:700}
+.img-modal-hdr button{width:26px;height:26px;border:1px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink3)}
+.img-modal-hdr button:hover{background:var(--bg)}
+.img-modal-body{padding:16px 20px}
+.img-modal-foot{padding:12px 20px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.img-modal-foot button{border:none;border-radius:7px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:"Noto Sans KR",sans-serif}
+#downloadBtn{background:var(--accent);color:#fff}
+#downloadBtn:hover{background:#165a2e}
+.img-modal-foot button:last-child{background:var(--bg);color:var(--ink2);border:1px solid var(--border)}
+
+/* SHARE CARD (off-screen) */
+#pfShareCard{position:absolute;left:-9999px;top:0;width:360px;background:#fff;font-family:"Noto Sans KR",-apple-system,sans-serif;border-radius:16px;overflow:hidden}
+.psc-head{background:#1d6b38;color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+.psc-logo-row{display:flex;align-items:center;gap:8px}
+.psc-logo-mark{width:24px;height:24px;background:rgba(255,255,255,.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.psc-logo-text{font-size:15px;font-weight:700}
+.psc-date{font-size:10px;color:rgba(255,255,255,.7)}
+.psc-summary{padding:14px 20px;border-bottom:1px solid #f0f0f0}
+.psc-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.psc-scard{background:#f7f7f4;border-radius:8px;padding:10px 12px}
+.psc-slabel{font-size:10px;color:#9a9a93;margin-bottom:4px}
+.psc-sval{font-size:14px;font-weight:700;color:#1a1a18;font-family:"DM Mono",monospace}
+.psc-sval.green{color:#1d6b38}
+.psc-holdings{padding:12px 20px}
+.psc-h-title{font-size:11px;font-weight:700;color:#9a9a93;letter-spacing:.5px;margin-bottom:8px}
+.psc-h-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:12px}
+.psc-h-item:last-child{border-bottom:none}
+.psc-h-name{color:#1a1a18;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px}
+.psc-h-val{color:#4a4a45;font-family:"DM Mono",monospace;flex-shrink:0}
+.psc-foot{background:#f7f7f4;padding:9px 16px;font-size:9px;color:#9a9a93;display:flex;justify-content:space-between;align-items:center}
+
+/* PREVIEW SHARE CARD (in modal) */
+.preview-psc-head{background:#1d6b38;color:#fff;padding:14px 18px;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;align-items:center}
+.preview-inner{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.preview-psc-summary{padding:12px 18px;border-bottom:1px solid var(--border)}
+.preview-psc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.preview-psc-scard{background:var(--bg);border-radius:7px;padding:9px 11px}
+.preview-psc-slabel{font-size:10px;color:var(--ink3);margin-bottom:3px}
+.preview-psc-sval{font-size:13px;font-weight:700;color:var(--ink);font-family:"DM Mono",monospace}
+.preview-psc-sval.green{color:var(--accent)}
+.preview-psc-holdings{padding:10px 18px}
+.preview-psc-h-title{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.5px;margin-bottom:7px}
+.preview-psc-h-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
+.preview-psc-h-item:last-child{border-bottom:none}
+.preview-psc-h-name{color:var(--ink);font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px}
+.preview-psc-h-val{color:var(--ink2);font-family:"DM Mono",monospace;flex-shrink:0}
+.preview-psc-foot{background:var(--bg);padding:8px 14px;font-size:10px;color:var(--ink3);display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border)}
+.preview-psc-foot a{color:var(--accent);text-decoration:none;font-weight:600}
+
 /* FOOTER */
 footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8;margin-top:8px}
 footer a{color:var(--ink3);text-underline-offset:2px}
@@ -147,6 +212,8 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   .chart-donut-wrap{width:160px;height:160px}
   .pf-stat-grid{grid-template-columns:repeat(2,1fr)}
   .sum-val{font-size:17px}
+  .page-header{flex-direction:column;gap:8px}
+  .save-img-btn{align-self:flex-start}
 }
 </style>
 </head>
@@ -162,12 +229,18 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 <div class="wrap">
 
   <div class="page-header">
-    <h1>💼 내 포트폴리오</h1>
-    <p class="page-header-sub">보유 ETF를 추가하면 이번달 예상 분배금을 자동으로 계산합니다.<br>데이터는 이 브라우저에만 저장되며 로그인이 필요 없습니다.</p>
+    <div class="page-header-left">
+      <h1>💼 내 포트폴리오</h1>
+      <p class="page-header-sub">보유 ETF를 추가하면 이번달 예상 분배금을 자동으로 계산합니다.</p>
+    </div>
+    <button class="save-img-btn" id="saveImgBtn" onclick="saveAsImage()" style="display:none">📷 이미지 저장</button>
   </div>
 
-  <!-- ETF 추가 -->
-  <div class="card">
+  <!-- 콘텐츠 영역 (JS 렌더) -->
+  <div id="contentArea"></div>
+
+  <!-- ETF 추가 (항상 표시) -->
+  <div class="card" id="addCard">
     <div class="card-title">ETF 추가</div>
     <div class="add-row">
       <div class="search-wrap">
@@ -185,10 +258,42 @@ footer a{color:var(--ink3);text-underline-offset:2px}
     </div>
   </div>
 
-  <!-- 콘텐츠 영역 (JS 렌더) -->
-  <div id="contentArea"></div>
+  <!-- 저장 안내 -->
+  <div class="storage-note">
+    <div class="storage-note-title">💾 데이터 저장 안내</div>
+    <ul>
+      <li>이 브라우저의 로컬 저장소(localStorage)에만 저장됩니다 — 서버에 전송되지 않습니다.</li>
+      <li>브라우저 캐시/사이트 데이터를 삭제하면 데이터가 사라집니다.</li>
+      <li>시크릿/인코그니토 모드에서는 창을 닫으면 삭제됩니다.</li>
+      <li>다른 기기나 다른 브라우저에서는 보이지 않습니다.</li>
+      <li>브라우저가 업데이트되거나 재설치될 때 삭제될 수 있습니다.</li>
+    </ul>
+  </div>
 
 </div>
+
+<!-- 이미지 공유 모달 -->
+<div class="modal-bg" id="imgModal" onclick="if(event.target===this)closeImgModal()">
+  <div class="img-modal">
+    <div class="img-modal-hdr">
+      <span>포트폴리오 공유 카드</span>
+      <button onclick="closeImgModal()">✕</button>
+    </div>
+    <div class="img-modal-body">
+      <div id="imgPreview"></div>
+      <div style="margin-top:12px;text-align:center;font-size:11px;color:var(--ink3)">
+        미리보기에서 사이트 주소를 클릭할 수 있습니다.
+      </div>
+    </div>
+    <div class="img-modal-foot">
+      <button onclick="downloadImg()" id="downloadBtn">📥 이미지 다운로드</button>
+      <button onclick="closeImgModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 이미지 캡처용 공유 카드 (off-screen) -->
+<div id="pfShareCard"></div>
 
 <footer>
   본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.
@@ -214,6 +319,13 @@ const findETF  = code => (ETF_ALL || []).find(e => e.code === code);
 const isMonthly = e  => e.freq === '월배당' || e.freq === '월배당추정';
 const comma     = n  => n == null ? '-' : Math.round(n).toLocaleString('ko-KR');
 
+function isCurrentMonthDist(etf) {
+  if (!etf.ex) return false;
+  const now = new Date();
+  const ex = new Date(etf.ex);
+  return ex.getFullYear() === now.getFullYear() && ex.getMonth() === now.getMonth();
+}
+
 function getAvgDist(etf) {
   if (etf.stab && etf.stab.avgMonthlyDist > 0) return etf.stab.avgMonthlyDist;
   const d6 = new Date(Date.now() - 182 * 86400000).toISOString().slice(0, 10);
@@ -223,10 +335,14 @@ function getAvgDist(etf) {
 }
 
 function getDistInfo(etf) {
-  if (!isMonthly(etf))              return { dist: 0, status: 'non-monthly' };
-  if (etf.current && etf.dist > 0)  return { dist: etf.dist, status: 'confirmed' };
+  if (!isMonthly(etf)) return { dist: 0, status: 'non-monthly' };
+  // ONLY confirmed if this month's distribution data is present
+  if (etf.current && etf.dist > 0 && isCurrentMonthDist(etf)) {
+    return { dist: etf.dist, status: 'confirmed' };
+  }
+  // Otherwise use average (estimated)
   const avg = getAvgDist(etf);
-  if (avg > 0)                       return { dist: avg, status: 'estimated' };
+  if (avg > 0) return { dist: avg, status: 'estimated' };
   return { dist: 0, status: 'unknown' };
 }
 
@@ -318,17 +434,21 @@ let pieChart = null;
 function render() {
   const items = load();
   const area  = document.getElementById('contentArea');
+  const saveBtn = document.getElementById('saveImgBtn');
 
   if (!items.length) {
     if (pieChart) { pieChart.destroy(); pieChart = null; }
+    saveBtn.style.display = 'none';
     area.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">📭</div>
         <div class="empty-title">보유 ETF가 없습니다</div>
-        <div class="empty-desc">위에서 ETF를 검색해 추가하면<br>이번달 예상 분배금을 바로 확인할 수 있습니다.</div>
+        <div class="empty-desc">아래에서 ETF를 검색해 추가하면<br>이번달 예상 분배금을 바로 확인할 수 있습니다.</div>
       </div>`;
     return;
   }
+
+  saveBtn.style.display = '';
 
   // ── 데이터 계산 ──
   const enriched = items.map(item => {
@@ -388,16 +508,6 @@ function render() {
       </div>
     </div>`;
 
-  // ── 차트 ──
-  const chartHtml = `
-    <div class="card">
-      <div class="card-title">평가금액 비중</div>
-      <div class="chart-inner">
-        <div class="chart-donut-wrap"><canvas id="pfPie"></canvas></div>
-        <div class="chart-legend" id="pfLegend"></div>
-      </div>
-    </div>`;
-
   // ── ETF 목록 ──
   const itemsHtml = enriched.map((item, idx) => {
     const weight = totalValue > 0 ? (item.value / totalValue * 100) : 0;
@@ -439,11 +549,24 @@ function render() {
       </div>`;
   }).join('');
 
-  area.innerHTML = summaryHtml + noteHtml + chartHtml + `
+  // ── 차트 ──
+  const chartHtml = `
     <div class="card">
+      <div class="card-title">평가금액 비중</div>
+      <div class="chart-inner">
+        <div class="chart-donut-wrap"><canvas id="pfPie"></canvas></div>
+        <div class="chart-legend" id="pfLegend"></div>
+      </div>
+    </div>`;
+
+  area.innerHTML =
+    summaryHtml +
+    noteHtml +
+    `<div class="card">
       <div class="card-title">보유 ETF (${enriched.length}종목)</div>
       ${itemsHtml}
-    </div>`;
+    </div>` +
+    chartHtml;
 
   // ── 파이 차트 렌더 ──
   if (pieChart) { pieChart.destroy(); pieChart = null; }
@@ -479,6 +602,144 @@ function render() {
       <div class="legend-name">${item.etf.name}</div>
       <div class="legend-pct">${totalValue > 0 ? (item.value / totalValue * 100).toFixed(1) : 0}%</div>
     </div>`).join('');
+}
+
+// ── 이미지 저장 ──
+function saveAsImage() {
+  const items = load();
+  if (!items.length) return;
+
+  const enriched = items.map(item => {
+    const etf = findETF(item.code);
+    if (!etf) return null;
+    const di    = getDistInfo(etf);
+    const value = (etf.price || 0) * item.qty;
+    const distAmt = di.dist * item.qty;
+    return { code: item.code, qty: item.qty, etf, di, value, distAmt };
+  }).filter(Boolean).sort((a, b) => b.value - a.value);
+
+  const totalValue = enriched.reduce((s, i) => s + i.value, 0);
+  const totalDist  = enriched.reduce((s, i) => s + i.distAmt, 0);
+  const monthlyRate = totalValue > 0 ? (totalDist / totalValue * 100).toFixed(2) : '0.00';
+
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+
+  const displayItems = enriched.slice(0, 8);
+  const moreCount = enriched.length - displayItems.length;
+
+  // Off-screen capture card
+  const shareCard = document.getElementById('pfShareCard');
+  shareCard.innerHTML = `
+    <div class="psc-head">
+      <div class="psc-logo-row">
+        <div class="psc-logo-mark">₩</div>
+        <div class="psc-logo-text">배당픽 포트폴리오</div>
+      </div>
+      <div class="psc-date">${dateStr}</div>
+    </div>
+    <div class="psc-summary">
+      <div class="psc-summary-grid">
+        <div class="psc-scard">
+          <div class="psc-slabel">총 평가금액</div>
+          <div class="psc-sval">${comma(totalValue)}원</div>
+        </div>
+        <div class="psc-scard">
+          <div class="psc-slabel">이번달 분배금</div>
+          <div class="psc-sval green">${comma(totalDist)}원</div>
+        </div>
+        <div class="psc-scard">
+          <div class="psc-slabel">월분배율</div>
+          <div class="psc-sval green">${monthlyRate}%</div>
+        </div>
+      </div>
+    </div>
+    <div class="psc-holdings">
+      <div class="psc-h-title">보유 ETF (${enriched.length}종목)</div>
+      ${displayItems.map(item => `
+        <div class="psc-h-item">
+          <div class="psc-h-name">${item.etf.name}</div>
+          <div class="psc-h-val">${item.qty}주 · ${comma(item.value)}원</div>
+        </div>`).join('')}
+      ${moreCount > 0 ? `<div style="font-size:10px;color:#9a9a93;padding-top:5px">외 ${moreCount}종목</div>` : ''}
+    </div>
+    <div class="psc-foot">
+      <span>bae-dang-pick.vercel.app</span>
+      <span>배당픽</span>
+    </div>`;
+
+  // Preview in modal
+  const preview = document.getElementById('imgPreview');
+  preview.innerHTML = `
+    <div class="preview-inner">
+      <div class="preview-psc-head">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:22px;height:22px;background:rgba(255,255,255,.2);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">₩</div>
+          <span style="font-size:14px;font-weight:700;color:#fff">배당픽 포트폴리오</span>
+        </div>
+        <span style="font-size:10px;color:rgba(255,255,255,.7)">${dateStr}</span>
+      </div>
+      <div class="preview-psc-summary">
+        <div class="preview-psc-grid">
+          <div class="preview-psc-scard">
+            <div class="preview-psc-slabel">총 평가금액</div>
+            <div class="preview-psc-sval">${comma(totalValue)}원</div>
+          </div>
+          <div class="preview-psc-scard">
+            <div class="preview-psc-slabel">이번달 분배금</div>
+            <div class="preview-psc-sval green">${comma(totalDist)}원</div>
+          </div>
+          <div class="preview-psc-scard">
+            <div class="preview-psc-slabel">월분배율</div>
+            <div class="preview-psc-sval green">${monthlyRate}%</div>
+          </div>
+        </div>
+      </div>
+      <div class="preview-psc-holdings">
+        <div class="preview-psc-h-title">보유 ETF (${enriched.length}종목)</div>
+        ${displayItems.map(item => `
+          <div class="preview-psc-h-item">
+            <div class="preview-psc-h-name">${item.etf.name}</div>
+            <div class="preview-psc-h-val">${item.qty}주 · ${comma(item.value)}원</div>
+          </div>`).join('')}
+        ${moreCount > 0 ? `<div style="font-size:10px;color:var(--ink3);padding-top:5px">외 ${moreCount}종목</div>` : ''}
+      </div>
+      <div class="preview-psc-foot">
+        <span>배당픽 · ETF 분배금 일정 &amp; 계산기</span>
+        <a href="https://bae-dang-pick.vercel.app" target="_blank">bae-dang-pick.vercel.app</a>
+      </div>
+    </div>`;
+
+  document.getElementById('imgModal').classList.add('open');
+}
+
+function closeImgModal() {
+  document.getElementById('imgModal').classList.remove('open');
+}
+
+function downloadImg() {
+  const btn = document.getElementById('downloadBtn');
+  btn.textContent = '⏳ 생성 중...';
+  btn.disabled = true;
+  html2canvas(document.getElementById('pfShareCard'), {
+    scale: 2,
+    backgroundColor: '#fff',
+    useCORS: true,
+    allowTaint: true,
+  }).then(canvas => {
+    const link = document.createElement('a');
+    const now = new Date();
+    const fname = `배당픽_포트폴리오_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.png`;
+    link.download = fname;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    btn.textContent = '📥 이미지 다운로드';
+    btn.disabled = false;
+  }).catch(() => {
+    btn.textContent = '📥 이미지 다운로드';
+    btn.disabled = false;
+    alert('이미지 생성에 실패했습니다. 다시 시도해주세요.');
+  });
 }
 
 render();

@@ -257,7 +257,11 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .card-cmp{position:absolute;bottom:11px;right:11px;border:1.5px solid var(--border);border-radius:5px;background:var(--white);cursor:pointer;font-size:10px;font-weight:600;color:var(--ink3);padding:2px 7px;transition:all .15s;z-index:2;line-height:1.5;font-family:"Noto Sans KR",sans-serif}
 .card-cmp:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-bg)}
 .card-cmp.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.card-dates{padding-right:46px}
+.card-dates{padding-right:46px;padding-left:52px}
+/* CARD MY BUTTON */
+.card-my{position:absolute;bottom:11px;left:11px;border:1.5px solid var(--accent-mid);border-radius:5px;background:var(--white);cursor:pointer;font-size:10px;font-weight:700;color:var(--accent);padding:2px 7px;transition:all .15s;z-index:2;line-height:1.5;font-family:"Noto Sans KR",sans-serif}
+.card-my:hover{background:var(--accent-bg)}
+.card-my.in-pf{background:var(--accent-bg);border-color:var(--accent)}
 
 /* TOAST */
 .toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e2420;border:1px solid rgba(108,186,139,.35);border-radius:10px;padding:14px 18px;max-width:360px;width:calc(100% - 40px);color:#ccc;font-size:13px;line-height:1.65;z-index:600;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.4)}
@@ -1660,17 +1664,51 @@ function applyFilter() {
   renderGrid(); renderPg(); updateCmpBar();
 }
 
+function isCurrentMonthDist(e) {
+  if (!e.ex) return false;
+  const now = new Date();
+  const ex = new Date(e.ex);
+  return ex.getFullYear() === now.getFullYear() && ex.getMonth() === now.getMonth();
+}
+
+function isMonthlyETF(e) {
+  return e.freq === '월배당' || e.freq === '월배당추정';
+}
+
 function renderGrid() {
   const cmpList = getCmpList();
+  const pfList = JSON.parse(localStorage.getItem('bdp_portfolio') || '[]');
   const sl=filtered.slice((page-1)*PER,page*PER);
   if(!sl.length){document.getElementById('etfGrid').innerHTML='<div class="empty-msg">검색 결과가 없습니다</div>';return;}
   document.getElementById('etfGrid').innerHTML=sl.map(e=>{
-    const st=status(e), lb=lastBuy(e.ex);
     const _npp  = e.dist > 0 && e.rate > 0 ? (e.dist / e.rate * 100) : e.price;
     const _jan1 = new Date().getFullYear() + '-01-01';
     const _ytd  = (e.trend || []).filter(t => t.ex_date >= _jan1).reduce((a, b) => a + b.dist, 0);
     const _ar   = _npp > 0 && _ytd > 0 ? (_ytd / _npp * 100).toFixed(1) + '%' : '-';
     const _sel  = cmpList.includes(e.code);
+    const _inPf = pfList.some(i => i.code === e.code);
+
+    const isMon = isMonthlyETF(e);
+    const monConfirmed = !isMon || isCurrentMonthDist(e);
+
+    let st, distVal, rateVal, dateBadges;
+    if (isMon && !monConfirmed) {
+      st = {label: '공시 대기', cls: 'done'};
+      distVal = '<span style="color:var(--ink4)">미확정</span>';
+      rateVal = '<span style="color:var(--ink4)">미확정</span>';
+      dateBadges = `<div class="dbadge buy" style="opacity:.45">🛒 미정</div>
+        <div class="dbadge ex" style="opacity:.45">📉 미정</div>
+        <div class="dbadge pay" style="opacity:.45">💰 미정</div>`;
+    } else {
+      st = status(e);
+      const lb = lastBuy(e.ex);
+      distVal = `${comma(e.dist)}원`;
+      rateVal = `${e.rate}%`;
+      dateBadges = `<div class="dbadge buy">🛒 ${fd(lb)}</div>
+        <div class="dbadge ex">📉 ${fd(exDate(e.ex))}</div>
+        <div class="dbadge pay">💰 ${fds(e.pay)}</div>`;
+    }
+
     return `<div class="etf-card" onclick="goEtf('${e.code}');">
       <span class="status-pill ${st.cls}">${st.label}</span>
       <div class="card-top">
@@ -1682,16 +1720,15 @@ function renderGrid() {
         ${freqBadges(e)}
       </div>
       <div class="card-stats">
-        <div class="cs"><div class="cs-l">주당 분배금</div><div class="cs-v b">${comma(e.dist)}원</div></div>
-        <div class="cs"><div class="cs-l">이번달 분배율</div><div class="cs-v g">${e.rate}%</div></div>
+        <div class="cs"><div class="cs-l">주당 분배금</div><div class="cs-v b">${distVal}</div></div>
+        <div class="cs"><div class="cs-l">이번달 분배율</div><div class="cs-v g">${rateVal}</div></div>
         <div class="cs"><div class="cs-l">현재 주가</div><div class="cs-v">${comma(e.price)}원</div></div>
         <div class="cs"><div class="cs-l">연환산 분배율</div><div class="cs-v g">${_ar}</div></div>
       </div>
       <div class="card-dates">
-        <div class="dbadge buy">🛒 ${fd(lb)}</div>
-        <div class="dbadge ex">📉 ${fd(exDate(e.ex))}</div>
-        <div class="dbadge pay">💰 ${fds(e.pay)}</div>
+        ${dateBadges}
       </div>
+      <button class="card-my ${_inPf?'in-pf':''}" onclick="addToPortfolio(event,'${e.code}')" title="내 포트폴리오에 추가">${_inPf?'✓ MY':'+MY'}</button>
       <button class="card-cmp ${_sel?'on':''}" onclick="toggleCmpCard(event,'${e.code}')">${_sel?'✓ 비교중':'+ 비교'}</button>
     </div>`;
   }).join('');
@@ -1750,6 +1787,28 @@ function goCmp(){
   const list = getCmpList();
   if(list.length < 2){ alert('비교할 ETF를 2개 이상 선택하세요.'); return; }
   location.href = '/compare?etf=' + list.join(',');
+}
+
+let myToastTimer = null;
+function addToPortfolio(ev, code) {
+  ev.stopPropagation();
+  const etf = (typeof ETF_ALL !== 'undefined' ? ETF_ALL : []).find(e => e.code === code);
+  if (!etf) return;
+  const STORAGE_KEY = 'bdp_portfolio';
+  const items = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const existing = items.find(i => i.code === code);
+  if (existing) { existing.qty += 1; }
+  else { items.push({ code, qty: 1 }); }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  const toast = document.getElementById('myAddToast');
+  clearTimeout(myToastTimer);
+  toast.innerHTML = `<button class="toast-close" onclick="document.getElementById('myAddToast').classList.remove('show')">✕</button>
+    <div class="toast-title">💼 포트폴리오에 추가됨</div>
+    <div style="font-size:12px;color:#ccc;margin-bottom:10px">${etf.name.slice(0,20)} 1주 추가되었습니다.<br>수량 변경은 내 포트폴리오에서 가능합니다.</div>
+    <a href="/portfolio.html" style="display:inline-block;background:#1d6b38;color:#fff;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;text-decoration:none">내 포트폴리오 보기 →</a>`;
+  toast.classList.add('show');
+  myToastTimer = setTimeout(() => toast.classList.remove('show'), 5000);
+  renderGrid();
 }
 
 function renderPg() {
@@ -1969,6 +2028,7 @@ function closeToast() {
   <div class="toast-title">분기·연 배당 ETF 안내</div>
   <div class="toast-msg"></div>
 </div>
+<div class="toast" id="myAddToast"></div>
 <style>.pf-fab{position:fixed;bottom:24px;right:24px;z-index:500;background:var(--accent);color:#fff;border:none;border-radius:50px;padding:12px 20px;font-size:13px;font-weight:700;box-shadow:0 4px 16px rgba(29,107,56,.3);display:flex;align-items:center;gap:7px;text-decoration:none;transition:all .2s;font-family:"Noto Sans KR",sans-serif;white-space:nowrap}.pf-fab:hover{background:#165a2e;transform:translateY(-2px);box-shadow:0 6px 20px rgba(29,107,56,.4)}</style>
 <a href="/portfolio.html" class="pf-fab">💼 <span>내 포트폴리오</span></a>
 </body>

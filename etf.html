@@ -743,35 +743,69 @@ function render(e) {
   `;
 
   // 분배 일정
-  const lb  = prevBizDay(e.ex);
-  const ex  = e.ex  || '-';
-  const pay = e.pay || '-';
+  const isMonthlyE = e.freq === '월배당' || e.freq === '월배당추정';
+  function isCurrentMonthDistE(etf) {
+    if (!etf.ex) return false;
+    const now = new Date();
+    const ex = new Date(etf.ex);
+    return ex.getFullYear() === now.getFullYear() && ex.getMonth() === now.getMonth();
+  }
+  const thisMonthOK = !isMonthlyE || isCurrentMonthDistE(e);
+
+  let schedDates, pendingNoteHtml;
+  if (thisMonthOK) {
+    const lb  = prevBizDay(e.ex);
+    const ex  = e.ex  || '-';
+    const pay = e.pay || '-';
+    schedDates = { lb: fd(lb), ex: fd(ex), pay: fd(pay) };
+    pendingNoteHtml = '';
+  } else {
+    schedDates = { lb: '미정', ex: '미정', pay: '미정' };
+    pendingNoteHtml = `<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:9px 14px;font-size:12px;color:#b45309;margin-bottom:10px">
+      ⏳ 이번달 분배금 일정이 아직 공시되지 않았습니다. 일정이 등록되면 자동으로 반영됩니다.
+    </div>`;
+  }
+
+  const distAmt  = thisMonthOK ? `${comma(e.dist)}원` : '<span style="color:var(--ink4);font-style:italic">공시 전</span>';
+  const distRate = thisMonthOK ? `${e.rate}%` : '<span style="color:var(--ink4);font-style:italic">공시 전</span>';
+
+  const schedParent = document.getElementById('schedGrid').parentNode;
+  // Insert pending note before schedGrid if needed
+  let existingNote = schedParent.querySelector('.sched-pending-note');
+  if (existingNote) existingNote.remove();
+  if (pendingNoteHtml) {
+    const noteEl = document.createElement('div');
+    noteEl.className = 'sched-pending-note';
+    noteEl.innerHTML = pendingNoteHtml;
+    schedParent.insertBefore(noteEl, document.getElementById('schedGrid'));
+  }
+
   document.getElementById('schedGrid').innerHTML = `
     <div class="sched-box highlight">
       <div class="sched-label">🛒 최종 매수일</div>
-      <div class="sched-val">${fd(lb)}</div>
+      <div class="sched-val">${schedDates.lb}</div>
     </div>
     <div class="sched-box">
       <div class="sched-label">📉 배당락일</div>
-      <div class="sched-val">${fd(ex)}</div>
+      <div class="sched-val">${schedDates.ex}</div>
     </div>
     <div class="sched-box">
       <div class="sched-label">📋 기준일</div>
-      <div class="sched-val">${fd(ex)}</div>
+      <div class="sched-val">${schedDates.ex}</div>
     </div>
     <div class="sched-box">
       <div class="sched-label">💸 지급일</div>
-      <div class="sched-val">${fd(pay)}</div>
+      <div class="sched-val">${schedDates.pay}</div>
     </div>
   `;
   document.getElementById('distRow').innerHTML = `
     <div class="dist-box">
       <div class="sched-label">주당 분배금</div>
-      <div class="sched-val">${comma(e.dist)}원</div>
+      <div class="sched-val">${distAmt}</div>
     </div>
     <div class="dist-box">
       <div class="sched-label">이번달 분배율</div>
-      <div class="sched-val">${e.rate}%</div>
+      <div class="sched-val">${distRate}</div>
     </div>
   `;
 
