@@ -489,9 +489,11 @@ def build_js(latest: list, price_date: str = ""):
                 f"ret1w:{e.get('return_1w',0)},ret1m:{e.get('return_1m',0)},ret3m:{e.get('return_3m',0)},"
                 f"ret6m:{e.get('return_6m',0)},ret1y:{e.get('return_1y',0)},"
                 f"retListed:{e.get('return_listed',0)},"
+                f"ret1wf:{e.get('return_1wf',0)},"
                 f"tret1w:{e.get('total_return_1w',0)},tret1m:{e.get('total_return_1m',0)},tret3m:{e.get('total_return_3m',0)},"
                 f"tret6m:{e.get('total_return_6m',0)},tret1y:{e.get('total_return_1y',0)},"
                 f"tretListed:{e.get('total_return_listed',0)},"
+                f"tret1wf:{e.get('total_return_1wf',0)},"
                 f"current:{current_js},trend:{trend_js},stab:{stab_js}}}"
             )
         return "const ETF_ALL = [\n" + ",\n".join(items) + "\n];"
@@ -711,25 +713,26 @@ def calc_returns(item: dict, daily: list, history: dict) -> dict:
             ret["total_return_listed"] = round(
                 (current_price - oldest_price + dist_sum) / oldest_price * 100, 2)
 
-    # 1주 수익률: 금요일 종가 기준 (이번 주 금요일 vs 지난 주 금요일)
+    # 1주 수익률 (ETF 상세 페이지용): 오늘 기준 7일 전 종가 대비 — 매일 갱신
+    # 1주 수익률 (랭킹용, ret1wf): 금요일→금요일 고정 기준 — 매주 금요일 갱신
     today_str = now.strftime("%Y-%m-%d")
     this_fri_date, this_fri_price = find_friday_price(daily, today_str)
     if this_fri_price > 0:
         last_fri_target = (datetime.strptime(this_fri_date, "%Y-%m-%d") - timedelta(days=7)).strftime("%Y-%m-%d")
         last_fri_date, last_fri_price = find_friday_price(daily, last_fri_target)
         if last_fri_price > 0:
-            ret["return_1w"] = round((this_fri_price - last_fri_price) / last_fri_price * 100, 2)
+            ret["return_1wf"] = round((this_fri_price - last_fri_price) / last_fri_price * 100, 2)
             dist_sum = 0
             if isin in history:
                 dist_sum = sum(
                     rec["dist"] for ex_k, rec in history[isin].items()
                     if last_fri_date < ex_k <= this_fri_date
                 )
-            ret["total_return_1w"] = round(
+            ret["total_return_1wf"] = round(
                 (this_fri_price - last_fri_price + dist_sum) / last_fri_price * 100, 2)
 
-    # 1개월 이상: 정확한 일별 종가 기준
-    for label, days in [("1m", 30), ("3m", 91), ("6m", 182), ("1y", 365)]:
+    # 1주/1개월 이상: 정확한 일별 종가 기준 (ETF 상세 페이지용)
+    for label, days in [("1w", 7), ("1m", 30), ("3m", 91), ("6m", 182), ("1y", 365)]:
         target = (now - timedelta(days=days)).strftime("%Y-%m-%d")
         past_price = find_price_at_or_before(daily, target)
         if not past_price:

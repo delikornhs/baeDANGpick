@@ -430,7 +430,7 @@ function distItem(e, rank) {
 
 // ── 수익률 아이템 렌더 ──
 function retItem(e, rank) {
-  const field  = retMetric === '주가' ? 'ret1w' : 'tret1w';
+  const field  = retMetric === '주가' ? 'ret1wf' : 'tret1wf';
   const val    = e[field] ?? 0;
   const cls    = retCls(val);
   const str    = retStr(val);
@@ -480,7 +480,7 @@ function updateDistStats(data) {
   }
 }
 function updateRetStats(data) {
-  const field = retMetric === '주가' ? 'ret1w' : 'tret1w';
+  const field = retMetric === '주가' ? 'ret1wf' : 'tret1wf';
   const valid = data.filter(e => e[field] != null);
   const sorted = [...valid].sort((a,b) => (b[field]??0) - (a[field]??0));
   document.getElementById('rStatCount').textContent = valid.length + '개';
@@ -562,7 +562,7 @@ async function runDistRanking(restoreOpts) {
 
 // ── 수익률 데이터 로드 ──
 function runRetRanking(restoreOpts) {
-  const field = retMetric === '주가' ? 'ret1w' : 'tret1w';
+  const field = retMetric === '주가' ? 'ret1wf' : 'tret1wf';
   retBaseData = (ETF_ALL || [])
     .filter(e => e.price > 0)
     .sort((a,b) => (b[field] ?? 0) - (a[field] ?? 0));
