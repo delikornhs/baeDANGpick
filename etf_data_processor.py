@@ -621,25 +621,26 @@ def fetch_etf_meta(codes: list) -> dict:
     return meta
 
 
-def weeks_since_listed(listed_date_str: str, fallback: int = 60) -> int:
-    """상장일로부터 현재까지 필요한 주 수 계산. 최대 600주(약 11.5년)."""
+def days_since_listed(listed_date_str: str, fallback: int = 400) -> int:
+    """상장일로부터 현재까지 필요한 영업일 수 계산. 최대 3000일(약 12년)."""
     if not listed_date_str:
         return fallback
     try:
         listed = datetime.strptime(listed_date_str, "%Y-%m-%d")
-        weeks = int((datetime.now() - listed).days / 7) + 4  # 여유 4주
-        return min(max(weeks, fallback), 600)
+        calendar_days = (datetime.now() - listed).days + 20  # 여유 20일
+        trading_days = int(calendar_days * 5 / 7) + 10       # 영업일 환산
+        return min(max(trading_days, fallback), 3000)
     except Exception:
         return fallback
 
 
-def fetch_weekly_price_history(code: str, weeks: int, headers: dict) -> list:
+def fetch_daily_price_history(code: str, days: int, headers: dict) -> list:
     """
-    네이버 fchart API로 주간 종가 이력 반환.
+    네이버 fchart API로 일별 종가 이력 반환.
     Returns: [(date_str 'YYYY-MM-DD', close_price int), ...] ascending
     """
     url = (f"https://fchart.stock.naver.com/sise.nhn"
-           f"?symbol={code}&timeframe=week&count={weeks}&requestType=0")
+           f"?symbol={code}&timeframe=day&count={days}&requestType=0")
     try:
         req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req, timeout=10) as resp:
@@ -655,10 +656,10 @@ def fetch_weekly_price_history(code: str, weeks: int, headers: dict) -> list:
         return []
 
 
-def find_price_at_or_before(weekly: list, target_date: str) -> int:
-    """weekly 이력에서 target_date 이하 가장 최근 종가 반환."""
+def find_price_at_or_before(daily: list, target_date: str) -> int:
+    """일별 이력에서 target_date 이하 가장 최근 종가 반환."""
     best = 0
-    for date_str, price in weekly:
+    for date_str, price in daily:
         if date_str <= target_date:
             best = price
         else:
@@ -666,22 +667,22 @@ def find_price_at_or_before(weekly: list, target_date: str) -> int:
     return best
 
 
-def calc_returns(item: dict, weekly: list, history: dict) -> dict:
+def calc_returns(item: dict, daily: list, history: dict) -> dict:
     """
-    주간 이력으로 주가 수익률 및 분배금 포함 총수익률 계산.
-    periods: 1M(30일) / 3M(91일) / 6M(182일) / 1Y(365일)
+    일별 이력으로 주가 수익률 및 분배금 포함 총수익률 계산.
+    periods: 1W(7일) / 1M(30일) / 3M(91일) / 6M(182일) / 1Y(365일)
     """
     current_price = item.get("price", 0)
-    if not current_price or not weekly:
+    if not current_price or not daily:
         return {}
 
     isin = item["isin"]
     now  = datetime.now()
     ret  = {}
 
-    # 상장 이후 (가장 오래된 weekly 데이터 기준)
-    if weekly:
-        oldest_date, oldest_price = weekly[0]
+    # 상장 이후 (가장 오래된 일별 데이터 기준 = 상장일 종가)
+    if daily:
+        oldest_date, oldest_price = daily[0]
         if oldest_price > 0:
             ret["price_listed"] = oldest_price
             pr = round((current_price - oldest_price) / oldest_price * 100, 2)
@@ -697,7 +698,7 @@ def calc_returns(item: dict, weekly: list, history: dict) -> dict:
 
     for label, days in [("1w", 7), ("1m", 30), ("3m", 91), ("6m", 182), ("1y", 365)]:
         target = (now - timedelta(days=days)).strftime("%Y-%m-%d")
-        past_price = find_price_at_or_before(weekly, target)
+        past_price = find_price_at_or_before(daily, target)
         if not past_price:
             continue
         ret[f"price_{label}"] = past_price
@@ -968,21 +969,21 @@ if __name__ == "__main__":
             if p and p > 0:
                 item["price"] = p
 
-        # 주간 이력 조회 → 수익률 계산 (상장일 기준 필요 주 수만큼 동적 조회)
+        # 일별 이력 조회 → 수익률 계산 (상장일 기준 필요 영업일 수만큼 동적 조회)
         hist_headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
             "Referer": "https://finance.naver.com/",
         }
         print(f"\n{'='*50}")
-        print("📈 주간 이력 조회 및 수익률 계산")
+        print("📈 일별 이력 조회 및 수익률 계산")
         print(f"{'='*50}")
         ret_ok = ret_fail = 0
         for i, item in enumerate(latest):
-            code    = item["code"]
-            needed  = weeks_since_listed(item.get("listed_date", ""))
-            weekly  = fetch_weekly_price_history(code, needed, hist_headers)
-            if weekly:
-                rets = calc_returns(item, weekly, history_for_returns)
+            code   = item["code"]
+            needed = days_since_listed(item.get("listed_date", ""))
+            daily  = fetch_daily_price_history(code, needed, hist_headers)
+            if daily:
+                rets = calc_returns(item, daily, history_for_returns)
                 for k, v in rets.items():
                     item[k] = v
                 ret_ok += 1
