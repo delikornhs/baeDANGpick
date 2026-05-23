@@ -311,7 +311,7 @@ footer a{color:var(--ink3);text-underline-offset:2px}
           <tbody id="retBody"></tbody>
         </table>
         </div>
-        <p style="font-size:10px;color:var(--ink4);margin-top:8px;line-height:1.8">* 수익률은 종가(시장가격) 기준이며, 운용사 공시 수익률(기준가격/NAV 기준)과 다를 수 있습니다.<br>각 기간(1주·1개월·3개월 등)은 오늘 기준 해당 일수 전 종가 대비이며 매일 업데이트됩니다.<br>상장이후는 상장일 첫날 종가 기준입니다.</p>
+        <p style="font-size:10px;color:var(--ink4);margin-top:8px;line-height:1.8">1) 수익률은 종가(시장가격) 기준이며, 운용사 공시 수익률(기준가격/NAV 기준)과 다를 수 있습니다.<br>2) 각 기간(1주·1개월·3개월 등)은 오늘 기준 해당 일수 전 종가 대비이며 매일 업데이트됩니다.<br>3) 상장이후는 상장일 첫날 종가 기준입니다.</p>
       </div>
     </div>
 
@@ -705,7 +705,7 @@ function autoComment(e) {
     else if(s.levelDist === '평균보다 낮음') parts[parts.length - 1] = `동일 유형(${pg}) ETF 평균 대비 월분배율과 주당 분배금액 모두 낮은 편입니다.`;
   }
   if(!parts.length) return '분배금 데이터가 충분히 쌓이면 자동 평가가 표시됩니다.';
-  return parts.join('<br>');
+  return parts.map((p, i) => `${i+1}) ${p}`).join('<br>');
 }
 
 // ── HTML 엔티티 디코딩 ──
