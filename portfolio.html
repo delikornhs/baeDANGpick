@@ -200,7 +200,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .badge-unknown{background:var(--red-bg);color:var(--red);border-color:#fecaca}
 .pf-item-values{text-align:right;flex-shrink:0}
 .pf-item-eval{font-size:16px;font-weight:700;font-family:"DM Mono",monospace;color:var(--ink)}
-.pf-item-dist-amt{font-size:12px;font-weight:600;color:var(--accent);margin-top:3px}
+.pf-item-dist-amt{font-size:16px;font-weight:700;font-family:"DM Mono",monospace;color:var(--accent);margin-top:3px;line-height:1.2}
+.pf-item-dist-unconfirmed{font-size:12px;color:var(--ink3);margin-top:3px;font-style:italic}
 .pf-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px}
 .pf-stat{background:var(--bg);border-radius:6px;padding:8px 10px}
 .pf-stat-label{font-size:10px;color:var(--ink3);margin-bottom:3px}
@@ -218,6 +219,18 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .qty-save:hover{background:#d1f0e0}
 .pf-delete{font-size:11px;color:var(--ink3);background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:4px 10px;cursor:pointer;margin-left:auto;font-family:inherit;transition:all .15s}
 .pf-delete:hover{color:var(--red);border-color:#fecaca;background:var(--red-bg)}
+
+/* EST INFO SECTION */
+.est-info{background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:10px 13px;margin-bottom:10px;font-size:11px;color:var(--warn)}
+.est-info-title{font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.est-info-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:7px;color:var(--ink2);font-size:11px}
+.est-info-calc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid #fde68a;padding-top:7px;margin-top:1px}
+.est-info-calc-text{font-size:12px;color:var(--ink);flex:1;min-width:0}
+.est-info-calc-text b{color:var(--accent);font-size:13px}
+.est-checkbox-label{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--warn);cursor:pointer;white-space:nowrap;flex-shrink:0;background:rgba(255,255,255,.7);border:1px solid #fde68a;border-radius:5px;padding:3px 9px}
+.est-checkbox-label input{cursor:pointer;accent-color:var(--accent);width:13px;height:13px}
+.est-mark{font-size:10px;font-weight:600;background:var(--warn-bg);color:var(--warn);border:1px solid #fde68a;border-radius:3px;padding:1px 5px;margin-left:3px;font-family:"Noto Sans KR",sans-serif;vertical-align:middle}
+.pf-stat-val.unconfirmed{color:var(--ink3);font-style:italic;font-family:"Noto Sans KR",sans-serif;font-size:11px;font-weight:500}
 
 /* DIST HISTORY CHART */
 .hist-chart-wrap{position:relative;height:160px}
@@ -639,8 +652,26 @@ function removeItem(code) {
   updateTabCounts();
 }
 
+// ── 추정 금액 사용 여부 (per-item) ──
+const useEstimateCodes = new Set();
+
+function toggleEstimate(code) {
+  if (useEstimateCodes.has(code)) useEstimateCodes.delete(code);
+  else useEstimateCodes.add(code);
+  render();
+}
+
+// ── 직전 공시 분배금 조회 ──
+function getPrevDist(etf) {
+  const now = new Date();
+  const curKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const sorted = (etf.trend || []).slice().sort((a,b) => b.ex_date.localeCompare(a.ex_date));
+  return sorted.find(t => t.ex_date.slice(0,7) < curKey) || null;
+}
+
 // ── 차트 인스턴스 ──
 let pieChart = null;
+let pieDistChart = null;
 let histChart = null;
 
 // ── 분배금 내역 차트 데이터 ──
@@ -675,8 +706,9 @@ function render() {
   // 미니 목록 렌더
   const miniList = document.getElementById('pfMiniList');
   if (!items.length) {
-    if (pieChart)  { pieChart.destroy();  pieChart  = null; }
-    if (histChart) { histChart.destroy(); histChart = null; }
+    if (pieChart)     { pieChart.destroy();     pieChart     = null; }
+    if (pieDistChart) { pieDistChart.destroy(); pieDistChart = null; }
+    if (histChart)    { histChart.destroy();    histChart    = null; }
     saveBtn.style.display = 'none';
     miniList.innerHTML = '<div class="pf-mini-empty">아직 추가된 ETF가 없습니다. ⊕ ETF 추가를 눌러 추가하세요.</div>';
     area.innerHTML = `
@@ -694,24 +726,29 @@ function render() {
   const enriched = items.map(item => {
     const etf = findETF(item.code);
     if (!etf) return null;
-    const di      = getDistInfo(etf);
-    const value   = (etf.price || 0) * item.qty;
-    const distAmt = di.dist * item.qty;
-    return { code: item.code, qty: item.qty, etf, di, value, distAmt };
+    const di          = getDistInfo(etf);
+    const value       = (etf.price || 0) * item.qty;
+    const avgDist     = getAvgDist(etf);
+    const confirmedAmt = (di.status === 'confirmed') ? di.dist * item.qty : 0;
+    const estAmt       = (['estimated','unknown'].includes(di.status)) ? avgDist * item.qty : 0;
+    const useEst       = useEstimateCodes.has(item.code);
+    const distAmt      = confirmedAmt + (useEst ? estAmt : 0);
+    return { code: item.code, qty: item.qty, etf, di, value, distAmt, confirmedAmt, estAmt, useEst, avgDist };
   }).filter(Boolean).sort((a, b) => b.value - a.value);
 
-  const totalValue  = enriched.reduce((s, i) => s + i.value, 0);
-  const totalDist   = enriched.reduce((s, i) => s + i.distAmt, 0);
-  const monthlyRate = totalValue > 0 ? (totalDist / totalValue * 100).toFixed(2) : '0.00';
+  const totalValue    = enriched.reduce((s, i) => s + i.value, 0);
+  const totalDist     = enriched.reduce((s, i) => s + i.distAmt, 0);
+  const confirmedOnly = enriched.reduce((s, i) => s + i.confirmedAmt, 0);
+  const usedEstDist   = enriched.filter(i => i.useEst).reduce((s, i) => s + i.estAmt, 0);
+  const monthlyRate   = totalValue > 0 ? (totalDist / totalValue * 100).toFixed(2) : '0.00';
 
-  const confirmedDist = enriched.filter(i => i.di.status === 'confirmed').reduce((s, i) => s + i.distAmt, 0);
-  const estimatedDist = enriched.filter(i => i.di.status === 'estimated').reduce((s, i) => s + i.distAmt, 0);
-
-  const monthlyItems = enriched.filter(i => isMonthly(i.etf));
-  const hasConfirmed = monthlyItems.some(i => i.di.status === 'confirmed');
-  const hasEstimated = monthlyItems.some(i => i.di.status === 'estimated');
-  const hasUnknown   = monthlyItems.some(i => i.di.status === 'unknown');
-  const allConfirmed = monthlyItems.length > 0 && monthlyItems.every(i => i.di.status === 'confirmed');
+  const monthlyItems   = enriched.filter(i => isMonthly(i.etf));
+  const hasConfirmed   = monthlyItems.some(i => i.di.status === 'confirmed');
+  const hasEstimated   = monthlyItems.some(i => i.di.status === 'estimated');
+  const hasUnknown     = monthlyItems.some(i => i.di.status === 'unknown');
+  const allConfirmed   = monthlyItems.length > 0 && monthlyItems.every(i => i.di.status === 'confirmed');
+  const unconfirmedCnt = monthlyItems.filter(i => i.di.status !== 'confirmed').length;
+  const checkedEstCnt  = enriched.filter(i => i.useEst && i.estAmt > 0).length;
 
   // ── 미니 카드 렌더 ──
   miniList.innerHTML = enriched.map(item =>
@@ -723,17 +760,24 @@ function render() {
 
   // ── 안내 메시지 ──
   let noteHtml = '';
-  if (hasUnknown) {
-    noteHtml = `<div class="dist-note has-unknown">⚠️ 일부 종목은 과거 분배금 데이터가 없어 예상 분배금 계산에서 제외됐습니다.</div>`;
-  } else if (hasEstimated && hasConfirmed) {
-    noteHtml = `<div class="dist-note mixed">ℹ️ <b>확정</b> ${comma(confirmedDist)}원 + <b>추정</b> ${comma(estimatedDist)}원 = 합계 ${comma(totalDist)}원<br>추정 항목은 이번달 분배가 아직 공시되지 않아 최근 6개월 평균 분배금 기준입니다.</div>`;
-  } else if (hasEstimated) {
-    noteHtml = `<div class="dist-note estimated">ℹ️ 이번달 분배가 아직 공시되지 않아 최근 6개월 평균 분배금으로 추정합니다.</div>`;
-  } else if (allConfirmed) {
+  if (allConfirmed) {
     noteHtml = `<div class="dist-note confirmed">✅ 보유 월배당 ETF 전체의 이번달 분배금이 확정됐습니다.</div>`;
+  } else if (unconfirmedCnt > 0 && checkedEstCnt === 0) {
+    noteHtml = `<div class="dist-note estimated">📋 ${unconfirmedCnt}개 종목의 이번달 분배금이 미확정입니다. <b>확정된 금액(${comma(confirmedOnly)}원)만</b> 반영됩니다.<br>아래 종목별 '추정 금액으로 계산' 체크박스를 선택하면 추정 금액을 포함할 수 있습니다.</div>`;
+  } else if (checkedEstCnt > 0 && confirmedOnly > 0) {
+    noteHtml = `<div class="dist-note mixed">ℹ️ <b>확정</b> ${comma(confirmedOnly)}원 + <b>추정</b> ${comma(usedEstDist)}원 (${checkedEstCnt}개 종목 선택) = 합계 ${comma(totalDist)}원<br>추정 금액은 최근 6개월 평균 분배금 기준입니다.</div>`;
+  } else if (checkedEstCnt > 0) {
+    noteHtml = `<div class="dist-note estimated">ℹ️ 추정 금액 ${comma(totalDist)}원 (${checkedEstCnt}개 종목) — 최근 6개월 평균 분배금 기준입니다.</div>`;
   }
 
   // ── 요약 카드 ──
+  const distLabel = allConfirmed ? '이번달 분배금 (전체 확정)'
+    : checkedEstCnt > 0 ? '이번달 분배금 (확정+추정)'
+    : '이번달 분배금 (확정)';
+  const distSub = allConfirmed ? '전체 확정'
+    : checkedEstCnt > 0 ? `확정+추정(${checkedEstCnt}종목)`
+    : unconfirmedCnt > 0 ? `미확정 ${unconfirmedCnt}종목 제외` : '-';
+
   const summaryHtml = `
     <div class="summary-grid">
       <div class="sum-card">
@@ -742,21 +786,70 @@ function render() {
         <div class="sum-sub">${enriched.length}개 종목</div>
       </div>
       <div class="sum-card">
-        <div class="sum-label">이번달 예상 분배금</div>
+        <div class="sum-label">${distLabel}</div>
         <div class="sum-val accent">${comma(totalDist)}<span class="unit">원</span></div>
-        <div class="sum-sub">${hasEstimated ? '확정+추정 합계' : allConfirmed ? '전체 확정' : '-'}</div>
+        <div class="sum-sub">${distSub}</div>
       </div>
       <div class="sum-card">
         <div class="sum-label">포트폴리오 월분배율</div>
         <div class="sum-val">${monthlyRate}<span class="unit">%</span></div>
-        <div class="sum-sub">예상 분배금 / 평가금액</div>
+        <div class="sum-sub">분배금 / 평가금액</div>
       </div>
     </div>`;
 
   // ── ETF 목록 ──
   const itemsHtml = enriched.map((item, idx) => {
-    const weight = totalValue > 0 ? (item.value / totalValue * 100) : 0;
-    const color  = PALETTE[idx % PALETTE.length];
+    const weight  = totalValue > 0 ? (item.value / totalValue * 100) : 0;
+    const color   = PALETTE[idx % PALETTE.length];
+    const isUnconf = isMonthly(item.etf) && item.di.status !== 'confirmed' && item.di.status !== 'non-monthly';
+
+    // 오른쪽 분배금 표시
+    let distAmtHtml = '';
+    if (isUnconf) {
+      if (item.useEst && item.estAmt > 0) {
+        distAmtHtml = `<div class="pf-item-dist-amt">+${comma(Math.round(item.estAmt))}원/월<span class="est-mark">추정</span></div>`;
+      } else {
+        distAmtHtml = `<div class="pf-item-dist-unconfirmed">분배금 미확정</div>`;
+      }
+    } else if (item.confirmedAmt > 0) {
+      distAmtHtml = `<div class="pf-item-dist-amt">+${comma(item.confirmedAmt)}원/월</div>`;
+    }
+
+    // stat grid 값
+    const distVal  = isUnconf ? `<span class="pf-stat-val unconfirmed">미확정</span>`
+      : `<span class="pf-stat-val">${item.di.dist > 0 ? comma(item.di.dist)+'원' : '-'}</span>`;
+    const rateVal  = isUnconf ? `<span class="pf-stat-val unconfirmed">미확정</span>`
+      : `<span class="pf-stat-val">${item.etf.rate ? item.etf.rate+'%' : '-'}</span>`;
+
+    // 미확정 참고 정보 섹션
+    let estInfoHtml = '';
+    if (isUnconf) {
+      const avgD    = item.avgDist;
+      const prevT   = getPrevDist(item.etf);
+      const prevD   = prevT ? prevT.dist : null;
+      const prevR   = (prevD && item.etf.price) ? (prevD / item.etf.price * 100).toFixed(2) : null;
+      const estTotal = Math.round(avgD * item.qty);
+      estInfoHtml = `
+        <div class="est-info">
+          <div class="est-info-title">ℹ️ 이번달 분배금 미확정 — 참고 정보</div>
+          <div class="est-info-row">
+            ${prevD != null ? `<span>지난달 분배금: <b>${comma(prevD)}원</b></span>` : ''}
+            ${avgD > 0 ? `<span>평균 분배금: <b>${comma(Math.round(avgD))}원</b></span>` : ''}
+            ${prevR != null ? `<span>지난달 분배율: <b>${prevR}%</b></span>` : ''}
+          </div>
+          <div class="est-info-calc">
+            <span class="est-info-calc-text">
+              평균 분배금 기준 이번달 예상: <b>${comma(estTotal)}원</b>
+              <span style="font-size:10px;color:var(--ink3)">(${comma(Math.round(avgD))}원 × ${item.qty.toLocaleString()}주)</span>
+            </span>
+            <label class="est-checkbox-label">
+              <input type="checkbox" onchange="toggleEstimate('${item.code}')" ${item.useEst ? 'checked' : ''}>
+              추정 금액으로 계산
+            </label>
+          </div>
+        </div>`;
+    }
+
     return `
       <div class="pf-item" style="border-left-color:${color}">
         <div class="pf-item-header">
@@ -769,15 +862,16 @@ function render() {
           </div>
           <div class="pf-item-values">
             <div class="pf-item-eval">${comma(item.value)}원</div>
-            ${item.distAmt > 0 ? `<div class="pf-item-dist-amt">+${comma(item.distAmt)}원/월</div>` : ''}
+            ${distAmtHtml}
           </div>
         </div>
         <div class="pf-stat-grid">
           <div class="pf-stat"><div class="pf-stat-label">현재가</div><div class="pf-stat-val">${comma(item.etf.price)}원</div></div>
           <div class="pf-stat"><div class="pf-stat-label">보유 수량</div><div class="pf-stat-val">${item.qty.toLocaleString()}주</div></div>
-          <div class="pf-stat"><div class="pf-stat-label">주당 분배금</div><div class="pf-stat-val">${item.di.dist > 0 ? comma(item.di.dist)+'원' : '-'}</div></div>
-          <div class="pf-stat"><div class="pf-stat-label">이번달 분배율</div><div class="pf-stat-val">${item.etf.rate ? item.etf.rate+'%' : '-'}</div></div>
+          <div class="pf-stat"><div class="pf-stat-label">주당 분배금</div>${distVal}</div>
+          <div class="pf-stat"><div class="pf-stat-label">이번달 분배율</div>${rateVal}</div>
         </div>
+        ${estInfoHtml}
         <div class="weight-bar-row">
           <div class="weight-color-dot" style="background:${color}"></div>
           <div class="weight-bar-bg"><div class="weight-bar-fill" style="width:${weight.toFixed(1)}%;background:${color}"></div></div>
@@ -794,7 +888,7 @@ function render() {
       </div>`;
   }).join('');
 
-  // ── 도넛 차트 ──
+  // ── 평가금액 비중 도넛 ──
   const chartHtml = `
     <div class="card">
       <div class="card-title">평가금액 비중</div>
@@ -804,16 +898,32 @@ function render() {
       </div>
     </div>`;
 
+  // ── 분배금액 비중 도넛 ──
+  const distChartItems = enriched.filter(i => i.distAmt > 0);
+  const totalDistForChart = distChartItems.reduce((s, i) => s + i.distAmt, 0);
+  const distChartHtml = distChartItems.length ? `
+    <div class="card">
+      <div class="card-title">분배금액 비중</div>
+      <div class="chart-inner">
+        <div class="chart-donut-wrap"><canvas id="pfDistPie"></canvas></div>
+        <div class="chart-legend" id="pfDistLegend"></div>
+      </div>
+    </div>` : '';
+
   // ── 분배금 내역 차트 ──
   const histHtml = `
     <div class="card">
       <div class="card-title">월별 분배금 내역</div>
+      <div style="font-size:11px;color:var(--ink3);margin-bottom:10px">※ 실제 공시된 확정 분배금만 반영합니다. 미확정 추정 금액은 포함되지 않습니다.</div>
       <div class="hist-chart-wrap"><canvas id="pfHist"></canvas></div>
       <div class="dist-stats" id="pfHistStats"></div>
       <div id="pfHistStatsNote" style="font-size:10px;color:var(--ink3);margin-top:5px;text-align:right"></div>
     </div>`;
 
-  // 보유 ETF 카드
+  // ── 보유 ETF 카드 ──
+  const hdrDistLabel = allConfirmed ? '이번달 분배금'
+    : checkedEstCnt > 0 ? '이번달 분배금 (확정+추정)'
+    : '이번달 분배금 (확정만)';
   const holdingsCard = `
     <div class="card" style="padding-top:0;overflow:hidden">
       <div class="pf-card-hdr">
@@ -823,7 +933,7 @@ function render() {
           <div class="pf-card-hdr-sub">총 평가금액</div>
         </div>
         <div class="pf-card-hdr-right">
-          <div class="pf-card-hdr-label">이번달 예상 분배금</div>
+          <div class="pf-card-hdr-label">${hdrDistLabel}</div>
           <div class="pf-card-hdr-dist">+${comma(totalDist)}원</div>
           <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:2px">${monthlyRate}%/월</div>
         </div>
@@ -831,10 +941,11 @@ function render() {
       <div style="padding:4px 0">${itemsHtml}</div>
     </div>`;
 
-  area.innerHTML = summaryHtml + noteHtml + holdingsCard + chartHtml + histHtml;
+  area.innerHTML = summaryHtml + noteHtml + holdingsCard + chartHtml + distChartHtml + histHtml;
 
-  // ── 도넛 차트 렌더 ──
-  if (pieChart) { pieChart.destroy(); pieChart = null; }
+  // ── 평가금액 도넛 차트 렌더 ──
+  if (pieChart)     { pieChart.destroy();     pieChart     = null; }
+  if (pieDistChart) { pieDistChart.destroy(); pieDistChart = null; }
   pieChart = new Chart(document.getElementById('pfPie').getContext('2d'), {
     type: 'doughnut',
     data: {
@@ -871,6 +982,47 @@ function render() {
         <div class="legend-pct">${pct}%</div>
       </div>`;
   }).join('');
+
+  // ── 분배금액 비중 도넛 차트 렌더 ──
+  if (distChartItems.length && document.getElementById('pfDistPie')) {
+    pieDistChart = new Chart(document.getElementById('pfDistPie').getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: distChartItems.map(i => i.etf.name),
+        datasets: [{
+          data: distChartItems.map(i => Math.round(i.distAmt)),
+          backgroundColor: distChartItems.map(i => PALETTE[enriched.indexOf(i) % PALETTE.length]),
+          borderWidth: 2,
+          borderColor: '#fff',
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: c => ` ${comma(c.raw)}원 (${totalDistForChart > 0 ? (c.raw / totalDistForChart * 100).toFixed(1) : 0}%)`
+            }
+          }
+        },
+        cutout: '58%',
+      }
+    });
+
+    document.getElementById('pfDistLegend').innerHTML = distChartItems.map((item, i) => {
+      const pct  = totalDistForChart > 0 ? (item.distAmt / totalDistForChart * 100).toFixed(1) : '0.0';
+      const estMark = item.useEst && item.estAmt > 0 ? `<span class="est-mark">추정</span>` : '';
+      return `
+        <div class="legend-item">
+          <div class="legend-dot" style="background:${PALETTE[enriched.indexOf(item) % PALETTE.length]}"></div>
+          <div class="legend-name">${item.etf.name}${estMark}</div>
+          <div class="legend-amt">${comma(Math.round(item.distAmt))}원</div>
+          <div class="legend-pct">${pct}%</div>
+        </div>`;
+    }).join('');
+  }
 
   // ── 분배금 내역 바 차트 렌더 ──
   if (histChart) { histChart.destroy(); histChart = null; }
