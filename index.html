@@ -262,6 +262,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .card-my{position:absolute;bottom:11px;left:11px;border:1.5px solid var(--accent-mid);border-radius:5px;background:var(--white);cursor:pointer;font-size:10px;font-weight:700;color:var(--accent);padding:2px 7px;transition:all .15s;z-index:2;line-height:1.5;font-family:"Noto Sans KR",sans-serif}
 .card-my:hover{background:var(--accent-bg)}
 .card-my.in-pf{background:var(--accent-bg);border-color:var(--accent)}
+/* CARD STAR BUTTON */
+.card-star{background:none;border:none;cursor:pointer;font-size:15px;color:var(--ink4);padding:0 2px;margin-left:auto;transition:color .15s;line-height:1;font-family:inherit;flex-shrink:0}
+.card-star:hover,.card-star.on{color:#f59e0b}
 
 /* TOAST */
 .toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e2420;border:1px solid rgba(108,186,139,.35);border-radius:10px;padding:14px 18px;max-width:360px;width:calc(100% - 40px);color:#ccc;font-size:13px;line-height:1.65;z-index:600;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.4)}
@@ -1678,6 +1681,7 @@ function isMonthlyETF(e) {
 function renderGrid() {
   const cmpList = getCmpList();
   const pfList = JSON.parse(localStorage.getItem('bdp_portfolio') || '[]');
+  const wlList = getWatchlist();
   const sl=filtered.slice((page-1)*PER,page*PER);
   if(!sl.length){document.getElementById('etfGrid').innerHTML='<div class="empty-msg">검색 결과가 없습니다</div>';return;}
   document.getElementById('etfGrid').innerHTML=sl.map(e=>{
@@ -1687,6 +1691,7 @@ function renderGrid() {
     const _ar   = _npp > 0 && _ytd > 0 ? (_ytd / _npp * 100).toFixed(1) + '%' : '-';
     const _sel  = cmpList.includes(e.code);
     const _inPf = pfList.some(i => i.code === e.code);
+    const _inWl = wlList.includes(e.code);
 
     const isMon = isMonthlyETF(e);
     const monConfirmed = !isMon || isCurrentMonthDist(e);
@@ -1712,6 +1717,7 @@ function renderGrid() {
       <div class="card-meta">
         <span class="type-badge">${e.type}</span>
         ${freqBadges(e)}
+        <button class="card-star ${_inWl?'on':''}" onclick="toggleStar(event,'${e.code}')" title="${_inWl?'관심 ETF 해제':'관심 ETF 추가'}">${_inWl?'★':'☆'}</button>
       </div>
       <div class="card-stats">
         <div class="cs"><div class="cs-l">주당 분배금</div><div class="cs-v b">${distVal}</div></div>
@@ -1783,6 +1789,32 @@ function goCmp(){
   location.href = '/compare?etf=' + list.join(',');
 }
 
+// ── 관심 ETF (Watchlist) ──
+function getWatchlist() { return JSON.parse(localStorage.getItem('bdp_watchlist') || '[]'); }
+function saveWatchlist(arr) { localStorage.setItem('bdp_watchlist', JSON.stringify(arr)); }
+
+let myStarToastTimer = null;
+function toggleStar(ev, code) {
+  ev.stopPropagation();
+  const etf = (typeof ETF_ALL !== 'undefined' ? ETF_ALL : []).find(e => e.code === code);
+  if (!etf) return;
+  const wl = getWatchlist();
+  const idx = wl.indexOf(code);
+  const adding = idx < 0;
+  if (adding) wl.push(code); else wl.splice(idx, 1);
+  saveWatchlist(wl);
+  const toast = document.getElementById('myAddToast');
+  clearTimeout(myToastTimer);
+  clearTimeout(myStarToastTimer);
+  toast.innerHTML = `<button class="toast-close" onclick="document.getElementById('myAddToast').classList.remove('show')">✕</button>
+    <div class="toast-title">${adding ? '⭐ 관심 ETF에 추가됨' : '관심 ETF에서 제거됨'}</div>
+    <div style="font-size:12px;color:#ccc;margin-bottom:10px">${etf.name.slice(0,20)}</div>
+    <a href="/portfolio.html" style="display:inline-block;background:#1d6b38;color:#fff;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;text-decoration:none">MY ETF 보기 →</a>`;
+  toast.classList.add('show');
+  myStarToastTimer = setTimeout(() => toast.classList.remove('show'), 4000);
+  renderGrid();
+}
+
 let myToastTimer = null;
 function addToPortfolio(ev, code) {
   ev.stopPropagation();
@@ -1796,10 +1828,11 @@ function addToPortfolio(ev, code) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   const toast = document.getElementById('myAddToast');
   clearTimeout(myToastTimer);
+  clearTimeout(myStarToastTimer);
   toast.innerHTML = `<button class="toast-close" onclick="document.getElementById('myAddToast').classList.remove('show')">✕</button>
     <div class="toast-title">💼 포트폴리오에 추가됨</div>
-    <div style="font-size:12px;color:#ccc;margin-bottom:10px">${etf.name.slice(0,20)} 1주 추가되었습니다.<br>수량 변경은 내 포트폴리오에서 가능합니다.</div>
-    <a href="/portfolio.html" style="display:inline-block;background:#1d6b38;color:#fff;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;text-decoration:none">내 포트폴리오 보기 →</a>`;
+    <div style="font-size:12px;color:#ccc;margin-bottom:10px">${etf.name.slice(0,20)} 1주 추가되었습니다.<br>수량 변경은 MY ETF에서 가능합니다.</div>
+    <a href="/portfolio.html" style="display:inline-block;background:#1d6b38;color:#fff;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;text-decoration:none">MY ETF 보기 →</a>`;
   toast.classList.add('show');
   myToastTimer = setTimeout(() => toast.classList.remove('show'), 5000);
   renderGrid();
@@ -2024,6 +2057,6 @@ function closeToast() {
 </div>
 <div class="toast" id="myAddToast"></div>
 <style>.pf-fab{position:fixed;bottom:24px;right:24px;z-index:500;background:var(--accent);color:#fff;border:none;border-radius:50px;padding:12px 20px;font-size:13px;font-weight:700;box-shadow:0 4px 16px rgba(29,107,56,.3);display:flex;align-items:center;gap:7px;text-decoration:none;transition:all .2s;font-family:"Noto Sans KR",sans-serif;white-space:nowrap}.pf-fab:hover{background:#165a2e;transform:translateY(-2px);box-shadow:0 6px 20px rgba(29,107,56,.4)}</style>
-<a href="/portfolio.html" class="pf-fab">💼 <span>내 포트폴리오</span></a>
+<a href="/portfolio.html" class="pf-fab">⭐ <span>MY ETF</span></a>
 </body>
 </html>
