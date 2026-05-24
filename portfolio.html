@@ -108,8 +108,24 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .card-my{border:1.5px solid var(--accent-mid);border-radius:5px;background:var(--white);cursor:pointer;font-size:10px;font-weight:700;color:var(--accent);padding:3px 9px;transition:all .15s;font-family:"Noto Sans KR",sans-serif;line-height:1.5}
 .card-my:hover{background:var(--accent-bg)}
 .card-my.in-pf{background:var(--accent-bg);border-color:var(--accent)}
+.card-cmp{border:1.5px solid var(--border);border-radius:5px;background:var(--white);cursor:pointer;font-size:10px;font-weight:600;color:var(--ink3);padding:3px 9px;transition:all .15s;font-family:"Noto Sans KR",sans-serif;line-height:1.5}
+.card-cmp:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-bg)}
+.card-cmp.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .card-star{background:none;border:none;cursor:pointer;font-size:15px;color:var(--ink4);padding:0 2px;transition:color .15s;line-height:1;font-family:inherit;flex-shrink:0}
 .card-star:hover,.card-star.on{color:#f59e0b}
+/* Compare bar */
+.cmp-bar{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:2px solid var(--accent);padding:10px 20px;display:none;align-items:center;gap:10px;z-index:400;box-shadow:0 -4px 16px rgba(0,0,0,.1);flex-wrap:wrap}
+.cmp-bar.show{display:flex}
+.cmp-bar-label{font-size:11px;font-weight:700;color:var(--ink3);white-space:nowrap}
+.cmp-bar-chips{display:flex;gap:6px;flex:1;flex-wrap:wrap;min-width:0}
+.cmp-bar-chip{display:inline-flex;align-items:center;gap:4px;background:var(--accent-bg);color:var(--accent);border:1px solid #c5e8d2;border-radius:14px;font-size:11px;font-weight:500;padding:3px 8px;max-width:200px}
+.cmp-bar-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmp-bar-chip button{background:none;border:none;cursor:pointer;color:var(--accent);font-size:13px;line-height:1;padding:0;flex-shrink:0;opacity:.7}
+.cmp-bar-chip button:hover{opacity:1}
+.cmp-bar-actions{display:flex;gap:6px;flex-shrink:0}
+.cmp-bar-btn{border:none;border-radius:7px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:"Noto Sans KR",sans-serif}
+.cmp-bar-go{background:var(--accent);color:#fff}.cmp-bar-go:hover{background:#165a2e}
+.cmp-bar-clr{background:var(--bg);color:var(--ink3);border:1px solid var(--border)}.cmp-bar-clr:hover{color:var(--red);border-color:var(--red)}
 
 /* EMPTY STATE */
 .empty-state{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:56px 20px;text-align:center;margin-bottom:14px}
@@ -529,6 +545,7 @@ function renderWatchlist() {
     const _ytd  = (e.trend || []).filter(t => t.ex_date >= _jan1).reduce((a, b) => a + b.dist, 0);
     const _ar   = _npp > 0 && _ytd > 0 ? (_ytd / _npp * 100).toFixed(1) + '%' : '-';
     const isPending = isMon && !monConfirmed;
+    const _sel = getCmpList().includes(code);
     return `<div class="etf-card" onclick="location.href='/etf/${e.code}'">
       <div class="card-top">
         <div class="card-name">${e.name}</div>
@@ -565,6 +582,7 @@ function renderWatchlist() {
       </div>
       <div class="card-actions">
         <button class="card-my ${_inPf?'in-pf':''}" onclick="addToPortfolioWl(event,'${e.code}')" title="포트폴리오에 추가">${_inPf?'✓ MY ETF':'+MY ETF'}</button>
+        <button class="card-cmp ${_sel?'on':''}" onclick="toggleCmpWl(event,'${e.code}')">${_sel?'✓ 비교중':'+ 비교'}</button>
       </div>
     </div>`;
   }).filter(Boolean).join('');
@@ -1277,9 +1295,68 @@ function downloadImg() {
   if (p === 'portfolio') switchTab('portfolio');
 })();
 
+// ── 비교 목록 관리 ──
+function getCmpList(){ return JSON.parse(localStorage.getItem('compareList')||'[]'); }
+function setCmpList(arr){ localStorage.setItem('compareList', JSON.stringify(arr.slice(0,3))); }
+
+function updateCmpBar(){
+  const list = getCmpList();
+  const bar  = document.getElementById('cmpBar');
+  if(!list.length){ bar.classList.remove('show'); return; }
+  bar.classList.add('show');
+  document.getElementById('cmpChips').innerHTML = list.map(code => {
+    const etf = (typeof ETF_ALL !== 'undefined' ? ETF_ALL : []).find(e => e.code === code);
+    const name = etf ? etf.name : code;
+    return `<div class="cmp-bar-chip"><span title="${name}">${name}</span><button onclick="removeCmp('${code}')" title="제거">×</button></div>`;
+  }).join('');
+}
+
+function toggleCmpWl(ev, code){
+  ev.stopPropagation();
+  let list = getCmpList();
+  if(list.includes(code)){
+    list = list.filter(c => c !== code);
+  } else {
+    if(list.length >= 3){ alert('최대 3개까지 비교할 수 있습니다.'); return; }
+    list.push(code);
+  }
+  setCmpList(list);
+  renderWatchlist();
+  updateCmpBar();
+}
+
+function removeCmp(code){
+  setCmpList(getCmpList().filter(c => c !== code));
+  renderWatchlist();
+  updateCmpBar();
+}
+
+function clearCmp(){
+  setCmpList([]);
+  renderWatchlist();
+  updateCmpBar();
+}
+
+function goCmp(){
+  const list = getCmpList();
+  if(list.length < 2){ alert('비교할 ETF를 2개 이상 선택하세요.'); return; }
+  location.href = '/compare?etf=' + list.join(',');
+}
+
 updateTabCounts();
 renderWatchlist();
 render();
+updateCmpBar();
 </script>
+
+<!-- 비교 바 -->
+<div class="cmp-bar" id="cmpBar">
+  <span class="cmp-bar-label">비교 목록</span>
+  <div class="cmp-bar-chips" id="cmpChips"></div>
+  <div class="cmp-bar-actions">
+    <button class="cmp-bar-btn cmp-bar-clr" onclick="clearCmp()">초기화</button>
+    <button class="cmp-bar-btn cmp-bar-go" onclick="goCmp()">비교하기 →</button>
+  </div>
+</div>
 </body>
 </html>
