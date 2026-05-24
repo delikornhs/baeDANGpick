@@ -140,33 +140,41 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 
 /* ETF GRID */
 .etf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-bottom:12px}
-.etf-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:15px;cursor:pointer;transition:all .18s;position:relative}
+.etf-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:15px;cursor:pointer;transition:all .18s}
 .etf-card:hover{border-color:var(--accent-mid);box-shadow:0 4px 14px rgba(29,107,56,.08);transform:translateY(-1px)}
-.card-top{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
-.card-brand{font-size:10px;font-weight:700;background:var(--accent-bg);color:var(--accent);padding:2px 6px;border-radius:3px;font-family:"DM Mono",monospace;flex-shrink:0;margin-top:1px}
+/* Card top row: name + status + star */
+.card-top{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
 .card-name{font-size:13px;font-weight:600;line-height:1.4;letter-spacing:-.2px;flex:1}
-.card-meta{display:flex;align-items:center;gap:4px;margin-bottom:10px;flex-wrap:wrap}
-.type-badge{font-size:10px;background:var(--bg);border:1px solid var(--border);color:var(--ink3);padding:2px 6px;border-radius:3px}
-.card-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:8px}
-.cs{background:var(--bg);border-radius:6px;padding:8px 10px}
-.cs-l{font-size:10px;color:var(--ink3);margin-bottom:3px}
-.cs-v{font-size:14px;font-weight:700;font-family:"DM Mono",monospace}
-.cs-v.g{color:var(--accent)}
-.cs-v.b{color:var(--blue)}
-.card-annual{background:var(--accent-bg);border-radius:6px;padding:7px 11px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.card-annual-label{font-size:10px;color:var(--accent);font-weight:500}
-.card-annual-val{font-size:13px;font-weight:700;color:var(--accent);font-family:"DM Mono",monospace;flex-shrink:0}
-.card-dates{display:flex;gap:5px;flex-wrap:wrap}
-.dbadge{font-size:11px;padding:3px 7px;border-radius:4px;font-family:"DM Mono",monospace;font-weight:500}
-.dbadge.buy{background:#dcfce7;color:#166534}
-.dbadge.ex{background:#fee2e2;color:#991b1b}
-.dbadge.pay{background:#dbeafe;color:#1e40af}
-.status-pill{position:absolute;top:11px;right:11px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px}
+.card-top-right{display:flex;align-items:center;gap:5px;flex-shrink:0}
+/* Status pill */
+.status-pill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0}
 .status-pill.ok{background:#dcfce7;color:#166534}
 .status-pill.warn{background:#fef3c7;color:#92400e;animation:blink .8s infinite}
 .status-pill.no{background:#fee2e2;color:#991b1b}
 .status-pill.done{background:var(--bg);color:var(--ink3)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+/* Card meta: type + freq */
+.card-meta{display:flex;align-items:center;gap:4px;margin-bottom:10px;flex-wrap:wrap}
+.type-badge{font-size:10px;background:var(--bg);border:1px solid var(--border);color:var(--ink3);padding:2px 6px;border-radius:3px}
+/* Stats grid: 1×2 */
+.card-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:9px}
+.cs{background:var(--bg);border-radius:6px;padding:8px 10px}
+.cs-l{font-size:10px;color:var(--ink3);margin-bottom:4px}
+.cs-v{font-size:14px;font-weight:700;font-family:"DM Mono",monospace}
+.cs-v.g{color:var(--accent)}
+.cs-vals{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.cs-vals .cs-sep{font-size:11px;color:var(--ink4);font-weight:400}
+.cs-vals .cs-v2{font-size:13px;font-weight:700;font-family:"DM Mono",monospace;color:var(--blue)}
+/* Middle section (full-bleed bg) */
+.card-body{background:#e4e4df;margin:8px -15px;padding:10px 15px}
+/* Pending note */
+.card-pending{font-size:10px;color:var(--ink3);margin-bottom:8px;padding-left:1px}
+/* Date badges */
+.card-dates{display:flex;gap:5px;flex-wrap:wrap}
+.dbadge{font-size:11px;padding:3px 7px;border-radius:4px;font-family:"DM Mono",monospace;font-weight:500}
+.dbadge.buy{background:#dcfce7;color:#166534}
+.dbadge.ex{background:#fee2e2;color:#991b1b}
+.dbadge.pay{background:#dbeafe;color:#1e40af}
 
 /* MODAL */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
@@ -253,17 +261,16 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .cmp-bar-btn{border:none;border-radius:7px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:"Noto Sans KR",sans-serif}
 .cmp-bar-go{background:var(--accent);color:#fff}.cmp-bar-go:hover{background:#165a2e}
 .cmp-bar-clr{background:var(--bg);color:var(--ink3);border:1px solid var(--border)}.cmp-bar-clr:hover{color:var(--red);border-color:var(--red)}
-/* CARD COMPARE BUTTON */
-.card-cmp{position:absolute;bottom:11px;right:11px;border:1.5px solid var(--border);border-radius:5px;background:var(--white);cursor:pointer;font-size:10px;font-weight:600;color:var(--ink3);padding:2px 7px;transition:all .15s;z-index:2;line-height:1.5;font-family:"Noto Sans KR",sans-serif}
-.card-cmp:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-bg)}
-.card-cmp.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.card-dates{padding-right:46px;padding-left:52px}
-/* CARD MY BUTTON */
-.card-my{position:absolute;bottom:11px;left:11px;border:1.5px solid var(--accent-mid);border-radius:5px;background:var(--white);cursor:pointer;font-size:10px;font-weight:700;color:var(--accent);padding:2px 7px;transition:all .15s;z-index:2;line-height:1.5;font-family:"Noto Sans KR",sans-serif}
+/* CARD ACTION ROW */
+.card-actions{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.card-my{border:1.5px solid var(--accent-mid);border-radius:5px;background:var(--white);cursor:pointer;font-size:10px;font-weight:700;color:var(--accent);padding:3px 9px;transition:all .15s;font-family:"Noto Sans KR",sans-serif;line-height:1.5}
 .card-my:hover{background:var(--accent-bg)}
 .card-my.in-pf{background:var(--accent-bg);border-color:var(--accent)}
+.card-cmp{border:1.5px solid var(--border);border-radius:5px;background:var(--white);cursor:pointer;font-size:10px;font-weight:600;color:var(--ink3);padding:3px 9px;transition:all .15s;font-family:"Noto Sans KR",sans-serif;line-height:1.5}
+.card-cmp:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-bg)}
+.card-cmp.on{background:var(--accent);border-color:var(--accent);color:#fff}
 /* CARD STAR BUTTON */
-.card-star{background:none;border:none;cursor:pointer;font-size:15px;color:var(--ink4);padding:0 2px;margin-left:auto;transition:color .15s;line-height:1;font-family:inherit;flex-shrink:0}
+.card-star{background:none;border:none;cursor:pointer;font-size:15px;color:var(--ink4);padding:0 2px;transition:color .15s;line-height:1;font-family:inherit;flex-shrink:0}
 .card-star:hover,.card-star.on{color:#f59e0b}
 
 /* TOAST */
@@ -1700,36 +1707,46 @@ function renderGrid() {
     const st = (isMon && !monConfirmed) ? {label:'공시 대기',cls:'done'} : status(e);
     const distVal = `${comma(e.dist)}원`;
     const rateVal = `${e.rate}%`;
-    const pendingTag = (isMon && !monConfirmed)
-      ? `<div style="font-size:10px;color:var(--ink3);margin-top:5px;padding-left:2px">⏳ 공시 대기 중 · 직전 공시 정보 표시</div>`
-      : '';
-    const dateBadges = `<div class="dbadge buy">🛒 ${fd(lb)}</div>
-      <div class="dbadge ex">📉 ${fd(exDate(e.ex))}</div>
-      <div class="dbadge pay">💰 ${fds(e.pay)}</div>
-      ${pendingTag}`;
+    const isPending = isMon && !monConfirmed;
 
     return `<div class="etf-card" onclick="goEtf('${e.code}');">
-      <span class="status-pill ${st.cls}">${st.label}</span>
       <div class="card-top">
-        <span class="card-brand">${e.brand}</span>
         <div class="card-name">${e.name}</div>
+        <div class="card-top-right">
+          <span class="status-pill ${st.cls}">${st.label}</span>
+          <button class="card-star ${_inWl?'on':''}" onclick="toggleStar(event,'${e.code}')" title="${_inWl?'관심 ETF 해제':'관심 ETF 추가'}">${_inWl?'★':'☆'}</button>
+        </div>
       </div>
       <div class="card-meta">
         <span class="type-badge">${e.type}</span>
         ${freqBadges(e)}
-        <button class="card-star ${_inWl?'on':''}" onclick="toggleStar(event,'${e.code}')" title="${_inWl?'관심 ETF 해제':'관심 ETF 추가'}">${_inWl?'★':'☆'}</button>
       </div>
-      <div class="card-stats">
-        <div class="cs"><div class="cs-l">주당 분배금</div><div class="cs-v b">${distVal}</div></div>
-        <div class="cs"><div class="cs-l">이번달 분배율</div><div class="cs-v g">${rateVal}</div></div>
-        <div class="cs"><div class="cs-l">현재 주가</div><div class="cs-v">${comma(e.price)}원</div></div>
-        <div class="cs"><div class="cs-l">연환산 분배율</div><div class="cs-v g">${_ar}</div></div>
+      <div class="card-body">
+        <div class="card-stats">
+          <div class="cs">
+            <div class="cs-l">이번달 분배율 · 분배금</div>
+            <div class="cs-vals">
+              <span class="cs-v g">${rateVal}</span>
+              <span class="cs-sep">·</span>
+              <span class="cs-v2">${distVal}</span>
+            </div>
+          </div>
+          <div class="cs">
+            <div class="cs-l">현재 주가</div>
+            <div class="cs-v">${comma(e.price)}원</div>
+          </div>
+        </div>
+        ${isPending ? '<div class="card-pending">ℹ️ 공시 대기 중. 위 분배율ㆍ분배금은 직전 공시 정보로 표시</div>' : ''}
+        <div class="card-dates">
+          <div class="dbadge buy">🛒 ${fd(lb)}</div>
+          <div class="dbadge ex">📉 ${fd(exDate(e.ex))}</div>
+          <div class="dbadge pay">💰 ${fds(e.pay)}</div>
+        </div>
       </div>
-      <div class="card-dates">
-        ${dateBadges}
+      <div class="card-actions">
+        <button class="card-my ${_inPf?'in-pf':''}" onclick="addToPortfolio(event,'${e.code}')" title="내 포트폴리오에 추가">${_inPf?'✓ MY ETF':'+MY ETF'}</button>
+        <button class="card-cmp ${_sel?'on':''}" onclick="toggleCmpCard(event,'${e.code}')">${_sel?'✓ 비교중':'+ 비교'}</button>
       </div>
-      <button class="card-my ${_inPf?'in-pf':''}" onclick="addToPortfolio(event,'${e.code}')" title="내 포트폴리오에 추가">${_inPf?'✓ MY':'+MY'}</button>
-      <button class="card-cmp ${_sel?'on':''}" onclick="toggleCmpCard(event,'${e.code}')">${_sel?'✓ 비교중':'+ 비교'}</button>
     </div>`;
   }).join('');
 }

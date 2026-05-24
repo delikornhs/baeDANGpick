@@ -827,7 +827,7 @@ function render() {
       const avgD    = item.avgDist;
       const prevT   = getPrevDist(item.etf);
       const prevD   = prevT ? prevT.dist : null;
-      const prevR   = (prevD && item.etf.price) ? (prevD / item.etf.price * 100).toFixed(2) : null;
+      const prevR   = item.etf.rate != null ? item.etf.rate : null;
       const estTotal = Math.round(avgD * item.qty);
       estInfoHtml = `
         <div class="est-info">
