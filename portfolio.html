@@ -34,23 +34,27 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
 .nav-tag{font-size:11px;color:var(--ink3);background:var(--bg);padding:3px 10px;border-radius:20px;border:1px solid var(--border)}
 
+/* PAGE HEADER */
+.page-header{background:var(--white);border-bottom:1px solid var(--border);padding:20px 20px 16px}
+.page-header-inner{max-width:900px;margin:0 auto}
+.page-header h1{font-size:21px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.page-header-sub{font-size:12px;color:var(--ink3);margin-bottom:10px}
+.page-desc-list{font-size:12px;color:var(--ink2);line-height:1.85;list-style:none;padding:0;margin:0 0 8px}
+.page-desc-list li{padding-left:16px;position:relative}
+.page-desc-list li::before{content:'·';position:absolute;left:4px;color:var(--ink4)}
+.page-desc-warn{background:var(--warn-bg);border:1px solid #fde68a;border-radius:6px;padding:8px 12px;font-size:11px;color:var(--warn);line-height:1.7}
+
+/* TABS (ranking.html 동일 스타일) */
+.tab-wrap{background:var(--white);border-bottom:2px solid var(--border);padding:0 20px}
+.tab-inner{max-width:900px;margin:0 auto;display:flex;gap:0}
+.tab-btn{font-size:13px;font-weight:700;padding:13px 20px;border:none;background:none;cursor:pointer;color:var(--ink3);border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .15s;font-family:inherit;white-space:nowrap;display:inline-flex;align-items:center;gap:8px}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.on{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-count{font-size:11px;font-family:"DM Mono",monospace;background:var(--accent-bg);color:var(--accent);border-radius:10px;padding:1px 7px;min-width:18px;text-align:center}
+.tab-btn.on .tab-count{background:#dcfce7;color:#166534}
+
 /* WRAP */
-.wrap{max-width:900px;margin:0 auto;padding:24px 20px 80px}
-
-/* PAGE DESC */
-.page-desc{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;font-size:12px;color:var(--ink2);line-height:1.8}
-.page-desc-row{display:flex;flex-wrap:wrap;gap:4px 20px}
-.page-desc-item{display:flex;align-items:flex-start;gap:5px}
-.page-desc-warn{margin-top:7px;padding-top:7px;border-top:1px solid var(--border);font-size:11px;color:var(--warn)}
-
-/* TAB BAR */
-.tab-bar{display:flex;gap:6px;margin-bottom:16px}
-.tab-btn{flex:1;padding:11px 16px;border:1.5px solid var(--border);border-radius:8px;background:var(--white);font-size:13px;font-weight:600;color:var(--ink3);cursor:pointer;font-family:"Noto Sans KR",sans-serif;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:7px}
-.tab-btn:hover{border-color:var(--accent-mid);color:var(--accent)}
-.tab-btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.tab-count{font-size:11px;font-family:"DM Mono",monospace;background:rgba(0,0,0,.1);border-radius:10px;padding:1px 7px;min-width:20px;text-align:center}
-.tab-btn.on .tab-count{background:rgba(255,255,255,.25)}
-.tab-btn:not(.on) .tab-count{background:var(--accent-bg);color:var(--accent)}
+.wrap{max-width:900px;margin:0 auto;padding:20px 20px 80px}
 
 /* SAVE IMG BUTTON */
 .save-img-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:"Noto Sans KR",sans-serif;flex-shrink:0;transition:background .15s;display:none}
@@ -216,7 +220,11 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .pf-delete:hover{color:var(--red);border-color:#fecaca;background:var(--red-bg)}
 
 /* DIST HISTORY CHART */
-.hist-chart-wrap{position:relative;height:180px}
+.hist-chart-wrap{position:relative;height:160px}
+.dist-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.ds-box{background:var(--bg);border-radius:6px;padding:8px 10px;text-align:center}
+.ds-label{font-size:10px;color:var(--ink3);margin-bottom:3px}
+.ds-val{font-size:13px;font-weight:700;color:var(--ink)}
 
 /* IMAGE MODAL */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:center;justify-content:center;padding:16px}
@@ -252,6 +260,8 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   .pf-stat-grid{grid-template-columns:repeat(2,1fr)}
   .sum-val{font-size:17px}
   .wl-grid{grid-template-columns:1fr}
+  .dist-stats{grid-template-columns:repeat(2,1fr)}
+  .tab-btn{font-size:12px;padding:11px 14px}
 }
 </style>
 </head>
@@ -264,23 +274,28 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   </div>
 </nav>
 
-<div class="wrap">
-
-  <!-- 페이지 설명 -->
-  <div class="page-desc">
-    <div class="page-desc-row">
-      <span class="page-desc-item">⭐ 메인에서 ☆ 아이콘 클릭 → 관심 ETF 저장</span>
-      <span class="page-desc-item">💼 메인에서 +MY 버튼 클릭 → 포트폴리오 저장</span>
-      <span class="page-desc-item">이 페이지에서 직접 추가도 가능합니다.</span>
-    </div>
-    <div class="page-desc-warn">⚠️ 이 브라우저의 로컬 저장소에만 저장됩니다. 브라우저 캐시/사이트 데이터를 삭제하면 사라집니다.</div>
+<!-- 페이지 헤더 -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1>⭐ MY ETF</h1>
+    <p class="page-header-sub">관심 ETF와 내 포트폴리오를 한 곳에서 관리하세요.</p>
+    <ul class="page-desc-list">
+      <li>⭐ <b>내 관심 ETF</b>: 메인 페이지 ETF 카드의 ☆ 아이콘을 클릭하면 추가됩니다.</li>
+      <li>💼 <b>내 포트폴리오</b>: 메인 페이지 ETF 카드의 +MY 버튼을 클릭하거나, 포트폴리오 탭에서 직접 추가할 수 있습니다.</li>
+    </ul>
+    <div class="page-desc-warn">⚠️ 데이터는 이 브라우저의 로컬 저장소(localStorage)에만 저장됩니다. 서버에 전송되지 않습니다. 브라우저 캐시 또는 사이트 데이터를 삭제하면 사라지며, 시크릿/인코그니토 모드에서는 창 종료 시 삭제됩니다. 다른 기기나 다른 브라우저에서는 확인할 수 없습니다.</div>
   </div>
+</div>
 
-  <!-- 탭 바 -->
-  <div class="tab-bar">
+<!-- 탭 -->
+<div class="tab-wrap">
+  <div class="tab-inner">
     <button class="tab-btn on" id="tabBtnWl" onclick="switchTab('watchlist')">⭐ 내 관심 ETF <span class="tab-count" id="wlCount">0</span></button>
     <button class="tab-btn" id="tabBtnPf" onclick="switchTab('portfolio')">💼 내 포트폴리오 <span class="tab-count" id="pfCount">0</span></button>
   </div>
+</div>
+
+<div class="wrap">
 
   <!-- 관심 ETF 탭 -->
   <div id="tabWatchlist">
@@ -635,8 +650,10 @@ function buildDistHistoryData(enriched) {
   for (let i = 11; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const y = String(d.getFullYear()).slice(2);
+    const m = d.getMonth() + 1;
     months.push(key);
-    labels.push(`${d.getMonth()+1}월`);
+    labels.push(`${y}'${m}월`);
   }
   const data = months.map(monthKey => {
     let total = 0;
@@ -792,6 +809,8 @@ function render() {
     <div class="card">
       <div class="card-title">월별 분배금 내역</div>
       <div class="hist-chart-wrap"><canvas id="pfHist"></canvas></div>
+      <div class="dist-stats" id="pfHistStats"></div>
+      <div id="pfHistStatsNote" style="font-size:10px;color:var(--ink3);margin-top:5px;text-align:right"></div>
     </div>`;
 
   // 보유 ETF 카드
@@ -858,44 +877,98 @@ function render() {
   const { labels: hLabels, data: hData } = buildDistHistoryData(enriched);
   const hasHistData = hData.some(v => v > 0);
   if (hasHistData) {
+    // 전체 평균 (0 제외)
+    const hNonZero = hData.filter(v => v > 0);
+    const hAvgAll  = Math.round(hNonZero.reduce((a,b)=>a+b,0) / hNonZero.length);
+
+    // 3개월 이동평균 (MA3)
+    const hasMA = hData.length >= 3;
+    const hMa3  = hData.map((_, i) => {
+      if (i < 2) return null;
+      const slice = hData.slice(i-2, i+1);
+      if (slice.every(v => v === 0)) return null;
+      return Math.round(slice.reduce((a,b)=>a+b,0) / 3);
+    });
+
+    // 바 색상: MA 기준 (없으면 전체 평균)
+    const hBarColors = hData.map((v, i) => {
+      if (v === 0) return '#e8e8e2';
+      const ref = (hasMA && hMa3[i] != null) ? hMa3[i] : hAvgAll;
+      return v >= ref ? '#1d6b38' : '#6cba8b';
+    });
+
+    const hDatasets = [{
+      label: '분배금',
+      data: hData,
+      backgroundColor: hBarColors,
+      borderRadius: 4,
+      order: 2,
+    }];
+    if (hasMA) {
+      hDatasets.push({
+        type: 'line',
+        label: '3개월 이동평균',
+        data: hMa3,
+        borderColor: 'rgba(154,154,147,0.85)',
+        borderWidth: 1.5,
+        borderDash: [4, 3],
+        pointRadius: 0,
+        pointHoverRadius: 3,
+        fill: false,
+        tension: 0.3,
+        order: 1,
+      });
+    }
+
     histChart = new Chart(document.getElementById('pfHist').getContext('2d'), {
       type: 'bar',
-      data: {
-        labels: hLabels,
-        datasets: [{
-          label: '분배금 합계',
-          data: hData,
-          backgroundColor: '#1d6b38',
-          borderRadius: 4,
-          borderSkipped: false,
-        }]
-      },
+      data: { labels: hLabels, datasets: hDatasets },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: false },
+          legend: {
+            display: hasMA,
+            labels: {
+              font: { size: 10 }, color: '#9a9a93', boxWidth: 18, padding: 8,
+              filter: item => item.text === '3개월 이동평균',
+            }
+          },
           tooltip: {
             callbacks: {
-              label: c => ` ${comma(c.raw)}원`
+              label: ctx => {
+                if (ctx.dataset.label === '3개월 이동평균') return '3MA: ' + (ctx.raw != null ? comma(ctx.raw) + '원' : '-');
+                return ctx.raw > 0 ? comma(ctx.raw) + '원' : '-';
+              }
             }
           }
         },
         scales: {
-          x: { grid: { display: false }, ticks: { font: { size: 10 } } },
-          y: {
-            grid: { color: '#f0f0ec' },
-            ticks: {
-              font: { size: 10 },
-              callback: v => v >= 10000 ? Math.round(v/10000)+'만' : comma(v)
-            }
-          }
+          x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#9a9a93' } },
+          y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 }, color: '#9a9a93',
+            callback: v => v >= 10000 ? Math.round(v/10000)+'만원' : comma(v)+'원' } }
         }
       }
     });
+
+    // 통계: 최근 6개월 중 데이터 있는 항목 기준
+    const hRecent6    = hData.slice(-6).filter(v => v > 0);
+    if (hRecent6.length) {
+      const hAvgS = Math.round(hRecent6.reduce((a,b)=>a+b,0) / hRecent6.length);
+      const hMaxS = Math.max(...hRecent6);
+      const hMinS = Math.min(...hRecent6);
+      const hVar  = hAvgS > 0 ? ((hMaxS - hMinS) / hAvgS * 100).toFixed(1) : '-';
+      document.getElementById('pfHistStats').innerHTML = `
+        <div class="ds-box"><div class="ds-label">월평균</div><div class="ds-val">${comma(hAvgS)}원</div></div>
+        <div class="ds-box"><div class="ds-label">최고</div><div class="ds-val">${comma(hMaxS)}원</div></div>
+        <div class="ds-box"><div class="ds-label">최저</div><div class="ds-val">${comma(hMinS)}원</div></div>
+        <div class="ds-box"><div class="ds-label">변동폭</div><div class="ds-val">${hVar}%</div></div>`;
+      document.getElementById('pfHistStatsNote').textContent =
+        `변동폭 = (최고-최저)/평균 · 최근 ${hRecent6.length}개월 기준`;
+    }
   } else {
-    document.getElementById('pfHist').parentElement.parentElement.innerHTML =
-      `<div class="card"><div class="card-title">월별 분배금 내역</div><div style="padding:20px 0;text-align:center;font-size:12px;color:var(--ink3)">분배금 내역 데이터가 없습니다.</div></div>`;
+    document.getElementById('pfHistStats').innerHTML =
+      '<span style="font-size:12px;color:var(--ink3)">분배금 내역 데이터가 없습니다.</span>';
   }
 }
 
