@@ -276,8 +276,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .img-modal-hdr button{width:26px;height:26px;border:1px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink3)}
 .img-modal-hdr button:hover{background:var(--bg)}
 .img-modal-body{padding:16px 20px;overflow-x:auto}
-.img-modal-foot{padding:12px 20px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;position:sticky;bottom:0;background:var(--white)}
-.img-modal-foot button{border:none;border-radius:7px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:"Noto Sans KR",sans-serif}
+.img-modal-foot{padding:12px 20px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;position:sticky;bottom:0;background:var(--white)}
+.img-modal-foot button{border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:"Noto Sans KR",sans-serif;white-space:nowrap}
 #downloadBtn{background:var(--accent);color:#fff}
 #downloadBtn:hover{background:#165a2e}
 #downloadBtn:disabled{background:var(--ink4);cursor:not-allowed}
@@ -1232,18 +1232,19 @@ function buildShareHTML(enriched, totalValue, totalDist, forPreview) {
 
   return `
     <div style="background:linear-gradient(135deg,#1a5e31,#2a8047);color:#fff;padding:18px 20px">
-      <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:14px">
         <div style="width:22px;height:22px;background:rgba(255,255,255,.2);border-radius:5px;text-align:center;line-height:22px;font-size:11px;font-weight:700">₩</div>
         <span style="font-size:13px;font-weight:700">배당픽 · 내 포트폴리오</span>
         <span style="margin-left:auto;font-size:10px;color:rgba(255,255,255,.6)">${dateStr}</span>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:flex-end">
-        <div>
-          <div style="font-size:10px;color:rgba(255,255,255,.7);margin-bottom:4px">총 평가금액</div>
-          <div style="font-size:26px;font-weight:700;font-family:monospace;letter-spacing:-.5px">${comma(totalValue)}원</div>
+      <div style="display:flex;gap:12px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:10px;color:rgba(255,255,255,.7);margin-bottom:3px">총 평가금액</div>
+          <div style="font-size:18px;font-weight:700;font-family:monospace;letter-spacing:-.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${comma(totalValue)}원</div>
         </div>
-        <div style="text-align:right">
-          <div style="font-size:14px;font-weight:700;font-family:monospace">+${comma(Math.round(totalDist))}원</div>
+        <div style="flex:1;min-width:0;text-align:right">
+          <div style="font-size:10px;color:rgba(255,255,255,.7);margin-bottom:3px">이번달 분배금</div>
+          <div style="font-size:18px;font-weight:700;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">+${comma(Math.round(totalDist))}원</div>
           <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:2px">${monthlyRate}%/월 · ${enriched.length}종목</div>
         </div>
       </div>
