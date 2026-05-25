@@ -284,7 +284,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .img-modal-foot button:last-child{background:var(--bg);color:var(--ink2);border:1px solid var(--border)}
 
 /* PRINT AREA (off-screen) */
-#pfPrintArea{position:absolute;left:-9999px;top:0;width:760px;background:#f7f7f4;font-family:"Noto Sans KR",-apple-system,sans-serif}
+#pfPrintArea{position:absolute;left:-9999px;top:0;width:390px;background:#f7f7f4;font-family:"Noto Sans KR",-apple-system,sans-serif}
 
 /* FOOTER */
 footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8;margin-top:8px}
@@ -397,7 +397,8 @@ footer a{color:var(--ink3);text-underline-offset:2px}
       </div>
     </div>
     <div class="img-modal-foot">
-      <button onclick="downloadImg()" id="downloadBtn">📥 이미지 다운로드</button>
+      <button onclick="downloadImg()" id="downloadBtn">📥 이미지 저장</button>
+      <button onclick="kakaoShareFromModal()" id="kakaoBtn" style="background:#FEE500;color:#3C1E1E">💬 카카오톡 공유</button>
       <button onclick="closeImgModal()">닫기</button>
     </div>
   </div>
@@ -1165,67 +1166,96 @@ function render() {
   }
 }
 
-// ── 이미지용 HTML 빌더 ──
-function buildPrintHTML(enriched, totalValue, totalDist, monthlyRate, forPreview) {
+// ── 바 SVG 헬퍼 ──
+function buildBarSVG(labels, data) {
+  const count = labels.length;
+  if (!count) return '';
+  const maxVal = Math.max(...data, 1);
+  const w = 350, chartH = 65, labelH = 16;
+  const barW = Math.floor((w - 4 * (count - 1)) / count);
+  const bars = labels.map((lbl, i) => {
+    const v = data[i];
+    const barH = v > 0 ? Math.max(4, Math.round((v / maxVal) * chartH)) : 4;
+    const x = i * (barW + 4);
+    const y = chartH - barH;
+    const fill = v > 0 ? '#1d6b38' : '#e8e8e2';
+    const valStr = v >= 10000 ? Math.round(v / 10000) + '만' : String(v);
+    return [
+      `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="${fill}" rx="2"/>`,
+      v > 0 && barH > 16 ? `<text x="${x + barW / 2}" y="${y - 2}" text-anchor="middle" font-size="9" fill="#4a4a45">${valStr}</text>` : '',
+      `<text x="${x + barW / 2}" y="${chartH + 13}" text-anchor="middle" font-size="9" fill="#9a9a93">${lbl}</text>`
+    ].join('');
+  }).join('');
+  return `<svg width="${w}" height="${chartH + labelH}" xmlns="http://www.w3.org/2000/svg">${bars}</svg>`;
+}
+
+// ── 이미지용 HTML 빌더 (390px 모바일 최적화) ──
+function buildShareHTML(enriched, totalValue, totalDist, forPreview) {
   const now = new Date();
   const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
-  const siteUrl = 'bae-dang-pick.vercel.app';
+  const monthlyRate = totalValue > 0 ? (totalDist / totalValue * 100).toFixed(2) : '0.00';
 
-  const holdingsHTML = enriched.map((item, idx) => {
+  // 최대 5개 표시, 초과 시 "외 N종목"
+  const displayItems = enriched.slice(0, 5);
+  const extraCount = enriched.length - displayItems.length;
+
+  const holdingsHTML = displayItems.map((item, idx) => {
     const weight = totalValue > 0 ? (item.value / totalValue * 100) : 0;
-    const color  = PALETTE[idx % PALETTE.length];
-    const distStat = item.di.dist > 0 ? ` · 주당 ${comma(item.di.dist)}원` : '';
+    const color = PALETTE[idx % PALETTE.length];
     return `
-      <div style="display:flex;align-items:stretch;gap:10px;padding:12px 0;border-bottom:1px solid #ebebeb">
-        <div style="width:4px;background:${color};border-radius:2px;flex-shrink:0;align-self:stretch"></div>
+      <div style="display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #f0f0ea">
+        <div style="width:3px;height:36px;background:${color};border-radius:2px;flex-shrink:0"></div>
         <div style="flex:1;min-width:0">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:5px">
-            <div style="font-size:13px;font-weight:700;color:#1a1a18;line-height:1.3;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.etf.name}</div>
-            <div style="text-align:right;flex-shrink:0">
-              <div style="font-size:14px;font-weight:700;font-family:monospace;color:#1a1a18">${comma(item.value)}원</div>
-              ${item.distAmt > 0 ? `<div style="font-size:11px;color:#1d6b38;font-weight:700;margin-top:2px">+${comma(item.distAmt)}원/월</div>` : ''}
-            </div>
-          </div>
-          <div style="font-size:11px;color:#9a9a93;margin-bottom:7px">
-            현재가 ${comma(item.etf.price)}원 · ${item.qty.toLocaleString()}주${distStat}
-          </div>
-          <div style="display:flex;align-items:center;gap:6px">
-            <div style="flex:1;height:4px;background:#e8e8e2;border-radius:2px;overflow:hidden">
-              <div style="width:${weight.toFixed(1)}%;height:100%;background:${color};border-radius:2px"></div>
-            </div>
-            <span style="font-size:11px;font-family:monospace;color:#9a9a93;width:38px;text-align:right;flex-shrink:0">${weight.toFixed(1)}%</span>
-          </div>
+          <div style="font-size:12px;font-weight:700;color:#1a1a18;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.etf.name}</div>
+          <div style="font-size:10px;color:#9a9a93;margin-top:2px">${item.qty.toLocaleString()}주 · ${weight.toFixed(1)}%</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:12px;font-weight:700;font-family:monospace;color:#1a1a18">${comma(item.value)}원</div>
+          ${item.distAmt > 0 ? `<div style="font-size:10px;color:#1d6b38;font-weight:700;margin-top:1px">+${comma(Math.round(item.distAmt))}원/월</div>` : ''}
         </div>
       </div>`;
   }).join('');
 
-  const urlEl = forPreview
-    ? `<a href="https://${siteUrl}" target="_blank" style="color:#1d6b38;font-weight:700;text-decoration:none">${siteUrl}</a>`
-    : `<span>${siteUrl}</span>`;
+  const extraHTML = extraCount > 0
+    ? `<div style="font-size:10px;color:#9a9a93;text-align:center;padding:8px 0">외 ${extraCount}종목</div>`
+    : '';
+
+  // 분배금 내역 바 차트 (최근 6개월)
+  const { labels: hLabels, data: hData } = buildDistHistoryData(enriched);
+  const last6Labels = hLabels.slice(-6);
+  const last6Data = hData.slice(-6);
+  const barSVG = buildBarSVG(last6Labels, last6Data);
 
   return `
-    <div style="background:linear-gradient(135deg,#1a5e31,#2a8047);color:#fff;padding:20px 24px;display:flex;justify-content:space-between;align-items:flex-end">
-      <div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-          <div style="width:24px;height:24px;background:rgba(255,255,255,.2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">₩</div>
-          <span style="font-size:15px;font-weight:700">배당픽 포트폴리오</span>
+    <div style="background:linear-gradient(135deg,#1a5e31,#2a8047);color:#fff;padding:18px 20px">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px">
+        <div style="width:22px;height:22px;background:rgba(255,255,255,.2);border-radius:5px;text-align:center;line-height:22px;font-size:11px;font-weight:700">₩</div>
+        <span style="font-size:13px;font-weight:700">배당픽 · 내 포트폴리오</span>
+        <span style="margin-left:auto;font-size:10px;color:rgba(255,255,255,.6)">${dateStr}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end">
+        <div>
+          <div style="font-size:10px;color:rgba(255,255,255,.7);margin-bottom:4px">총 평가금액</div>
+          <div style="font-size:26px;font-weight:700;font-family:monospace;letter-spacing:-.5px">${comma(totalValue)}원</div>
         </div>
-        <div style="font-size:24px;font-weight:700;font-family:monospace;letter-spacing:-.5px;line-height:1">${comma(totalValue)}원</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:4px">총 평가금액 · ${enriched.length}종목</div>
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:10px;color:rgba(255,255,255,.65);margin-bottom:4px">${dateStr}</div>
-        <div style="font-size:16px;font-weight:700;font-family:monospace">+${comma(totalDist)}원</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:3px">이번달 예상 분배금 · ${monthlyRate}%/월</div>
+        <div style="text-align:right">
+          <div style="font-size:14px;font-weight:700;font-family:monospace">+${comma(Math.round(totalDist))}원</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:2px">${monthlyRate}%/월 · ${enriched.length}종목</div>
+        </div>
       </div>
     </div>
-    <div style="background:#fff;padding:0 24px 4px">
-      <div style="font-size:10px;font-weight:700;color:#9a9a93;letter-spacing:.8px;padding:14px 0 4px;text-transform:uppercase">보유 ETF · ${enriched.length}종목</div>
+    <div style="background:#fff;padding:0 20px 4px">
+      <div style="font-size:10px;font-weight:700;color:#9a9a93;letter-spacing:.6px;padding:12px 0 4px;text-transform:uppercase">보유 ETF</div>
       ${holdingsHTML}
+      ${extraHTML}
     </div>
-    <div style="background:#f7f7f4;padding:10px 20px;border-top:1px solid #e8e8e2;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#9a9a93">
+    <div style="background:#fff;padding:12px 20px 16px;border-top:1px solid #f0f0ea">
+      <div style="font-size:10px;font-weight:700;color:#9a9a93;letter-spacing:.6px;margin-bottom:10px;text-transform:uppercase">월별 분배금 추이 (최근 6개월)</div>
+      ${barSVG}
+    </div>
+    <div style="background:#f7f7f4;padding:9px 20px;display:flex;justify-content:space-between;font-size:9px;color:#9a9a93;border-top:1px solid #e8e8e2">
       <span>배당픽 · ETF 분배금 일정 &amp; 계산기</span>
-      ${urlEl}
+      <span>bae-dang-pick.vercel.app</span>
     </div>`;
 }
 
@@ -1243,18 +1273,17 @@ function saveAsImage() {
     return { code: item.code, qty: item.qty, etf, di, value, distAmt };
   }).filter(Boolean).sort((a, b) => b.value - a.value);
 
-  const totalValue  = enriched.reduce((s, i) => s + i.value, 0);
-  const totalDist   = enriched.reduce((s, i) => s + i.distAmt, 0);
-  const monthlyRate = totalValue > 0 ? (totalDist / totalValue * 100).toFixed(2) : '0.00';
+  const totalValue = enriched.reduce((s, i) => s + i.value, 0);
+  const totalDist  = enriched.reduce((s, i) => s + i.distAmt, 0);
 
   const printArea = document.getElementById('pfPrintArea');
-  printArea.innerHTML = buildPrintHTML(enriched, totalValue, totalDist, monthlyRate, false);
+  printArea.innerHTML = buildShareHTML(enriched, totalValue, totalDist, false);
 
   document.getElementById('imgPreview').innerHTML =
     `<div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;font-family:'Noto Sans KR',sans-serif">
-      ${buildPrintHTML(enriched, totalValue, totalDist, monthlyRate, true)}
+      ${buildShareHTML(enriched, totalValue, totalDist, true)}
     </div>
-    <p style="text-align:center;font-size:11px;color:var(--ink3);margin-top:10px">미리보기 — 위 URL을 클릭하면 사이트로 이동합니다</p>`;
+    <p style="text-align:center;font-size:11px;color:var(--ink3);margin-top:10px">미리보기 — 위 카드를 이미지로 저장하거나 공유할 수 있습니다</p>`;
 
   document.getElementById('imgModal').classList.add('open');
 }
@@ -1265,7 +1294,7 @@ function closeImgModal() {
 
 function downloadImg() {
   const btn = document.getElementById('downloadBtn');
-  btn.textContent = '⏳ 생성 중...';
+  btn.innerHTML = '⏳ 생성 중...';
   btn.disabled = true;
   html2canvas(document.getElementById('pfPrintArea'), {
     scale: 2,
@@ -1279,13 +1308,38 @@ function downloadImg() {
     link.download = `배당픽_포트폴리오_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
-    btn.textContent = '📥 이미지 다운로드';
+    btn.innerHTML = '📥 이미지 저장';
     btn.disabled = false;
   }).catch(() => {
-    btn.textContent = '📥 이미지 다운로드';
+    btn.innerHTML = '📥 이미지 저장';
     btn.disabled = false;
     alert('이미지 생성에 실패했습니다. 다시 시도해주세요.');
   });
+}
+
+function kakaoShareFromModal() {
+  const btn = document.getElementById('kakaoBtn');
+  const orig = btn.innerHTML;
+  btn.innerHTML = '⏳ 생성 중...'; btn.disabled = true;
+  html2canvas(document.getElementById('pfPrintArea'), {
+    scale: 2, backgroundColor: '#f7f7f4', useCORS: true, allowTaint: true, logging: false
+  }).then(canvas => {
+    canvas.toBlob(blob => {
+      btn.innerHTML = orig; btn.disabled = false;
+      if (!blob) { alert('이미지 생성에 실패했습니다.'); return; }
+      const file = new File([blob], '배당픽_포트폴리오.png', { type: 'image/png' });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: '배당픽 포트폴리오' })
+          .catch(e => { if (e.name !== 'AbortError') alert('공유에 실패했습니다.'); });
+      } else {
+        const a = document.createElement('a');
+        a.download = '배당픽_포트폴리오.png';
+        a.href = URL.createObjectURL(blob);
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+      }
+    }, 'image/png');
+  }).catch(() => { btn.innerHTML = orig; btn.disabled = false; alert('이미지 생성에 실패했습니다.'); });
 }
 
 // ── 초기화 ──
