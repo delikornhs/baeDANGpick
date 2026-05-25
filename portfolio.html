@@ -398,7 +398,7 @@ footer a{color:var(--ink3);text-underline-offset:2px}
     </div>
     <div class="img-modal-foot">
       <button onclick="downloadImg()" id="downloadBtn">📥 이미지 저장</button>
-      <button onclick="kakaoShareFromModal()" id="kakaoBtn" style="background:#FEE500;color:#3C1E1E">💬 카카오톡 공유</button>
+      <button onclick="kakaoShareFromModal()" id="kakaoBtn" style="background:#FEE500;color:#3C1E1E;display:none">💬 카카오톡 공유</button>
       <button onclick="closeImgModal()">닫기</button>
     </div>
   </div>
@@ -1284,6 +1284,16 @@ function saveAsImage() {
       ${buildShareHTML(enriched, totalValue, totalDist, true)}
     </div>
     <p style="text-align:center;font-size:11px;color:var(--ink3);margin-top:10px">미리보기 — 위 카드를 이미지로 저장하거나 공유할 수 있습니다</p>`;
+
+  // 카카오 공유 버튼: 파일 공유 지원 여부 체크 (모바일만 표시)
+  (function(){
+    const testFile = new File([''], 't.png', {type:'image/png'});
+    const kakaoBtnEl = document.getElementById('kakaoBtn');
+    if (kakaoBtnEl) {
+      kakaoBtnEl.style.display = (navigator.share && navigator.canShare && navigator.canShare({files:[testFile]}))
+        ? 'inline-flex' : 'none';
+    }
+  })();
 
   document.getElementById('imgModal').classList.add('open');
 }
