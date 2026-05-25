@@ -762,7 +762,7 @@ function render() {
     return;
   }
 
-  saveBtn.style.display = '';
+  saveBtn.style.display = 'inline-flex';
 
   // ── 데이터 계산 ──
   const enriched = items.map(item => {
@@ -1171,22 +1171,26 @@ function buildBarSVG(labels, data) {
   const count = labels.length;
   if (!count) return '';
   const maxVal = Math.max(...data, 1);
-  const w = 350, chartH = 65, labelH = 16;
+  const w = 350, chartH = 65, labelH = 18;
   const barW = Math.floor((w - 4 * (count - 1)) / count);
   const bars = labels.map((lbl, i) => {
     const v = data[i];
     const barH = v > 0 ? Math.max(4, Math.round((v / maxVal) * chartH)) : 4;
     const x = i * (barW + 4);
     const y = chartH - barH;
+    const cx = x + barW / 2;
     const fill = v > 0 ? '#1d6b38' : '#e8e8e2';
     const valStr = v >= 10000 ? Math.round(v / 10000) + '만' : String(v);
+    // 첫 바는 start, 마지막 바는 end로 anchor 조정하여 잘림 방지
+    const anchor = i === 0 ? 'start' : i === count - 1 ? 'end' : 'middle';
+    const lblX = i === 0 ? x : i === count - 1 ? x + barW : cx;
     return [
       `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="${fill}" rx="2"/>`,
-      v > 0 && barH > 16 ? `<text x="${x + barW / 2}" y="${y - 2}" text-anchor="middle" font-size="9" fill="#4a4a45">${valStr}</text>` : '',
-      `<text x="${x + barW / 2}" y="${chartH + 13}" text-anchor="middle" font-size="9" fill="#9a9a93">${lbl}</text>`
+      v > 0 && barH > 16 ? `<text x="${cx}" y="${y - 2}" text-anchor="middle" font-size="9" fill="#4a4a45">${valStr}</text>` : '',
+      `<text x="${lblX}" y="${chartH + 13}" text-anchor="${anchor}" font-size="9" fill="#9a9a93">${lbl}</text>`
     ].join('');
   }).join('');
-  return `<svg width="${w}" height="${chartH + labelH}" xmlns="http://www.w3.org/2000/svg">${bars}</svg>`;
+  return `<svg width="${w}" height="${chartH + labelH}" overflow="visible" xmlns="http://www.w3.org/2000/svg">${bars}</svg>`;
 }
 
 // ── 이미지용 HTML 빌더 (390px 모바일 최적화) ──
