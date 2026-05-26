@@ -12,7 +12,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>분배율ㆍ수익률 랭킹 - 배당픽</title>
-<meta name="description" content="월배당 ETF 분배율ㆍ분배금 랭킹과 전체 ETF 주간 수익률 랭킹을 한눈에 확인하세요.">
+<meta name="description" content="월배당 ETF 분배율ㆍ분배금 랭킹과 전체 ETF 기간별 수익률 랭킹을 한눈에 확인하세요.">
 <meta name="robots" content="index, follow">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="/data/output/etf_data.js"></script>
@@ -155,7 +155,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   <div class="page-header-inner">
     <div>
       <h1>분배율ㆍ수익률 랭킹</h1>
-      <p class="page-header-sub">월배당 ETF 분배율ㆍ분배금 랭킹, 전체 ETF 주간 수익률 랭킹</p>
+      <p class="page-header-sub">월배당 ETF 분배율ㆍ분배금 랭킹, 전체 ETF 기간별 수익률 랭킹</p>
     </div>
     <div class="update-badge" id="updateBadge">업데이트 중...</div>
   </div>
@@ -165,7 +165,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <div class="tab-wrap">
   <div class="tab-inner">
     <button class="tab-btn on" id="tabDist" onclick="switchTab('dist')">📊 월배당 ETF 분배율ㆍ분배금</button>
-    <button class="tab-btn" id="tabRet" onclick="switchTab('ret')">📈 전체 ETF 주간 수익률</button>
+    <button class="tab-btn" id="tabRet" onclick="switchTab('ret')">📈 전체 ETF 기간별 수익률</button>
   </div>
 </div>
 
@@ -224,11 +224,15 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
           <button class="otog"    data-og="retMetric" data-v="총"   onclick="setRetOpt('retMetric','총')">총수익률</button>
         </div>
         <div class="opt-row">
-          <span class="opt-label">대상기간</span>
-          <span class="week-range" id="weekRangeLabel">-</span>
+          <span class="opt-label">기간</span>
+          <button class="otog on" data-og="retPeriod" data-v="1w"     onclick="setRetOpt('retPeriod','1w')">1주</button>
+          <button class="otog"    data-og="retPeriod" data-v="1m"     onclick="setRetOpt('retPeriod','1m')">1개월</button>
+          <button class="otog"    data-og="retPeriod" data-v="3m"     onclick="setRetOpt('retPeriod','3m')">3개월</button>
+          <button class="otog"    data-og="retPeriod" data-v="6m"     onclick="setRetOpt('retPeriod','6m')">6개월</button>
+          <button class="otog"    data-og="retPeriod" data-v="1y"     onclick="setRetOpt('retPeriod','1y')">1년</button>
+          <button class="otog"    data-og="retPeriod" data-v="listed" onclick="setRetOpt('retPeriod','listed')">상장이후</button>
         </div>
       </div>
-      <button class="confirm-btn" onclick="runRetRanking()">확인하기</button>
     </div>
   </div>
 
@@ -293,22 +297,15 @@ const distTargetMonth = distIsComplete ? _midM : _endM;  // "YYYY-MM"
 const distMonthNum    = distTargetMonth ? parseInt(distTargetMonth.split('-')[1]) : 0;
 const priceYear       = (typeof PRICE_DATE !== 'undefined' && PRICE_DATE) ? parseInt(PRICE_DATE.slice(0,4)) : new Date().getFullYear();
 
-// 주간 범위
-function deriveWeekRange(pd) {
-  const d = new Date(pd);
-  const dow = d.getDay(); // 0=일,1=월,...,5=금,6=토
-  const toMon = dow === 0 ? -6 : 1 - dow;
-  const mon = new Date(d); mon.setDate(d.getDate() + toMon);
-  const fri = new Date(mon); fri.setDate(mon.getDate() + 4);
-  const fmt = dt => dt.toISOString().slice(0,10);
-  return [fmt(mon), fmt(fri)];
-}
-const [_ws, _we] = (typeof WEEK_START !== 'undefined' && typeof WEEK_END !== 'undefined')
-  ? [WEEK_START, WEEK_END]
-  : deriveWeekRange(typeof PRICE_DATE !== 'undefined' ? PRICE_DATE : new Date().toISOString().slice(0,10));
-function fmtWeekBadge(s) {
-  return `'${s.slice(2,4)}.${parseInt(s.slice(5,7))}.${parseInt(s.slice(8,10))}.`;
-}
+// ── 기간별 수익률 필드 매핑 ──
+const RET_PERIODS = {
+  '1w':     { label: '1주',    price: 'ret1w',     total: 'tret1w'     },
+  '1m':     { label: '1개월',  price: 'ret1m',     total: 'tret1m'     },
+  '3m':     { label: '3개월',  price: 'ret3m',     total: 'tret3m'     },
+  '6m':     { label: '6개월',  price: 'ret6m',     total: 'tret6m'     },
+  '1y':     { label: '1년',    price: 'ret1y',     total: 'tret1y'     },
+  'listed': { label: '상장이후', price: 'retListed', total: 'tretListed' },
+};
 
 // ── 상태 ──
 const PAGE_SIZE = 20;
@@ -320,6 +317,7 @@ let distBaseData   = [];   // 필터 전 전체 데이터
 let distShown      = 0;
 
 let retMetric      = '주가';
+let retPeriod      = '1w';
 let retTypeFilter  = 'all';
 let retBaseData    = [];
 let retShown       = 0;
@@ -342,8 +340,10 @@ function setDistOpt(group, val) {
 }
 function setRetOpt(group, val) {
   if (group === 'retMetric') retMetric = val;
+  if (group === 'retPeriod') retPeriod = val;
   document.querySelectorAll(`[data-og="${group}"]`).forEach(b =>
     b.classList.toggle('on', b.dataset.v === val));
+  runRetRanking();
 }
 function setTypeFilter(section, val) {
   if (section === 'dist') distTypeFilter = val;
@@ -430,8 +430,9 @@ function distItem(e, rank) {
 
 // ── 수익률 아이템 렌더 ──
 function retItem(e, rank) {
-  const field  = retMetric === '주가' ? 'ret1wf' : 'tret1wf';
-  const val    = e[field] ?? 0;
+  const p      = RET_PERIODS[retPeriod];
+  const field  = retMetric === '주가' ? p.price : p.total;
+  const val    = e[field] ?? null;
   const cls    = retCls(val);
   const str    = retStr(val);
   const freqBadge = isMonthly(e) ? `<span class="badge badge-freq">월배당</span>` : '';
@@ -448,7 +449,7 @@ function retItem(e, rank) {
       </div>
       <div class="rank-right">
         <div class="rank-main ${cls}">${str}</div>
-        <div class="rank-sub">${retMetric === '주가' ? '주가 수익률' : '총수익률'}</div>
+        <div class="rank-sub">${p.label} · ${retMetric === '주가' ? '주가수익률' : '총수익률'}</div>
       </div>
     </a>`;
 }
@@ -480,11 +481,12 @@ function updateDistStats(data) {
   }
 }
 function updateRetStats(data) {
-  const field = retMetric === '주가' ? 'ret1wf' : 'tret1wf';
+  const p     = RET_PERIODS[retPeriod];
+  const field = retMetric === '주가' ? p.price : p.total;
   const valid = data.filter(e => e[field] != null);
   const sorted = [...valid].sort((a,b) => (b[field]??0) - (a[field]??0));
   document.getElementById('rStatCount').textContent = valid.length + '개';
-  const lbl = retMetric === '주가' ? '주가 수익률' : '총수익률';
+  const lbl = `${p.label} ${retMetric === '주가' ? '주가수익률' : '총수익률'}`;
   document.getElementById('rStatMaxLabel').textContent = '최고 ' + lbl;
   document.getElementById('rStatAvgLabel').textContent = '평균 ' + lbl;
   if (sorted.length) {
@@ -562,10 +564,11 @@ async function runDistRanking(restoreOpts) {
 
 // ── 수익률 데이터 로드 ──
 function runRetRanking(restoreOpts) {
-  const field = retMetric === '주가' ? 'ret1wf' : 'tret1wf';
+  const p     = RET_PERIODS[retPeriod];
+  const field = retMetric === '주가' ? p.price : p.total;
   retBaseData = (ETF_ALL || [])
     .filter(e => e.price > 0)
-    .sort((a,b) => (b[field] ?? 0) - (a[field] ?? 0));
+    .sort((a,b) => (b[field] ?? -Infinity) - (a[field] ?? -Infinity));
   updateRetStats(retBaseData);
   retShown      = (restoreOpts && restoreOpts.shownCount)  || PAGE_SIZE;
   retTypeFilter = (restoreOpts && restoreOpts.typeFilter)  || 'all';
@@ -579,11 +582,18 @@ function saveState(code) {
   sessionStorage.setItem('rankState', JSON.stringify({
     tab:            activeTab,
     distMetric,     distPeriod,     distTypeFilter, distShown,
-    retMetric,      retTypeFilter,  retShown,
+    retMetric,      retPeriod,      retTypeFilter,  retShown,
     lastCode:       code,
     distRan:        distBaseData.length > 0,
     retRan:         retBaseData.length  > 0,
   }));
+}
+
+// ── 탭 전환 시 수익률 탭은 자동 실행 ──
+const _origSwitchTab = switchTab;
+function switchTab(tab) {
+  _origSwitchTab(tab);
+  if (tab === 'ret' && retBaseData.length === 0) runRetRanking();
 }
 
 // ── 초기화 ──
@@ -596,10 +606,6 @@ function saveState(code) {
   if (distMonthNum)
     document.getElementById('distMonthBadge').textContent = distMonthNum + '월';
   document.getElementById('distYearBadge').textContent = priceYear + '년';
-
-  // 주간 범위 배지
-  document.getElementById('weekRangeLabel').textContent =
-    `${fmtWeekBadge(_ws)}~${fmtWeekBadge(_we)}`;
 
   // ── 뒤로 가기 상태 복원 ──
   const saved = sessionStorage.getItem('rankState');
@@ -623,6 +629,11 @@ function saveState(code) {
     document.querySelectorAll('[data-og="retMetric"]').forEach(b =>
       b.classList.toggle('on', b.dataset.v === retMetric));
   }
+  if (s.retPeriod && RET_PERIODS[s.retPeriod]) {
+    retPeriod = s.retPeriod;
+    document.querySelectorAll('[data-og="retPeriod"]').forEach(b =>
+      b.classList.toggle('on', b.dataset.v === retPeriod));
+  }
 
   // 랭킹 데이터 재로드
   if (s.distRan) {
@@ -632,8 +643,8 @@ function saveState(code) {
     runRetRanking({ shownCount: s.retShown, typeFilter: s.retTypeFilter });
   }
 
-  // 탭 복원
-  switchTab(s.tab || 'dist');
+  // 탭 복원 (수익률 탭 복원 시엔 이미 위에서 로드됨)
+  _origSwitchTab(s.tab || 'dist');
 
   // 마지막으로 클릭한 ETF 위치로 스크롤
   if (s.lastCode) {
