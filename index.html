@@ -1503,6 +1503,9 @@ const CONFIRMED_SCHEDULE = [
   {date:'2026-05-13', type:'buy',    label:'최종매수',     ex:'2026-05-15'},
   {date:'2026-05-14', type:'ex',     label:'배당락',       ex:'2026-05-15'},
   {date:'2026-05-15', type:'record', label:'기준일(월중)', ex:'2026-05-15'},
+  {date:'2026-05-27', type:'buy',    label:'최종매수',     ex:'2026-05-28'},
+  {date:'2026-05-28', type:'ex',     label:'배당락',       ex:'2026-05-28'},
+  {date:'2026-05-29', type:'record', label:'기준일(월말)', ex:'2026-05-28'},
 ];
 function status(e) {
   const ex=exDate(e.ex), pay=new Date(e.pay), lb=lastBuy(e.ex);
