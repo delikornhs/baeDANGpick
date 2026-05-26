@@ -185,7 +185,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
           <button class="otog"    data-og="distPeriod" data-v="연환산" onclick="setDistOpt('distPeriod','연환산')">연환산 <span class="opt-badge" id="distYearBadge"></span> <span class="info-tip" data-tip="ETF가 연중에 상장된 경우 분배 기간이 짧아 합계 및 연환산 분배율이 낮게 나타날 수 있습니다.">ⓘ</span></button>
         </div>
       </div>
-      <button class="confirm-btn" onclick="runDistRanking()">확인하기</button>
     </div>
   </div>
 
@@ -207,7 +206,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     <div class="result-meta" id="dResultMeta"></div>
   </div>
 
-  <div class="ranking-wrap" id="distList"><div class="empty"><p>옵션을 선택하고 확인하기를 눌러주세요.</p></div></div>
+  <div class="ranking-wrap" id="distList"><div class="empty"><p>불러오는 중...</p></div></div>
   <div class="loadmore-wrap" id="distMoreWrap" style="display:none">
     <button class="loadmore-btn" onclick="loadMore('dist')">더보기</button>
   </div>
@@ -329,8 +328,9 @@ function switchTab(tab) {
   document.getElementById('retSection').style.display  = tab === 'ret'  ? '' : 'none';
   document.getElementById('tabDist').classList.toggle('on', tab === 'dist');
   document.getElementById('tabRet').classList.toggle('on', tab === 'ret');
-  // 수익률 탭 최초 진입 시 자동 로드
-  if (tab === 'ret' && retBaseData.length === 0) runRetRanking();
+  // 탭 최초 진입 시 자동 로드
+  if (tab === 'dist' && distBaseData.length === 0) runDistRanking();
+  if (tab === 'ret'  && retBaseData.length  === 0) runRetRanking();
 }
 
 // ── 옵션 토글 ──
@@ -339,6 +339,7 @@ function setDistOpt(group, val) {
   if (group === 'distPeriod') distPeriod = val;
   document.querySelectorAll(`[data-og="${group}"]`).forEach(b =>
     b.classList.toggle('on', b.dataset.v === val));
+  runDistRanking();
 }
 function setRetOpt(group, val) {
   if (group === 'retMetric') retMetric = val;
@@ -602,9 +603,9 @@ function saveState(code) {
     document.getElementById('distMonthBadge').textContent = distMonthNum + '월';
   document.getElementById('distYearBadge').textContent = priceYear + '년';
 
-  // ── 뒤로 가기 상태 복원 ──
+  // 최초 진입 시 분배율 탭 자동 로드
   const saved = sessionStorage.getItem('rankState');
-  if (!saved) return;
+  if (!saved) { await runDistRanking(); return; }
   sessionStorage.removeItem('rankState');
   const s = JSON.parse(saved);
 
