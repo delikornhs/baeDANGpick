@@ -329,6 +329,8 @@ function switchTab(tab) {
   document.getElementById('retSection').style.display  = tab === 'ret'  ? '' : 'none';
   document.getElementById('tabDist').classList.toggle('on', tab === 'dist');
   document.getElementById('tabRet').classList.toggle('on', tab === 'ret');
+  // 수익률 탭 최초 진입 시 자동 로드
+  if (tab === 'ret' && retBaseData.length === 0) runRetRanking();
 }
 
 // ── 옵션 토글 ──
@@ -589,13 +591,6 @@ function saveState(code) {
   }));
 }
 
-// ── 탭 전환 시 수익률 탭은 자동 실행 ──
-const _origSwitchTab = switchTab;
-function switchTab(tab) {
-  _origSwitchTab(tab);
-  if (tab === 'ret' && retBaseData.length === 0) runRetRanking();
-}
-
 // ── 초기화 ──
 (async function init() {
   // 업데이트 날짜
@@ -644,7 +639,7 @@ function switchTab(tab) {
   }
 
   // 탭 복원 (수익률 탭 복원 시엔 이미 위에서 로드됨)
-  _origSwitchTab(s.tab || 'dist');
+  switchTab(s.tab || 'dist');
 
   // 마지막으로 클릭한 ETF 위치로 스크롤
   if (s.lastCode) {
