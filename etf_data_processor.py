@@ -436,6 +436,12 @@ def build_latest(history: dict, target_month: str = None):
     return latest
 
 
+def _js(e: dict, key: str) -> str:
+    """수익률 필드를 JS 리터럴로 변환. 없으면 null (0과 구분)."""
+    v = e.get(key)
+    return "null" if v is None else str(v)
+
+
 def build_js(latest: list, price_date: str = ""):
     """latest.json을 사이트에 바로 삽입할 etf_data.js로 변환. price/rate는 호출 전에 설정."""
     print("\n" + "=" * 50)
@@ -486,14 +492,14 @@ def build_js(latest: list, price_date: str = ""):
                 f"ex:'{e['ex_date']}',pay:'{e['pay_date']}',"
                 f"dist:{e['dist']},price:{e['price']},rate:{e['rate']},"
                 f"listedDate:'{e.get('listed_date','')}', "
-                f"ret1w:{e.get('return_1w',0)},ret1m:{e.get('return_1m',0)},ret3m:{e.get('return_3m',0)},"
-                f"ret6m:{e.get('return_6m',0)},ret1y:{e.get('return_1y',0)},"
-                f"retListed:{e.get('return_listed',0)},"
-                f"ret1wf:{e.get('return_1wf',0)},"
-                f"tret1w:{e.get('total_return_1w',0)},tret1m:{e.get('total_return_1m',0)},tret3m:{e.get('total_return_3m',0)},"
-                f"tret6m:{e.get('total_return_6m',0)},tret1y:{e.get('total_return_1y',0)},"
-                f"tretListed:{e.get('total_return_listed',0)},"
-                f"tret1wf:{e.get('total_return_1wf',0)},"
+                f"ret1w:{_js(e,'return_1w')},ret1m:{_js(e,'return_1m')},ret3m:{_js(e,'return_3m')},"
+                f"ret6m:{_js(e,'return_6m')},ret1y:{_js(e,'return_1y')},"
+                f"retListed:{_js(e,'return_listed')},"
+                f"ret1wf:{_js(e,'return_1wf')},"
+                f"tret1w:{_js(e,'total_return_1w')},tret1m:{_js(e,'total_return_1m')},tret3m:{_js(e,'total_return_3m')},"
+                f"tret6m:{_js(e,'total_return_6m')},tret1y:{_js(e,'total_return_1y')},"
+                f"tretListed:{_js(e,'total_return_listed')},"
+                f"tret1wf:{_js(e,'total_return_1wf')},"
                 f"current:{current_js},trend:{trend_js},stab:{stab_js}}}"
             )
         return "const ETF_ALL = [\n" + ",\n".join(items) + "\n];"

@@ -86,6 +86,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .pos{color:var(--accent);font-weight:700}
 .neg{color:var(--red);font-weight:700}
 .na{color:var(--ink4)}
+.zero{color:var(--ink3);font-weight:700}
 @media(max-width:480px){
   .ret-table{font-size:11px}
   .ret-table th,.ret-table td{padding:7px 4px}
@@ -515,11 +516,13 @@ const fd    = s => {
   return `${parseInt(m)}월 ${parseInt(d)}일`;
 };
 const retCls = v => {
-  if(v == null || v === 0) return 'na';
+  if(v == null) return 'na';
+  if(v === 0) return 'zero';
   return v > 0 ? 'pos' : 'neg';
 };
 const retStr = v => {
-  if(v == null || v === 0) return '-';
+  if(v == null) return '-';
+  if(v === 0) return '0.00%';
   return (v > 0 ? '+' : '') + v.toFixed(2) + '%';
 };
 
