@@ -132,6 +132,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .crit-table th{background:var(--bg);color:var(--ink3);font-weight:600;padding:5px 8px;text-align:left;border-bottom:1px solid var(--border)}
 .crit-table td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--ink3);vertical-align:top;line-height:1.55}
 .crit-table td:first-child{color:var(--ink2);font-weight:500;white-space:nowrap;width:52px}
+.crit-table td:nth-child(2){width:42%}
+.crit-table td:nth-child(3){width:auto}
 .crit-table tr:last-child td{border-bottom:none}
 /* ── footer ── */
 footer{text-align:center;padding:24px 20px;font-size:12px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8}
@@ -997,7 +999,7 @@ function render(e) {
               변동 큼 ≤50%<br>
               변동 매우 큼 &gt;50%
             </td>
-            <td>최근 6개월<br>(최고−최저) / 평균</td>
+            <td>최근 6개월 (최고−최저) / 평균</td>
           </tr>
           <tr>
             <td>추세</td>
@@ -1006,7 +1008,7 @@ function render(e) {
               유지 ±10% 이내<br>
               감소 &lt;−10%
             </td>
-            <td>최근 3개월 평균<br>vs 이전 3개월 평균</td>
+            <td>최근 3개월 평균 vs 이전 3개월 평균</td>
           </tr>
           <tr>
             <td>월분배 수준<br>(분배율 · 분배금)</td>
