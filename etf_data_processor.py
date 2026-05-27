@@ -713,8 +713,8 @@ def calc_returns(item: dict, daily: list, history: dict) -> dict:
             ret["total_return_listed"] = round(
                 (current_price - oldest_price + dist_sum) / oldest_price * 100, 2)
 
-    # 1주 수익률 (ETF 상세 페이지용): 오늘 기준 7일 전 종가 대비 — 매일 갱신
-    # 1주 수익률 (랭킹용, ret1wf): 금요일→금요일 고정 기준 — 매주 금요일 갱신
+    # 1주 수익률 (ETF 상세 + 랭킹 공통, ret1w): 오늘 기준 7일 전 종가 대비 — 매일 갱신
+    # 1주 수익률 (ret1wf): 금요일→금요일 고정 기준 — 매주 금요일 갱신 (현재 미사용)
     today_str = now.strftime("%Y-%m-%d")
     this_fri_date, this_fri_price = find_friday_price(daily, today_str)
     if this_fri_price > 0:
