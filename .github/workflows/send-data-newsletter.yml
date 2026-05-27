@@ -1,0 +1,32 @@
+name: Send Data Newsletter (수동)
+
+on:
+  workflow_dispatch:
+    inputs:
+      timing:
+        description: '월중 or 월말'
+        required: true
+        default: '월말'
+        type: choice
+        options:
+          - 월중
+          - 월말
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Send newsletter
+        env:
+          APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
+          NEWSLETTER_SECRET: ${{ secrets.NEWSLETTER_SECRET }}
+        run: python trigger_newsletter.py --type data --timing "${{ inputs.timing }}"
