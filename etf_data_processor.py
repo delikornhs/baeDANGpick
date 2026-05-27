@@ -1097,6 +1097,16 @@ if __name__ == "__main__":
     # 특정 월 지정 가능: python etf_data_processor.py 2026-04
     target_month = args[0] if args else None
 
+    # 기존 latest.json 보존 (상장일·운용사·수익률 필드 유지용)
+    prev_latest_map: dict = {}
+    if LATEST_FILE.exists():
+        try:
+            with open(LATEST_FILE, encoding="utf-8") as f:
+                prev_data = json.load(f)
+            prev_latest_map = {item["code"]: item for item in prev_data}
+        except Exception:
+            prev_latest_map = {}
+
     # 1. 전체 이력 구축
     history = build_history()
 
@@ -1146,7 +1156,43 @@ if __name__ == "__main__":
             rate_fallback += 1
     print(f"  → 공시일자 전일 기준: {rate_updated}개 | 현재 종가 fallback: {rate_fallback}개")
 
-    # 6. latest.json 최종 저장 (rate 확정 후)
+    # 6. 기존 수익률·메타 필드 보존 (덮어쓰기 방지)
+    PRESERVE_FIELDS = [
+        "listed_date", "manager", "index_name",
+        "return_1w", "return_1m", "return_3m", "return_6m", "return_1y", "return_listed",
+        "total_return_1w", "total_return_1m", "total_return_3m",
+        "total_return_6m", "total_return_1y", "total_return_listed",
+        "return_1wf", "total_return_1wf",
+        "price_1w", "price_1m", "price_3m", "price_6m", "price_1y", "price_listed",
+        "stab_score", "stab_variation", "stab_trend", "trend_change_pct",
+        "stab_level", "stab_level_dist", "annual_dist", "annual_rate",
+        "avg_monthly_dist", "avg_monthly_rate", "peer_group",
+        "group_avg_rate", "group_avg_dist",
+    ]
+    for item in latest:
+        prev = prev_latest_map.get(item["code"])
+        if prev:
+            for field in PRESERVE_FIELDS:
+                if field in prev and field not in item:
+                    item[field] = prev[field]
+
+    # 메타 캐시에서 상장일·운용사 강제 반영 (prev_latest가 없는 신규 ETF 포함)
+    meta_cache: dict = {}
+    if ETF_META_FILE.exists():
+        with open(ETF_META_FILE, encoding="utf-8") as f:
+            meta_cache = json.load(f)
+    for item in latest:
+        if not item.get("listed_date") or not item.get("manager"):
+            m = meta_cache.get(item["code"], {})
+            if not item.get("listed_date"):
+                item["listed_date"] = m.get("listed_date", "")
+            if not item.get("manager"):
+                item["manager"] = (
+                    m.get("manager", "") or
+                    BRAND_TO_COMPANY.get(item["brand"], item["brand"])
+                )
+
+    # latest.json 최종 저장 (rate 확정 후)
     with open(LATEST_FILE, "w", encoding="utf-8") as f:
         json.dump(latest, f, ensure_ascii=False, indent=2)
 
