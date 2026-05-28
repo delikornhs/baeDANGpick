@@ -12,6 +12,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ETF 상세 - 배당픽</title>
+<meta name="description" content="월배당 ETF 분배금·분배율·수익률 상세 정보 - 배당픽">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="배당픽">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="ETF 상세 - 배당픽">
+<meta property="og:description" content="월배당 ETF 분배금·분배율·수익률 상세 정보 - 배당픽">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ETF 상세 - 배당픽">
+<meta name="twitter:description" content="월배당 ETF 분배금·분배율·수익률 상세 정보 - 배당픽">
+<link rel="canonical" href="https://bae-dang-pick.vercel.app/etf.html">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="/data/output/etf_data.js"></script>
 <style>
@@ -731,11 +742,61 @@ function decodeHtml(s) {
   return t.value;
 }
 
+// SEO 메타 태그 동적 업데이트
+function updateMeta(e, name) {
+  const code = e.code || '';
+  const brand = e.brand || '';
+  const rate  = e.rate  != null ? e.rate  + '%' : null;
+  const dist  = e.dist  != null ? e.dist  + '원' : null;
+  const freq  = e.freq  || '';
+  const annualRate = e.annual_rate != null ? e.annual_rate + '%' : null;
+
+  const titleStr = name + ' 배당금·분배율 - 배당픽';
+  document.title = titleStr;
+
+  let desc = name + '(' + code + ') ' + freq + ' ETF.';
+  if (dist)       desc += ' 이번 분배금 ' + dist + '.';
+  if (rate)       desc += ' 분배율 ' + rate + '.';
+  if (annualRate) desc += ' 연간 분배율 ' + annualRate + '.';
+  desc += ' 최종매수일·배당락일·지급일 및 수익률 확인.';
+
+  const canonUrl = 'https://bae-dang-pick.vercel.app/etf.html?code=' + code;
+  const canon = document.querySelector('link[rel="canonical"]');
+  if (canon) canon.href = canonUrl;
+
+  const sm = (sel, val) => { const el = document.querySelector(sel); if(el) el.content = val; };
+  sm('meta[name="description"]',         desc);
+  sm('meta[property="og:title"]',        titleStr);
+  sm('meta[property="og:description"]',  desc);
+  sm('meta[property="og:url"]',          canonUrl);
+  sm('meta[name="twitter:title"]',       titleStr);
+  sm('meta[name="twitter:description"]', desc);
+
+  const prev = document.getElementById('jsonld-etf');
+  if (prev) prev.remove();
+  const ld = {
+    "@context": "https://schema.org",
+    "@type": "FinancialProduct",
+    "name": name,
+    "identifier": code,
+    "brand": { "@type": "Brand", "name": brand },
+    "description": desc,
+    "url": canonUrl,
+    "provider": { "@type": "Organization", "name": e.manager || brand }
+  };
+  if (e.annual_rate != null) ld["annualPercentageRate"] = parseFloat(e.annual_rate);
+  const s = document.createElement('script');
+  s.id = 'jsonld-etf';
+  s.type = 'application/ld+json';
+  s.textContent = JSON.stringify(ld);
+  document.head.appendChild(s);
+}
+
 // ── 메인 렌더 ──
 function render(e) {
   ETF = e;
   const name = decodeHtml(e.name);
-  document.title = name + ' - 배당픽';
+  updateMeta(e, name);
   document.getElementById('bcName').textContent = name;
   if(typeof gtag !== 'undefined') {
     gtag('event', 'page_view', { page_title: document.title, page_location: location.href });
