@@ -228,6 +228,13 @@ def classify_frequency(isin: str, history: dict) -> str:
         name = list(records.values())[0].get("name", "")
         return classify_frequency_by_name(name)
 
+    # 최근 3개 간격이 모두 월배당 수준이면 최근 전환으로 판단 → 월배당
+    recent_gaps = gaps[-3:] if len(gaps) >= 3 else gaps
+    if all(g <= 45 for g in recent_gaps) and len(recent_gaps) >= 3:
+        if not is_recent(latest_date):
+            return "분기배당이상"
+        return "월배당"
+
     gaps.sort()
     median_gap = gaps[len(gaps) // 2]
 

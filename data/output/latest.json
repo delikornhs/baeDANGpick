@@ -26762,7 +26762,7 @@
     "name": "KoAct 배당성장액티브",
     "brand": "KoAct",
     "type": "배당",
-    "freq": "분기배당이상",
+    "freq": "월배당",
     "timing": "",
     "ex_date": "2026-05-29",
     "pay_date": "2026-06-02",
@@ -56927,7 +56927,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-09-27",
-    "manager": "코스피 200"
+    "manager": "타임폴리오자산운용"
   },
   {
     "isin": "KR7456600006",
@@ -57316,7 +57316,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-05-11",
-    "manager": "NASDAQ 100"
+    "manager": "(주)타임폴리오자산운용"
   },
   {
     "isin": "KR70019K0009",
@@ -57428,7 +57428,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-05-13",
-    "manager": "해외주식형, 섹터"
+    "manager": "(주)타임폴리오자산운용"
   },
   {
     "isin": "KR7145850004",
