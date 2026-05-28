@@ -61,7 +61,12 @@ jobs:
             # 커밋 전 해시 저장 (분배금 필드 변경 여부 비교용)
             OLD_HASH=$(git rev-parse HEAD)
             git commit -m "chore: daily price update $(date -u +%Y-%m-%d)"
-            git pull --rebase origin master
+            # rebase 충돌 시 데이터 파일은 워크플로우(최신 가격) 버전 우선
+            if ! git pull --rebase origin master; then
+              git checkout --ours data/output/latest.json data/output/etf_data.js data/output/etf_meta.json index.html
+              git add data/output/latest.json data/output/etf_data.js data/output/etf_meta.json index.html
+              GIT_EDITOR=true git rebase --continue
+            fi
             git push
             echo "changed=true" >> $GITHUB_OUTPUT
             # 분배금 공시 고유 필드(dist·ex_date·pay_date·notice_date·timing)만 변경됐는지 확인
@@ -98,6 +103,10 @@ jobs:
             echo "포스트 파일 변경 없음"
           else
             git commit -m "chore: auto-generate threads post $(date -u +%Y-%m-%d)"
-            git pull --rebase origin master
+            if ! git pull --rebase origin master; then
+              git checkout --ours posts/
+              git add posts/
+              GIT_EDITOR=true git rebase --continue
+            fi
             git push
           fi
