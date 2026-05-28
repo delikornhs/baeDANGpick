@@ -416,7 +416,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-06-10",
-    "manager": "해외혼합형"
+    "manager": "하나자산운용"
   },
   {
     "isin": "KR70069M0006",
@@ -1860,7 +1860,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2018-03-09",
-    "manager": "MSCI MEXICO IMI 25/50 Price return Index"
+    "manager": "한국투자신탁운용"
   },
   {
     "isin": "KR7256440009",
@@ -1916,7 +1916,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2016-11-01",
-    "manager": "MSCI Indonesia Index"
+    "manager": "한국투자신탁운용"
   },
   {
     "isin": "KR7261920003",
@@ -2394,7 +2394,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-11-15",
-    "manager": "해외주식형, 섹터"
+    "manager": "한국투자신탁운용"
   },
   {
     "isin": "KR7435040001",
@@ -2766,7 +2766,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-10-15",
-    "manager": "FnGuide 기업가치 지수(시장가격)"
+    "manager": "한국투자신탁운용"
   },
   {
     "isin": "KR7265690008",
@@ -3085,7 +3085,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-07-22",
-    "manager": "해외채권형, 일반"
+    "manager": "한국투자신탁운용"
   },
   {
     "isin": "KR70085N0005",
@@ -3767,7 +3767,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-08-26",
-    "manager": "해외혼합형"
+    "manager": "한국투자신탁운용"
   },
   {
     "isin": "KR7309230001",
@@ -7436,7 +7436,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2025-09-23",
-    "manager": "브이아이자산운용 주식회사"
+    "manager": "동양자산운용"
   },
   {
     "isin": "KR70176P0003",
@@ -7487,7 +7487,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2026-04-07",
-    "manager": "브이아이자산운용 주식회사"
+    "manager": "동양자산운용"
   },
   {
     "isin": "KR7448570002",
@@ -7547,7 +7547,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-11-15",
-    "manager": "브이아이자산운용 주식회사"
+    "manager": "동양자산운용"
   },
   {
     "isin": "KR7285690004",
@@ -7602,7 +7602,7 @@
     "group_avg_rate": 0.567,
     "group_avg_dist": 145.5,
     "listed_date": "2017-12-13",
-    "manager": "브이아이자산운용 주식회사"
+    "manager": "동양자산운용"
   },
   {
     "isin": "KR7292730009",
@@ -7726,7 +7726,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-07-01",
-    "manager": "브이아이자산운용 주식회사"
+    "manager": "동양자산운용"
   },
   {
     "isin": "KR7293180006",
@@ -7798,7 +7798,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2018-03-30",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7407310002",
@@ -7866,7 +7866,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-11-24",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7448490003",
@@ -7922,7 +7922,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-11-22",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7454320003",
@@ -7982,7 +7982,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-04-18",
-    "manager": "iSelect CAPEX 설비투자 지수(시장가격)"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7395280001",
@@ -8037,7 +8037,7 @@
     "group_avg_rate": 0.567,
     "group_avg_dist": 145.5,
     "listed_date": "2021-07-30",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7402460000",
@@ -8105,7 +8105,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-10-13",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7395270002",
@@ -8169,7 +8169,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-07-30",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7438900003",
@@ -8229,7 +8229,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-08-17",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7367740008",
@@ -8297,7 +8297,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2020-10-29",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7407300003",
@@ -8361,7 +8361,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-11-24",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7381560002",
@@ -8425,7 +8425,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-04-02",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7441540002",
@@ -8485,7 +8485,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-09-15",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7381570001",
@@ -8549,7 +8549,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-04-02",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7479850000",
@@ -8609,7 +8609,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-04-16",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7453060006",
@@ -8665,7 +8665,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-03-14",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7304760002",
@@ -8737,7 +8737,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2018-08-14",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7322410002",
@@ -8833,7 +8833,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2019-04-23",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7322400003",
@@ -8893,7 +8893,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2019-04-23",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7473640001",
@@ -8949,7 +8949,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-01-18",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7354350001",
@@ -9005,7 +9005,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2020-05-12",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7464060003",
@@ -9112,7 +9112,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-07-11",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7424460004",
@@ -9168,7 +9168,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-04-19",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7401590005",
@@ -9224,7 +9224,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-09-30",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR70040S0004",
@@ -9280,7 +9280,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-04-22",
-    "manager": "Solactive Physical AI Index"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7314700006",
@@ -9344,7 +9344,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2018-12-21",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7486830003",
@@ -9400,7 +9400,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-07-16",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7432840007",
@@ -9500,7 +9500,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-06-08",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7476260005",
@@ -9555,7 +9555,7 @@
     "group_avg_rate": 0.567,
     "group_avg_dist": 145.5,
     "listed_date": "2024-02-27",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7434730008",
@@ -9615,7 +9615,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-06-28",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR70082F0008",
@@ -9668,7 +9668,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-07-29",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7491820007",
@@ -9728,7 +9728,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-09-24",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7482870003",
@@ -9832,7 +9832,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-10-28",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7495750002",
@@ -9904,7 +9904,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-11-04",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7304770001",
@@ -9964,7 +9964,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2018-08-14",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7375760006",
@@ -10036,7 +10036,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-02-05",
-    "manager": "엔에이치아문디자산운용"
+    "manager": "NH아문디자산운용"
   },
   {
     "isin": "KR7491700001",
@@ -10100,7 +10100,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-09-10",
-    "manager": "흥국자산운용"
+    "manager": "하이자산운용"
   },
   {
     "isin": "KR7215620006",
@@ -10160,7 +10160,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2015-03-25",
-    "manager": "흥국자산운용"
+    "manager": "하이자산운용"
   },
   {
     "isin": "KR70113P0009",
@@ -10213,7 +10213,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2025-09-30",
-    "manager": "KAP 머니마켓 지수(총수익)"
+    "manager": "하이자산운용"
   },
   {
     "isin": "KR7391670007",
@@ -10277,7 +10277,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-07-06",
-    "manager": "흥국자산운용"
+    "manager": "하이자산운용"
   },
   {
     "isin": "KR7472840008",
@@ -12345,7 +12345,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-10-21",
-    "manager": "Akros 미국대형주500 월간방어적배분 지수(TR)"
+    "manager": "키움투자자산운용"
   },
   {
     "isin": "KR7373790005",
@@ -12802,7 +12802,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-07-22",
-    "manager": "Akros 미국테크100 월간방어적배분 지수(TR)"
+    "manager": "키움투자자산운용"
   },
   {
     "isin": "KR7104520002",
@@ -13348,7 +13348,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균 수준",
     "listed_date": "2008-07-29",
-    "manager": "MKF 웰스 고배당 20"
+    "manager": "키움투자자산운용"
   },
   {
     "isin": "KR7496090002",
@@ -13772,7 +13772,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-09-02",
-    "manager": "Akros 미국AI테크TOP10&한국고배당3070 지수"
+    "manager": "키움투자자산운용"
   },
   {
     "isin": "KR7069500007",
@@ -15614,7 +15614,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2018-03-23",
-    "manager": "iEdge Emerging Markets Futures Index(ER)"
+    "manager": "삼성자산운용"
   },
   {
     "isin": "KR7289040008",
@@ -15806,7 +15806,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2016-08-17",
-    "manager": "MSCI World"
+    "manager": "삼성자산운용"
   },
   {
     "isin": "KR7269420006",
@@ -17115,7 +17115,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2017-10-17",
-    "manager": "FnGuide 고배당 Plus 지수"
+    "manager": "삼성자산운용"
   },
   {
     "isin": "KR7132030008",
@@ -18200,7 +18200,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-11-15",
-    "manager": "iSelect K-로봇테마 지수"
+    "manager": "삼성자산운용"
   },
   {
     "isin": "KR7321410003",
@@ -19932,7 +19932,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-04-22",
-    "manager": "S&P 500"
+    "manager": "삼성자산운용"
   },
   {
     "isin": "KR7463640003",
@@ -21670,7 +21670,7 @@
     "group_avg_dist": 52.8,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2020-05-13",
-    "manager": "Dow Jones U.S. Real Estate PR Index"
+    "manager": "삼성자산운용"
   },
   {
     "isin": "KR7314250002",
@@ -25244,7 +25244,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2014-12-17",
-    "manager": "코스피 배당성장 50"
+    "manager": "삼성자산운용"
   },
   {
     "isin": "KR7237370002",
@@ -25344,7 +25344,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2016-01-27",
-    "manager": "배당성장채권혼합지수"
+    "manager": "삼성자산운용"
   },
   {
     "isin": "KR7495850000",
@@ -26545,7 +26545,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-09-30",
-    "manager": "삼성액티브자산운용 주식회사"
+    "manager": "교보악사자산운용"
   },
   {
     "isin": "KR70113G0000",
@@ -26598,7 +26598,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-11-11",
-    "manager": "삼성액티브자산운용 주식회사"
+    "manager": "교보악사자산운용"
   },
   {
     "isin": "KR7497780007",
@@ -26698,7 +26698,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-12-10",
-    "manager": "삼성액티브자산운용 주식회사"
+    "manager": "교보악사자산운용"
   },
   {
     "isin": "KR7482030004",
@@ -26754,7 +26754,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-05-14",
-    "manager": "삼성액티브자산운용 주식회사"
+    "manager": "교보악사자산운용"
   },
   {
     "isin": "KR7476850003",
@@ -26830,7 +26830,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-02-27",
-    "manager": "삼성액티브자산운용 주식회사"
+    "manager": "교보악사자산운용"
   },
   {
     "isin": "KR7495230005",
@@ -26930,7 +26930,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-11-04",
-    "manager": "삼성액티브자산운용 주식회사"
+    "manager": "교보악사자산운용"
   },
   {
     "isin": "KR7152100004",
@@ -28738,7 +28738,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-04-15",
-    "manager": "iSelect 글로벌휴머노이드로봇 (PR)"
+    "manager": "한화자산운용"
   },
   {
     "isin": "KR7415920008",
@@ -30357,7 +30357,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2014-05-13",
-    "manager": "MSCI EM Index"
+    "manager": "한화자산운용"
   },
   {
     "isin": "KR7256450008",
@@ -30686,7 +30686,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-09-16",
-    "manager": "FnGuide 고배당주 플러스 자사주 지수 (PR)"
+    "manager": "한화자산운용"
   },
   {
     "isin": "KR7280920000",
@@ -31663,7 +31663,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2011-10-20",
-    "manager": "코스피 200"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7290080001",
@@ -31763,7 +31763,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2018-02-27",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7284980000",
@@ -31835,7 +31835,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2017-12-08",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7252400007",
@@ -31891,7 +31891,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2016-09-12",
-    "manager": "코스피 200 선물레버리지지수"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7475720009",
@@ -31991,7 +31991,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-03-05",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7448600007",
@@ -32103,7 +32103,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2025-11-18",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7465330009",
@@ -32163,7 +32163,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-09-12",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7465350007",
@@ -32219,7 +32219,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2023-09-12",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7422420000",
@@ -32275,7 +32275,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-04-08",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7105780001",
@@ -32339,7 +32339,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2008-10-22",
-    "manager": "MKF 5대그룹주"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70101N0005",
@@ -32392,7 +32392,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-09-23",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7469070007",
@@ -32452,7 +32452,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-10-24",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70093A0000",
@@ -32509,7 +32509,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-08-26",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7427120001",
@@ -32569,7 +32569,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-05-17",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7477080006",
@@ -32625,7 +32625,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-03-26",
-    "manager": "FnGuide CD금리투자 지수(총수익)"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7290130004",
@@ -32689,7 +32689,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2018-02-27",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7326240009",
@@ -32749,7 +32749,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2019-06-20",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7479520009",
@@ -32805,7 +32805,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-04-30",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7270800006",
@@ -32877,7 +32877,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2017-07-07",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7292050002",
@@ -32945,7 +32945,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2018-03-26",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7388280000",
@@ -33005,7 +33005,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-06-10",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7442550000",
@@ -33061,7 +33061,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2022-09-22",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7442560009",
@@ -33117,7 +33117,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-09-22",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7442570008",
@@ -33173,7 +33173,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-09-22",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7234310001",
@@ -33237,7 +33237,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2016-02-02",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7300640000",
@@ -33297,7 +33297,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2018-07-24",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7266160001",
@@ -33369,7 +33369,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2017-04-14",
-    "manager": "FnGuide 고배당포커스 지수"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7451670004",
@@ -33425,7 +33425,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2023-02-14",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7295000004",
@@ -33481,7 +33481,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2018-05-11",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7295020002",
@@ -33537,7 +33537,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2018-05-11",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7432600005",
@@ -33593,7 +33593,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-06-14",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7397420001",
@@ -33649,7 +33649,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2021-08-31",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70114X0008",
@@ -33702,7 +33702,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-10-21",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7437370000",
@@ -33758,7 +33758,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-07-29",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7375270006",
@@ -33814,7 +33814,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2021-01-14",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7475380002",
@@ -33914,7 +33914,7 @@
     "group_avg_dist": 52.8,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-02-20",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7476310008",
@@ -33970,7 +33970,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2024-02-27",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7417450004",
@@ -34026,7 +34026,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-02-15",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7442320008",
@@ -34082,7 +34082,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-10-13",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7461490005",
@@ -34142,7 +34142,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-06-27",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7459750006",
@@ -34198,7 +34198,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2023-06-27",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7399580000",
@@ -34254,7 +34254,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2021-10-21",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7276650009",
@@ -34310,7 +34310,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2017-08-17",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7336160007",
@@ -34410,7 +34410,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2019-10-29",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7326230000",
@@ -34474,7 +34474,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2019-06-20",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7367760006",
@@ -34534,7 +34534,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2020-10-29",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70061Z0009",
@@ -34587,7 +34587,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2025-06-24",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70138D0004",
@@ -34637,7 +34637,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-12-16",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7455890004",
@@ -34693,7 +34693,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2023-05-09",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7401170006",
@@ -34753,7 +34753,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-10-13",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7481340008",
@@ -34853,7 +34853,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-05-28",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7472870005",
@@ -34953,7 +34953,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-12-27",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7472830009",
@@ -35053,7 +35053,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-12-14",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7485690002",
@@ -35109,7 +35109,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-07-23",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7490590007",
@@ -35209,7 +35209,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-10-02",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70127R0001",
@@ -35262,7 +35262,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-11-25",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7495940009",
@@ -35318,7 +35318,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-11-26",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7379780000",
@@ -35386,7 +35386,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-04-09",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7453330003",
@@ -35486,7 +35486,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-03-21",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70138T0006",
@@ -35556,7 +35556,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-12-23",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70005C0005",
@@ -35612,7 +35612,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2025-01-14",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7460660004",
@@ -35712,7 +35712,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-06-27",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7219390002",
@@ -35768,7 +35768,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2015-06-02",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70115C0002",
@@ -35841,7 +35841,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-10-21",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7354240004",
@@ -35897,7 +35897,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2020-05-19",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7368590006",
@@ -35965,7 +35965,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2020-11-06",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7437350002",
@@ -36021,7 +36021,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-07-29",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7455960005",
@@ -36077,7 +36077,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-05-16",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7469060008",
@@ -36149,7 +36149,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-10-24",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7469050009",
@@ -36221,7 +36221,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-10-24",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7491630000",
@@ -36277,7 +36277,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-10-22",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7490600004",
@@ -36377,7 +36377,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균 수준",
     "listed_date": "2024-09-24",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70018Z0003",
@@ -36433,7 +36433,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-03-11",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70013P0000",
@@ -36533,7 +36533,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-02-18",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7267440006",
@@ -36589,7 +36589,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2017-04-20",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7267490001",
@@ -36645,7 +36645,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2017-04-20",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7267450005",
@@ -36701,7 +36701,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2017-04-20",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70036Z0001",
@@ -36757,7 +36757,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2025-04-22",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7491620001",
@@ -36857,7 +36857,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-10-02",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70036R0001",
@@ -36913,7 +36913,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-04-15",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70000Z0003",
@@ -36969,7 +36969,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-12-24",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7446700007",
@@ -37029,7 +37029,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-11-01",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7475350005",
@@ -37085,7 +37085,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2024-02-27",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7388420002",
@@ -37140,7 +37140,7 @@
     "group_avg_rate": 0.567,
     "group_avg_dist": 145.5,
     "listed_date": "2021-06-10",
-    "manager": "iSelect 비메모리반도체 지수(시장가격지수)"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7448630004",
@@ -37200,7 +37200,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-11-29",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70162Z0007",
@@ -37247,7 +37247,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2026-02-26",
-    "manager": "케이비자산운용",
+    "manager": "KB자산운용",
     "price_3m": 10765,
     "return_3m": 33.44,
     "total_return_3m": 33.54
@@ -37310,7 +37310,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2020-10-29",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7140570003",
@@ -37374,7 +37374,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2011-04-15",
-    "manager": "MKF 수출주 지수"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70093B0009",
@@ -37435,7 +37435,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-08-26",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7140580002",
@@ -37499,7 +37499,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2011-04-15",
-    "manager": "MKF 우량업종대표주 지수"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7379790009",
@@ -37555,7 +37555,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2021-04-09",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7498610005",
@@ -37611,7 +37611,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-04-01",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7488480005",
@@ -37667,7 +37667,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-08-20",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7310080007",
@@ -37723,7 +37723,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2018-11-28",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7463300004",
@@ -37779,7 +37779,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2023-08-08",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7174360008",
@@ -37835,7 +37835,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2013-06-04",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7136340007",
@@ -37935,7 +37935,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2011-04-15",
-    "manager": "KOBI 크레딧 지수(총수익)"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7281990002",
@@ -38003,7 +38003,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2017-11-02",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7250730009",
@@ -38059,7 +38059,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2016-08-10",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7291680007",
@@ -38115,7 +38115,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2018-03-23",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70094L0006",
@@ -38196,7 +38196,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-09-02",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7371150004",
@@ -38252,7 +38252,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2020-12-16",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7498860006",
@@ -38352,7 +38352,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-12-10",
-    "manager": "iSelect 코리아 금융 고배당 지수"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7495050007",
@@ -38452,7 +38452,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-11-04",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70094M0005",
@@ -38533,7 +38533,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2025-09-02",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7270810005",
@@ -38593,7 +38593,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2017-06-16",
-    "manager": "코스닥 150"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7278240007",
@@ -38649,7 +38649,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2017-08-31",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7302450002",
@@ -38721,7 +38721,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2018-07-24",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70047P0000",
@@ -38785,7 +38785,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-05-13",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70013R0008",
@@ -38885,7 +38885,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-02-18",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7449580000",
@@ -38941,7 +38941,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2022-12-20",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7334690005",
@@ -38997,7 +38997,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2019-09-24",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7334700002",
@@ -39053,7 +39053,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2019-09-24",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR70047R0008",
@@ -39117,7 +39117,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-05-13",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7253280002",
@@ -39177,7 +39177,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2016-09-23",
-    "manager": "케이비자산운용"
+    "manager": "KB자산운용"
   },
   {
     "isin": "KR7411540008",
@@ -39245,7 +39245,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-12-09",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70167B0000",
@@ -39296,7 +39296,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2026-03-17",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70092C0009",
@@ -39349,7 +39349,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2025-08-19",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7455860007",
@@ -39409,7 +39409,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-04-25",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7455850008",
@@ -39469,7 +39469,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-04-25",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7497880005",
@@ -39569,7 +39569,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-11-26",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7292500006",
@@ -39637,7 +39637,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2018-03-26",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7404650004",
@@ -39705,7 +39705,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-10-29",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7490480001",
@@ -39765,7 +39765,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-10-02",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7474390002",
@@ -39821,7 +39821,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-01-16",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70066W0007",
@@ -39874,7 +39874,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-06-17",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70022T0005",
@@ -39974,7 +39974,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-03-11",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7423170000",
@@ -40034,7 +40034,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-04-12",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7400590006",
@@ -40090,7 +40090,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-09-30",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7484880000",
@@ -40190,7 +40190,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균 수준",
     "listed_date": "2024-06-25",
-    "manager": "FnGuide 금융지주플러스고배당 지수(PR)"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7484890009",
@@ -40246,7 +40246,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-06-25",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7461600009",
@@ -40302,7 +40302,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2023-07-11",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7473330009",
@@ -40402,7 +40402,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-12-27",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7494210008",
@@ -40502,7 +40502,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-10-15",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7479620007",
@@ -40562,7 +40562,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-04-16",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7481180008",
@@ -40622,7 +40622,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-05-14",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7486450000",
@@ -40682,7 +40682,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-07-16",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7433330008",
@@ -40782,7 +40782,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-06-21",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7399110006",
@@ -40850,7 +40850,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-09-14",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70080X0008",
@@ -40931,7 +40931,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-07-15",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7499150001",
@@ -41031,7 +41031,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-12-03",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7447620006",
@@ -41091,7 +41091,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-11-29",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7476030002",
@@ -41159,7 +41159,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-03-12",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70118S0001",
@@ -41216,7 +41216,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-10-28",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7446720005",
@@ -41316,7 +41316,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-11-15",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7452360001",
@@ -41416,7 +41416,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-03-21",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7493420004",
@@ -41512,7 +41512,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-10-08",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7490490000",
@@ -41612,7 +41612,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-09-24",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70023A0005",
@@ -41672,7 +41672,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-03-11",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70051G0004",
@@ -41732,7 +41732,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-05-20",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7481190007",
@@ -41792,7 +41792,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-05-21",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7481200004",
@@ -41888,7 +41888,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-02-14",
-    "manager": "FnGuide 반도체 전공정 지수(PR)"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7475310009",
@@ -41948,7 +41948,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-02-14",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70152E0004",
@@ -42010,7 +42010,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2026-01-13",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7400580007",
@@ -42066,7 +42066,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-09-30",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7464610005",
@@ -42126,7 +42126,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-08-22",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7466930005",
@@ -42186,7 +42186,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2023-10-05",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7464600006",
@@ -42246,7 +42246,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균 수준",
     "listed_date": "2023-08-22",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70005D0004",
@@ -42302,7 +42302,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-01-07",
-    "manager": "FnGuide 전고체배터리&실리콘음극재 지수(PR)"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7466920006",
@@ -42362,7 +42362,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-10-05",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70080Y0007",
@@ -42415,7 +42415,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-07-15",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70141S0002",
@@ -42469,7 +42469,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-12-16",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70141T0001",
@@ -42519,7 +42519,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-12-16",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70016X0007",
@@ -42575,7 +42575,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2025-02-18",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7220130009",
@@ -42631,7 +42631,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2015-06-08",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70131A0004",
@@ -42684,7 +42684,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-11-25",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7415760008",
@@ -42740,7 +42740,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-01-13",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7413220005",
@@ -42796,7 +42796,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2021-12-22",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7469830004",
@@ -42852,7 +42852,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2023-11-07",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70105E0002",
@@ -42929,7 +42929,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균 수준",
     "listed_date": "2025-09-23",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7444200000",
@@ -42989,7 +42989,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-10-18",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7450910005",
@@ -43049,7 +43049,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-01-31",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70040X0007",
@@ -43149,7 +43149,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2025-04-22",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70040Y0006",
@@ -43249,7 +43249,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2025-04-22",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70105D0003",
@@ -43306,7 +43306,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-09-23",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70092B0000",
@@ -43363,7 +43363,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-08-19",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7429980006",
@@ -43423,7 +43423,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-06-14",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR70008T0003",
@@ -43483,7 +43483,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-01-21",
-    "manager": "신한자산운용 주식회사"
+    "manager": "신한자산운용"
   },
   {
     "isin": "KR7102110004",
@@ -51767,7 +51767,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2014-12-17",
-    "manager": "코스피 배당성장 50"
+    "manager": "미래에셋자산운용"
   },
   {
     "isin": "KR7472150002",
@@ -52719,7 +52719,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2023-10-17",
-    "manager": "FnGuide 은행고배당플러스TOP10 지수(시장가격 지수)"
+    "manager": "미래에셋자산운용"
   },
   {
     "isin": "KR7225060003",
@@ -53972,7 +53972,7 @@
     "group_avg_dist": 132.7,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-09-23",
-    "manager": "KRX 다우존스 코리아 배당 30 타겟 7% 위클리 커버드콜 지수"
+    "manager": "미래에셋자산운용"
   },
   {
     "isin": "KR7496080003",
@@ -54237,7 +54237,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2015-11-12",
-    "manager": "코스닥 150"
+    "manager": "미래에셋자산운용"
   },
   {
     "isin": "KR7233160001",
@@ -56006,7 +56006,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-08-23",
-    "manager": "KIS 투자등급회사채 지수(총수익)"
+    "manager": "미래에셋자산운용"
   },
   {
     "isin": "KR7453870008",
@@ -56598,7 +56598,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-05-27",
-    "manager": "Mirae Asset China Humanoid Robot 지수(PR)"
+    "manager": "미래에셋자산운용"
   },
   {
     "isin": "KR70052D0006",
@@ -56694,7 +56694,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-05-20",
-    "manager": "국내주식형, 전략지수"
+    "manager": "미래에셋자산운용"
   },
   {
     "isin": "KR70060H0002",
@@ -56759,7 +56759,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-06-24",
-    "manager": "FTSE Global All Cap Index(PR)"
+    "manager": "미래에셋자산운용"
   },
   {
     "isin": "KR7423920008",
@@ -56983,7 +56983,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2023-05-16",
-    "manager": "(주)타임폴리오자산운용"
+    "manager": "타임폴리오자산운용"
   },
   {
     "isin": "KR7485810006",
@@ -57039,7 +57039,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-07-02",
-    "manager": "(주)타임폴리오자산운용"
+    "manager": "타임폴리오자산운용"
   },
   {
     "isin": "KR7494180003",
@@ -57095,7 +57095,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-10-29",
-    "manager": "(주)타임폴리오자산운용"
+    "manager": "타임폴리오자산운용"
   },
   {
     "isin": "KR7478150006",
@@ -57151,7 +57151,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-04-23",
-    "manager": "(주)타임폴리오자산운용"
+    "manager": "타임폴리오자산운용"
   },
   {
     "isin": "KR70113D0003",
@@ -57204,7 +57204,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-10-28",
-    "manager": "(주)타임폴리오자산운용"
+    "manager": "타임폴리오자산운용"
   },
   {
     "isin": "KR7426020004",
@@ -57260,7 +57260,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-05-11",
-    "manager": "(주)타임폴리오자산운용"
+    "manager": "타임폴리오자산운용"
   },
   {
     "isin": "KR7426030003",
@@ -57316,7 +57316,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2022-05-11",
-    "manager": "(주)타임폴리오자산운용"
+    "manager": "타임폴리오자산운용"
   },
   {
     "isin": "KR70019K0009",
@@ -57372,7 +57372,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-03-25",
-    "manager": "(주)타임폴리오자산운용"
+    "manager": "타임폴리오자산운용"
   },
   {
     "isin": "KR70043Y0003",
@@ -57428,7 +57428,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-05-13",
-    "manager": "(주)타임폴리오자산운용"
+    "manager": "타임폴리오자산운용"
   },
   {
     "isin": "KR7145850004",
@@ -57824,7 +57824,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균 수준",
     "listed_date": "2022-12-16",
-    "manager": "우리자산운용 주식회사"
+    "manager": "우리자산운용"
   },
   {
     "isin": "KR7458030004",
@@ -57880,7 +57880,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2023-05-31",
-    "manager": "우리자산운용 주식회사"
+    "manager": "우리자산운용"
   },
   {
     "isin": "KR7426150009",
@@ -57936,7 +57936,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-05-11",
-    "manager": "우리자산운용 주식회사"
+    "manager": "우리자산운용"
   },
   {
     "isin": "KR7444490007",
@@ -57991,7 +57991,7 @@
     "group_avg_rate": 0.567,
     "group_avg_dist": 145.5,
     "listed_date": "2022-10-06",
-    "manager": "우리자산운용 주식회사"
+    "manager": "우리자산운용"
   },
   {
     "isin": "KR7440910008",
@@ -58046,7 +58046,7 @@
     "group_avg_rate": 0.567,
     "group_avg_dist": 145.5,
     "listed_date": "2022-08-26",
-    "manager": "우리자산운용 주식회사"
+    "manager": "우리자산운용"
   },
   {
     "isin": "KR7496020009",
@@ -58102,7 +58102,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-11-19",
-    "manager": "우리자산운용 주식회사"
+    "manager": "우리자산운용"
   },
   {
     "isin": "KR7488720004",
@@ -58158,7 +58158,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2024-08-06",
-    "manager": "우리자산운용 주식회사"
+    "manager": "우리자산운용"
   },
   {
     "isin": "KR70154F0001",
@@ -58208,7 +58208,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2026-01-20",
-    "manager": "우리자산운용 주식회사"
+    "manager": "우리자산운용"
   },
   {
     "isin": "KR7480460005",
@@ -58308,7 +58308,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-04-30",
-    "manager": "우리자산운용 주식회사"
+    "manager": "우리자산운용"
   },
   {
     "isin": "KR7486240005",
@@ -58721,7 +58721,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2022-10-25",
-    "manager": "디비자산운용"
+    "manager": "흥국자산운용"
   },
   {
     "isin": "KR70001P0004",
@@ -58781,7 +58781,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2024-12-24",
-    "manager": "디비자산운용"
+    "manager": "흥국자산운용"
   },
   {
     "isin": "KR7159800002",
@@ -58841,7 +58841,7 @@
     "group_avg_dist": 145.5,
     "stab_level_dist": "평균보다 높음",
     "listed_date": "2012-07-05",
-    "manager": "디비자산운용"
+    "manager": "흥국자산운용"
   },
   {
     "isin": "KR7407820000",
@@ -59069,7 +59069,7 @@
     "group_avg_dist": 65.3,
     "stab_level_dist": "평균보다 낮음",
     "listed_date": "2025-04-29",
-    "manager": "(주)타임폴리오자산운용"
+    "manager": "타임폴리오자산운용"
   },
   {
     "isin": "KR7152870002",

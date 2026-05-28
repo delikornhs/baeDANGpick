@@ -1091,10 +1091,11 @@ if __name__ == "__main__":
         for item in latest:
             m = meta_cache.get(item["code"], {})
             item["listed_date"] = m.get("listed_date", "")
-            # 운용사: 네이버 스크래핑 값 우선, 없으면 브랜드 매핑, 최종 fallback 브랜드명
+            # 운용사: 브랜드 매핑 우선(정확), 없으면 네이버 스크래핑, 최종 fallback 브랜드명
             item["manager"] = (
+                BRAND_TO_COMPANY.get(item["brand"], "") or
                 m.get("manager", "") or
-                BRAND_TO_COMPANY.get(item["brand"], item["brand"])
+                item["brand"]
             )
         with open(LATEST_FILE, "w", encoding="utf-8") as f:
             json.dump(latest, f, ensure_ascii=False, indent=2)
@@ -1195,15 +1196,15 @@ if __name__ == "__main__":
         with open(ETF_META_FILE, encoding="utf-8") as f:
             meta_cache = json.load(f)
     for item in latest:
-        if not item.get("listed_date") or not item.get("manager"):
-            m = meta_cache.get(item["code"], {})
-            if not item.get("listed_date"):
-                item["listed_date"] = m.get("listed_date", "")
-            if not item.get("manager"):
-                item["manager"] = (
-                    m.get("manager", "") or
-                    BRAND_TO_COMPANY.get(item["brand"], item["brand"])
-                )
+        m = meta_cache.get(item["code"], {})
+        if not item.get("listed_date"):
+            item["listed_date"] = m.get("listed_date", "")
+        # 운용사: 브랜드 매핑 우선(정확), 없으면 네이버 스크래핑, 최종 fallback 브랜드명
+        item["manager"] = (
+            BRAND_TO_COMPANY.get(item["brand"], "") or
+            m.get("manager", "") or
+            item["brand"]
+        )
 
     # latest.json 최종 저장 (rate 확정 후)
     with open(LATEST_FILE, "w", encoding="utf-8") as f:
