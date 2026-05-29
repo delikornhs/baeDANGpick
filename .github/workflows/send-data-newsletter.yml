@@ -12,6 +12,9 @@ on:
           - 월중
           - 월말
 
+permissions:
+  contents: write
+
 jobs:
   send:
     runs-on: ubuntu-latest
@@ -30,3 +33,20 @@ jobs:
           APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
           NEWSLETTER_SECRET: ${{ secrets.NEWSLETTER_SECRET }}
         run: python trigger_newsletter.py --type data --timing "${{ inputs.timing }}"
+
+      - name: Commit archive
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/output/newsletter/archive.json
+          if git diff --cached --quiet; then
+            echo "아카이브 변경 없음"
+          else
+            git commit -m "chore: newsletter archive update (data/${{ inputs.timing }})"
+            if ! git pull --rebase origin master; then
+              git checkout --ours data/output/newsletter/archive.json
+              git add data/output/newsletter/archive.json
+              GIT_EDITOR=true git rebase --continue
+            fi
+            git push
+          fi

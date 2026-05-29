@@ -15,11 +15,37 @@ import os
 import sys
 import requests
 from datetime import datetime
+from pathlib import Path
 
 APPS_SCRIPT_URL   = os.environ.get('APPS_SCRIPT_URL', '')
 NEWSLETTER_SECRET = os.environ.get('NEWSLETTER_SECRET', '')
 LATEST_JSON       = 'data/output/latest.json'
+ARCHIVE_JSON      = 'data/output/newsletter/archive.json'
 TOP_N             = 15
+
+
+def save_archive(entry: dict):
+    """뉴스레터 발송 내역을 archive.json에 추가 저장"""
+    archive_path = Path(ARCHIVE_JSON)
+    archive_path.parent.mkdir(parents=True, exist_ok=True)
+
+    archive = []
+    if archive_path.exists():
+        try:
+            with open(archive_path, encoding='utf-8') as f:
+                archive = json.load(f)
+        except Exception:
+            archive = []
+
+    # 동일 id가 이미 있으면 덮어쓰기 (재발송 대응)
+    archive = [a for a in archive if a.get('id') != entry['id']]
+    archive.append(entry)
+    # 날짜 역순 정렬
+    archive.sort(key=lambda x: x.get('sent_at', ''), reverse=True)
+
+    with open(archive_path, 'w', encoding='utf-8') as f:
+        json.dump(archive, f, ensure_ascii=False, indent=2)
+    print(f"아카이브 저장: {ARCHIVE_JSON} (총 {len(archive)}건)")
 
 
 def main():
@@ -52,6 +78,9 @@ def main():
     else:
         timing_label = '월중' if now.day <= 20 else '월말'
 
+    timing_slug = 'mid' if timing_label == '월중' else 'end'
+    archive_id  = f"{now.strftime('%Y-%m')}-{timing_slug}-{args.type}"
+
     # ── 일정 안내 뉴스레터 ─────────────────────────────────────
     if args.type == 'schedule':
         if not all([args.last_buy, args.ex_date, args.record, args.timing]):
@@ -67,6 +96,17 @@ def main():
             'lastBuy':       args.last_buy,
             'exDate':        args.ex_date,
             'record':        args.record,
+        }
+
+        archive_entry = {
+            'id':       archive_id,
+            'type':     'schedule',
+            'timing':   timing_label,
+            'month':    month,
+            'sent_at':  now.strftime('%Y-%m-%d'),
+            'lastBuy':  args.last_buy,
+            'exDate':   args.ex_date,
+            'record':   args.record,
         }
 
     # ── 분배금액 공시 뉴스레터 ─────────────────────────────────
@@ -106,6 +146,15 @@ def main():
             'etfs':           etfs,
         }
 
+        archive_entry = {
+            'id':      archive_id,
+            'type':    'data',
+            'timing':  timing_label,
+            'month':   month,
+            'sent_at': now.strftime('%Y-%m-%d'),
+            'etfs':    etfs,
+        }
+
     print(f"뉴스레터 발송: type={args.type}, timing={timing_label}")
     try:
         r = requests.post(APPS_SCRIPT_URL, json=payload, timeout=60)
@@ -113,6 +162,9 @@ def main():
     except Exception as e:
         print(f"발송 요청 실패: {e}")
         sys.exit(1)
+
+    # 발송 성공 후 아카이브 저장
+    save_archive(archive_entry)
 
 
 if __name__ == '__main__':
