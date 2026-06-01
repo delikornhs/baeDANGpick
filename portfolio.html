@@ -1364,13 +1364,22 @@ function setCmpList(arr){ localStorage.setItem('compareList', JSON.stringify(arr
 function updateCmpBar(){
   const list = getCmpList();
   const bar  = document.getElementById('cmpBar');
-  if(!list.length){ bar.classList.remove('show'); return; }
+  const wrap = document.querySelector('.wrap');
+  if(!list.length){
+    bar.classList.remove('show');
+    if(wrap) wrap.style.paddingBottom = '';
+    return;
+  }
   bar.classList.add('show');
   document.getElementById('cmpChips').innerHTML = list.map(code => {
     const etf = (typeof ETF_ALL !== 'undefined' ? ETF_ALL : []).find(e => e.code === code);
     const name = etf ? etf.name : code;
     return `<div class="cmp-bar-chip"><span title="${name}">${name}</span><button onclick="removeCmp('${code}')" title="제거">×</button></div>`;
   }).join('');
+  // bar 높이만큼 wrap에 여백 추가 (고정 바가 콘텐츠를 가리지 않도록)
+  requestAnimationFrame(() => {
+    if(wrap) wrap.style.paddingBottom = (bar.offsetHeight + 16) + 'px';
+  });
 }
 
 function toggleCmpWl(ev, code){
