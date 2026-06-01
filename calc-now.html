@@ -543,7 +543,7 @@ function closeToast() {
   if (priceDate) text += (text ? '&nbsp;&nbsp;|&nbsp;&nbsp;' : '') + '종가 ' + priceDate;
   if (text) {
     document.getElementById('dataStatusInner').innerHTML = text;
-    document.getElementById('dataStatusBar').style.display = '';
+    document.getElementById('dataStatusBar').style.display = 'block';
   }
 })();
 
