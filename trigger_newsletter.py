@@ -87,6 +87,21 @@ def main():
             print("schedule 타입에는 --timing --last-buy --ex-date --record 필요")
             sys.exit(1)
 
+        # 해당 timing에 속하는 ETF 목록 추출 (관심 ETF 개인화용)
+        timing_etfs = []
+        try:
+            with open(LATEST_JSON, 'r', encoding='utf-8') as f:
+                latest_data = json.load(f)
+            timing_etfs = [
+                {'code': e['code'], 'name': e['name'], 'brand': e.get('brand', '')}
+                for e in latest_data
+                if e.get('timing') == timing_label
+                and e.get('freq') in ('월배당', '월배당추정')
+            ]
+            print(f"timingEtfs: {len(timing_etfs)}개 ({timing_label})")
+        except FileNotFoundError:
+            print(f"{LATEST_JSON} 없음, timingEtfs 빈 배열로 진행")
+
         payload = {
             'action':        'send_newsletter',
             'secret':        NEWSLETTER_SECRET,
@@ -96,6 +111,7 @@ def main():
             'lastBuy':       args.last_buy,
             'exDate':        args.ex_date,
             'record':        args.record,
+            'timingEtfs':    timing_etfs,
         }
 
         archive_entry = {
@@ -128,11 +144,12 @@ def main():
 
         etfs = [
             {
-                'name':   e['name'],
-                'brand':  e['brand'],
-                'pay':    e.get('pay_date', e.get('pay', '')),
-                'dist':   e['dist'],
-                'rate':   e['rate'],
+                'code':  e['code'],
+                'name':  e['name'],
+                'brand': e['brand'],
+                'pay':   e.get('pay_date', e.get('pay', '')),
+                'dist':  e['dist'],
+                'rate':  e['rate'],
             }
             for e in current[:TOP_N]
         ]

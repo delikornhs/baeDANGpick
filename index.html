@@ -306,6 +306,18 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 .sub-modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--ink3);line-height:1}
 .sub-msg{font-size:12px;margin-top:10px;text-align:center;min-height:16px}
 .sub-msg.ok{color:var(--accent)}
+.sub-msg.err{color:#c0392b}
+/* step 2: 관심 ETF 선택 */
+.sub-step-back{background:none;border:none;color:var(--ink3);font-size:12px;cursor:pointer;margin-top:10px;text-decoration:underline;width:100%;text-align:center;font-family:"Noto Sans KR",sans-serif}
+.sub-step-back:hover{color:var(--ink)}
+.sub-etf-list{max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:6px;margin-bottom:14px}
+.sub-etf-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background .1s}
+.sub-etf-item:hover{background:var(--bg)}
+.sub-etf-item input[type=checkbox]{accent-color:var(--accent);flex-shrink:0;cursor:pointer}
+.sub-etf-name{font-size:13px;font-weight:600;line-height:1.3}
+.sub-etf-brand{font-size:11px;color:var(--ink3)}
+.sub-no-etf{font-size:12px;color:var(--ink3);line-height:1.8;padding:12px 8px;text-align:center;border:1px solid var(--border);border-radius:8px;margin-bottom:14px}
+.sub-no-etf a{color:var(--accent)}
 .sub-msg.err{color:#dc2626}
 
 /* GUIDE CARDS */
@@ -511,26 +523,40 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   <div class="sub-banner">
     <div class="sub-banner-text">
       📬 배당픽 뉴스레터 구독하기
-      <span>분배금 공시·배당 일정을 월 2회 이메일로 받아보세요.</span>
+      <span>분배금 공시·배당 일정을 월 2회 이메일로 받아보세요. 관심 ETF를 등록하면 맞춤 뉴스레터를 드립니다.</span>
     </div>
     <button class="sub-banner-btn" onclick="openSubModal()">뉴스레터 구독</button>
   </div>
 
 </div>
 
-<!-- 이메일 구독 모달 -->
+<!-- 뉴스레터 구독 모달 (2단계) -->
 <div class="sub-modal-bg" id="subModalBg" onclick="if(event.target===this)closeSubModal()">
   <div class="sub-modal">
     <button class="sub-modal-close" onclick="closeSubModal()">✕</button>
-    <div class="sub-modal-title">📬 뉴스레터 구독하기</div>
-    <div class="sub-modal-desc">월배당 ETF 분배금 공시와 배당 일정을 월 2회 이메일로 받아보세요. 무료입니다.</div>
-    <input type="email" id="subEmail" placeholder="이메일 주소를 입력하세요" autocomplete="email">
-    <label class="sub-consent">
-      <input type="checkbox" id="subConsent">
-      <span><a href="/privacy.html" target="_blank">개인정보처리방침</a>에 동의하며, 이메일 주소 수집 및 뉴스레터 발송에 동의합니다.</span>
-    </label>
-    <button class="sub-submit" id="subSubmitBtn" onclick="submitSubscribe()" disabled>구독하기</button>
-    <div class="sub-msg" id="subMsg"></div>
+
+    <!-- Step 1: 이메일 입력 -->
+    <div id="subStep1">
+      <div class="sub-modal-title">📬 뉴스레터 구독하기</div>
+      <div class="sub-modal-desc">월배당 ETF 분배금 공시와 배당 일정을 월 2회 이메일로 받아보세요. 관심 ETF를 등록하면 해당 ETF 중심으로 맞춤 뉴스레터를 드립니다. 무료입니다.</div>
+      <input type="email" id="subEmail" placeholder="이메일 주소를 입력하세요" autocomplete="email">
+      <label class="sub-consent">
+        <input type="checkbox" id="subConsent">
+        <span><a href="/privacy.html" target="_blank">개인정보처리방침</a>에 동의하며, 이메일 주소 수집 및 뉴스레터 발송에 동의합니다.</span>
+      </label>
+      <button class="sub-submit" id="subNextBtn" onclick="goToStep2()" disabled>다음 →</button>
+      <div class="sub-msg" id="subMsg1"></div>
+    </div>
+
+    <!-- Step 2: 관심 ETF 선택 -->
+    <div id="subStep2" style="display:none">
+      <div class="sub-modal-title">⭐ 관심 ETF 선택 <span style="font-size:12px;font-weight:400;color:var(--ink3)">(선택사항)</span></div>
+      <div class="sub-modal-desc">선택한 ETF의 분배 일정과 분배금을 우선 안내해 드립니다. 선택하지 않으면 전체 랭킹 기준으로 발송됩니다.</div>
+      <div id="subWatchlistWrap"></div>
+      <button class="sub-submit" id="subSubmitBtn" onclick="submitSubscribe()">구독하기</button>
+      <div class="sub-msg" id="subMsg2"></div>
+      <button class="sub-step-back" onclick="goToStep1()">← 이메일 수정</button>
+    </div>
   </div>
 </div>
 
@@ -1952,18 +1978,49 @@ document.getElementById('timingTabs').addEventListener('click',e=>{
   gtag('event','filter_click',{filter_type:'지급시기',filter_value:timingF});
 });
 
-// ── 이메일 구독 ──
-// Google Apps Script 웹앱 URL (배포 후 아래 값을 실제 URL로 교체)
+// ── 뉴스레터 구독 (2단계) ──
 const SUBSCRIBE_URL = 'https://script.google.com/macros/s/AKfycbwFAMgvKHIEMxI0Fn6y1q8ygxPAZE0pc8COIf7LCT5XAZSQqHJFMyExRJd43VidTkGZIQ/exec';
 
 function openSubModal() {
+  goToStep1();
   document.getElementById('subModalBg').classList.add('open');
-  document.getElementById('subEmail').focus();
+  setTimeout(() => document.getElementById('subEmail').focus(), 50);
 }
 function closeSubModal() {
   document.getElementById('subModalBg').classList.remove('open');
-  document.getElementById('subMsg').textContent = '';
-  document.getElementById('subMsg').className = 'sub-msg';
+}
+function goToStep1() {
+  document.getElementById('subStep1').style.display = '';
+  document.getElementById('subStep2').style.display = 'none';
+  document.getElementById('subMsg1').textContent = '';
+  document.getElementById('subMsg1').className = 'sub-msg';
+}
+function goToStep2() {
+  document.getElementById('subStep1').style.display = 'none';
+  document.getElementById('subStep2').style.display = '';
+  document.getElementById('subMsg2').textContent = '';
+  document.getElementById('subMsg2').className = 'sub-msg';
+
+  // localStorage 관심 ETF 불러오기
+  const watchlist = JSON.parse(localStorage.getItem('bdp_watchlist') || '[]');
+  const wrap = document.getElementById('subWatchlistWrap');
+  if (!watchlist.length) {
+    wrap.innerHTML = `<div class="sub-no-etf">저장된 관심 ETF가 없습니다.<br><a href="/portfolio.html">관심 ETF 페이지</a>에서 ETF를 추가하면<br>맞춤 뉴스레터를 받을 수 있습니다.<br>지금은 선택 없이 구독할 수 있습니다.</div>`;
+  } else {
+    const all = typeof ETF_ALL !== 'undefined' ? ETF_ALL : [];
+    const items = watchlist.map(code => {
+      const etf = all.find(e => e.code === code);
+      const name = etf ? etf.name : code;
+      const brand = etf ? (etf.brand || '') : '';
+      return `<label class="sub-etf-item">
+        <input type="checkbox" class="sub-etf-chk" value="${code}" checked>
+        <span><div class="sub-etf-name">${name}</div><div class="sub-etf-brand">${brand}</div></span>
+      </label>`;
+    }).join('');
+    wrap.innerHTML = `<div class="sub-etf-list">${items}</div>`;
+  }
+  document.getElementById('subSubmitBtn').disabled = false;
+  document.getElementById('subSubmitBtn').textContent = '구독하기';
 }
 document.getElementById('subEmail').addEventListener('input', updateSubBtn);
 document.getElementById('subConsent').addEventListener('change', updateSubBtn);
@@ -1971,26 +2028,26 @@ function updateSubBtn() {
   const email = document.getElementById('subEmail').value.trim();
   const consent = document.getElementById('subConsent').checked;
   const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && consent;
-  document.getElementById('subSubmitBtn').disabled = !valid;
+  document.getElementById('subNextBtn').disabled = !valid;
 }
 async function submitSubscribe() {
   const email = document.getElementById('subEmail').value.trim();
   const btn = document.getElementById('subSubmitBtn');
-  const msg = document.getElementById('subMsg');
+  const msg = document.getElementById('subMsg2');
+  const checked = document.querySelectorAll('.sub-etf-chk:checked');
+  const watchlist = Array.from(checked).map(el => el.value);
   btn.disabled = true;
   btn.textContent = '신청 중...';
   msg.textContent = '';
   try {
     await fetch(SUBSCRIBE_URL, {
       method: 'POST',
-      body: JSON.stringify({email, source: 'bae-dang-pick', consented: true}),
+      body: JSON.stringify({email, source: 'bae-dang-pick', consented: true, watchlist}),
       mode: 'no-cors'
     });
-    msg.textContent = '✅ 신청이 완료되었습니다. 감사합니다!';
+    msg.textContent = '✅ 구독이 완료되었습니다. 감사합니다!';
     msg.className = 'sub-msg ok';
     btn.textContent = '완료';
-    document.getElementById('subEmail').value = '';
-    document.getElementById('subConsent').checked = false;
     gtag('event', 'email_subscribe', {method: 'banner'});
     setTimeout(closeSubModal, 2500);
   } catch(err) {

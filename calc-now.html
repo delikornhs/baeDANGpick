@@ -46,6 +46,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 /* PAGE HEADER */
 .page-header{background:var(--white);border-bottom:1px solid var(--border);padding:16px 20px 14px}
 .page-header-inner{max-width:1100px;margin:0 auto}
+/* DATA STATUS BAR */
+.data-status-bar{background:#fff8e1;border-bottom:1px solid #fde68a;padding:7px 20px;font-size:11px;color:#92400e;display:none}
+.data-status-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:6px}
 .breadcrumb{font-size:12px;color:var(--ink3);margin-bottom:8px}
 .breadcrumb a{color:var(--ink3);text-decoration:none}
 .breadcrumb a:hover{color:var(--accent)}
@@ -162,6 +165,9 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     <h1>이번달 분배금 계산기</h1>
   </div>
 </div>
+<div class="data-status-bar" id="dataStatusBar">
+  <div class="data-status-inner" id="dataStatusInner"></div>
+</div>
 
 <div class="main">
   <div class="calc-card">
@@ -193,7 +199,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
       </div>
       <div style="display:flex;flex-direction:column;gap:12px">
         <div class="c-right">
-          <div class="r-row"><span class="r-label">현재 주가<span style="font-size:10px;font-weight:400;opacity:.7;margin-left:4px">(어제 종가 기준)</span></span><span class="r-val" id="rP">—</span></div>
+          <div class="r-row"><span class="r-label">현재 주가<span style="font-size:10px;font-weight:400;opacity:.7;margin-left:4px">(위 종가 기준)</span></span><span class="r-val" id="rP">—</span></div>
           <div class="r-row"><span class="r-label">분배 주기</span><span class="r-val" id="rFreq">—</span></div>
           <div class="r-row"><span class="r-label" id="rQLabel">매수 가능 수량</span><span class="r-val g" id="rQ">—</span></div>
           <div class="r-row"><span class="r-label" id="rALabel">투자금액</span><span class="r-val" id="rA">—</span></div>
@@ -525,6 +531,21 @@ function closeToast() {
   document.getElementById('toast').classList.remove('show');
   clearTimeout(_toastTimer);
 }
+
+// ── 데이터 상태바 ──
+(function() {
+  const parts = [];
+  if (_midNotice) parts.push('월중 ' + _midNotice.slice(5).replace('-', '-'));
+  if (_endNotice) parts.push('월말 ' + _endNotice.slice(5).replace('-', '-'));
+  const priceDate = typeof PRICE_DATE !== 'undefined' ? PRICE_DATE : '';
+  let text = '';
+  if (parts.length) text += '최종 공시일 ' + parts.join(' · ');
+  if (priceDate) text += (text ? '&nbsp;&nbsp;|&nbsp;&nbsp;' : '') + '종가 ' + priceDate;
+  if (text) {
+    document.getElementById('dataStatusInner').innerHTML = text;
+    document.getElementById('dataStatusBar').style.display = '';
+  }
+})();
 
 // ── 초기화 ──
 initCalc();
