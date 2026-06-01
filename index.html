@@ -1789,7 +1789,12 @@ function setCmpList(arr){ localStorage.setItem('compareList', JSON.stringify(arr
 function updateCmpBar(){
   const list = getCmpList();
   const bar  = document.getElementById('cmpBar');
-  if(!list.length){ bar.classList.remove('show'); return; }
+  const fab  = document.querySelector('.pf-fab');
+  if(!list.length){
+    bar.classList.remove('show');
+    if(fab) fab.style.bottom = '';
+    return;
+  }
   bar.classList.add('show');
   document.getElementById('cmpChips').innerHTML = list.map(code => {
     const etf = (typeof ETF_ALL !== 'undefined' ? ETF_ALL : []).find(e => e.code === code);
@@ -1802,6 +1807,10 @@ function updateCmpBar(){
   // 카드 버튼 상태 동기화
   document.querySelectorAll('.card-cmp').forEach(btn => {
     const code = btn.dataset && btn.dataset.code;
+  });
+  // pf-fab가 cmp-bar를 가리지 않도록 위로 올림
+  requestAnimationFrame(() => {
+    if(fab) fab.style.bottom = (bar.offsetHeight + 12) + 'px';
   });
 }
 
