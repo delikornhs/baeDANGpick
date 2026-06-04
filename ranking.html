@@ -147,6 +147,26 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   .rank-main{font-size:16px}
   .tab-btn{font-size:12px;padding:11px 14px}
 }
+
+/* SEARCH */
+.search-row{display:flex;align-items:center;gap:8px;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:8px}
+.search-wrap{position:relative;flex:1;max-width:420px}
+.etf-search-input{width:100%;border:1px solid var(--border);border-radius:8px;padding:8px 34px 8px 12px;font-size:13px;font-family:inherit;outline:none;background:var(--bg);transition:border-color .15s}
+.etf-search-input:focus{border-color:var(--accent-mid);background:var(--white)}
+.search-clear-x{position:absolute;right:9px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink3);font-size:16px;line-height:1;padding:2px;display:none}
+.search-clear-x.show{display:block}
+.etf-search-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--white);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1);z-index:300;max-height:260px;overflow-y:auto;display:none}
+.etf-search-dropdown.open{display:block}
+.esd-item{padding:9px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s}
+.esd-item:last-child{border-bottom:none}
+.esd-item:hover,.esd-item.focused{background:var(--accent-bg)}
+.esd-name{font-size:13px;font-weight:600;color:var(--ink)}
+.esd-meta{font-size:11px;color:var(--ink3);margin-top:2px}
+.esd-empty{padding:12px 14px;font-size:12px;color:var(--ink3);text-align:center}
+.search-active-tag{display:inline-flex;align-items:center;gap:5px;background:var(--accent-bg);color:var(--accent);border:1px solid #c5e8d2;border-radius:14px;font-size:11px;font-weight:600;padding:3px 10px;white-space:nowrap}
+.search-active-tag button{background:none;border:none;cursor:pointer;color:var(--accent);font-size:14px;line-height:1;padding:0;opacity:.7}
+.search-active-tag button:hover{opacity:1}
+.rank-item.search-hit{border-color:var(--accent);box-shadow:0 0 0 2px rgba(29,107,56,.12)}
 </style>
 </head>
 <body>
@@ -215,6 +235,20 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
       <button class="ftog"    data-section="dist" data-v="일반배당" onclick="setTypeFilter('dist','일반배당')">일반배당</button>
       <button class="ftog"    data-section="dist" data-v="기타"    onclick="setTypeFilter('dist','기타')">기타</button>
     </div>
+    <div class="search-row">
+      <div class="search-wrap">
+        <input type="text" class="etf-search-input" id="distSearchInput"
+          placeholder="ETF 이름으로 검색 (예: 커버드콜, 나스닥…)"
+          autocomplete="off"
+          oninput="onSearchInput('dist')"
+          onkeydown="onSearchKey(event,'dist')"
+          onfocus="onSearchInput('dist')"
+          onblur="setTimeout(()=>closeDropdown('dist'),150)">
+        <button class="search-clear-x" id="distSearchClearX" onclick="clearSearch('dist')" title="검색 초기화">×</button>
+        <div class="etf-search-dropdown" id="distDropdown"></div>
+      </div>
+      <div id="distSearchTag"></div>
+    </div>
     <div class="result-meta" id="dResultMeta"></div>
   </div>
 
@@ -261,6 +295,20 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
       <button class="ftog"    data-section="ret" data-v="리츠"    onclick="setTypeFilter('ret','리츠')">리츠</button>
       <button class="ftog"    data-section="ret" data-v="일반배당" onclick="setTypeFilter('ret','일반배당')">일반배당</button>
       <button class="ftog"    data-section="ret" data-v="기타"    onclick="setTypeFilter('ret','기타')">기타</button>
+    </div>
+    <div class="search-row">
+      <div class="search-wrap">
+        <input type="text" class="etf-search-input" id="retSearchInput"
+          placeholder="ETF 이름으로 검색 (예: 삼성전자, S&P500…)"
+          autocomplete="off"
+          oninput="onSearchInput('ret')"
+          onkeydown="onSearchKey(event,'ret')"
+          onfocus="onSearchInput('ret')"
+          onblur="setTimeout(()=>closeDropdown('ret'),150)">
+        <button class="search-clear-x" id="retSearchClearX" onclick="clearSearch('ret')" title="검색 초기화">×</button>
+        <div class="etf-search-dropdown" id="retDropdown"></div>
+      </div>
+      <div id="retSearchTag"></div>
     </div>
     <div class="result-meta" id="rResultMeta"></div>
   </div>
@@ -327,12 +375,96 @@ let distPeriod     = '이번달';
 let distTypeFilter = 'all';
 let distBaseData   = [];   // 필터 전 전체 데이터
 let distShown      = 0;
+let distSearchCode = null; // 검색으로 선택된 ETF code
 
 let retMetric      = '주가';
 let retPeriod      = '1w';
 let retTypeFilter  = 'all';
 let retBaseData    = [];
 let retShown       = 0;
+let retSearchCode  = null; // 검색으로 선택된 ETF code
+
+// ── 검색 ──
+let searchFocusIdx = { dist: -1, ret: -1 };
+
+function onSearchInput(section) {
+  const input = document.getElementById(section + 'SearchInput');
+  const q = input.value.trim();
+  const clearX = document.getElementById(section + 'SearchClearX');
+  clearX.classList.toggle('show', q.length > 0 || (section === 'dist' ? distSearchCode : retSearchCode));
+  if (!q) { closeDropdown(section); return; }
+  const base = section === 'dist' ? distBaseData : retBaseData;
+  const hits = base.filter(e => e.name.toLowerCase().includes(q.toLowerCase())).slice(0, 20);
+  const dd = document.getElementById(section + 'Dropdown');
+  searchFocusIdx[section] = -1;
+  if (!hits.length) {
+    dd.innerHTML = `<div class="esd-empty">검색 결과가 없습니다</div>`;
+  } else {
+    dd.innerHTML = hits.map((e, i) => {
+      const rank = base.findIndex(x => x.code === e.code) + 1;
+      const sub = section === 'dist'
+        ? `${rank}위 · ${e.brand || ''} · ${e.freq || ''}`
+        : `${rank}위 · ${e.brand || ''} · ${e.freq || ''}`;
+      return `<div class="esd-item" data-code="${e.code}" data-name="${e.name.replace(/"/g,'&quot;')}"
+                onmousedown="selectSearch('${section}','${e.code}',this.dataset.name)">
+                <div class="esd-name">${e.name}</div>
+                <div class="esd-meta">${sub}</div>
+              </div>`;
+    }).join('');
+  }
+  dd.classList.add('open');
+}
+
+function onSearchKey(e, section) {
+  const dd = document.getElementById(section + 'Dropdown');
+  const items = dd.querySelectorAll('.esd-item');
+  if (!items.length) return;
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    searchFocusIdx[section] = Math.min(searchFocusIdx[section] + 1, items.length - 1);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    searchFocusIdx[section] = Math.max(searchFocusIdx[section] - 1, 0);
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    const focused = dd.querySelector('.esd-item.focused');
+    if (focused) focused.dispatchEvent(new MouseEvent('mousedown'));
+    return;
+  } else if (e.key === 'Escape') {
+    closeDropdown(section); return;
+  } else { return; }
+  items.forEach((el, i) => el.classList.toggle('focused', i === searchFocusIdx[section]));
+  items[searchFocusIdx[section]]?.scrollIntoView({ block: 'nearest' });
+}
+
+function closeDropdown(section) {
+  const dd = document.getElementById(section + 'Dropdown');
+  if (dd) dd.classList.remove('open');
+}
+
+function selectSearch(section, code, name) {
+  if (section === 'dist') distSearchCode = code;
+  else                     retSearchCode  = code;
+  const input = document.getElementById(section + 'SearchInput');
+  input.value = '';
+  closeDropdown(section);
+  // 선택된 ETF 태그 표시
+  const tag = document.getElementById(section + 'SearchTag');
+  tag.innerHTML = `<div class="search-active-tag">🔍 ${name}<button onclick="clearSearch('${section}')" title="검색 초기화">×</button></div>`;
+  // clear-x 버튼 표시
+  document.getElementById(section + 'SearchClearX').classList.add('show');
+  renderList(section);
+}
+
+function clearSearch(section) {
+  if (section === 'dist') distSearchCode = null;
+  else                     retSearchCode  = null;
+  document.getElementById(section + 'SearchInput').value = '';
+  document.getElementById(section + 'SearchTag').innerHTML = '';
+  document.getElementById(section + 'SearchClearX').classList.remove('show');
+  closeDropdown(section);
+  renderList(section);
+}
 
 // ── 탭 전환 ──
 function switchTab(tab) {
@@ -389,6 +521,21 @@ function renderFiltered(section) {
 // ── 실제 목록 렌더 ──
 function renderList(section) {
   if (section === 'dist') {
+    // 검색 선택 상태
+    if (distSearchCode) {
+      const rank = distBaseData.findIndex(e => e.code === distSearchCode) + 1;
+      const etf  = distBaseData.find(e => e.code === distSearchCode);
+      const list = document.getElementById('distList');
+      if (!etf) {
+        list.innerHTML = `<div class="empty"><p>선택한 ETF가 현재 랭킹에 없습니다.</p></div>`;
+      } else {
+        const html = distItem(etf, rank);
+        list.innerHTML = html.replace('class="rank-item"', 'class="rank-item search-hit"');
+      }
+      document.getElementById('dResultMeta').textContent = `전체 ${distBaseData.length}개 중 ${rank}위`;
+      document.getElementById('distMoreWrap').style.display = 'none';
+      return;
+    }
     const typeF = distTypeFilter;
     let data = distBaseData.filter(e => typeF === 'all' || getCategory(e) === typeF);
     document.getElementById('dResultMeta').textContent = `총 ${data.length}개 ETF`;
@@ -399,6 +546,21 @@ function renderList(section) {
     const moreWrap = document.getElementById('distMoreWrap');
     moreWrap.style.display = data.length > distShown ? '' : 'none';
   } else {
+    // 검색 선택 상태
+    if (retSearchCode) {
+      const rank = retBaseData.findIndex(e => e.code === retSearchCode) + 1;
+      const etf  = retBaseData.find(e => e.code === retSearchCode);
+      const list = document.getElementById('retList');
+      if (!etf) {
+        list.innerHTML = `<div class="empty"><p>선택한 ETF가 현재 랭킹에 없습니다.</p></div>`;
+      } else {
+        const html = retItem(etf, rank);
+        list.innerHTML = html.replace('class="rank-item"', 'class="rank-item search-hit"');
+      }
+      document.getElementById('rResultMeta').textContent = `전체 ${retBaseData.length}개 중 ${rank}위`;
+      document.getElementById('retMoreWrap').style.display = 'none';
+      return;
+    }
     const typeF = retTypeFilter;
     let data = retBaseData.filter(e => typeF === 'all' || getCategory(e) === typeF);
     document.getElementById('rResultMeta').textContent = `총 ${data.length}개 ETF`;
