@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>배당픽 관리자</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f7f7f4;--white:#fff;--ink:#1a1a18;--ink2:#4a4a45;--ink3:#9a9a93;--ink4:#d4d4cc;--accent:#1d6b38;--accent-bg:#edf7f1;--accent-mid:#6cba8b;--warn:#b45309;--warn-bg:#fffbeb;--red:#dc2626;--red-bg:#fef2f2;--border:#e8e8e2;--radius:10px}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",sans-serif;min-height:100vh}
+/* 로그인 화면 */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.login-box{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:40px 36px;width:340px;text-align:center}
+.login-logo{font-size:18px;font-weight:700;margin-bottom:6px}
+.login-sub{font-size:12px;color:var(--ink3);margin-bottom:28px}
+.login-input{width:100%;border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;background:var(--bg)}
+.login-input:focus{border-color:var(--accent-mid);background:var(--white)}
+.login-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+.login-btn:hover{background:#165a2e}
+.login-err{font-size:12px;color:var(--red);margin-top:10px;display:none}
+/* 에디터 화면 */
+.admin-wrap{display:none;max-width:1200px;margin:0 auto;padding:28px 20px 60px}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.admin-title{font-size:18px;font-weight:700}
+.admin-logout{font-size:12px;color:var(--ink3);background:none;border:1px solid var(--border);border-radius:6px;padding:5px 12px;cursor:pointer;font-family:inherit}
+.admin-logout:hover{color:var(--red);border-color:var(--red)}
+/* 폼 */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-row.full{grid-template-columns:1fr}
+.form-group label{display:block;font-size:12px;font-weight:700;color:var(--ink3);margin-bottom:5px}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-size:13px;font-family:inherit;outline:none;background:var(--bg);transition:border-color .15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent-mid);background:var(--white)}
+/* 에디터/미리보기 */
+.editor-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.editor-label{font-size:12px;font-weight:700;color:var(--ink3);margin-bottom:6px}
+.content-editor{width:100%;height:540px;border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px;font-family:"DM Mono",monospace;outline:none;background:var(--bg);resize:vertical;line-height:1.7;transition:border-color .15s}
+.content-editor:focus{border-color:var(--accent-mid);background:var(--white)}
+.preview-box{height:540px;border:1px solid var(--border);border-radius:8px;padding:18px;background:var(--white);overflow-y:auto;font-size:14px;line-height:1.85;color:var(--ink2)}
+.preview-box h2{font-size:17px;font-weight:700;margin:28px 0 10px;padding-left:10px;border-left:3px solid var(--accent);color:var(--ink)}
+.preview-box h3{font-size:15px;font-weight:700;margin:18px 0 8px;color:var(--ink)}
+.preview-box p{margin-bottom:14px}
+.preview-box strong{color:var(--ink);font-weight:700}
+.preview-box table{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:12px}
+.preview-box th{background:var(--accent-bg);color:var(--accent);font-weight:700;padding:7px 10px;border:1px solid var(--border);text-align:left}
+.preview-box td{padding:6px 10px;border:1px solid var(--border)}
+.preview-box tr:nth-child(even) td{background:#fafaf8}
+.preview-box hr{border:none;border-top:1px solid var(--border);margin:24px 0}
+.preview-box ul,.preview-box ol{padding-left:18px;margin-bottom:14px}
+.preview-box li{line-height:1.85}
+/* 버튼 */
+.action-row{display:flex;gap:10px;justify-content:flex-end}
+.publish-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:11px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+.publish-btn:hover{background:#165a2e}
+.publish-btn:disabled{background:var(--ink4);cursor:not-allowed}
+.status-msg{font-size:13px;padding:10px 16px;border-radius:8px;display:none;margin-top:10px}
+.status-msg.ok{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-mid)}
+.status-msg.err{background:var(--red-bg);color:var(--red);border:1px solid #fca5a5}
+.hint{font-size:11px;color:var(--ink4);margin-top:4px;line-height:1.6}
+@media(max-width:900px){.editor-wrap{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.preview-box{display:none}}
+</style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-logo">배당픽 관리자</div>
+    <div class="login-sub">관리자 비밀번호를 입력하세요</div>
+    <input type="password" class="login-input" id="pwInput" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">로그인</button>
+    <div class="login-err" id="loginErr">비밀번호가 틀렸습니다.</div>
+  </div>
+</div>
+
+<!-- 에디터 -->
+<div class="admin-wrap" id="adminWrap">
+  <div class="admin-header">
+    <div class="admin-title">✏️ 새 글 작성</div>
+    <button class="admin-logout" onclick="doLogout()">로그아웃</button>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>제목 *</label>
+      <input type="text" id="fTitle" placeholder="글 제목을 입력하세요" oninput="updatePreview()">
+    </div>
+    <div class="form-group">
+      <label>날짜 *</label>
+      <input type="date" id="fDate">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>카테고리 *</label>
+      <select id="fCategory">
+        <option value="월간분석">월간분석</option>
+        <option value="가이드">가이드</option>
+        <option value="분석">분석</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>요약 (목록에 표시)</label>
+      <input type="text" id="fSummary" placeholder="글 목록에 표시될 한 줄 요약">
+    </div>
+  </div>
+
+  <div class="editor-wrap">
+    <div>
+      <div class="editor-label">본문 (HTML)</div>
+      <textarea class="content-editor" id="fContent" placeholder="본문을 HTML로 작성하거나 붙여넣으세요.
+
+예시:
+&lt;h2&gt;섹션 제목&lt;/h2&gt;
+&lt;p&gt;본문 내용&lt;/p&gt;
+&lt;table&gt;...&lt;/table&gt;" oninput="updatePreview()"></textarea>
+      <div class="hint">※ Claude에게 요청한 분석 결과를 그대로 붙여넣으세요. HTML 형식으로 제공됩니다.</div>
+    </div>
+    <div>
+      <div class="editor-label">미리보기</div>
+      <div class="preview-box" id="preview"></div>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="publish-btn" id="publishBtn" onclick="doPublish()">게시하기</button>
+  </div>
+  <div class="status-msg" id="statusMsg"></div>
+</div>
+
+<script>
+let adminSecret = '';
+
+function doLogin() {
+  const pw = document.getElementById('pwInput').value.trim();
+  if (!pw) return;
+  adminSecret = pw;
+  // 실제 인증은 서버에서 하므로 여기서는 바로 에디터 진입
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('adminWrap').style.display = 'block';
+  // 오늘 날짜 기본값
+  document.getElementById('fDate').value = new Date().toISOString().slice(0, 10);
+}
+
+function doLogout() {
+  adminSecret = '';
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('adminWrap').style.display = 'none';
+  document.getElementById('pwInput').value = '';
+}
+
+function updatePreview() {
+  document.getElementById('preview').innerHTML = document.getElementById('fContent').value;
+}
+
+async function doPublish() {
+  const title    = document.getElementById('fTitle').value.trim();
+  const date     = document.getElementById('fDate').value;
+  const category = document.getElementById('fCategory').value;
+  const summary  = document.getElementById('fSummary').value.trim();
+  const content  = document.getElementById('fContent').value.trim();
+
+  if (!title || !date || !content) {
+    showStatus('제목, 날짜, 본문은 필수입니다.', 'err');
+    return;
+  }
+
+  const btn = document.getElementById('publishBtn');
+  btn.disabled = true;
+  btn.textContent = '게시 중...';
+  showStatus('', '');
+
+  try {
+    const res = await fetch('/api/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret: adminSecret, title, date, category, summary, content }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showStatus(`✅ 게시 완료! Vercel 배포 후 약 1~2분 뒤 반영됩니다. (${data.file})`, 'ok');
+      // 폼 초기화
+      document.getElementById('fTitle').value = '';
+      document.getElementById('fContent').value = '';
+      document.getElementById('fSummary').value = '';
+      document.getElementById('preview').innerHTML = '';
+      document.getElementById('fDate').value = new Date().toISOString().slice(0, 10);
+    } else {
+      showStatus(`❌ 오류: ${data.error}`, 'err');
+    }
+  } catch (e) {
+    showStatus(`❌ 요청 실패: ${e.message}`, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '게시하기';
+  }
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('statusMsg');
+  el.textContent = msg;
+  el.className = 'status-msg' + (type ? ' ' + type : '');
+  el.style.display = msg ? 'block' : 'none';
+}
+</script>
+</body>
+</html>

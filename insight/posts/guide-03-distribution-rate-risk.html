@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-70RCL5E7B8"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-70RCL5E7B8');</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>분배율이 높으면 무조건 좋을까? 커버드콜 ETF 리스크 - 배당픽 인사이트</title>
+<meta name="description" content="분배율이 높을수록 무조건 좋은 ETF일까요? 커버드콜 ETF의 수익 구조, 원금 손실 가능성, 세금 문제까지 꼼꼼히 살펴봅니다.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f7f7f4;--white:#fff;--ink:#1a1a18;--ink2:#4a4a45;--ink3:#9a9a93;--ink4:#d4d4cc;--accent:#1d6b38;--accent-bg:#edf7f1;--accent-mid:#6cba8b;--warn:#b45309;--warn-bg:#fffbeb;--red:#dc2626;--border:#e8e8e2;--radius:10px}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",sans-serif;min-height:100vh;line-height:1.8}
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200}
+.nav-inner{max-width:1100px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:15px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--ink)}
+.logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:6px;align-items:center}
+.nav-link{font-size:12px;color:var(--ink2);text-decoration:none;font-weight:600;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg);transition:all .15s;white-space:nowrap}
+.nav-link:hover{color:var(--accent);border-color:var(--accent-mid);background:var(--accent-bg)}
+.nav-link.on{color:var(--accent);border-color:var(--accent);background:var(--accent-bg)}
+.post-wrap{max-width:720px;margin:0 auto;padding:48px 20px 80px}
+.post-back{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);text-decoration:none;margin-bottom:28px;transition:color .15s}
+.post-back:hover{color:var(--accent)}
+.post-category{display:inline-block;font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);padding:3px 8px;border-radius:4px;margin-bottom:14px}
+.post-title{font-size:26px;font-weight:700;letter-spacing:-.6px;line-height:1.4;margin-bottom:10px}
+.post-meta{font-size:12px;color:var(--ink3);margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.post-body h2{font-size:18px;font-weight:700;letter-spacing:-.3px;margin:36px 0 12px;padding-left:12px;border-left:3px solid var(--accent)}
+.post-body p{font-size:15px;color:var(--ink2);margin-bottom:16px;line-height:1.85}
+.post-body p strong{color:var(--ink);font-weight:700}
+.post-body table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+.post-body th{background:var(--accent-bg);color:var(--accent);font-weight:700;padding:10px 12px;border:1px solid var(--border);text-align:left}
+.post-body td{padding:9px 12px;border:1px solid var(--border);color:var(--ink2)}
+.post-body tr:nth-child(even) td{background:#fafaf8}
+.num-item{margin:16px 0;padding:16px 18px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius)}
+.num-item-head{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.num-item p{font-size:15px;color:var(--ink2);margin-bottom:8px;line-height:1.85}
+.num-item p:last-child{margin-bottom:0}
+.formula{background:var(--ink);color:#6cba8b;font-family:"DM Mono",monospace;font-size:14px;padding:14px 18px;border-radius:8px;margin:16px 0;line-height:1.6}
+.pro-con{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.pro-box,.con-box{padding:16px 18px;border-radius:var(--radius)}
+.pro-box{background:#edf7f1;border:1px solid #86efac}
+.con-box{background:#fef2f2;border:1px solid #fca5a5}
+.pro-box-title{font-size:12px;font-weight:700;color:#166534;margin-bottom:10px}
+.con-box-title{font-size:12px;font-weight:700;color:#991b1b;margin-bottom:10px}
+.pro-box ul,.con-box ul{padding-left:16px;font-size:14px;line-height:1.8}
+.pro-box li{color:#166534}
+.con-box li{color:#991b1b}
+.key-box{background:var(--accent-bg);border:1px solid var(--accent-mid);border-radius:var(--radius);padding:18px 20px;margin:16px 0}
+.key-box p{font-size:14px;color:#1a3a2a;margin-bottom:8px;line-height:1.7}
+.key-box p:last-child{margin-bottom:0}
+.key-box strong{color:var(--accent)}
+.notice{background:var(--warn-bg);border:1px solid #fde68a;border-radius:var(--radius);padding:14px 18px;margin:20px 0;font-size:13px;color:var(--warn);line-height:1.7}
+footer{text-align:center;padding:24px 20px;font-size:12px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8}
+footer a{color:var(--ink3);text-underline-offset:2px}
+@media(max-width:600px){.pro-con{grid-template-columns:1fr}.post-title{font-size:22px}.nav-links{gap:4px}.nav-link{font-size:11px;padding:4px 8px}}
+.pf-fab{position:fixed;bottom:24px;right:24px;z-index:500;background:var(--accent);color:#fff;border:none;border-radius:50px;padding:12px 20px;font-size:13px;font-weight:700;box-shadow:0 4px 16px rgba(29,107,56,.3);display:flex;align-items:center;gap:7px;text-decoration:none;transition:all .2s;font-family:"Noto Sans KR",sans-serif;white-space:nowrap}
+.pf-fab:hover{background:#165a2e;transform:translateY(-2px)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-mark">&#8361;</div>배당픽</a>
+    <div class="nav-links">
+      <a href="/ranking.html" class="nav-link">랭킹</a>
+      <a href="/calc.html" class="nav-link">계산기</a>
+      <a href="/insight.html" class="nav-link on">인사이트</a>
+      <a href="/newsletter.html" class="nav-link">뉴스레터</a>
+    </div>
+  </div>
+</nav>
+
+<div class="post-wrap">
+  <a href="/insight.html" class="post-back">← 인사이트 목록</a>
+  <div class="post-category">가이드</div>
+  <h1 class="post-title">분배율이 높으면 무조건 좋을까?<br>커버드콜 ETF 리스크</h1>
+  <p class="post-meta">높은 분배율의 이면, 꼭 알아야 할 구조적 리스크</p>
+
+  <div class="post-body">
+    <p>월배당 ETF를 고를 때 많은 투자자들이 분배율을 가장 먼저 봐요. 분배율이 높을수록 더 많은 돈을 받는 것처럼 보이니까요. 하지만 분배율이 높다고 무조건 좋은 건 아니에요. 특히 커버드콜 ETF에서 분배율이 지나치게 높을 경우 생각지 못한 리스크가 따라올 수 있어요.</p>
+
+    <h2>분배율이란 무엇인가요?</h2>
+    <p>분배율은 ETF 가격 대비 분배금의 비율이에요.</p>
+    <div class="formula">분배율 = 분배금 ÷ ETF 가격 × 100</div>
+    <p>예를 들어 ETF 가격이 10,000원이고 월 분배금이 100원이라면 이번달 분배율은 1%예요. 연환산하면 12%가 되는 거예요.</p>
+
+    <h2>분배율이 높으면 좋은 점</h2>
+    <p><strong>정기적인 현금 흐름이 커져요.</strong> 분배율이 높을수록 매달 받는 돈이 많아져요. 생활비를 분배금으로 충당하거나, 분배금을 재투자해서 복리 효과를 노리는 투자자에게는 분명히 유리해요.</p>
+    <p><strong>심리적 안정감을 줘요.</strong> 주가가 떨어져도 분배금이 꾸준히 들어오면 장기 투자를 지속하는 데 도움이 돼요.</p>
+    <p><strong>시장 변동성이 클 때 방어력이 있어요.</strong> 주가 상승이 제한되는 대신 분배금을 받는 커버드콜 구조는 시장이 횡보하거나 소폭 하락할 때 상대적으로 유리해요.</p>
+
+    <h2>분배율이 너무 높으면 생기는 리스크</h2>
+    <p>분배율이 연 15~20%를 넘어가면 꼼꼼히 살펴봐야 해요.</p>
+
+    <div class="num-item">
+      <div class="num-item-head">① 원금 손실 가능성</div>
+      <p>분배금의 재원이 운용 수익이 아니라 ETF 자체 자산에서 나오는 경우가 있어요. 이런 경우 분배금을 받을수록 ETF 순자산이 줄어들고, 장기적으로 ETF 가격이 지속적으로 하락할 수 있어요.</p>
+      <p>쉽게 말해 내 돈 10만원을 맡겼는데, 매달 1만원을 돌려주면서 "분배금"이라고 부르는 것과 비슷한 상황이에요.</p>
+    </div>
+
+    <div class="num-item">
+      <div class="num-item-head">② 커버드콜의 수익 상한 문제</div>
+      <p>커버드콜 ETF는 콜옵션을 매도해서 프리미엄을 받는 대신, 주가가 크게 오를 때 수익이 제한돼요. 예를 들어 S&amp;P500이 10% 올라도, 커버드콜 ETF는 옵션 매도로 인해 3~4% 상승에 그칠 수 있어요.</p>
+    </div>
+
+    <div class="num-item">
+      <div class="num-item-head">③ 높은 분배율이 유지되지 않을 수 있어요</div>
+      <p>옵션 프리미엄은 시장 변동성에 따라 달라져요. 변동성이 낮아지면 프리미엄도 줄어들어서 분배금이 줄어들 수 있어요. 과거에 연 20% 분배율이었던 ETF가 갑자기 연 10%로 떨어지는 경우도 있어요.</p>
+    </div>
+
+    <div class="num-item">
+      <div class="num-item-head">④ 세금 문제</div>
+      <p>분배금은 배당소득세 대상이에요. 분배율이 높을수록 세금도 많이 내야 해요. 특히 금융소득이 연 2,000만원을 넘으면 종합소득세 대상이 될 수 있어요.</p>
+    </div>
+
+    <h2>커버드콜 ETF, 어떻게 봐야 할까요?</h2>
+    <div class="pro-con">
+      <div class="pro-box">
+        <div class="pro-box-title">커버드콜 ETF가 유리한 상황</div>
+        <ul>
+          <li>시장이 횡보하거나 소폭 하락할 때</li>
+          <li>주가 상승보다 정기적인 현금 흐름이 필요할 때</li>
+          <li>이미 목돈을 모은 후 인출 단계에 있는 투자자</li>
+        </ul>
+      </div>
+      <div class="con-box">
+        <div class="con-box-title">커버드콜 ETF가 불리한 상황</div>
+        <ul>
+          <li>강세장에서 주가 상승 수익을 최대로 원할 때</li>
+          <li>장기 자산 성장이 목표일 때</li>
+          <li>원금 보전이 최우선일 때</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>분배율 확인할 때 이것만 기억하세요</h2>
+    <p>분배율이 높다고 무조건 좋은 게 아니에요. 중요한 건 <strong>분배금의 재원이 지속 가능한가</strong>예요.</p>
+    <p>ETF를 고를 때는 분배율과 함께 <strong>ETF 순자산 추이, 분배금 이력의 일관성, 기초지수 대비 성과</strong>를 함께 확인하는 습관을 가지면 좋아요.</p>
+    <div class="key-box">
+      <p>배당픽에서는 ETF별 <strong>분배금 추이</strong>를 확인할 수 있어요.</p>
+      <p>분배금이 꾸준히 유지되는지, 갑자기 줄어든 적은 없는지 확인해보세요.</p>
+    </div>
+  </div>
+
+  <div class="notice">본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.</div>
+</div>
+
+<footer>
+  본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.<br>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSflCQap_v_YXjEwRVnjiaQhh9Nkppmw0HWK8YQ1HzR7lAKf9g/viewform?usp=publish-editor" target="_blank" rel="noopener">오류 및 개선 의견 보내기</a>
+  &nbsp;·&nbsp;<a href="/privacy.html">개인정보처리방침</a>
+</footer>
+<a href="/portfolio.html" class="pf-fab">⭐ <span>MY ETF</span></a>
+</body>
+</html>
