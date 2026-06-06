@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-06-06-5월-월중-배당-etf-분배금-점검",
+    "title": "5월 월중 배당 ETF 분배금 점검",
+    "date": "2026-06-06",
+    "category": "월중현황",
+    "summary": "",
+    "file": "insight/posts/2026-06-06-5월-월중-배당-etf-분배금-점검.html"
+  },
+  {
+    "id": "2026-06-04-may-analysis",
+    "title": "2026년 5월 월배당 ETF 분배금 진단",
+    "date": "2026-06-04",
+    "category": "월간분석",
+    "summary": "5월은 지수 반등으로 커버드콜 분배금이 살아난 달. 하지만 미국 장기채 커버드콜은 4개월째 조용히 빠지고 있고, 팔란티어 계열은 분배율 착시에 주의가 필요합니다.",
+    "file": "insight/posts/2026-06-04-may-analysis.html"
+  },
+  {
     "id": "guide-03-distribution-rate-risk",
     "title": "분배율이 높으면 무조건 좋을까? 커버드콜 ETF 리스크",
     "date": "2024-01-01",
@@ -22,13 +38,5 @@
     "category": "가이드",
     "summary": "ETF 분배금이 무엇인지, 어디서 나오는지, 왜 지급하는지 처음부터 차근차근 설명합니다. 주식 배당금과의 차이, 분배금의 세 가지 재원, 지급 주기까지 완전 정리.",
     "file": "insight/posts/guide-01-etf-distribution.html"
-  },
-  {
-    "id": "2026-06-04-may-analysis",
-    "title": "2026년 5월 월배당 ETF 분배금 진단",
-    "date": "2026-06-04",
-    "category": "월간분석",
-    "summary": "5월은 지수 반등으로 커버드콜 분배금이 살아난 달. 하지만 미국 장기채 커버드콜은 4개월째 조용히 빠지고 있고, 팔란티어 계열은 분배율 착시에 주의가 필요합니다.",
-    "file": "insight/posts/2026-06-04-may-analysis.html"
   }
 ]
