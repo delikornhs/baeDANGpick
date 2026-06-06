@@ -190,7 +190,7 @@ total_rank = {d['code']: i+1 for i, d in enumerate(by_total)}
 <h2>분배금이 수익률 순위를 어떻게 바꾸나</h2>
 <p>개념 설명.</p>
 <table>
-  <tr><th>주가수익률 순위</th><th>ETF</th><th>주가 수익률</th><th>총수익률</th><th>분배 기여</th><th>총수익률 순위</th></tr>
+  <tr><th>주가 순위</th><th>ETF</th><th>주가 수익률</th><th>총수익률</th><th>분배 기여</th><th>총수익 순위</th></tr>
   ...
 </table>
 <p>순위 변화 인사이트. 분배금 영향이 큰 상품 vs 작은 상품 대비.</p>
@@ -297,7 +297,7 @@ total_rank = {d['code']: i+1 for i, d in enumerate(by_total)}
 <h2>분배금이 수익률 순위를 어떻게 바꾸나</h2>
 <p>개념 설명.</p>
 <table>
-  <tr><th>주가수익률 순위</th><th>ETF</th><th>주가 수익률</th><th>총수익률</th><th>분배 기여</th><th>총수익률 순위</th></tr>
+  <tr><th>주가 순위</th><th>ETF</th><th>주가 수익률</th><th>총수익률</th><th>분배 기여</th><th>총수익 순위</th></tr>
   ...
 </table>
 <p>순위 변화 인사이트. 분배금 영향이 큰 상품 vs 작은 상품 대비.</p>

@@ -72,7 +72,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .post-body p{font-size:15px;color:var(--ink2);margin-bottom:16px;line-height:1.85}
 .post-body p strong{color:var(--ink);font-weight:700}
 .post-body table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:13px}
-.post-body th{background:var(--accent-bg);color:var(--accent);font-weight:700;padding:9px 12px;border:1px solid var(--border);text-align:left}
+.post-body th{background:var(--accent-bg);color:var(--accent);font-weight:700;padding:9px 12px;border:1px solid var(--border);text-align:left;white-space:nowrap}
 .post-body td{padding:8px 12px;border:1px solid var(--border);color:var(--ink2)}
 .post-body tr:nth-child(even) td{background:#fafaf8}
 .post-body hr{border:none;border-top:1px solid var(--border);margin:36px 0}
