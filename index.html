@@ -76,6 +76,10 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .hc-badge{font-size:11px;font-weight:700;background:rgba(29,107,56,.1);border:1px solid rgba(29,107,56,.25);border-radius:8px;padding:1px 8px;color:var(--accent);white-space:nowrap;flex-shrink:0}
 .hc-desc{font-size:10px;color:var(--ink3);line-height:1.4}
 .hc-arrow{font-size:13px;color:var(--accent-mid);flex-shrink:0}
+.hc-latest{display:none;align-items:center;gap:5px;margin-top:5px;font-size:10px;color:var(--ink2);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc-latest.visible{display:flex}
+.hc-new-badge{flex-shrink:0;font-size:9px;font-weight:700;background:#dc2626;color:#fff;border-radius:3px;padding:1px 5px;letter-spacing:.3px}
+.hc-latest-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:640px){.hero-cards{grid-template-columns:1fr;gap:6px}}
 
 /* SECTION */
@@ -406,6 +410,10 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
         <div class="hc-body">
           <div class="hc-top"><span class="hc-label">배당픽 인사이트</span></div>
           <div class="hc-desc">분석·가이드·전략 비교</div>
+          <div class="hc-latest" id="insightLatest">
+            <span class="hc-new-badge">NEW</span>
+            <span class="hc-latest-title" id="insightLatestTitle"></span>
+          </div>
         </div>
         <span class="hc-arrow">→</span>
       </a>
@@ -2135,6 +2143,29 @@ function closeToast() {
   document.getElementById('toast').classList.remove('show');
   clearTimeout(_toastTimer);
 }
+
+// 인사이트 최신 글 표시
+(async function loadLatestInsight() {
+  try {
+    const res = await fetch('/insight/posts.json?v=' + Date.now());
+    const posts = await res.json();
+    // 가이드 제외, 날짜 내림차순 정렬에서 첫 번째
+    const latest = posts.find(p => p.category !== '가이드');
+    if (!latest) return;
+    const postDate = new Date(latest.date);
+    const diffDays = (Date.now() - postDate.getTime()) / (1000 * 60 * 60 * 24);
+    const el = document.getElementById('insightLatest');
+    const titleEl = document.getElementById('insightLatestTitle');
+    titleEl.textContent = latest.title;
+    if (diffDays <= 7) {
+      el.classList.add('visible');
+    } else {
+      // 7일 지났으면 NEW 뱃지 숨기고 제목만 표시
+      el.querySelector('.hc-new-badge').style.display = 'none';
+      el.classList.add('visible');
+    }
+  } catch(e) {}
+})();
 
 </script>
 
