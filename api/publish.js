@@ -176,6 +176,24 @@ export default async function handler(req, res) {
       sha: postsSha,
     });
 
+    // 3. sitemap.xml 업데이트
+    const sitemapPath = 'sitemap.xml';
+    const { sha: sitemapSha, content: sitemapRaw } = await getFileSha(sitemapPath);
+    if (sitemapRaw) {
+      const today = date;
+      const newUrl = `  <url>\n    <loc>https://bae-dang-pick.vercel.app/${filePath}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>`;
+      // 이미 등록된 URL이면 추가하지 않음
+      if (!sitemapRaw.includes(`/${filePath}`)) {
+        const updatedSitemap = sitemapRaw.replace('</urlset>', `${newUrl}\n</urlset>`);
+        await githubRequest(sitemapPath, 'PUT', {
+          message: `sitemap 업데이트: ${title}`,
+          content: Buffer.from(updatedSitemap).toString('base64'),
+          branch: BRANCH,
+          sha: sitemapSha,
+        });
+      }
+    }
+
     res.status(200).json({ ok: true, file: filePath, slug });
   } catch (e) {
     console.error(e);
