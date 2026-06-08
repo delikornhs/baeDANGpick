@@ -303,15 +303,25 @@ function renderAll(etfs) {
   `;
 
   // ── 분배금 추이 차트 ──
-  // 모든 ETF의 배당락일 합집합 (최근 12개)
-  const allDates = [...new Set(
-    etfs.flatMap(e => (e.trend||[]).map(t=>t.ex_date))
+  // 월중/월말 혼재 대응: ex_date → YYYY-MM 월 단위로 집계
+  // 같은 월에 여러 건이면 ex_date가 가장 늦은 값 사용
+  const toMonth = d => d.slice(0, 7);
+  const etfMonthMaps = etfs.map(e => {
+    const map = {};
+    (e.trend || []).forEach(t => {
+      const mo = toMonth(t.ex_date);
+      if (!map[mo] || t.ex_date > map[mo].ex_date) map[mo] = t;
+    });
+    return map;
+  });
+  const allMonths = [...new Set(
+    etfMonthMaps.flatMap(m => Object.keys(m))
   )].sort().slice(-12);
 
   const datasets = etfs.map((e, i) => ({
     label: e.name,
-    data: allDates.map(d => {
-      const rec = (e.trend||[]).find(t => t.ex_date === d);
+    data: allMonths.map(mo => {
+      const rec = etfMonthMaps[i][mo];
       return rec ? rec.dist : null;
     }),
     borderColor: PALETTE[i].line,
@@ -325,9 +335,9 @@ function renderAll(etfs) {
   new Chart(document.getElementById('cmpChart').getContext('2d'), {
     type: 'line',
     data: {
-      labels: allDates.map(d => {
-        const m = parseInt(d.slice(5,7));
-        return `${d.slice(2,4)}'${m}월`;
+      labels: allMonths.map(mo => {
+        const m = parseInt(mo.slice(5, 7));
+        return `${mo.slice(2, 4)}'${m}월`;
       }),
       datasets,
     },
