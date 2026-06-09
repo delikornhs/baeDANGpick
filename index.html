@@ -1622,8 +1622,8 @@ function renderCalendar() {
     }
   }
 
-  // 현재 기간 ETF만 달력에 표시
-  ALL_ETF.filter(e=>e.current).forEach(e => {
+  // 현재 기간 ETF만 달력에 표시 (비정기 제외)
+  ALL_ETF.filter(e=>e.current && e.freq !== '비정기').forEach(e => {
     addEv(lastBuy(e.ex), 'buy', '최종매수');
     addEv(exDate(e.ex), 'ex', '배당락');
     addEv(new Date(e.pay), 'pay', '지급일');
