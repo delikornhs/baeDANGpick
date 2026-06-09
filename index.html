@@ -1706,9 +1706,10 @@ function applyFilter() {
   // 검색/유형/주기 필터 (달력 필터와 동시 적용)
   if(q){const lq=q.toLowerCase();d=d.filter(e=>e.name.toLowerCase().includes(lq)||e.code.includes(lq)||e.brand.toLowerCase().includes(lq));}
   if(typeF!=='전체') d=d.filter(e=>e.type===typeF);
-  // 주기 필터 (항상 적용, 단 검색 중일 때는 비정기 ETF도 포함)
-  if(freqF==='월배당') d=d.filter(e=>e.freq==='월배당'||e.freq==='월배당추정'||(!!q&&e.freq==='비정기'));
-  else if(freqF!=='전체') d=d.filter(e=>e.freq===freqF);
+  // 주기 필터 (비정기는 분기배당이상 탭에 포함)
+  if(freqF==='월배당') d=d.filter(e=>e.freq==='월배당'||e.freq==='월배당추정');
+  else if(freqF==='분기배당이상') d=d.filter(e=>e.freq==='분기배당이상'||e.freq==='비정기');
+  // '전체주기'는 필터 없음
   if(freqF==='월배당' && timingF!=='전체') d=d.filter(e=>e.timing===timingF);
   d.sort((a,b)=>{
     if(sort==='rate_d') return b.rate-a.rate;
