@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "2026-06-mid-schedule",
+    "type": "schedule",
+    "timing": "월중",
+    "month": "2026년 6월",
+    "sent_at": "2026-06-10",
+    "lastBuy": "2026-06-11",
+    "exDate": "2026-06-12",
+    "record": "2026-06-15"
+  }
+]
