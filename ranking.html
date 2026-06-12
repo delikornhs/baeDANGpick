@@ -204,14 +204,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <!-- ═══ 섹션 1: 분배율/분배금 ═══ -->
 <div id="distSection">
 
-  <!-- 기준월 안내 (월중·월말 기준월 다를 때만 표시) -->
-  <div id="distNotice" style="display:none;max-width:1100px;margin:12px auto 0;padding:0 20px">
-    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:11px 14px;font-size:12.5px;color:#1e40af;line-height:1.6">
-      <strong>ℹ️ <span id="distNoticeMonth"></span>월 월말 기준 랭킹입니다.</strong><br>
-      월중 ETF는 <span id="distNoticeMidMonth"></span>월 분배금이 이미 확정됐으나 이 랭킹에는 아직 반영되지 않았습니다. 각 ETF 카드를 클릭하면 상세 페이지에서 최신 분배금을 확인할 수 있으며, <span id="distNoticeMidMonth2"></span>월 월말 업데이트 시 랭킹에 함께 반영됩니다.
-    </div>
-  </div>
-
   <div class="opt-wrap">
     <div class="opt-panel">
       <div class="opt-rows">
@@ -226,6 +218,14 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
           <button class="otog"    data-og="distPeriod" data-v="연환산" onclick="setDistOpt('distPeriod','연환산')">연환산 <span class="opt-badge" id="distYearBadge"></span> <span class="info-tip" data-tip="ETF가 연중에 상장된 경우 분배 기간이 짧아 합계 및 연환산 분배율이 낮게 나타날 수 있습니다.">ⓘ</span></button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- 기준월 안내 (월중·월말 기준월 다를 때만 표시) -->
+  <div id="distNotice" style="display:none;max-width:1100px;margin:10px auto 0;padding:0 20px">
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:11px 14px;font-size:12.5px;color:#1e40af;line-height:1.6">
+      <strong>ℹ️ <span id="distNoticeMonth"></span>월 월말 기준 랭킹입니다.</strong><br>
+      월중 ETF는 <span id="distNoticeMidMonth"></span>월 분배금이 이미 확정됐으나 이 랭킹에는 아직 반영되지 않았습니다. 각 ETF 카드를 클릭하면 상세 페이지에서 최신 분배금을 확인할 수 있으며, <span id="distNoticeMidMonth2"></span>월 월말 업데이트 시 랭킹에 함께 반영됩니다.
     </div>
   </div>
 
