@@ -787,6 +787,19 @@ function saveState(code) {
     document.getElementById('distMonthBadge').textContent = distMonthNum + '월';
   document.getElementById('distYearBadge').textContent = priceYear + '년';
 
+  // 기준월 안내 박스 표시 (월중·월말 기준월 다를 때)
+  if (!distIsComplete && _midM && _endM) {
+    const endMonthNum = parseInt(_endM.split('-')[1]);
+    const midMonthNum = parseInt(_midM.split('-')[1]);
+    const noticeEl = document.getElementById('distNotice');
+    if (noticeEl) {
+      noticeEl.style.display = '';
+      document.getElementById('distNoticeMonth').textContent = endMonthNum;
+      document.getElementById('distNoticeMidMonth').textContent = midMonthNum;
+      document.getElementById('distNoticeMidMonth2').textContent = midMonthNum;
+    }
+  }
+
   // 최초 진입 시 분배율 탭 자동 로드
   const saved = sessionStorage.getItem('rankState');
   if (!saved) { await runDistRanking(); return; }
@@ -825,19 +838,6 @@ function saveState(code) {
 
   // 탭 복원 (수익률 탭 복원 시엔 이미 위에서 로드됨)
   switchTab(s.tab || 'dist');
-
-  // 기준월 안내 박스 표시
-  if (!distIsComplete && _midM && _endM) {
-    const endMonthNum = parseInt(_endM.split('-')[1]);
-    const midMonthNum = parseInt(_midM.split('-')[1]);
-    const noticeEl = document.getElementById('distNotice');
-    if (noticeEl) {
-      noticeEl.style.display = '';
-      document.getElementById('distNoticeMonth').textContent = endMonthNum;
-      document.getElementById('distNoticeMidMonth').textContent = midMonthNum;
-      document.getElementById('distNoticeMidMonth2').textContent = midMonthNum;
-    }
-  }
 
   // 마지막으로 클릭한 ETF 위치로 스크롤
   if (s.lastCode) {
