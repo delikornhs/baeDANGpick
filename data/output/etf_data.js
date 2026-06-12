@@ -1,3 +1,9 @@
+const PRICE_DATE = "2026-06-11";
+const MID_NOTICE_DATE = "2026-06-11";
+const END_NOTICE_DATE = "2026-05-27";
+const WEEK_START = "2026-05-29";
+const WEEK_END = "2026-06-05";
+
 const ETF_ALL = [
 {isin:'KR7451060008',code:'451060',name:"1Q 200액티브",brand:'1Q',type:'기타',freq:'분기배당이상',timing:'', listedDate:'2023-01-31', ret1w:-3.01,ret1m:15.51,ret3m:56.7,ret6m:124.63,ret1y:248.2,retListed:328.59,ret1wf:-3.01,tret1w:-3.01,tret1m:15.51,tret3m:57.23,tret6m:126.52,tret1y:251.45,tretListed:332.59,tret1wf:-3.01,ex:'2026-04-30',pay:'2026-05-04',dist:143,price:42160,rate:0.44,manager:"하나자산운용",current:false,trend:[{"ex_date": "2025-10-31", "dist": 39}, {"ex_date": "2026-01-30", "dist": 212}, {"ex_date": "2026-04-30", "dist": 143}],stab:{"score": "변동 큼", "variation": 38.9, "trend": "감소", "level": "평균 수준", "levelDist": "평균보다 높음", "annualDist": 355, "avgMonthlyDist": 177.5, "avgMonthlyRate": 0.546, "peerGroup": "분기배당이상", "groupAvgRate": 0.557, "groupAvgDist": 138.8, "trendChangePct": -32.5}},
 {isin:'KR7491610002',code:'491610',name:"1Q CD금리액티브(합성)",brand:'1Q',type:'기타',freq:'분기배당이상',timing:'', listedDate:'2024-09-24', ret1w:0.06,ret1m:0.24,ret3m:0.68,ret6m:1.35,ret1y:2.63,retListed:4.88,ret1wf:0.06,tret1w:0.06,tret1m:0.24,tret3m:0.68,tret6m:1.35,tret1y:3.36,tretListed:5.62,tret1wf:0.06,ex:'2025-11-14',pay:'2025-11-17',dist:742,price:104150,rate:0.71,manager:"하나자산운용",current:false,trend:[{"ex_date": "2025-11-14", "dist": 742}],stab:{"score": "", "variation": 0.0, "trend": "", "level": "", "levelDist": "", "annualDist": 0, "avgMonthlyDist": 0.0, "avgMonthlyRate": 0.0, "peerGroup": "분기배당이상", "groupAvgRate": 0.557, "groupAvgDist": 138.8, "trendChangePct": 0.0}},
