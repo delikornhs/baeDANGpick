@@ -1,4 +1,4 @@
-// api/publish.js — 인사이트 글 게시 서버리스 함수
+﻿// api/publish.js — 인사이트 글 게시 서버리스 함수
 // Vercel 환경변수 필요: GITHUB_TOKEN, ADMIN_SECRET
 
 const OWNER  = 'delikornhs';
@@ -181,7 +181,7 @@ export default async function handler(req, res) {
     const { sha: sitemapSha, content: sitemapRaw } = await getFileSha(sitemapPath);
     if (sitemapRaw) {
       const today = date;
-      const newUrl = `  <url>\n    <loc>https://bae-dang-pick.vercel.app/${filePath}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>`;
+      const newUrl = `  <url>\n    <loc>https://baedangetf.com/${filePath}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>`;
       // 이미 등록된 URL이면 추가하지 않음
       if (!sitemapRaw.includes(`/${filePath}`)) {
         const updatedSitemap = sitemapRaw.replace('</urlset>', `${newUrl}\n</urlset>`);

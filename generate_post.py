@@ -1,4 +1,4 @@
-"""
+﻿"""
 배당픽 스레드 포스트 생성기
 ============================
 데이터 업데이트 후 자동 실행되어 posts/ 폴더에 PNG + TXT 저장
@@ -153,7 +153,7 @@ def generate_image(timing_label, month_label, etfs, pay_date):
     draw.rectangle([PAD, y, W - PAD, y + 1], fill=(*C_GREEN, 60))
     y += 24
 
-    draw.text((PAD, y), 'bae-dang-pick.vercel.app', font=fontsb(30), fill=C_GREEN)
+    draw.text((PAD, y), 'baedangetf.com', font=fontsb(30), fill=C_GREEN)
     draw.text((W - PAD, y + 2), '전체 ETF 분배금 확인 →',
               font=fonts(26), fill=C_GRAY, anchor='ra')
 
@@ -181,7 +181,7 @@ def generate_text(timing_label, month_label, etfs, pay_date):
 
     lines += [
         "",
-        "👉 bae-dang-pick.vercel.app",
+        "👉 baedangetf.com",
         "",
         "#월배당ETF #ETF분배금 #배당투자 #배당픽 #월배당",
     ]

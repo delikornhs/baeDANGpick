@@ -1,4 +1,4 @@
-User-agent: *
+﻿User-agent: *
 Allow: /
 
-Sitemap: https://bae-dang-pick.vercel.app/sitemap.xml
+Sitemap: https://baedangetf.com/sitemap.xml

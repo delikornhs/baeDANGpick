@@ -1,4 +1,4 @@
-// ================================================================
+﻿// ================================================================
 // 배당픽 뉴스레터 구독 - Google Apps Script
 //
 // [Script Properties 설정 필요] Apps Script → 프로젝트 설정 → 스크립트 속성
@@ -91,7 +91,7 @@ function handleUnsubscribe(token) {
         <html><body style="font-family:sans-serif;text-align:center;padding:60px 20px">
           <h2 style="color:#1d6b38">수신 거부 완료</h2>
           <p style="color:#555">배당픽 뉴스레터 수신이 해지되었습니다.</p>
-          <a href="https://bae-dang-pick.vercel.app"
+          <a href="https://baedangetf.com"
              style="display:inline-block;margin-top:20px;background:#1d6b38;color:#fff;
                     padding:10px 24px;border-radius:7px;text-decoration:none;font-size:14px">
             배당픽 바로가기
@@ -170,7 +170,7 @@ function sendWelcomeEmail(email, token, scriptUrl) {
           매월 ETF 분배금 일정(배당락일·지급일·분배금액)을 월 2회 이메일로 안내해 드립니다.<br>
           관심 ETF를 등록하셨다면 해당 ETF 중심으로 맞춤 뉴스레터를 드립니다.
         </p>
-        <a href="https://bae-dang-pick.vercel.app"
+        <a href="https://baedangetf.com"
            style="display:inline-block;background:#1d6b38;color:#fff;text-decoration:none;
                   font-size:14px;font-weight:700;padding:12px 28px;border-radius:7px">
           배당픽 바로가기 →
@@ -272,7 +272,7 @@ function buildScheduleNewsletterHtml(data, watchlist, scriptUrl, token) {
   </td></tr>
 
   <tr><td style="padding:8px 28px 28px;text-align:center">
-    <a href="https://bae-dang-pick.vercel.app"
+    <a href="https://baedangetf.com"
        style="display:inline-block;background:#1d6b38;color:#fff;text-decoration:none;
               font-size:14px;font-weight:700;padding:13px 32px;border-radius:8px">
       전체 일정 확인하기 →
@@ -394,7 +394,7 @@ function buildDataNewsletterHtml(data, watchlist, scriptUrl, token) {
   </td></tr>
 
   <tr><td style="padding:8px 28px 28px;text-align:center">
-    <a href="https://bae-dang-pick.vercel.app"
+    <a href="https://baedangetf.com"
        style="display:inline-block;background:#1d6b38;color:#fff;text-decoration:none;
               font-size:14px;font-weight:700;padding:13px 32px;border-radius:8px">
       전체 일정 확인하기 →

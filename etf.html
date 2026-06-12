@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <!-- Google tag (gtag.js) -->
@@ -22,7 +22,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ETF 상세 - 배당픽">
 <meta name="twitter:description" content="월배당 ETF 분배금·분배율·수익률 상세 정보 - 배당픽">
-<link rel="canonical" href="https://bae-dang-pick.vercel.app/etf.html">
+<link rel="canonical" href="https://baedangetf.com/etf.html">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="/data/output/etf_data.js"></script>
 <style>
@@ -760,7 +760,7 @@ function updateMeta(e, name) {
   if (annualRate) desc += ' 연간 분배율 ' + annualRate + '.';
   desc += ' 최종매수일·배당락일·지급일 및 수익률 확인.';
 
-  const canonUrl = 'https://bae-dang-pick.vercel.app/etf.html?code=' + code;
+  const canonUrl = 'https://baedangetf.com/etf.html?code=' + code;
   const canon = document.querySelector('link[rel="canonical"]');
   if (canon) canon.href = canonUrl;
 
@@ -1521,7 +1521,7 @@ function updateSimShareCard() {
     </div>
     <div style="background:#f7f7f4;padding:9px 20px;display:flex;justify-content:space-between;font-size:9px;color:#9a9a93;border-top:1px solid #e8e8e2">
       <span>배당픽 · ETF 분배금 일정 &amp; 계산기</span>
-      <span>bae-dang-pick.vercel.app</span>
+      <span>baedangetf.com</span>
     </div>`;
 }
 
