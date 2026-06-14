@@ -138,6 +138,7 @@ function doLogin() {
   const pw = document.getElementById('pwInput').value.trim();
   if (!pw) return;
   adminSecret = pw;
+  localStorage.setItem('bdp_admin', '1');
   // 실제 인증은 서버에서 하므로 여기서는 바로 에디터 진입
   document.getElementById('loginWrap').style.display = 'none';
   document.getElementById('adminWrap').style.display = 'block';
@@ -147,6 +148,7 @@ function doLogin() {
 
 function doLogout() {
   adminSecret = '';
+  localStorage.removeItem('bdp_admin');
   document.getElementById('loginWrap').style.display = 'flex';
   document.getElementById('adminWrap').style.display = 'none';
   document.getElementById('pwInput').value = '';
