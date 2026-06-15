@@ -760,7 +760,7 @@ function updateMeta(e, name) {
   if (annualRate) desc += ' 연간 분배율 ' + annualRate + '.';
   desc += ' 최종매수일·배당락일·지급일 및 수익률 확인.';
 
-  const canonUrl = 'https://baedangetf.com/etf.html?code=' + code;
+  const canonUrl = 'https://baedangetf.com/etf/' + code;
   const canon = document.querySelector('link[rel="canonical"]');
   if (canon) canon.href = canonUrl;
 
