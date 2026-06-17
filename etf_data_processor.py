@@ -377,9 +377,21 @@ def build_latest(history: dict, target_month: str = None):
     if target_month:
         target_dates = set(d for d in all_ex_dates if d.startswith(target_month))
     else:
+        # 월배당/월배당추정 ETF의 배당락일만 기준으로 삼아야
+        # 비정기 분배 ETF(freq != 월배당)가 target_dates 계산을 오염시키지 않음
+        monthly_isins = {
+            isin for isin in history
+            if classify_frequency(isin, history) in ("월배당", "월배당추정")
+        }
+        monthly_ex_dates = sorted(set(
+            ex for isin, d in history.items()
+            if isin in monthly_isins
+            for ex in d.keys()
+            if re.match(r"\d{4}-\d{2}-\d{2}", ex)
+        ))
         # 월중(20일 이하)과 월말(21일 이상) 각각 독립적으로 최신 날짜 선택
-        mid_dates = [d for d in all_ex_dates if int(d[8:10]) <= 20]
-        end_dates = [d for d in all_ex_dates if int(d[8:10]) > 20]
+        mid_dates = [d for d in monthly_ex_dates if int(d[8:10]) <= 20]
+        end_dates = [d for d in monthly_ex_dates if int(d[8:10]) > 20]
         target_dates = set()
         if mid_dates:
             target_dates.add(mid_dates[-1])
