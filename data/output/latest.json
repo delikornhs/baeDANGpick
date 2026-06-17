@@ -299,7 +299,7 @@
     "price": 13795,
     "rate": 0.26,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-04-30",
@@ -439,7 +439,7 @@
     "price": 15115,
     "rate": 0.14,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-09-15",
@@ -559,7 +559,7 @@
     "pay_date": "2025-11-03",
     "dist": 12,
     "price": 10445,
-    "rate": 0.12,
+    "rate": 0.11,
     "notice_date": "2025-10-29",
     "current": false,
     "trend": [
@@ -1008,7 +1008,7 @@
     "pay_date": "2026-01-02",
     "dist": 757,
     "price": 51050,
-    "rate": 1.49,
+    "rate": 1.48,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -1252,7 +1252,7 @@
     "pay_date": "2025-12-02",
     "dist": 135,
     "price": 10670,
-    "rate": 1.26,
+    "rate": 1.27,
     "notice_date": "2025-11-26",
     "current": false,
     "trend": [
@@ -1540,7 +1540,7 @@
     "pay_date": "2026-01-05",
     "dist": 34,
     "price": 11750,
-    "rate": 0.3,
+    "rate": 0.29,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -1829,7 +1829,7 @@
     "pay_date": "2026-01-05",
     "dist": 246,
     "price": 20195,
-    "rate": 1.28,
+    "rate": 1.22,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -1885,7 +1885,7 @@
     "pay_date": "2026-01-05",
     "dist": 42,
     "price": 5910,
-    "rate": 0.78,
+    "rate": 0.71,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -1941,7 +1941,7 @@
     "pay_date": "2026-01-05",
     "dist": 180,
     "price": 14030,
-    "rate": 1.35,
+    "rate": 1.28,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -1997,7 +1997,7 @@
     "pay_date": "2026-01-05",
     "dist": 70,
     "price": 11625,
-    "rate": 0.62,
+    "rate": 0.6,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -2053,7 +2053,7 @@
     "pay_date": "2026-01-05",
     "dist": 43,
     "price": 13210,
-    "rate": 0.34,
+    "rate": 0.33,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -2143,16 +2143,19 @@
     "return_1w": 6.36,
     "return_1m": 2.28,
     "return_3m": 3.06,
+    "return_6m": 34.05,
     "return_listed": 34.3,
     "total_return_1w": 6.36,
     "total_return_1m": 2.65,
     "total_return_3m": 4.05,
+    "total_return_6m": 36.36,
     "total_return_listed": 36.61,
     "return_1wf": 1.25,
     "total_return_1wf": 1.25,
     "price_1w": 13680,
     "price_1m": 14225,
     "price_3m": 14118,
+    "price_6m": 10854,
     "price_listed": 10834,
     "stab_score": "변동 매우 큼",
     "stab_variation": 72.0,
@@ -2165,10 +2168,7 @@
     "avg_monthly_rate": 0.288,
     "peer_group": "월배당(일반배당)",
     "group_avg_rate": 0.265,
-    "group_avg_dist": 66.3,
-    "price_6m": 10854,
-    "return_6m": 34.05,
-    "total_return_6m": 36.36
+    "group_avg_dist": 66.3
   },
   {
     "isin": "KR7225130004",
@@ -2182,7 +2182,7 @@
     "pay_date": "2026-01-05",
     "dist": 504,
     "price": 48890,
-    "rate": 1.14,
+    "rate": 1.03,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -2238,7 +2238,7 @@
     "pay_date": "2026-01-05",
     "dist": 79,
     "price": 27675,
-    "rate": 0.31,
+    "rate": 0.29,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -2350,7 +2350,7 @@
     "pay_date": "2026-01-05",
     "dist": 26,
     "price": 27555,
-    "rate": 0.1,
+    "rate": 0.09,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -2722,7 +2722,7 @@
     "pay_date": "2026-01-05",
     "dist": 58,
     "price": 13995,
-    "rate": 0.43,
+    "rate": 0.41,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -2906,7 +2906,7 @@
     "pay_date": "2026-01-05",
     "dist": 236,
     "price": 89505,
-    "rate": 0.35,
+    "rate": 0.26,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -3258,7 +3258,7 @@
     "pay_date": "2026-01-05",
     "dist": 101,
     "price": 5155,
-    "rate": 2.01,
+    "rate": 1.96,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -3667,7 +3667,7 @@
     "pay_date": "2026-01-05",
     "dist": 289,
     "price": 20420,
-    "rate": 1.49,
+    "rate": 1.42,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -3795,7 +3795,7 @@
     "pay_date": "2026-01-05",
     "dist": 334,
     "price": 15180,
-    "rate": 2.21,
+    "rate": 2.2,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -3995,7 +3995,7 @@
     "pay_date": "2026-01-05",
     "dist": 288,
     "price": 16780,
-    "rate": 1.74,
+    "rate": 1.72,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -4107,7 +4107,7 @@
     "pay_date": "2026-01-05",
     "dist": 370,
     "price": 12585,
-    "rate": 2.9,
+    "rate": 2.94,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -4279,7 +4279,7 @@
     "price": 15845,
     "rate": 0.25,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-06-13",
@@ -4777,7 +4777,7 @@
     "pay_date": "2026-01-05",
     "dist": 54,
     "price": 25120,
-    "rate": 0.22,
+    "rate": 0.21,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -4833,7 +4833,7 @@
     "pay_date": "2026-01-05",
     "dist": 470,
     "price": 46305,
-    "rate": 1.05,
+    "rate": 1.02,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -4889,7 +4889,7 @@
     "pay_date": "2026-01-05",
     "dist": 188,
     "price": 6380,
-    "rate": 2.89,
+    "rate": 2.95,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -5057,7 +5057,7 @@
     "pay_date": "2026-01-05",
     "dist": 54,
     "price": 12815,
-    "rate": 0.43,
+    "rate": 0.42,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -5213,7 +5213,7 @@
     "pay_date": "2026-01-05",
     "dist": 89,
     "price": 31090,
-    "rate": 0.28,
+    "rate": 0.29,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -5489,7 +5489,7 @@
     "pay_date": "2026-01-05",
     "dist": 666,
     "price": 37125,
-    "rate": 1.91,
+    "rate": 1.79,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -5545,7 +5545,7 @@
     "pay_date": "2026-01-05",
     "dist": 44,
     "price": 27975,
-    "rate": 0.17,
+    "rate": 0.16,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -5601,7 +5601,7 @@
     "pay_date": "2026-01-05",
     "dist": 57,
     "price": 30415,
-    "rate": 0.2,
+    "rate": 0.19,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -5657,7 +5657,7 @@
     "pay_date": "2026-01-05",
     "dist": 233,
     "price": 26670,
-    "rate": 0.88,
+    "rate": 0.87,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -5883,7 +5883,7 @@
     "pay_date": "2026-01-05",
     "dist": 3,
     "price": 8770,
-    "rate": 0.04,
+    "rate": 0.03,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -5995,7 +5995,7 @@
     "pay_date": "2026-01-05",
     "dist": 88,
     "price": 12695,
-    "rate": 0.68,
+    "rate": 0.69,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -6051,7 +6051,7 @@
     "pay_date": "2026-01-05",
     "dist": 308,
     "price": 51025,
-    "rate": 0.66,
+    "rate": 0.6,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -6107,7 +6107,7 @@
     "pay_date": "2026-01-05",
     "dist": 406,
     "price": 87190,
-    "rate": 0.51,
+    "rate": 0.47,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -6163,7 +6163,7 @@
     "pay_date": "2026-01-05",
     "dist": 1,
     "price": 1489,
-    "rate": 0.06,
+    "rate": 0.07,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -6219,7 +6219,7 @@
     "pay_date": "2026-01-05",
     "dist": 231,
     "price": 32940,
-    "rate": 0.8,
+    "rate": 0.7,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -6275,7 +6275,7 @@
     "pay_date": "2026-01-05",
     "dist": 34,
     "price": 14605,
-    "rate": 0.24,
+    "rate": 0.23,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -6403,7 +6403,7 @@
     "pay_date": "2026-01-05",
     "dist": 8,
     "price": 15550,
-    "rate": 0.06,
+    "rate": 0.05,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -6459,7 +6459,7 @@
     "pay_date": "2026-01-05",
     "dist": 775,
     "price": 39695,
-    "rate": 2.03,
+    "rate": 1.95,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -6515,7 +6515,7 @@
     "pay_date": "2026-01-05",
     "dist": 37,
     "price": 5690,
-    "rate": 0.69,
+    "rate": 0.65,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -6932,7 +6932,7 @@
     "pay_date": "2026-01-05",
     "dist": 365,
     "price": 24105,
-    "rate": 1.61,
+    "rate": 1.51,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -7060,9 +7060,9 @@
     "pay_date": "2026-06-17",
     "dist": 230,
     "price": 11260,
-    "rate": 2.0,
+    "rate": 2.04,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-06-13",
@@ -7160,9 +7160,9 @@
     "pay_date": "2026-06-17",
     "dist": 612,
     "price": 20505,
-    "rate": 3.04,
+    "rate": 3.13,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-06-13",
@@ -7260,9 +7260,9 @@
     "pay_date": "2026-06-17",
     "dist": 389,
     "price": 12225,
-    "rate": 3.02,
+    "rate": 3.11,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-06-13",
@@ -7631,7 +7631,7 @@
     "pay_date": "2025-05-07",
     "dist": 121,
     "price": 25675,
-    "rate": 0.52,
+    "rate": 0.47,
     "notice_date": "2025-04-28",
     "current": false,
     "trend": [
@@ -7950,7 +7950,7 @@
     "pay_date": "2026-01-05",
     "dist": 500,
     "price": 53345,
-    "rate": 0.95,
+    "rate": 0.94,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -8066,7 +8066,7 @@
     "pay_date": "2025-05-07",
     "dist": 10,
     "price": 3880,
-    "rate": 0.27,
+    "rate": 0.26,
     "notice_date": "2025-04-28",
     "current": false,
     "trend": [
@@ -8977,7 +8977,7 @@
     "pay_date": "2026-02-03",
     "dist": 80,
     "price": 34160,
-    "rate": 0.27,
+    "rate": 0.23,
     "notice_date": "2026-01-28",
     "current": false,
     "trend": [
@@ -9196,7 +9196,7 @@
     "pay_date": "2026-01-05",
     "dist": 40,
     "price": 16150,
-    "rate": 0.26,
+    "rate": 0.25,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -9252,7 +9252,7 @@
     "pay_date": "2026-01-05",
     "dist": 30,
     "price": 12080,
-    "rate": 0.26,
+    "rate": 0.25,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -9584,7 +9584,7 @@
     "pay_date": "2025-05-07",
     "dist": 40,
     "price": 16470,
-    "rate": 0.25,
+    "rate": 0.24,
     "notice_date": "2025-04-28",
     "current": false,
     "trend": [
@@ -10565,7 +10565,7 @@
     "pay_date": "2026-01-05",
     "dist": 346,
     "price": 194845,
-    "rate": 0.23,
+    "rate": 0.18,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -11067,7 +11067,7 @@
     "pay_date": "2025-08-04",
     "dist": 215,
     "price": 16960,
-    "rate": 1.29,
+    "rate": 1.27,
     "notice_date": "2025-07-29",
     "current": false,
     "trend": [
@@ -11122,7 +11122,7 @@
     "pay_date": "2025-08-04",
     "dist": 195,
     "price": 19135,
-    "rate": 1.04,
+    "rate": 1.02,
     "notice_date": "2025-07-29",
     "current": false,
     "trend": [
@@ -11177,7 +11177,7 @@
     "pay_date": "2025-08-04",
     "dist": 200,
     "price": 19655,
-    "rate": 1.05,
+    "rate": 1.02,
     "notice_date": "2025-07-29",
     "current": false,
     "trend": [
@@ -12414,7 +12414,7 @@
     "pay_date": "2026-01-05",
     "dist": 160,
     "price": 17905,
-    "rate": 0.88,
+    "rate": 0.89,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -12719,7 +12719,7 @@
     "pay_date": "2026-01-05",
     "dist": 80,
     "price": 23980,
-    "rate": 0.35,
+    "rate": 0.33,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -13076,9 +13076,9 @@
     "pay_date": "2026-06-17",
     "dist": 159,
     "price": 13730,
-    "rate": 1.25,
+    "rate": 1.26,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2026-05-15",
@@ -13456,7 +13456,7 @@
     "price": 18705,
     "rate": 0.44,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-06-30",
@@ -14358,7 +14358,7 @@
     "pay_date": "2026-01-05",
     "dist": 27,
     "price": 23640,
-    "rate": 0.13,
+    "rate": 0.11,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -14416,7 +14416,7 @@
     "price": 24720,
     "rate": 0.23,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-08-14",
@@ -14642,9 +14642,9 @@
     "pay_date": "2026-06-17",
     "dist": 350,
     "price": 27400,
-    "rate": 1.44,
+    "rate": 1.46,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -14851,7 +14851,7 @@
     "pay_date": "2025-12-17",
     "dist": 157,
     "price": 10115,
-    "rate": 1.56,
+    "rate": 1.55,
     "notice_date": "2025-12-11",
     "current": false,
     "trend": [
@@ -15080,7 +15080,7 @@
     "pay_date": "2025-12-17",
     "dist": 170,
     "price": 10530,
-    "rate": 1.63,
+    "rate": 1.61,
     "notice_date": "2025-12-11",
     "current": false,
     "trend": [
@@ -15136,7 +15136,7 @@
     "pay_date": "2025-12-17",
     "dist": 184,
     "price": 9660,
-    "rate": 1.96,
+    "rate": 1.9,
     "notice_date": "2025-12-11",
     "current": false,
     "trend": [
@@ -15768,7 +15768,7 @@
     "pay_date": "2026-01-05",
     "dist": 62,
     "price": 12925,
-    "rate": 0.52,
+    "rate": 0.48,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -16351,7 +16351,7 @@
     "price": 14535,
     "rate": 0.23,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-08-14",
@@ -16447,7 +16447,7 @@
     "price": 18595,
     "rate": 0.21,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-08-14",
@@ -16543,7 +16543,7 @@
     "price": 23295,
     "rate": 0.16,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-08-14",
@@ -17337,7 +17337,7 @@
     "pay_date": "2026-01-05",
     "dist": 130,
     "price": 24410,
-    "rate": 0.56,
+    "rate": 0.53,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -17393,7 +17393,7 @@
     "pay_date": "2025-12-17",
     "dist": 807,
     "price": 61580,
-    "rate": 1.32,
+    "rate": 1.31,
     "notice_date": "2025-12-11",
     "current": false,
     "trend": [
@@ -17449,7 +17449,7 @@
     "pay_date": "2026-01-05",
     "dist": 750,
     "price": 65605,
-    "rate": 1.16,
+    "rate": 1.14,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -17505,7 +17505,7 @@
     "pay_date": "2026-01-05",
     "dist": 565,
     "price": 59275,
-    "rate": 0.94,
+    "rate": 0.95,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -17561,7 +17561,7 @@
     "pay_date": "2026-01-05",
     "dist": 625,
     "price": 57455,
-    "rate": 1.08,
+    "rate": 1.09,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -17691,7 +17691,7 @@
     "price": 13815,
     "rate": 0.5,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-11-14",
@@ -17992,7 +17992,7 @@
     "price": 114585,
     "rate": 0.22,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-08-14",
@@ -18088,7 +18088,7 @@
     "price": 113170,
     "rate": 0.21,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-08-14",
@@ -18184,7 +18184,7 @@
     "price": 114475,
     "rate": 0.24,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-08-14",
@@ -18804,7 +18804,7 @@
     "price": 9775,
     "rate": 0.35,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-10-15",
@@ -18987,7 +18987,7 @@
     "pay_date": "2026-01-05",
     "dist": 120,
     "price": 11870,
-    "rate": 1.0,
+    "rate": 1.01,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -19043,9 +19043,9 @@
     "pay_date": "2026-06-17",
     "dist": 78,
     "price": 7800,
-    "rate": 1.0,
+    "rate": 1.01,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -19954,6 +19954,30 @@
     "group_avg_dist": 137.8
   },
   {
+    "isin": "KR70068M0007",
+    "code": "0068M0",
+    "name": "KODEX 미국S&amp;P500버퍼6월액티브",
+    "brand": "KODEX",
+    "type": "기타",
+    "freq": "분기배당이상",
+    "timing": "",
+    "ex_date": "2026-06-19",
+    "pay_date": "2026-06-23",
+    "dist": 85,
+    "price": 12560,
+    "rate": 0.69,
+    "notice_date": "2026-06-17",
+    "current": true,
+    "trend": [
+      {
+        "ex_date": "2026-06-19",
+        "dist": 85
+      }
+    ],
+    "listed_date": "",
+    "manager": "삼성자산운용"
+  },
+  {
     "isin": "KR70089C0004",
     "code": "0089C0",
     "name": "KODEX 미국S&amp;P500변동성확대시커버드콜",
@@ -20050,7 +20074,7 @@
     "pay_date": "2026-01-05",
     "dist": 245,
     "price": 32580,
-    "rate": 0.78,
+    "rate": 0.75,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -20846,7 +20870,7 @@
     "pay_date": "2026-01-05",
     "dist": 122,
     "price": 21340,
-    "rate": 0.63,
+    "rate": 0.57,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -20902,7 +20926,7 @@
     "pay_date": "2026-01-05",
     "dist": 228,
     "price": 33320,
-    "rate": 0.72,
+    "rate": 0.68,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -21122,7 +21146,7 @@
     "pay_date": "2026-01-05",
     "dist": 135,
     "price": 15540,
-    "rate": 0.86,
+    "rate": 0.87,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -21178,7 +21202,7 @@
     "pay_date": "2026-01-05",
     "dist": 135,
     "price": 19000,
-    "rate": 0.7,
+    "rate": 0.71,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -21284,7 +21308,7 @@
     "pay_date": "2026-01-05",
     "dist": 40,
     "price": 16745,
-    "rate": 0.25,
+    "rate": 0.24,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -21514,7 +21538,7 @@
     "price": 13405,
     "rate": 0.22,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -21712,9 +21736,9 @@
     "pay_date": "2026-06-17",
     "dist": 101,
     "price": 13520,
-    "rate": 0.75,
+    "rate": 0.76,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -23027,7 +23051,7 @@
     "price": 16230,
     "rate": 0.13,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2026-05-15",
@@ -23078,7 +23102,7 @@
     "price": 18545,
     "rate": 0.2,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -23697,7 +23721,7 @@
     "pay_date": "2025-05-07",
     "dist": 7,
     "price": 2065,
-    "rate": 0.35,
+    "rate": 0.34,
     "notice_date": "2025-04-28",
     "current": false,
     "trend": [
@@ -23824,7 +23848,7 @@
     "pay_date": "2026-01-05",
     "dist": 40,
     "price": 11490,
-    "rate": 0.38,
+    "rate": 0.35,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -24052,7 +24076,7 @@
     "pay_date": "2026-01-05",
     "dist": 135,
     "price": 14060,
-    "rate": 1.01,
+    "rate": 0.96,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -24595,7 +24619,7 @@
     "price": 12295,
     "rate": 0.36,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2026-03-13",
@@ -24715,7 +24739,7 @@
     "pay_date": "2025-11-04",
     "dist": 255,
     "price": 28940,
-    "rate": 0.9,
+    "rate": 0.88,
     "notice_date": "2025-10-29",
     "current": false,
     "trend": [
@@ -25043,11 +25067,13 @@
     "return_1m": -5.99,
     "return_3m": -6.85,
     "return_6m": -12.95,
+    "return_1y": -3.17,
     "return_listed": -3.17,
     "total_return_1w": -2.72,
     "total_return_1m": -5.99,
     "total_return_3m": -6.77,
     "total_return_6m": -12.83,
+    "total_return_1y": -2.9,
     "total_return_listed": -2.9,
     "return_1wf": -2.85,
     "total_return_1wf": -2.85,
@@ -25055,6 +25081,7 @@
     "price_1m": 10265,
     "price_3m": 10360,
     "price_6m": 11085,
+    "price_1y": 9966,
     "price_listed": 9966,
     "stab_score": "변동 매우 큼",
     "stab_variation": 76.9,
@@ -25067,10 +25094,7 @@
     "avg_monthly_rate": 0.065,
     "peer_group": "분기배당이상",
     "group_avg_rate": 0.544,
-    "group_avg_dist": 131.2,
-    "price_1y": 9966,
-    "return_1y": -3.17,
-    "total_return_1y": -2.9
+    "group_avg_dist": 131.2
   },
   {
     "isin": "KR7372330001",
@@ -25502,7 +25526,7 @@
     "price": 16100,
     "rate": 0.23,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -26533,9 +26557,9 @@
     "pay_date": "2026-06-17",
     "dist": 29,
     "price": 4440,
-    "rate": 0.69,
+    "rate": 0.7,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -26633,7 +26657,7 @@
     "pay_date": "2025-05-07",
     "dist": 43,
     "price": 18990,
-    "rate": 0.24,
+    "rate": 0.23,
     "notice_date": "2025-04-28",
     "current": false,
     "trend": [
@@ -26748,7 +26772,7 @@
     "pay_date": "2026-01-05",
     "dist": 33,
     "price": 13505,
-    "rate": 0.26,
+    "rate": 0.24,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -26954,7 +26978,7 @@
     "pay_date": "2026-01-05",
     "dist": 17,
     "price": 12080,
-    "rate": 0.15,
+    "rate": 0.14,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -28067,9 +28091,9 @@
     "pay_date": "2026-06-17",
     "dist": 139,
     "price": 11090,
-    "rate": 1.24,
+    "rate": 1.25,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -28367,7 +28391,7 @@
     "pay_date": "2025-12-17",
     "dist": 681,
     "price": 51890,
-    "rate": 1.33,
+    "rate": 1.31,
     "notice_date": "2025-12-11",
     "current": false,
     "trend": [
@@ -28479,7 +28503,7 @@
     "pay_date": "2025-12-17",
     "dist": 487,
     "price": 52570,
-    "rate": 0.94,
+    "rate": 0.93,
     "notice_date": "2025-12-11",
     "current": false,
     "trend": [
@@ -28535,7 +28559,7 @@
     "pay_date": "2025-12-17",
     "dist": 602,
     "price": 56170,
-    "rate": 1.08,
+    "rate": 1.07,
     "notice_date": "2025-12-11",
     "current": false,
     "trend": [
@@ -29068,16 +29092,19 @@
     "return_1w": 1.25,
     "return_1m": -1.6,
     "return_3m": -6.14,
+    "return_6m": 0.64,
     "return_listed": 1.45,
     "total_return_1w": 1.25,
     "total_return_1m": -1.6,
     "total_return_3m": -6.14,
+    "total_return_6m": 0.66,
     "total_return_listed": 1.47,
     "return_1wf": -3.19,
     "total_return_1wf": -3.19,
     "price_1w": 10040,
     "price_1m": 10330,
     "price_3m": 10830,
+    "price_6m": 10100,
     "price_listed": 10020,
     "stab_score": "데이터 부족",
     "stab_variation": 0.0,
@@ -29090,10 +29117,7 @@
     "avg_monthly_rate": 0.02,
     "peer_group": "분기배당이상",
     "group_avg_rate": 0.544,
-    "group_avg_dist": 131.2,
-    "price_6m": 10100,
-    "return_6m": 0.64,
-    "total_return_6m": 0.66
+    "group_avg_dist": 131.2
   },
   {
     "isin": "KR7477050009",
@@ -29702,7 +29726,7 @@
     "pay_date": "2026-01-05",
     "dist": 187,
     "price": 20355,
-    "rate": 0.93,
+    "rate": 0.92,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -29971,9 +29995,9 @@
     "pay_date": "2026-06-17",
     "dist": 111,
     "price": 10135,
-    "rate": 1.1,
+    "rate": 1.11,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -30391,7 +30415,7 @@
     "pay_date": "2026-01-05",
     "dist": 350,
     "price": 41960,
-    "rate": 0.86,
+    "rate": 0.83,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -30867,9 +30891,9 @@
     "pay_date": "2026-06-17",
     "dist": 70,
     "price": 13115,
-    "rate": 0.55,
+    "rate": 0.56,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-10-15",
@@ -31207,7 +31231,7 @@
     "price": 40585,
     "rate": 0.06,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -31378,14 +31402,17 @@
     "manager": "한화자산운용",
     "return_1w": 8.27,
     "return_1m": -5.69,
+    "return_3m": -4.19,
     "return_listed": -0.58,
     "total_return_1w": 8.27,
     "total_return_1m": -5.69,
+    "total_return_3m": -4.15,
     "total_return_listed": -0.53,
     "return_1wf": 4.93,
     "total_return_1wf": 4.93,
     "price_1w": 9495,
     "price_1m": 10900,
+    "price_3m": 10730,
     "price_listed": 10340,
     "stab_score": "데이터 부족",
     "stab_variation": 0.0,
@@ -31398,10 +31425,7 @@
     "avg_monthly_rate": 0.04,
     "peer_group": "분기배당이상",
     "group_avg_rate": 0.544,
-    "group_avg_dist": 131.2,
-    "price_3m": 10730,
-    "return_3m": -4.19,
-    "total_return_3m": -4.15
+    "group_avg_dist": 131.2
   },
   {
     "isin": "KR7227830007",
@@ -31619,9 +31643,9 @@
     "pay_date": "2026-06-17",
     "dist": 178,
     "price": 8805,
-    "rate": 1.99,
+    "rate": 2.03,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-12-15",
@@ -31811,7 +31835,7 @@
     "pay_date": "2026-01-05",
     "dist": 120,
     "price": 9950,
-    "rate": 1.19,
+    "rate": 1.21,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -32111,7 +32135,7 @@
     "pay_date": "2026-01-05",
     "dist": 380,
     "price": 202410,
-    "rate": 0.25,
+    "rate": 0.19,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -32495,7 +32519,7 @@
     "pay_date": "2026-01-05",
     "dist": 360,
     "price": 15450,
-    "rate": 2.12,
+    "rate": 2.33,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -32551,7 +32575,7 @@
     "pay_date": "2026-01-05",
     "dist": 15,
     "price": 8720,
-    "rate": 0.19,
+    "rate": 0.17,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -33337,7 +33361,7 @@
     "pay_date": "2026-01-05",
     "dist": 131,
     "price": 15710,
-    "rate": 0.86,
+    "rate": 0.83,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -33393,7 +33417,7 @@
     "pay_date": "2026-01-05",
     "dist": 124,
     "price": 17840,
-    "rate": 0.72,
+    "rate": 0.7,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -33449,7 +33473,7 @@
     "pay_date": "2026-01-05",
     "dist": 106,
     "price": 19135,
-    "rate": 0.58,
+    "rate": 0.55,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -33813,7 +33837,7 @@
     "pay_date": "2026-01-05",
     "dist": 201,
     "price": 14020,
-    "rate": 1.52,
+    "rate": 1.43,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -33869,7 +33893,7 @@
     "pay_date": "2025-12-17",
     "dist": 347,
     "price": 51900,
-    "rate": 0.68,
+    "rate": 0.67,
     "notice_date": "2025-12-11",
     "current": false,
     "trend": [
@@ -33925,7 +33949,7 @@
     "pay_date": "2025-12-17",
     "dist": 698,
     "price": 59455,
-    "rate": 1.15,
+    "rate": 1.17,
     "notice_date": "2025-12-11",
     "current": false,
     "trend": [
@@ -34202,7 +34226,7 @@
     "pay_date": "2026-01-05",
     "dist": 230,
     "price": 17035,
-    "rate": 1.39,
+    "rate": 1.35,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -34358,7 +34382,7 @@
     "pay_date": "2026-01-05",
     "dist": 151,
     "price": 10305,
-    "rate": 1.45,
+    "rate": 1.47,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -34414,7 +34438,7 @@
     "pay_date": "2026-01-05",
     "dist": 99,
     "price": 19940,
-    "rate": 0.51,
+    "rate": 0.5,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -34470,7 +34494,7 @@
     "pay_date": "2026-01-05",
     "dist": 78,
     "price": 43890,
-    "rate": 0.2,
+    "rate": 0.18,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -34586,7 +34610,7 @@
     "pay_date": "2026-01-05",
     "dist": 229,
     "price": 19395,
-    "rate": 1.23,
+    "rate": 1.18,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -34642,7 +34666,7 @@
     "pay_date": "2026-01-05",
     "dist": 141,
     "price": 11975,
-    "rate": 1.23,
+    "rate": 1.18,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -34698,7 +34722,7 @@
     "pay_date": "2026-01-05",
     "dist": 644,
     "price": 47440,
-    "rate": 1.43,
+    "rate": 1.36,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -35045,16 +35069,19 @@
     "return_1w": 12.47,
     "return_1m": 0.82,
     "return_3m": 17.92,
+    "return_6m": 77.0,
     "return_listed": 77.0,
     "total_return_1w": 12.47,
     "total_return_1m": 0.82,
     "total_return_3m": 18.53,
+    "total_return_6m": 77.92,
     "total_return_listed": 77.92,
     "return_1wf": 1.88,
     "total_return_1wf": 1.88,
     "price_1w": 15360,
     "price_1m": 17135,
     "price_3m": 14650,
+    "price_6m": 9760,
     "price_listed": 9760,
     "stab_score": "데이터 부족",
     "stab_variation": 0.0,
@@ -35067,10 +35094,7 @@
     "avg_monthly_rate": 0.58,
     "peer_group": "분기배당이상",
     "group_avg_rate": 0.544,
-    "group_avg_dist": 131.2,
-    "price_6m": 9760,
-    "return_6m": 77.0,
-    "total_return_6m": 77.92
+    "group_avg_dist": 131.2
   },
   {
     "isin": "KR7455890004",
@@ -35500,7 +35524,7 @@
     "pay_date": "2026-01-05",
     "dist": 45,
     "price": 24830,
-    "rate": 0.19,
+    "rate": 0.18,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -35656,7 +35680,7 @@
     "pay_date": "2026-01-05",
     "dist": 1,
     "price": 21655,
-    "rate": 0.01,
+    "rate": 0.0,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -35709,7 +35733,7 @@
     "pay_date": "2026-01-05",
     "dist": 29,
     "price": 23255,
-    "rate": 0.13,
+    "rate": 0.12,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -35933,9 +35957,9 @@
     "pay_date": "2026-06-17",
     "dist": 109,
     "price": 10460,
-    "rate": 1.04,
+    "rate": 1.05,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-12-30",
@@ -36007,7 +36031,7 @@
     "pay_date": "2026-01-05",
     "dist": 196,
     "price": 12025,
-    "rate": 1.67,
+    "rate": 1.63,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -36221,7 +36245,7 @@
     "price": 11750,
     "rate": 0.29,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-12-15",
@@ -36296,7 +36320,7 @@
     "pay_date": "2026-01-05",
     "dist": 721,
     "price": 11860,
-    "rate": 6.06,
+    "rate": 6.08,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -36420,7 +36444,7 @@
     "pay_date": "2026-01-05",
     "dist": 272,
     "price": 13345,
-    "rate": 2.02,
+    "rate": 2.04,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -36676,7 +36700,7 @@
     "pay_date": "2026-01-05",
     "dist": 496,
     "price": 4970,
-    "rate": 8.91,
+    "rate": 9.98,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -36732,9 +36756,9 @@
     "pay_date": "2026-06-17",
     "dist": 120,
     "price": 9610,
-    "rate": 1.23,
+    "rate": 1.24,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-31",
@@ -36832,7 +36856,7 @@
     "pay_date": "2026-01-05",
     "dist": 48,
     "price": 21930,
-    "rate": 0.23,
+    "rate": 0.22,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -36988,7 +37012,7 @@
     "pay_date": "2026-01-05",
     "dist": 199,
     "price": 8195,
-    "rate": 2.45,
+    "rate": 2.43,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -37044,7 +37068,7 @@
     "pay_date": "2026-01-05",
     "dist": 94,
     "price": 5325,
-    "rate": 1.82,
+    "rate": 1.77,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -37100,7 +37124,7 @@
     "pay_date": "2026-01-05",
     "dist": 174,
     "price": 10700,
-    "rate": 1.59,
+    "rate": 1.63,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -37156,7 +37180,7 @@
     "pay_date": "2026-01-05",
     "dist": 254,
     "price": 13325,
-    "rate": 1.83,
+    "rate": 1.91,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -37312,7 +37336,7 @@
     "pay_date": "2026-01-05",
     "dist": 21,
     "price": 22505,
-    "rate": 0.1,
+    "rate": 0.09,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -37484,7 +37508,7 @@
     "pay_date": "2026-01-05",
     "dist": 152,
     "price": 15400,
-    "rate": 1.0,
+    "rate": 0.99,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -37954,7 +37978,7 @@
     "pay_date": "2026-01-05",
     "dist": 477,
     "price": 17210,
-    "rate": 2.9,
+    "rate": 2.77,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -38010,7 +38034,7 @@
     "pay_date": "2026-01-05",
     "dist": 101,
     "price": 8605,
-    "rate": 1.23,
+    "rate": 1.17,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -38066,7 +38090,7 @@
     "pay_date": "2026-01-05",
     "dist": 188,
     "price": 14100,
-    "rate": 1.4,
+    "rate": 1.33,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -38178,7 +38202,7 @@
     "pay_date": "2026-01-05",
     "dist": 205,
     "price": 9260,
-    "rate": 2.24,
+    "rate": 2.21,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -38234,7 +38258,7 @@
     "pay_date": "2026-01-05",
     "dist": 204,
     "price": 15195,
-    "rate": 1.38,
+    "rate": 1.34,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -38290,7 +38314,7 @@
     "pay_date": "2026-01-05",
     "dist": 260,
     "price": 26900,
-    "rate": 1.0,
+    "rate": 0.97,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -38514,7 +38538,7 @@
     "pay_date": "2026-01-05",
     "dist": 355,
     "price": 9405,
-    "rate": 3.68,
+    "rate": 3.77,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -38570,7 +38594,7 @@
     "pay_date": "2026-01-05",
     "dist": 143,
     "price": 8050,
-    "rate": 1.77,
+    "rate": 1.78,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -38765,7 +38789,7 @@
     "price": 19215,
     "rate": 0.25,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -38865,7 +38889,7 @@
     "price": 41235,
     "rate": 0.19,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-05-15",
@@ -38963,9 +38987,9 @@
     "pay_date": "2026-06-17",
     "dist": 420,
     "price": 22555,
-    "rate": 2.0,
+    "rate": 2.04,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-10-15",
@@ -39108,7 +39132,7 @@
     "pay_date": "2026-01-05",
     "dist": 60,
     "price": 14975,
-    "rate": 0.43,
+    "rate": 0.4,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -39400,7 +39424,7 @@
     "pay_date": "2026-01-05",
     "dist": 155,
     "price": 16895,
-    "rate": 0.93,
+    "rate": 0.92,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -39456,7 +39480,7 @@
     "pay_date": "2026-01-05",
     "dist": 39,
     "price": 6170,
-    "rate": 0.68,
+    "rate": 0.63,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -39512,7 +39536,7 @@
     "pay_date": "2026-01-05",
     "dist": 59,
     "price": 3350,
-    "rate": 1.64,
+    "rate": 1.76,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -39833,14 +39857,17 @@
     "manager": "신한자산운용",
     "return_1w": 14.2,
     "return_1m": 17.3,
+    "return_3m": 50.12,
     "return_listed": 57.76,
     "total_return_1w": 14.2,
     "total_return_1m": 18.9,
+    "total_return_3m": 54.51,
     "total_return_listed": 62.37,
     "return_1wf": -0.48,
     "total_return_1wf": -0.48,
     "price_1w": 13980,
     "price_1m": 13610,
+    "price_3m": 10635,
     "price_listed": 10120,
     "stab_score": "변동 적음",
     "stab_variation": 14.1,
@@ -39853,10 +39880,7 @@
     "avg_monthly_rate": 1.603,
     "peer_group": "월배당(커버드콜)",
     "group_avg_rate": 1.109,
-    "group_avg_dist": 137.8,
-    "price_3m": 10635,
-    "return_3m": 50.12,
-    "total_return_3m": 54.51
+    "group_avg_dist": 137.8
   },
   {
     "isin": "KR70092C0009",
@@ -40339,7 +40363,7 @@
     "pay_date": "2025-12-16",
     "dist": 915,
     "price": 43085,
-    "rate": 2.19,
+    "rate": 2.12,
     "notice_date": "2025-12-11",
     "current": false,
     "trend": [
@@ -40410,11 +40434,13 @@
     "return_1m": -3.82,
     "return_3m": -11.95,
     "return_6m": 1.84,
+    "return_1y": 41.18,
     "return_listed": 41.18,
     "total_return_1w": 1.88,
     "total_return_1m": -3.82,
     "total_return_3m": -11.95,
     "total_return_6m": 1.86,
+    "total_return_1y": 41.21,
     "total_return_listed": 41.21,
     "return_1wf": -7.15,
     "total_return_1wf": -7.15,
@@ -40422,6 +40448,7 @@
     "price_1m": 14400,
     "price_3m": 15730,
     "price_6m": 13600,
+    "price_1y": 9810,
     "price_listed": 9810,
     "stab_score": "데이터 부족",
     "stab_variation": 0.0,
@@ -40434,10 +40461,7 @@
     "avg_monthly_rate": 0.02,
     "peer_group": "분기배당이상",
     "group_avg_rate": 0.544,
-    "group_avg_dist": 131.2,
-    "price_1y": 9810,
-    "return_1y": 41.18,
-    "total_return_1y": 41.21
+    "group_avg_dist": 131.2
   },
   {
     "isin": "KR70022T0005",
@@ -40823,7 +40847,7 @@
     "pay_date": "2025-12-01",
     "dist": 204,
     "price": 8690,
-    "rate": 2.39,
+    "rate": 2.35,
     "notice_date": "2025-11-26",
     "current": false,
     "trend": [
@@ -41429,7 +41453,7 @@
     "price": 12000,
     "rate": 0.18,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-10-15",
@@ -41999,7 +42023,7 @@
     "price": 13205,
     "rate": 0.33,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-06-13",
@@ -42099,7 +42123,7 @@
     "price": 11890,
     "rate": 0.29,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-06-13",
@@ -42595,7 +42619,7 @@
     "pay_date": "2026-01-02",
     "dist": 100,
     "price": 11300,
-    "rate": 0.92,
+    "rate": 0.88,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -42947,7 +42971,7 @@
     "pay_date": "2026-01-02",
     "dist": 15,
     "price": 19320,
-    "rate": 0.1,
+    "rate": 0.08,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -43018,16 +43042,19 @@
     "return_1w": 15.6,
     "return_1m": -1.36,
     "return_3m": 1.53,
+    "return_6m": 20.26,
     "return_listed": 18.3,
     "total_return_1w": 15.6,
     "total_return_1m": -1.36,
     "total_return_3m": 1.61,
+    "total_return_6m": 20.37,
     "total_return_listed": 18.41,
     "return_1wf": 2.08,
     "total_return_1wf": 2.08,
     "price_1w": 10065,
     "price_1m": 11795,
     "price_3m": 11460,
+    "price_6m": 9675,
     "price_listed": 9835,
     "stab_score": "변동 매우 큼",
     "stab_variation": 163.6,
@@ -43040,10 +43067,7 @@
     "avg_monthly_rate": 0.033,
     "peer_group": "분기배당이상",
     "group_avg_rate": 0.544,
-    "group_avg_dist": 131.2,
-    "price_6m": 9675,
-    "return_6m": 20.26,
-    "total_return_6m": 20.37
+    "group_avg_dist": 131.2
   },
   {
     "isin": "KR70141T0001",
@@ -43071,16 +43095,19 @@
     "return_1w": 0.32,
     "return_1m": 0.4,
     "return_3m": -0.12,
+    "return_6m": -0.03,
     "return_listed": -0.04,
     "total_return_1w": 0.32,
     "total_return_1m": 0.4,
     "total_return_3m": -0.12,
+    "total_return_6m": 0.01,
     "total_return_listed": 0.0,
     "return_1wf": 0.25,
     "total_return_1wf": 0.25,
     "price_1w": 49895,
     "price_1m": 49855,
     "price_3m": 50115,
+    "price_6m": 50070,
     "price_listed": 50075,
     "stab_score": "데이터 부족",
     "stab_variation": 0.0,
@@ -43093,10 +43120,7 @@
     "avg_monthly_rate": 0.04,
     "peer_group": "분기배당이상",
     "group_avg_rate": 0.544,
-    "group_avg_dist": 131.2,
-    "price_6m": 50070,
-    "return_6m": -0.03,
-    "total_return_6m": 0.01
+    "group_avg_dist": 131.2
   },
   {
     "isin": "KR70016X0007",
@@ -43275,7 +43299,7 @@
     "pay_date": "2026-01-02",
     "dist": 106,
     "price": 15705,
-    "rate": 0.74,
+    "rate": 0.67,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -43331,7 +43355,7 @@
     "pay_date": "2026-01-02",
     "dist": 58,
     "price": 6150,
-    "rate": 0.97,
+    "rate": 0.94,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -43387,7 +43411,7 @@
     "pay_date": "2025-12-16",
     "dist": 850,
     "price": 53980,
-    "rate": 1.58,
+    "rate": 1.57,
     "notice_date": "2025-12-11",
     "current": false,
     "trend": [
@@ -43445,7 +43469,7 @@
     "price": 14060,
     "rate": 0.45,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-11-14",
@@ -44582,7 +44606,7 @@
     "pay_date": "2025-11-04",
     "dist": 25,
     "price": 17940,
-    "rate": 0.16,
+    "rate": 0.14,
     "notice_date": "2025-10-29",
     "current": false,
     "trend": [
@@ -44753,7 +44777,7 @@
     "pay_date": "2026-01-05",
     "dist": 453,
     "price": 832900,
-    "rate": 0.07,
+    "rate": 0.05,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -44873,7 +44897,7 @@
     "pay_date": "2026-01-05",
     "dist": 295,
     "price": 167880,
-    "rate": 0.23,
+    "rate": 0.18,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -44929,7 +44953,7 @@
     "pay_date": "2026-01-05",
     "dist": 50,
     "price": 12335,
-    "rate": 0.5,
+    "rate": 0.41,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -45251,7 +45275,7 @@
     "price": 27735,
     "rate": 0.58,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-10-15",
@@ -45426,7 +45450,7 @@
     "pay_date": "2026-01-05",
     "dist": 5,
     "price": 1824,
-    "rate": 0.32,
+    "rate": 0.27,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -45762,7 +45786,7 @@
     "pay_date": "2026-01-05",
     "dist": 9,
     "price": 2265,
-    "rate": 0.43,
+    "rate": 0.4,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -46791,7 +46815,7 @@
     "pay_date": "2026-01-05",
     "dist": 140,
     "price": 12740,
-    "rate": 1.12,
+    "rate": 1.1,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -47035,7 +47059,7 @@
     "pay_date": "2025-12-02",
     "dist": 42,
     "price": 10220,
-    "rate": 0.42,
+    "rate": 0.41,
     "notice_date": "2025-11-26",
     "current": false,
     "trend": [
@@ -47091,7 +47115,7 @@
     "pay_date": "2026-01-05",
     "dist": 272,
     "price": 25735,
-    "rate": 1.12,
+    "rate": 1.06,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -47259,7 +47283,7 @@
     "pay_date": "2026-01-05",
     "dist": 137,
     "price": 24270,
-    "rate": 0.59,
+    "rate": 0.56,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -47315,7 +47339,7 @@
     "pay_date": "2026-01-05",
     "dist": 89,
     "price": 16255,
-    "rate": 0.57,
+    "rate": 0.55,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -47427,7 +47451,7 @@
     "pay_date": "2026-01-05",
     "dist": 50,
     "price": 44035,
-    "rate": 0.13,
+    "rate": 0.11,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -47483,7 +47507,7 @@
     "pay_date": "2026-01-05",
     "dist": 10,
     "price": 13965,
-    "rate": 0.08,
+    "rate": 0.07,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -47807,7 +47831,7 @@
     "pay_date": "2026-01-05",
     "dist": 100,
     "price": 31145,
-    "rate": 0.34,
+    "rate": 0.32,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -47919,7 +47943,7 @@
     "pay_date": "2026-01-05",
     "dist": 141,
     "price": 20005,
-    "rate": 0.74,
+    "rate": 0.7,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -47975,7 +47999,7 @@
     "pay_date": "2026-01-05",
     "dist": 150,
     "price": 21990,
-    "rate": 0.69,
+    "rate": 0.68,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -48031,7 +48055,7 @@
     "pay_date": "2026-01-05",
     "dist": 56,
     "price": 18460,
-    "rate": 0.32,
+    "rate": 0.3,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -48323,7 +48347,7 @@
     "pay_date": "2026-01-05",
     "dist": 300,
     "price": 220000,
-    "rate": 0.18,
+    "rate": 0.14,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -48543,9 +48567,9 @@
     "pay_date": "2026-06-17",
     "dist": 28,
     "price": 10120,
-    "rate": 0.28,
+    "rate": 0.29,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-09-15",
@@ -48634,7 +48658,7 @@
     "price": 10065,
     "rate": 0.57,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-09-15",
@@ -48981,7 +49005,7 @@
     "pay_date": "2026-01-05",
     "dist": 2,
     "price": 14695,
-    "rate": 0.02,
+    "rate": 0.01,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -49102,9 +49126,9 @@
     "pay_date": "2026-06-17",
     "dist": 158,
     "price": 12420,
-    "rate": 1.26,
+    "rate": 1.28,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -49559,7 +49583,7 @@
     "pay_date": "2026-01-05",
     "dist": 510,
     "price": 65745,
-    "rate": 0.83,
+    "rate": 0.78,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -49715,7 +49739,7 @@
     "pay_date": "2026-01-05",
     "dist": 785,
     "price": 76505,
-    "rate": 1.06,
+    "rate": 1.03,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -49771,7 +49795,7 @@
     "pay_date": "2026-01-05",
     "dist": 56,
     "price": 2290,
-    "rate": 2.38,
+    "rate": 2.45,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -50119,7 +50143,7 @@
     "pay_date": "2026-01-05",
     "dist": 380,
     "price": 51185,
-    "rate": 0.8,
+    "rate": 0.74,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -50443,7 +50467,7 @@
     "pay_date": "2026-01-05",
     "dist": 108,
     "price": 21225,
-    "rate": 0.52,
+    "rate": 0.51,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -50499,7 +50523,7 @@
     "pay_date": "2026-01-05",
     "dist": 160,
     "price": 32575,
-    "rate": 0.5,
+    "rate": 0.49,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -50655,7 +50679,7 @@
     "pay_date": "2025-12-02",
     "dist": 106,
     "price": 14210,
-    "rate": 0.74,
+    "rate": 0.75,
     "notice_date": "2025-11-26",
     "current": false,
     "trend": [
@@ -50711,7 +50735,7 @@
     "pay_date": "2026-01-05",
     "dist": 248,
     "price": 19060,
-    "rate": 1.28,
+    "rate": 1.3,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -50767,7 +50791,7 @@
     "pay_date": "2026-01-05",
     "dist": 56,
     "price": 4450,
-    "rate": 1.29,
+    "rate": 1.26,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -50991,9 +51015,9 @@
     "pay_date": "2026-06-17",
     "dist": 106,
     "price": 10500,
-    "rate": 1.0,
+    "rate": 1.01,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -51093,7 +51117,7 @@
     "price": 13595,
     "rate": 0.51,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -51291,7 +51315,7 @@
     "pay_date": "2026-01-05",
     "dist": 50,
     "price": 7665,
-    "rate": 0.66,
+    "rate": 0.65,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -51603,7 +51627,7 @@
     "pay_date": "2026-01-05",
     "dist": 77,
     "price": 33125,
-    "rate": 0.24,
+    "rate": 0.23,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -51659,9 +51683,9 @@
     "pay_date": "2026-06-17",
     "dist": 133,
     "price": 15980,
-    "rate": 0.83,
+    "rate": 0.84,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -52231,9 +52255,9 @@
     "pay_date": "2026-06-17",
     "dist": 215,
     "price": 16400,
-    "rate": 1.51,
+    "rate": 1.53,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2026-05-15",
@@ -52873,7 +52897,7 @@
     "pay_date": "2026-01-05",
     "dist": 27,
     "price": 6150,
-    "rate": 0.37,
+    "rate": 0.44,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -52929,7 +52953,7 @@
     "pay_date": "2026-01-05",
     "dist": 20,
     "price": 1512,
-    "rate": 1.54,
+    "rate": 1.32,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -52985,7 +53009,7 @@
     "pay_date": "2026-01-05",
     "dist": 40,
     "price": 22930,
-    "rate": 0.18,
+    "rate": 0.17,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -53041,7 +53065,7 @@
     "pay_date": "2026-01-05",
     "dist": 230,
     "price": 15835,
-    "rate": 1.59,
+    "rate": 1.45,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -53333,7 +53357,7 @@
     "pay_date": "2026-01-05",
     "dist": 116,
     "price": 17850,
-    "rate": 0.74,
+    "rate": 0.65,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -53513,7 +53537,7 @@
     "pay_date": "2026-01-05",
     "dist": 50,
     "price": 34695,
-    "rate": 0.15,
+    "rate": 0.14,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -53569,7 +53593,7 @@
     "pay_date": "2026-01-05",
     "dist": 350,
     "price": 40245,
-    "rate": 0.95,
+    "rate": 0.87,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -53625,7 +53649,7 @@
     "pay_date": "2026-01-05",
     "dist": 170,
     "price": 8710,
-    "rate": 1.94,
+    "rate": 1.95,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -53801,7 +53825,7 @@
     "pay_date": "2025-12-02",
     "dist": 515,
     "price": 50240,
-    "rate": 1.04,
+    "rate": 1.03,
     "notice_date": "2025-11-26",
     "current": false,
     "trend": [
@@ -53921,7 +53945,7 @@
     "pay_date": "2026-01-05",
     "dist": 310,
     "price": 14535,
-    "rate": 2.22,
+    "rate": 2.13,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -53977,7 +54001,7 @@
     "pay_date": "2026-01-05",
     "dist": 220,
     "price": 34300,
-    "rate": 0.69,
+    "rate": 0.64,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -54033,7 +54057,7 @@
     "pay_date": "2026-01-05",
     "dist": 185,
     "price": 4770,
-    "rate": 3.74,
+    "rate": 3.88,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -54157,7 +54181,7 @@
     "pay_date": "2026-01-05",
     "dist": 20,
     "price": 16545,
-    "rate": 0.13,
+    "rate": 0.12,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -54213,7 +54237,7 @@
     "pay_date": "2026-01-05",
     "dist": 25,
     "price": 17235,
-    "rate": 0.16,
+    "rate": 0.15,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -54269,7 +54293,7 @@
     "pay_date": "2026-01-05",
     "dist": 90,
     "price": 10065,
-    "rate": 0.92,
+    "rate": 0.89,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -54325,7 +54349,7 @@
     "pay_date": "2026-01-05",
     "dist": 110,
     "price": 8975,
-    "rate": 1.26,
+    "rate": 1.23,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -54381,7 +54405,7 @@
     "pay_date": "2026-01-05",
     "dist": 660,
     "price": 20550,
-    "rate": 3.16,
+    "rate": 3.21,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -54507,7 +54531,7 @@
     "price": 16530,
     "rate": 0.37,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -54951,7 +54975,7 @@
     "pay_date": "2026-01-05",
     "dist": 27,
     "price": 14605,
-    "rate": 0.2,
+    "rate": 0.18,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -55679,7 +55703,7 @@
     "pay_date": "2026-01-05",
     "dist": 6,
     "price": 13850,
-    "rate": 0.05,
+    "rate": 0.04,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -56027,7 +56051,7 @@
     "pay_date": "2025-12-02",
     "dist": 612,
     "price": 39870,
-    "rate": 1.61,
+    "rate": 1.53,
     "notice_date": "2025-11-26",
     "current": false,
     "trend": [
@@ -56139,7 +56163,7 @@
     "pay_date": "2026-01-05",
     "dist": 40,
     "price": 16505,
-    "rate": 0.26,
+    "rate": 0.24,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -56195,7 +56219,7 @@
     "pay_date": "2026-01-05",
     "dist": 47,
     "price": 12425,
-    "rate": 0.37,
+    "rate": 0.38,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -56307,7 +56331,7 @@
     "pay_date": "2025-12-02",
     "dist": 187,
     "price": 37135,
-    "rate": 0.51,
+    "rate": 0.5,
     "notice_date": "2025-11-26",
     "current": false,
     "trend": [
@@ -56528,7 +56552,7 @@
     "pay_date": "2026-01-05",
     "dist": 45,
     "price": 18510,
-    "rate": 0.25,
+    "rate": 0.24,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -56584,7 +56608,7 @@
     "pay_date": "2025-12-02",
     "dist": 51,
     "price": 14395,
-    "rate": 0.36,
+    "rate": 0.35,
     "notice_date": "2025-11-26",
     "current": false,
     "trend": [
@@ -56856,7 +56880,7 @@
     "pay_date": "2025-12-02",
     "dist": 700,
     "price": 53300,
-    "rate": 1.33,
+    "rate": 1.31,
     "notice_date": "2025-11-26",
     "current": false,
     "trend": [
@@ -56912,7 +56936,7 @@
     "pay_date": "2025-11-04",
     "dist": 12,
     "price": 12875,
-    "rate": 0.1,
+    "rate": 0.09,
     "notice_date": "2025-10-29",
     "current": false,
     "trend": [
@@ -56927,11 +56951,13 @@
     "return_1m": -3.2,
     "return_3m": -5.33,
     "return_6m": 3.37,
+    "return_1y": 28.34,
     "return_listed": 28.34,
     "total_return_1w": 6.32,
     "total_return_1m": -3.2,
     "total_return_3m": -5.33,
     "total_return_6m": 3.37,
+    "total_return_1y": 28.46,
     "total_return_listed": 28.46,
     "return_1wf": -9.84,
     "total_return_1wf": -9.84,
@@ -56939,6 +56965,7 @@
     "price_1m": 13300,
     "price_3m": 13600,
     "price_6m": 12455,
+    "price_1y": 10032,
     "price_listed": 10032,
     "stab_score": "",
     "stab_variation": 0.0,
@@ -56950,10 +56977,7 @@
     "avg_monthly_rate": 0.0,
     "peer_group": "분기배당이상",
     "group_avg_rate": 0.544,
-    "group_avg_dist": 131.2,
-    "price_1y": 10032,
-    "return_1y": 28.34,
-    "total_return_1y": 28.46
+    "group_avg_dist": 131.2
   },
   {
     "isin": "KR70067V0007",
@@ -56967,7 +56991,7 @@
     "pay_date": "2026-02-03",
     "dist": 146,
     "price": 11170,
-    "rate": 1.34,
+    "rate": 1.31,
     "notice_date": "2026-01-28",
     "current": false,
     "trend": [
@@ -56982,11 +57006,13 @@
     "return_1m": -5.02,
     "return_3m": -1.46,
     "return_6m": -1.98,
+    "return_1y": 13.16,
     "return_listed": 13.16,
     "total_return_1w": 1.45,
     "total_return_1m": -5.02,
     "total_return_3m": -1.46,
     "total_return_6m": -0.7,
+    "total_return_1y": 14.64,
     "total_return_listed": 14.64,
     "return_1wf": -5.59,
     "total_return_1wf": -5.59,
@@ -56994,6 +57020,7 @@
     "price_1m": 11760,
     "price_3m": 11335,
     "price_6m": 11396,
+    "price_1y": 9871,
     "price_listed": 9871,
     "stab_score": "데이터 부족",
     "stab_variation": 0.0,
@@ -57006,10 +57033,7 @@
     "avg_monthly_rate": 1.34,
     "peer_group": "분기배당이상",
     "group_avg_rate": 0.544,
-    "group_avg_dist": 131.2,
-    "price_1y": 9871,
-    "return_1y": 13.16,
-    "total_return_1y": 14.64
+    "group_avg_dist": 131.2
   },
   {
     "isin": "KR7371470006",
@@ -57023,7 +57047,7 @@
     "pay_date": "2026-01-05",
     "dist": 60,
     "price": 7260,
-    "rate": 0.82,
+    "rate": 0.83,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -57079,7 +57103,7 @@
     "pay_date": "2026-01-05",
     "dist": 140,
     "price": 13010,
-    "rate": 1.1,
+    "rate": 1.08,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -57553,7 +57577,7 @@
     "price": 13255,
     "rate": 0.5,
     "notice_date": "2026-06-11",
-    "current": true,
+    "current": false,
     "trend": [
       {
         "ex_date": "2025-07-15",
@@ -57819,7 +57843,7 @@
     "pay_date": "2026-01-05",
     "dist": 85,
     "price": 23525,
-    "rate": 0.38,
+    "rate": 0.36,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -57875,7 +57899,7 @@
     "pay_date": "2026-01-05",
     "dist": 16,
     "price": 12970,
-    "rate": 0.13,
+    "rate": 0.12,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -57928,7 +57952,7 @@
     "pay_date": "2026-01-05",
     "dist": 54,
     "price": 36330,
-    "rate": 0.16,
+    "rate": 0.15,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -57984,7 +58008,7 @@
     "pay_date": "2026-01-05",
     "dist": 30,
     "price": 59240,
-    "rate": 0.06,
+    "rate": 0.05,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -58040,7 +58064,7 @@
     "pay_date": "2026-01-05",
     "dist": 21,
     "price": 14760,
-    "rate": 0.15,
+    "rate": 0.14,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -58096,7 +58120,7 @@
     "pay_date": "2026-01-05",
     "dist": 8,
     "price": 25125,
-    "rate": 0.04,
+    "rate": 0.03,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -58152,7 +58176,7 @@
     "pay_date": "2026-02-03",
     "dist": 170,
     "price": 140865,
-    "rate": 0.13,
+    "rate": 0.12,
     "notice_date": "2026-01-28",
     "current": false,
     "trend": [
@@ -58220,7 +58244,7 @@
     "pay_date": "2026-01-02",
     "dist": 381,
     "price": 31310,
-    "rate": 1.35,
+    "rate": 1.22,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -58276,7 +58300,7 @@
     "pay_date": "2026-01-02",
     "dist": 344,
     "price": 33005,
-    "rate": 1.19,
+    "rate": 1.04,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -58604,7 +58628,7 @@
     "pay_date": "2026-01-05",
     "dist": 717,
     "price": 52285,
-    "rate": 1.39,
+    "rate": 1.37,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -58660,7 +58684,7 @@
     "pay_date": "2025-11-04",
     "dist": 57,
     "price": 21660,
-    "rate": 0.27,
+    "rate": 0.26,
     "notice_date": "2025-10-29",
     "current": false,
     "trend": [
@@ -58826,7 +58850,7 @@
     "pay_date": "2026-01-05",
     "dist": 590,
     "price": 49010,
-    "rate": 1.21,
+    "rate": 1.2,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -59217,7 +59241,7 @@
     "pay_date": "2026-01-05",
     "dist": 157,
     "price": 57190,
-    "rate": 0.31,
+    "rate": 0.27,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -59273,7 +59297,7 @@
     "pay_date": "2026-01-05",
     "dist": 81,
     "price": 41740,
-    "rate": 0.21,
+    "rate": 0.19,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -59329,7 +59353,7 @@
     "pay_date": "2026-01-05",
     "dist": 72,
     "price": 73025,
-    "rate": 0.11,
+    "rate": 0.1,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -59565,7 +59589,7 @@
     "pay_date": "2026-01-05",
     "dist": 5,
     "price": 7730,
-    "rate": 0.07,
+    "rate": 0.06,
     "notice_date": "2025-12-26",
     "current": false,
     "trend": [
@@ -59757,7 +59781,7 @@
     "pay_date": "2025-05-07",
     "dist": 344,
     "price": 19295,
-    "rate": 1.9,
+    "rate": 1.78,
     "notice_date": "2025-04-28",
     "current": false,
     "trend": [
@@ -59812,7 +59836,7 @@
     "pay_date": "2025-11-04",
     "dist": 112,
     "price": 60910,
-    "rate": 0.19,
+    "rate": 0.18,
     "notice_date": "2025-10-29",
     "current": false,
     "trend": [
