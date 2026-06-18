@@ -514,6 +514,10 @@ def build_js(latest: list, price_date: str = ""):
                 "peerGroup":      e.get("peer_group",      ""),
             }, ensure_ascii=False)
             manager_esc = e.get("manager", e["brand"]).replace("'", "\\'")
+            def _s(v): return (v or "").replace("\\", "\\\\").replace("'", "\\'").replace("\n", " ").replace("\r", "")
+            index_esc   = _s(e.get("index_name", ""))
+            summary_esc = _s(e.get("summary", ""))
+            holdings_js = json.dumps(e.get("holdings", []), ensure_ascii=False)
             items.append(
                 f"{{isin:'{e['isin']}',code:'{e['code']}',name:'{name_esc}',"
                 f"brand:'{e['brand']}',manager:'{manager_esc}',"
@@ -522,6 +526,11 @@ def build_js(latest: list, price_date: str = ""):
                 f"ex:'{e['ex_date']}',pay:'{e['pay_date']}',"
                 f"dist:{e['dist']},price:{e['price']},rate:{e['rate']},"
                 f"listedDate:'{e.get('listed_date','')}', "
+                f"marketCap:'{e.get('market_cap','')}', "
+                f"totalFee:{e.get('total_fee') or 0},"
+                f"indexName:'{index_esc}', "
+                f"summary:'{summary_esc}', "
+                f"holdings:{holdings_js},"
                 f"ret1w:{_js(e,'return_1w')},ret1m:{_js(e,'return_1m')},ret3m:{_js(e,'return_3m')},"
                 f"ret6m:{_js(e,'return_6m')},ret1y:{_js(e,'return_1y')},"
                 f"retListed:{_js(e,'return_listed')},"
@@ -601,59 +610,95 @@ def fetch_naver_historical_price(code: str, target_date: str, headers: dict) -> 
 
 def fetch_etf_meta(codes: list) -> dict:
     """
-    네이버 금융 ETF 페이지에서 기초지수명·상장일 조회 후 etf_meta.json 캐시.
-    이미 캐시된 종목은 재조회하지 않음.
+    네이버 모바일 ETF API에서 총보수·추종지수·상품설명·구성종목 조회.
+    상장일·운용사는 네이버 금융 HTML에서 조회 (신규/미완성만).
     """
-    headers = {
+    api_headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "Accept": "application/json",
+        "Referer": "https://m.stock.naver.com/",
+    }
+    html_headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         "Accept": "text/html,application/xhtml+xml",
         "Accept-Language": "ko-KR,ko;q=0.9",
         "Referer": "https://finance.naver.com/",
     }
 
-    # 기존 캐시 로드
     meta: dict = {}
     if ETF_META_FILE.exists():
         with open(ETF_META_FILE, encoding="utf-8") as f:
             meta = json.load(f)
 
-    missing = [c for c in codes if c not in meta or not meta[c].get("listed_date")]
-    if not missing:
-        return meta
+    print(f"\n메타 데이터 조회: {len(codes)}개 종목 (총보수·추종지수·상품설명·구성종목)")
 
-    print(f"\n메타 데이터 조회: {len(missing)}개 종목 (신규/미완성)")
-
-    for i, code in enumerate(missing):
+    for i, code in enumerate(codes):
+        if code not in meta:
+            meta[code] = {}
         try:
-            url = f"https://finance.naver.com/item/main.nhn?code={code}"
-            req = urllib.request.Request(url, headers=headers)
+            url = f"https://m.stock.naver.com/api/etf/{code}/basic"
+            req = urllib.request.Request(url, headers=api_headers)
             with urllib.request.urlopen(req, timeout=10) as resp:
-                content = resp.read().decode("utf-8", errors="replace")
+                data = json.loads(resp.read().decode("utf-8"))
 
-            # 상장일 파싱 (2002년 10월 14일 형식)
-            date_m = re.search(
-                r'상장일.*?<td>(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일',
-                content, re.DOTALL)
-            # 운용사 파싱 (title 속성에서 추출)
-            mgr_m = re.search(
-                r'운용사.*?title="([^"]{2,40})"',
-                content, re.DOTALL)
+            meta[code]["total_fee"] = data.get("totalFee") or 0
+            meta[code]["index_name"] = data.get("etfBaseIndex", "") or ""
 
-            if date_m:
-                listed_date = f"{date_m.group(1)}-{int(date_m.group(2)):02d}-{int(date_m.group(3)):02d}"
-            else:
-                listed_date = ""
-            mgr_raw = mgr_m.group(1).strip() if mgr_m else ""
-            # "(주)", "(유)" 등 법인형태 제거
-            manager = re.sub(r'\s*[（(][가-힣]{1,2}[)）]\s*$', '', mgr_raw).strip()
+            summary_raw = data.get("etfSummary", "") or ""
+            meta[code]["summary"] = re.sub(r'<br\s*/?>', ' ', summary_raw).strip()
 
-            meta[code] = {"listed_date": listed_date, "manager": manager}
+            # 구성종목: itemCode 있는 종목만 (선물·현금 제외)
+            holdings = []
+            for h in data.get("constituentList", []):
+                if not h.get("itemCode"):
+                    continue
+                holdings.append({
+                    "name": h["itemName"],
+                    "pct": f"{h['constituentWeight']:.2f}%"
+                })
+            meta[code]["holdings"] = holdings
+
         except Exception:
-            meta[code] = {"listed_date": "", "manager": ""}
+            pass
 
         time.sleep(0.2)
         if (i + 1) % 50 == 0:
-            print(f"  진행: {i+1}/{len(missing)}")
+            print(f"  API 진행: {i+1}/{len(codes)}")
+
+    # 상장일·운용사: 신규/미완성만 HTML 스크래핑
+    missing_date = [c for c in codes if not meta.get(c, {}).get("listed_date")]
+    if missing_date:
+        print(f"\n상장일 조회: {len(missing_date)}개 신규 종목")
+        for i, code in enumerate(missing_date):
+            try:
+                url = f"https://finance.naver.com/item/main.nhn?code={code}"
+                req = urllib.request.Request(url, headers=html_headers)
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    content = resp.read().decode("utf-8", errors="replace")
+
+                date_m = re.search(
+                    r'상장일.*?<td>(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일',
+                    content, re.DOTALL)
+                mgr_m = re.search(
+                    r'운용사.*?title="([^"]{2,40})"',
+                    content, re.DOTALL)
+
+                if date_m:
+                    meta[code]["listed_date"] = f"{date_m.group(1)}-{int(date_m.group(2)):02d}-{int(date_m.group(3)):02d}"
+                else:
+                    meta[code].setdefault("listed_date", "")
+
+                if mgr_m:
+                    mgr_raw = mgr_m.group(1).strip()
+                    meta[code]["manager"] = re.sub(r'\s*[（(][가-힣]{1,2}[)）]\s*$', '', mgr_raw).strip()
+                else:
+                    meta[code].setdefault("manager", "")
+
+            except Exception:
+                meta[code].setdefault("listed_date", "")
+                meta[code].setdefault("manager", "")
+
+            time.sleep(0.3)
 
     with open(ETF_META_FILE, "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
@@ -869,8 +914,8 @@ def get_peer_group(item: dict) -> str:
 
 def fetch_naver_prices(codes: list) -> tuple:
     """
-    네이버 금융 모바일 API로 ETF 전날 종가 일괄 조회.
-    Returns: ({code: price}, price_date_str)
+    네이버 금융 모바일 ETF API로 전날 종가·시가총액 일괄 조회.
+    Returns: ({code: price}, {code: market_cap_str}, price_date_str)
     """
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -882,16 +927,17 @@ def fetch_naver_prices(codes: list) -> tuple:
     price_date = datetime.now().strftime("%Y-%m-%d")
 
     prices = {}
+    market_caps = {}
     ok = fail = 0
 
     print(f"\n{'='*50}")
-    print("📈 네이버 금융 전날 종가 조회")
+    print("📈 네이버 금융 전날 종가·시가총액 조회")
     print(f"{'='*50}")
     print(f"총 {len(codes)}개 종목 조회 중...\n")
 
     for i, code in enumerate(codes):
         try:
-            url = f"https://m.stock.naver.com/api/stock/{code}/basic"
+            url = f"https://m.stock.naver.com/api/etf/{code}/basic"
             req = urllib.request.Request(url, headers=headers)
             with urllib.request.urlopen(req, timeout=8) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
@@ -902,6 +948,8 @@ def fetch_naver_prices(codes: list) -> tuple:
                 ok += 1
             else:
                 fail += 1
+
+            market_caps[code] = data.get("marketValue", "")
 
             if (i + 1) % 100 == 0:
                 print(f"  진행: {i+1}/{len(codes)} (성공 {ok}개)")
@@ -914,7 +962,7 @@ def fetch_naver_prices(codes: list) -> tuple:
 
     print(f"✅ {ok}개 성공 / {fail}개 실패")
     print(f"📅 기준일: {price_date}")
-    return prices, price_date
+    return prices, market_caps, price_date
 
 
 def update_prices(latest: list, price_map: dict):
@@ -1033,13 +1081,14 @@ if __name__ == "__main__":
                 history_for_returns = json.load(f)
 
         codes = list({item["code"] for item in latest})
-        price_map, price_date = fetch_naver_prices(codes)
+        price_map, market_caps, price_date = fetch_naver_prices(codes)
 
-        # 현재 종가 반영
+        # 현재 종가·시가총액 반영
         for item in latest:
             p = price_map.get(item["code"]) or price_map.get(item["isin"])
             if p and p > 0:
                 item["price"] = p
+            item["market_cap"] = market_caps.get(item["code"], "")
 
         # 일별 이력 조회 → 수익률 계산 (상장일 기준 필요 영업일 수만큼 동적 조회)
         hist_headers = {
@@ -1120,6 +1169,10 @@ if __name__ == "__main__":
                 m.get("manager", "") or
                 item["brand"]
             )
+            item["total_fee"]   = m.get("total_fee", 0)
+            item["index_name"]  = m.get("index_name", "")
+            item["summary"]     = m.get("summary", "")
+            item["holdings"]    = m.get("holdings", [])
         with open(LATEST_FILE, "w", encoding="utf-8") as f:
             json.dump(latest, f, ensure_ascii=False, indent=2)
 
@@ -1161,14 +1214,15 @@ if __name__ == "__main__":
         print("최신 데이터가 없습니다.")
         exit(1)
 
-    # 4. 현재 종가 조회 → price 필드 업데이트
+    # 4. 현재 종가·시가총액 조회 → price/market_cap 필드 업데이트
     codes = list({item["code"] for item in latest})
-    price_map, price_date = fetch_naver_prices(codes)
+    price_map, market_caps, price_date = fetch_naver_prices(codes)
     for item in latest:
         p = price_map.get(item["code"]) or price_map.get(item["isin"])
         if p and p > 0:
             item["price"] = p
             item["rate"] = round(item["dist"] / p * 100, 2)  # 임시값 (다음 단계에서 재계산)
+        item["market_cap"] = market_caps.get(item["code"], "")
 
     # 5. 공시일자 전일 역사 종가로 분배율 재계산
     hist_headers = {
@@ -1195,7 +1249,7 @@ if __name__ == "__main__":
 
     # 6. 기존 수익률·메타 필드 보존 (덮어쓰기 방지)
     PRESERVE_FIELDS = [
-        "listed_date", "manager", "index_name",
+        "listed_date", "manager", "index_name", "total_fee", "summary", "holdings", "market_cap",
         "return_1w", "return_1m", "return_3m", "return_6m", "return_1y", "return_listed",
         "total_return_1w", "total_return_1m", "total_return_3m",
         "total_return_6m", "total_return_1y", "total_return_listed",
@@ -1228,6 +1282,10 @@ if __name__ == "__main__":
             m.get("manager", "") or
             item["brand"]
         )
+        item["total_fee"]  = m.get("total_fee", 0)
+        item["index_name"] = m.get("index_name", "")
+        item["summary"]    = m.get("summary", "")
+        item["holdings"]   = m.get("holdings", [])
 
     # latest.json 최종 저장 (rate 확정 후)
     with open(LATEST_FILE, "w", encoding="utf-8") as f:
