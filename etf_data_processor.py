@@ -647,13 +647,14 @@ def fetch_etf_meta(codes: list) -> dict:
             summary_raw = data.get("etfSummary", "") or ""
             meta[code]["summary"] = re.sub(r'<br\s*/?>', ' ', summary_raw).strip()
 
-            # 구성종목: itemCode 있는 종목만 (선물·현금 제외)
+            # 구성종목: 원화현금만 제외 (외국 주식·채권·선물은 itemCode 없어도 포함)
             holdings = []
             for h in data.get("constituentList", []):
-                if not h.get("itemCode"):
+                name = h.get("itemName", "")
+                if not name or name == "원화현금":
                     continue
                 holdings.append({
-                    "name": h["itemName"],
+                    "name": name,
                     "pct": f"{h['constituentWeight']:.2f}%"
                 })
             meta[code]["holdings"] = holdings
