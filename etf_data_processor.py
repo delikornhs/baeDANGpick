@@ -1161,6 +1161,16 @@ if __name__ == "__main__":
         if ETF_META_FILE.exists():
             with open(ETF_META_FILE, encoding="utf-8") as f:
                 meta_cache = json.load(f)
+
+        # 신규 ETF(메타 캐시에 없는 코드) 즉시 메타 조회
+        new_codes = [c for c in codes if c not in meta_cache]
+        if new_codes:
+            print(f"\n신규 ETF {len(new_codes)}개 감지 — 메타 즉시 조회: {new_codes}")
+            fetch_etf_meta(new_codes)
+            if ETF_META_FILE.exists():
+                with open(ETF_META_FILE, encoding="utf-8") as f:
+                    meta_cache = json.load(f)
+
         for item in latest:
             m = meta_cache.get(item["code"], {})
             item["listed_date"] = m.get("listed_date", "")
