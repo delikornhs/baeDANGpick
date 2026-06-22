@@ -686,20 +686,19 @@ git push
 ### 4단계: 상장일·수익률 업데이트 (신규 ETF인 경우)
 
 비정기 ETF가 이 사이트에 **처음 등록되는 경우**, 상장일(`listed_date`)과 수익률(`return_1m` 등)이 없다.
-- 상장일은 매주 **월요일** GitHub Actions가 자동으로 조회하므로, 월요일 전이면 공란으로 표시됨
-- 수익률은 상장일이 있어야 계산되므로 함께 누락됨
+- `--prices-only`가 실행될 때 `etf_meta.json`에 없는 신규 코드를 자동 감지해 메타를 즉시 조회함
+- GitHub Actions가 매일 `--prices-only`를 실행하므로 **다음날 자동으로 채워짐**
+- 당일 즉시 반영이 필요하면 아래 방법 사용
 
-**즉시 반영하려면 아래 두 방법 중 하나:**
+**즉시 반영하려면:**
 
 방법 ①: GitHub Actions 수동 트리거 (권장)
 ```bash
 gh workflow run "Daily Price Update"
 ```
-→ `--fetch-meta`(상장일 조회) + `--prices-only`(수익률 계산)가 순서대로 실행됨
 
 방법 ②: 로컬 직접 실행
 ```bash
-python -X utf8 etf_data_processor.py --fetch-meta
 python -X utf8 etf_data_processor.py --prices-only
 git add data/output/latest.json data/output/etf_data.js data/output/etf_meta.json index.html
 git commit -m "chore: 신규 ETF 상장일·수익률 업데이트"
