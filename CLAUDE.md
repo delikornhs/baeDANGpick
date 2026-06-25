@@ -79,16 +79,46 @@ git push
 
 ### 3단계: 뉴스레터 발송
 
-```bash
-gh workflow run "Send Schedule Newsletter" \
-  -f timing=월중 \
-  -f last_buy=YYYY-MM-DD \
-  -f ex_date=YYYY-MM-DD \
-  -f record=YYYY-MM-DD
+이 환경에서는 `gh` CLI가 없으므로 Python urllib로 GitHub API를 직접 호출한다.
+토큰은 git credential manager에서 자동으로 가져온다.
+
+```python
+import json, urllib.request, subprocess
+
+token = subprocess.check_output(
+    'echo "protocol=https\\nhost=github.com" | git credential fill',
+    shell=True, text=True
+).strip().split("password=")[1]
+
+payload = json.dumps({
+    "ref": "master",
+    "inputs": {
+        "timing": "월중",        # 또는 "월말"
+        "last_buy": "YYYY-MM-DD",
+        "ex_date":  "YYYY-MM-DD",
+        "record":   "YYYY-MM-DD"
+    }
+}).encode("utf-8")
+
+req = urllib.request.Request(
+    "https://api.github.com/repos/delikornhs/baeDANGpick/actions/workflows/send-schedule-newsletter.yml/dispatches",
+    data=payload,
+    headers={
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
+        "Content-Type": "application/json"
+    },
+    method="POST"
+)
+try:
+    with urllib.request.urlopen(req) as r:
+        print(f"✅ 뉴스레터 발송 완료 (HTTP {r.status})")
+except urllib.error.HTTPError as e:
+    print(f"❌ 실패 {e.code}: {e.read().decode()}")
 ```
 
-- timing: `월중` 또는 `월말`
-- 날짜 형식: `YYYY-MM-DD`
+- 응답 HTTP 204 = 성공
+- **주의: 재시도 금지** — 204가 와도 한 번만 호출할 것. 중복 발송됨
 
 ### 4단계: 네이버 블로그 글
 
@@ -135,11 +165,40 @@ git push
 
 ### 4단계: 뉴스레터 발송
 
-```bash
-gh workflow run "Send Data Newsletter (수동)" -f timing=월중
-# 또는
-gh workflow run "Send Data Newsletter (수동)" -f timing=월말
+이 환경에서는 `gh` CLI가 없으므로 Python urllib로 GitHub API를 직접 호출한다.
+
+```python
+import json, urllib.request, subprocess
+
+token = subprocess.check_output(
+    'echo "protocol=https\\nhost=github.com" | git credential fill',
+    shell=True, text=True
+).strip().split("password=")[1]
+
+payload = json.dumps({
+    "ref": "master",
+    "inputs": {"timing": "월중"}   # 또는 "월말"
+}).encode("utf-8")
+
+req = urllib.request.Request(
+    "https://api.github.com/repos/delikornhs/baeDANGpick/actions/workflows/send-data-newsletter.yml/dispatches",
+    data=payload,
+    headers={
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
+        "Content-Type": "application/json"
+    },
+    method="POST"
+)
+try:
+    with urllib.request.urlopen(req) as r:
+        print(f"✅ 뉴스레터 발송 완료 (HTTP {r.status})")
+except urllib.error.HTTPError as e:
+    print(f"❌ 실패 {e.code}: {e.read().decode()}")
 ```
+
+- 응답 HTTP 204 = 성공
+- **주의: 재시도 금지** — 204가 와도 한 번만 호출할 것. 중복 발송됨
 
 ### 5단계: 콘텐츠 작성 여부 확인
 
