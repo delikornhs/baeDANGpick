@@ -742,35 +742,39 @@ function stabLevelBadge(level) {
 }
 
 // ── 한줄 평가 ──
-function autoComment(e) {
-  const s = e.stab || {};
+function autoComment(e, stab, isMonthly) {
+  const s = stab || e.stab || {};
+  const isM = isMonthly !== undefined ? isMonthly : (e.freq === '월배당' || e.freq === '월배당추정');
+  const period  = isM ? '최근 6개월' : '최근 4건';
+  const trendPeriod = isM ? '최근 3개월' : '최근 2회';
+  const rateLabel = isM ? '월분배율' : '분배율';
   const parts = [];
   if(s.score && s.score !== '데이터 부족') {
     const scoreDesc = {
-      '변동 적음':    `최근 6개월 분배금 변동폭이 15% 이내로 비교적 일정하게 지급되었습니다.`,
-      '변동 보통':    `최근 6개월 분배금 변동폭이 15~30% 수준입니다.`,
-      '변동 큼':      `최근 6개월 분배금 변동폭이 30~50% 수준으로 월별 차이가 있습니다.`,
-      '변동 매우 큼': `최근 6개월 분배금 변동폭이 50%를 초과합니다.`,
+      '변동 적음':    `${period} 분배금 변동폭이 15% 이내로 비교적 일정하게 지급되었습니다.`,
+      '변동 보통':    `${period} 분배금 변동폭이 15~30% 수준입니다.`,
+      '변동 큼':      `${period} 분배금 변동폭이 30~50% 수준으로 차이가 있습니다.`,
+      '변동 매우 큰': `${period} 분배금 변동폭이 50%를 초과합니다.`,
+      '변동 매우 큼': `${period} 분배금 변동폭이 50%를 초과합니다.`,
     };
     if(scoreDesc[s.score]) parts.push(scoreDesc[s.score]);
   }
-  if(s.trend === '증가') parts.push(`최근 3개월 평균 분배금이 이전 3개월 대비 10% 이상 증가했습니다.`);
-  else if(s.trend === '감소') parts.push(`최근 3개월 평균 분배금이 이전 3개월 대비 10% 이상 감소했습니다.`);
+  if(s.trend === '증가') parts.push(`${trendPeriod} 평균 분배금이 이전 ${trendPeriod.replace('최근 ','')} 대비 10% 이상 증가했습니다.`);
+  else if(s.trend === '감소') parts.push(`${trendPeriod} 평균 분배금이 이전 ${trendPeriod.replace('최근 ','')} 대비 10% 이상 감소했습니다.`);
   const pg = getPeerGroup(e);
   // 분배율 수준
-  if(s.level === '평균보다 높음') parts.push(`동일 유형(${pg}) ETF 평균 대비 월분배율이 높은 편입니다.`);
-  else if(s.level === '평균 수준') parts.push(`동일 유형(${pg}) ETF와 비슷한 수준의 월분배율입니다.`);
-  else if(s.level === '평균보다 낮음') parts.push(`동일 유형(${pg}) ETF 평균 대비 월분배율이 낮은 편입니다.`);
+  if(s.level === '평균보다 높음') parts.push(`동일 유형(${pg}) ETF 평균 대비 ${rateLabel}이 높은 편입니다.`);
+  else if(s.level === '평균 수준') parts.push(`동일 유형(${pg}) ETF와 비슷한 수준의 ${rateLabel}입니다.`);
+  else if(s.level === '평균보다 낮음') parts.push(`동일 유형(${pg}) ETF 평균 대비 ${rateLabel}이 낮은 편입니다.`);
   // 분배금 수준 (분배율과 다를 때만 추가 언급)
   if(s.levelDist && s.levelDist !== s.level) {
     if(s.levelDist === '평균보다 높음') parts.push(`주당 분배금액은 동일 유형 평균보다 높습니다.`);
     else if(s.levelDist === '평균 수준') parts.push(`주당 분배금액은 동일 유형 평균 수준입니다.`);
     else if(s.levelDist === '평균보다 낮음') parts.push(`주당 분배금액은 동일 유형 평균보다 낮습니다.`);
   } else if(s.levelDist && s.levelDist === s.level && s.level) {
-    // 분배율과 분배금 모두 같은 방향이면 한 문장으로 보강
-    if(s.levelDist === '평균보다 높음') parts[parts.length - 1] = `동일 유형(${pg}) ETF 평균 대비 월분배율과 주당 분배금액 모두 높은 편입니다.`;
-    else if(s.levelDist === '평균 수준') parts[parts.length - 1] = `동일 유형(${pg}) ETF와 비슷한 수준의 월분배율·분배금액입니다.`;
-    else if(s.levelDist === '평균보다 낮음') parts[parts.length - 1] = `동일 유형(${pg}) ETF 평균 대비 월분배율과 주당 분배금액 모두 낮은 편입니다.`;
+    if(s.levelDist === '평균보다 높음') parts[parts.length - 1] = `동일 유형(${pg}) ETF 평균 대비 ${rateLabel}과 주당 분배금액 모두 높은 편입니다.`;
+    else if(s.levelDist === '평균 수준') parts[parts.length - 1] = `동일 유형(${pg}) ETF와 비슷한 수준의 ${rateLabel}·분배금액입니다.`;
+    else if(s.levelDist === '평균보다 낮음') parts[parts.length - 1] = `동일 유형(${pg}) ETF 평균 대비 ${rateLabel}과 주당 분배금액 모두 낮은 편입니다.`;
   }
   if(!parts.length) return '분배금 데이터가 충분히 쌓이면 자동 평가가 표시됩니다.';
   return parts.map((p, i) => `${i+1}) ${p}`).join('<br>');
@@ -1137,7 +1141,7 @@ function render(e) {
         ${stabAvgDist ? `<span style="font-size:11px;color:var(--ink3)">${isMonthlyFreq ? '월평균' : '평균'} ${stabAvgDist.toFixed(0)}원 · 그룹평균 ${stabGroupDist ? stabGroupDist.toFixed(0) : '-'}원</span>` : ''}
       </div>
     </div>
-    <div class="comment-box">${autoComment(e)}</div>
+    <div class="comment-box">${autoComment(e, s, isMonthlyFreq)}</div>
     <div class="crit-table-wrap">
       <div class="crit-title">평가 기준</div>
       <table class="crit-table">
