@@ -188,6 +188,11 @@ def get_type(name: str) -> str:
 
 RECENCY_DAYS = 60  # 최근 배당락일이 이 일수 이내여야 월배당/월배당추정으로 분류
 
+# 자동 분류가 틀린 경우 수동으로 강제 지정 (ISIN: 분류)
+FREQ_OVERRIDE = {
+    "KR7276970001": "분기배당이상",  # KODEX 미국S&P500배당귀족커버드콜(합성 H) — 분기배당
+}
+
 
 def is_recent(ex_date_str: str) -> bool:
     """배당락일이 오늘 기준 RECENCY_DAYS 이내인지 확인."""
@@ -207,6 +212,11 @@ def classify_frequency(isin: str, history: dict) -> str:
     데이터 2건 미만이면 이름 기반으로 추정.
     단, 가장 최근 배당락일이 60일 이상 지났으면 월배당/월배당추정 분류 제외.
     """
+    # 종목코드(ISIN 끝 6자리) 기준 수동 오버라이드 우선 적용
+    code = isin[-6:] if len(isin) >= 6 else isin
+    if code in FREQ_OVERRIDE:
+        return FREQ_OVERRIDE[code]
+
     if isin not in history:
         return "분기배당이상"
 
