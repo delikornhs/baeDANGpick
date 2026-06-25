@@ -1547,9 +1547,9 @@ function lastBuy(exStr) {
 }
 // 확정된 일정 (ETF 데이터 업로드 전 수동 확인된 날짜)
 const CONFIRMED_SCHEDULE = [
-  {date:'2026-06-11', type:'buy',    label:'최종매수',     ex:'2026-06-15'},
-  {date:'2026-06-12', type:'ex',     label:'배당락',       ex:'2026-06-15'},
-  {date:'2026-06-15', type:'record', label:'기준일(월중)', ex:'2026-06-15'},
+  {date:'2026-06-26', type:'buy',    label:'최종매수',     ex:'2026-06-29'},
+  {date:'2026-06-29', type:'ex',     label:'배당락',       ex:'2026-06-29'},
+  {date:'2026-06-30', type:'record', label:'기준일(월말)', ex:'2026-06-29'},
 ];
 function status(e) {
   const ex=exDate(e.ex), pay=new Date(e.pay), lb=lastBuy(e.ex);
