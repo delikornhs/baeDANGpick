@@ -628,13 +628,22 @@ function getPeerGroup(e) {
 // ── trend 데이터로 안정성 지표 클라이언트 계산 (etf_data.js에 stab 필드 없을 때 fallback) ──
 function computeStab(e) {
   const trend = (e.trend || []).slice().sort((a,b) => a.ex_date < b.ex_date ? -1 : 1);
-  const now   = new Date();
-  const msBefore = days => new Date(now - days * 86400000).toISOString().slice(0,10);
-  const d6 = msBefore(182), d3 = msBefore(91);
+  const isMonthly = (e.freq === '월배당' || e.freq === '월배당추정');
 
-  const six   = trend.filter(t => t.ex_date >= d6).map(t => t.dist);
-  const rec3  = trend.filter(t => t.ex_date >= d3).map(t => t.dist);
-  const prev3 = trend.filter(t => t.ex_date >= d6 && t.ex_date < d3).map(t => t.dist);
+  let six, rec3, prev3;
+  if(isMonthly) {
+    const now = new Date();
+    const msBefore = days => new Date(now - days * 86400000).toISOString().slice(0,10);
+    const d6 = msBefore(182), d3 = msBefore(91);
+    six   = trend.filter(t => t.ex_date >= d6).map(t => t.dist);
+    rec3  = trend.filter(t => t.ex_date >= d3).map(t => t.dist);
+    prev3 = trend.filter(t => t.ex_date >= d6 && t.ex_date < d3).map(t => t.dist);
+  } else {
+    // 비월배당: 건수 기준 (최근 4건 = 분기배당 기준 약 1년)
+    six   = trend.slice(-4).map(t => t.dist);
+    rec3  = trend.slice(-2).map(t => t.dist);
+    prev3 = trend.slice(-4, -2).map(t => t.dist);
+  }
 
   const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
 
@@ -1049,8 +1058,9 @@ function render(e) {
       }
     });
 
-    // 통계는 최근 6개월 기준, 연간합계는 올해 1월 1일부터 누적 (차트는 최대 12개월 유지)
-    const trendStats = trend.slice(-6);
+    // 통계: 월배당은 최근 6건, 비월배당은 최근 4건 기준 / 연간합계는 올해 1월 1일부터 누적
+    const isMonthlyFreq = (e.freq === '월배당' || e.freq === '월배당추정');
+    const trendStats = isMonthlyFreq ? trend.slice(-6) : trend.slice(-4);
     const valsStats  = trendStats.map(t => t.dist);
     const avgStats   = valsStats.length ? Math.round(valsStats.reduce((a,b)=>a+b,0)/valsStats.length) : 0;
     const maxS = valsStats.length ? Math.max(...valsStats) : 0;
@@ -1063,8 +1073,9 @@ function render(e) {
     const annualSum = yearTrend.reduce((a,b) => a + b.dist, 0);
     const noticePrevPriceHist = e.dist > 0 && e.rate > 0 ? (e.dist / e.rate * 100) : e.price;
     const annualRate = noticePrevPriceHist > 0 && annualSum > 0 ? (annualSum / noticePrevPriceHist * 100).toFixed(2) : null;
+    const avgLabel = isMonthlyFreq ? '월평균' : '평균 분배금';
     document.getElementById('distStats').innerHTML = `
-      <div class="ds-box"><div class="ds-label">월평균</div><div class="ds-val">${comma(avgStats)}원</div></div>
+      <div class="ds-box"><div class="ds-label">${avgLabel}</div><div class="ds-val">${comma(avgStats)}원</div></div>
       <div class="ds-box"><div class="ds-label">최고</div><div class="ds-val">${comma(maxS)}원</div></div>
       <div class="ds-box"><div class="ds-label">최저</div><div class="ds-val">${comma(minS)}원</div></div>
       <div class="ds-box">
@@ -1074,7 +1085,7 @@ function render(e) {
     `;
     document.getElementById('distStats').insertAdjacentHTML('afterend',
       `<div style="font-size:10px;color:var(--ink3);margin-top:5px;text-align:right">
-        변동폭 = (최고-최저)/평균 · 최근 ${trendStats.length}개월 기준
+        변동폭 = (최고-최저)/평균 · 최근 ${trendStats.length}${isMonthlyFreq ? '개월' : '건'} 기준
       </div>`);
     document.getElementById('distAnnual').innerHTML = `
       <div class="dist-annual">
@@ -1111,17 +1122,17 @@ function render(e) {
       </div>
     </div>
     <div class="stab-row">
-      <span class="stab-label">월분배 수준<br><span style="font-size:10px;font-weight:400;color:var(--ink4)">(분배율)</span></span>
+      <span class="stab-label">${isMonthlyFreq ? '월분배 수준' : '분배 수준'}<br><span style="font-size:10px;font-weight:400;color:var(--ink4)">(분배율)</span></span>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         ${stabLevelBadge(s.level)}
-        ${stabAvgRate ? `<span style="font-size:11px;color:var(--ink3)">월평균 ${stabAvgRate.toFixed(2)}% · 그룹평균 ${stabGroupRate ? stabGroupRate.toFixed(2) : '-'}%</span>` : ''}
+        ${stabAvgRate ? `<span style="font-size:11px;color:var(--ink3)">${isMonthlyFreq ? '월평균' : '평균'} ${stabAvgRate.toFixed(2)}% · 그룹평균 ${stabGroupRate ? stabGroupRate.toFixed(2) : '-'}%</span>` : ''}
       </div>
     </div>
     <div class="stab-row">
-      <span class="stab-label">월분배 수준<br><span style="font-size:10px;font-weight:400;color:var(--ink4)">(분배금)</span></span>
+      <span class="stab-label">${isMonthlyFreq ? '월분배 수준' : '분배 수준'}<br><span style="font-size:10px;font-weight:400;color:var(--ink4)">(분배금)</span></span>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         ${stabLevelBadge(s.levelDist)}
-        ${stabAvgDist ? `<span style="font-size:11px;color:var(--ink3)">월평균 ${stabAvgDist.toFixed(0)}원 · 그룹평균 ${stabGroupDist ? stabGroupDist.toFixed(0) : '-'}원</span>` : ''}
+        ${stabAvgDist ? `<span style="font-size:11px;color:var(--ink3)">${isMonthlyFreq ? '월평균' : '평균'} ${stabAvgDist.toFixed(0)}원 · 그룹평균 ${stabGroupDist ? stabGroupDist.toFixed(0) : '-'}원</span>` : ''}
       </div>
     </div>
     <div class="comment-box">${autoComment(e)}</div>
