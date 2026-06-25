@@ -1120,7 +1120,7 @@ function render(e) {
       <span class="stab-label">분배금 추세</span>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         ${stabTrendBadge(s.trend)}
-        ${s.trendPct ? `<span style="font-size:11px;color:var(--ink3)">최근 3개월 ${s.trendPct > 0 ? '+' : ''}${s.trendPct}%</span>` : ''}
+        ${s.trendPct ? `<span style="font-size:11px;color:var(--ink3)">${isMonthlyFreq ? '최근 3개월' : '최근 2건'} ${s.trendPct > 0 ? '+' : ''}${s.trendPct}%</span>` : ''}
       </div>
     </div>
     <div class="stab-row">
@@ -1157,7 +1157,7 @@ function render(e) {
               변동 큼 ≤50%<br>
               변동 매우 큼 &gt;50%
             </td>
-            <td>최근 6개월 (최고−최저) / 평균</td>
+            <td>${isMonthlyFreq ? '최근 6개월' : '최근 4건'} (최고−최저) / 평균</td>
           </tr>
           <tr>
             <td>추세</td>
@@ -1166,16 +1166,16 @@ function render(e) {
               유지 ±10% 이내<br>
               감소 &lt;−10%
             </td>
-            <td>최근 3개월 평균 vs 이전 3개월 평균</td>
+            <td>${isMonthlyFreq ? '최근 3개월 평균 vs 이전 3개월 평균' : '최근 2건 평균 vs 이전 2건 평균'}</td>
           </tr>
           <tr>
-            <td>월분배 수준<br>(분배율 · 분배금)</td>
+            <td>${isMonthlyFreq ? '월분배 수준' : '분배 수준'}<br>(분배율 · 분배금)</td>
             <td>
               평균보다 높음<br>
               평균 수준<br>
               평균보다 낮음
             </td>
-            <td>최근 6개월 평균 월분배율·월분배금을 동일 유형 그룹 평균과 비교.<br>±10% 이내는 평균 수준<br><span style="color:var(--ink4)">유형: 커버드콜 / 리츠 / 일반배당 / 분기배당이상</span></td>
+            <td>${isMonthlyFreq ? '최근 6개월' : '최근 4건'} 평균 ${isMonthlyFreq ? '월분배율·월분배금' : '분배율·분배금'}을 동일 유형 그룹 평균과 비교.<br>±10% 이내는 평균 수준<br><span style="color:var(--ink4)">유형: 커버드콜 / 리츠 / 일반배당 / 분기배당이상</span></td>
           </tr>
         </tbody>
       </table>
