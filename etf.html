@@ -256,6 +256,19 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   .sim-summary{grid-template-columns:1fr}
   .tab-btn{font-size:12px;padding:8px 14px}
 }
+/* ── 추종지수 ── */
+.index-box{background:var(--bg);border-radius:8px;padding:14px 16px}
+.index-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px;line-height:1.4}
+.index-type{font-size:11px;color:var(--ink3)}
+/* ── 구성종목 ── */
+.holdings-table{width:100%;border-collapse:collapse;font-size:12px}
+.holdings-table th{background:var(--bg);color:var(--ink3);font-weight:600;padding:7px 10px;text-align:left;border-bottom:1px solid var(--border)}
+.holdings-table th:nth-child(2){text-align:right}
+.holdings-table td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.holdings-table td:nth-child(2){text-align:right;font-family:"DM Mono",monospace;font-weight:700;color:var(--accent)}
+.holdings-table tr:last-child td{border-bottom:none}
+.holdings-bar-wrap{background:var(--border);border-radius:2px;height:5px;margin-top:4px;overflow:hidden}
+.holdings-bar{background:var(--accent-mid);height:5px;border-radius:2px}
 </style>
 </head>
 <body>
@@ -295,7 +308,6 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 
   <!-- 탭: 기본 정보 -->
   <div id="tabInfo">
-  <!-- 좌/우 2열 -->
   <div class="grid2 left-wide">
     <!-- 좌 -->
     <div>
@@ -305,11 +317,16 @@ footer a{color:var(--ink3);text-underline-offset:2px}
         <div id="basicInfo"></div>
       </div>
 
-      <!-- 이번달 분배 일정 -->
+      <!-- 추종지수 -->
       <div class="card">
-        <div class="card-title">이번달 분배 일정</div>
-        <div class="sched-grid" id="schedGrid"></div>
-        <div class="dist-row" id="distRow"></div>
+        <div class="card-title">추종지수</div>
+        <div id="indexInfo"></div>
+      </div>
+
+      <!-- 상품설명 -->
+      <div class="card">
+        <div class="card-title">상품설명</div>
+        <div id="summaryInfo"></div>
       </div>
 
       <!-- 수익률 -->
@@ -333,10 +350,24 @@ footer a{color:var(--ink3);text-underline-offset:2px}
         </div>
         <p style="font-size:10px;color:var(--ink4);margin-top:8px;line-height:1.8">1) 수익률은 종가(시장가격) 기준이며, 운용사 공시 수익률(기준가격/NAV 기준)과 다를 수 있습니다.<br>2) 각 기간(1주·1개월·3개월 등)은 오늘 기준 해당 일수 전 종가 대비이며 매일 업데이트됩니다.<br>3) 상장이후는 상장일 첫날 종가 기준입니다.</p>
       </div>
+
+      <!-- 구성종목 -->
+      <div class="card">
+        <div class="card-title">구성종목 <span style="font-size:11px;font-weight:400;color:var(--ink3)">TOP 10</span></div>
+        <div id="holdingsInfo"></div>
+        <p style="font-size:10px;color:var(--ink4);margin-top:10px;line-height:1.6">※ 네이버 금융 기준. 구성종목은 운용사 리밸런싱에 따라 변동될 수 있습니다.</p>
+      </div>
     </div>
 
     <!-- 우 -->
     <div>
+      <!-- 이번달 분배 일정 -->
+      <div class="card">
+        <div class="card-title">이번달 분배 일정</div>
+        <div class="sched-grid" id="schedGrid"></div>
+        <div class="dist-row" id="distRow"></div>
+      </div>
+
       <!-- 분배금 히스토리 -->
       <div class="card">
         <div class="card-title">분배금 히스토리</div>
@@ -812,12 +843,56 @@ function render(e) {
 
   // 기본 정보
   const listedDate = e.listedDate || '-';
+  const mktCap = e.marketCap || '-';
+  const feeStr = e.totalFee ? `${e.totalFee.toFixed(2)}%` : '-';
   document.getElementById('basicInfo').innerHTML = `
     <div class="info-row"><span class="info-label">운용사</span><span class="info-val">${e.manager || e.brand}</span></div>
     <div class="info-row"><span class="info-label">상장일</span><span class="info-val mono">${listedDate}</span></div>
     <div class="info-row"><span class="info-label">분배 주기</span><span class="info-val green">${e.freq}</span></div>
     <div class="info-row"><span class="info-label">전날 종가</span><span class="info-val mono">${comma(e.price)}원</span></div>
+    <div class="info-row"><span class="info-label">시가총액</span><span class="info-val mono">${mktCap}</span></div>
+    <div class="info-row"><span class="info-label">총보수</span><span class="info-val mono">${feeStr}</span></div>
   `;
+
+  // 추종지수
+  if (e.indexName) {
+    document.getElementById('indexInfo').innerHTML = `
+      <div class="index-box">
+        <div class="index-name">${e.indexName}</div>
+      </div>
+    `;
+  } else {
+    document.getElementById('indexInfo').innerHTML = '<p style="font-size:12px;color:var(--ink3)">데이터 없음</p>';
+  }
+
+  // 상품설명
+  if (e.summary) {
+    document.getElementById('summaryInfo').innerHTML =
+      `<p style="font-size:13px;color:var(--ink2);line-height:1.75">${e.summary}</p>`;
+  } else {
+    document.getElementById('summaryInfo').innerHTML = '<p style="font-size:12px;color:var(--ink3)">데이터 없음</p>';
+  }
+
+  // 구성종목
+  if (e.holdings && e.holdings.length) {
+    const maxPct = Math.max(...e.holdings.map(h => parseFloat(h.pct)));
+    const rows = e.holdings.map(h => {
+      const pctNum = parseFloat(h.pct);
+      const barW = Math.round(pctNum / maxPct * 100);
+      return `<tr>
+        <td>${h.name}</td>
+        <td>${h.pct}<div class="holdings-bar-wrap"><div class="holdings-bar" style="width:${barW}%"></div></div></td>
+      </tr>`;
+    }).join('');
+    document.getElementById('holdingsInfo').innerHTML = `
+      <table class="holdings-table">
+        <thead><tr><th>종목명</th><th>비중</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  } else {
+    document.getElementById('holdingsInfo').innerHTML = '<p style="font-size:12px;color:var(--ink3)">데이터 없음</p>';
+  }
 
   // 분배 일정
   const isMonthlyE = e.freq === '월배당' || e.freq === '월배당추정';
