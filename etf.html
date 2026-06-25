@@ -630,11 +630,12 @@ function computeStab(e) {
   const trend = (e.trend || []).slice().sort((a,b) => a.ex_date < b.ex_date ? -1 : 1);
   const isMonthly = (e.freq === '월배당' || e.freq === '월배당추정');
 
+  const now = new Date();
+  const msBefore = days => new Date(now - days * 86400000).toISOString().slice(0,10);
+  const d6 = msBefore(182), d3 = msBefore(91);
+
   let six, rec3, prev3;
   if(isMonthly) {
-    const now = new Date();
-    const msBefore = days => new Date(now - days * 86400000).toISOString().slice(0,10);
-    const d6 = msBefore(182), d3 = msBefore(91);
     six   = trend.filter(t => t.ex_date >= d6).map(t => t.dist);
     rec3  = trend.filter(t => t.ex_date >= d3).map(t => t.dist);
     prev3 = trend.filter(t => t.ex_date >= d6 && t.ex_date < d3).map(t => t.dist);
