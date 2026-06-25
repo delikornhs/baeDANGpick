@@ -983,6 +983,7 @@ function render(e) {
 
   // 분배금 히스토리 차트
   const trend = (e.trend || []).slice(-12);
+  const isMonthlyFreq = (e.freq === '월배당' || e.freq === '월배당추정');
   if(trend.length) {
     const labels = trend.map(t => {
       const m = parseInt(t.ex_date.slice(5,7));
@@ -1059,7 +1060,6 @@ function render(e) {
     });
 
     // 통계: 월배당은 최근 6건, 비월배당은 최근 4건 기준 / 연간합계는 올해 1월 1일부터 누적
-    const isMonthlyFreq = (e.freq === '월배당' || e.freq === '월배당추정');
     const trendStats = isMonthlyFreq ? trend.slice(-6) : trend.slice(-4);
     const valsStats  = trendStats.map(t => t.dist);
     const avgStats   = valsStats.length ? Math.round(valsStats.reduce((a,b)=>a+b,0)/valsStats.length) : 0;
