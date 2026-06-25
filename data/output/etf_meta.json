@@ -38847,5 +38847,26 @@
     ],
     "listed_date": "2016-08-11",
     "manager": "한화자산운용"
+  },
+  "450120": {
+    "listed_date": "",
+    "manager": ""
+  },
+  "276970": {
+    "total_fee": 0.3,
+    "index_name": "S&P500 Dividend Aristocrats Covered Call(7.2% Premium) Index",
+    "summary": "이 투자신탁은 S&P 500 Dividend Aristocrats Covered Call(7.2% Premium) Index Price Return 을 기초지수로 하여 1좌당 순자산가치의 변동률을 기초지수 변동률과 연동하여 투자신탁재산을 운용함을 그 운용목적으로 합니다.",
+    "holdings": [
+      {
+        "name": "스왑(메리츠증권)",
+        "pct": "49.12%"
+      },
+      {
+        "name": "스왑(키움증권)",
+        "pct": "48.84%"
+      }
+    ],
+    "listed_date": "2017-08-10",
+    "manager": "삼성자산운용"
   }
 }
