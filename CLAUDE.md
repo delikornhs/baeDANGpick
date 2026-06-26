@@ -172,7 +172,25 @@ git commit -m "data: N월 [월중/월말] 분배금 데이터 업데이트"
 git push
 ```
 
+**⚠️ push 실패(리베이스 충돌) 시 주의:**
+```bash
+git pull origin master --rebase
+# 충돌 발생 시 data/output 파일은 --ours가 아닌 --theirs 사용
+# (리베이스 도중 --ours = origin/master의 구버전, --theirs = 내가 생성한 새 데이터)
+git checkout --theirs data/output/latest.json data/output/etf_data.js
+git add data/output/latest.json data/output/etf_data.js
+git rebase --continue
+git push
+```
+- 리베이스 후에도 `latest.json`의 `ex_date`가 업데이트한 달 데이터인지 반드시 확인 후 뉴스레터 발송
+
 ### 4단계: 뉴스레터 발송
+
+**⚠️ 발송 전 반드시 확인**: `latest.json`의 월말 `ex_date`가 해당 월인지 확인한다.
+지급일(pay_date)이 잘못되면 구독자에게 오정보가 전달된다.
+```bash
+python -X utf8 -c "import json; d=json.load(open('data/output/latest.json',encoding='utf-8')); eom=[x for x in d if x.get('timing')=='월말' and x.get('current')]; print(eom[0]['ex_date'], eom[0]['pay_date']) if eom else print('월말없음')"
+```
 
 이 환경에서는 `gh` CLI가 없으므로 Python urllib로 GitHub API를 직접 호출한다.
 
