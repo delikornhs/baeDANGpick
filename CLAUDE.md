@@ -7,6 +7,35 @@
 
 ---
 
+## 분배금 안정성 지표 계산 기준
+
+**적용 파일:** `etf_data_processor.py`, `etf.html`, `compare.html`
+
+### 집계 기준 (통일)
+| 구분 | 기준 |
+|---|---|
+| 월배당/월배당추정 | 최근 **6건** (개수 기준) |
+| 분기배당이상 | 최근 **4건** (개수 기준) |
+
+- 분배금 히스토리 섹션: `trend.slice(-6)` / `trend.slice(-4)` (개수 기준)
+- 분배금 안정성 섹션: 동일한 개수 기준으로 통일
+- 그룹평균(peer): 캐시(`x.stab`) 사용하지 않고 동일 개수 기준으로 직접 계산
+
+### 수정 이유
+기존에는 안정성 계산에 날짜 기준(182일)을 사용했는데, 배당락일이 경계에 걸리면 6개월 안에 7건 또는 5건이 포함되어 히스토리 섹션(항상 6건)과 월평균 값이 달라지는 문제가 있었다. (예: TIGER 배당커버드콜액티브 — 히스토리 425원 vs 안정성 373원)
+
+또한 그룹평균 계산 시 peer ETF의 캐시값(`x.stab.avgMonthlyRate/Dist`)을 우선 사용하던 방식은 캐시 생성 시점에 따라 내 값과 기준이 달라질 수 있어 직접 계산 방식으로 변경했다.
+
+### ⚠️ 프로세서 기본 경로(XLS)에서도 안정성 지표 계산
+기존 `etf_data_processor.py`의 기본 실행 경로(XLS 파일 처리)에서는 `calc_stability_metrics`가 호출되지 않았고, `PRESERVE_FIELDS`로 이전 `latest.json`의 안정성 값이 그대로 유지되었다. 이 때문에 count 기준으로 수정 후 프로세서를 재실행해도 `avg_monthly_dist` 등이 업데이트되지 않았다.
+
+**수정 내용 (`etf_data_processor.py`):**
+- 기본 경로 5단계(분배율 계산) 직후에 안정성 지표 계산 블록 추가 (step 6)
+- `PRESERVE_FIELDS`에서 안정성 관련 필드 제거 (항상 새로 계산하도록)
+  - 제거된 필드: `stab_score`, `stab_variation`, `stab_trend`, `trend_change_pct`, `stab_level`, `stab_level_dist`, `annual_dist`, `annual_rate`, `avg_monthly_dist`, `avg_monthly_rate`, `peer_group`, `group_avg_rate`, `group_avg_dist`
+
+---
+
 ## ⚠️ etf.html JS 수정 시 주의사항
 
 `render()` 함수 안에서 `const`/`let`을 `if` 블록 내부에 선언하면, 블록 밖 코드에서 참조 시 `ReferenceError`가 발생해 **ETF 상세 페이지 전체가 렌더링되지 않는다.**

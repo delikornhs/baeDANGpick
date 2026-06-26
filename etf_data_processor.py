@@ -844,12 +844,18 @@ def calc_returns(item: dict, daily: list, history: dict) -> dict:
     return ret
 
 
-def calc_stability_metrics(isin: str, history: dict, current_price: int = 0) -> dict:
+def calc_stability_metrics(isin: str, history: dict, current_price: int = 0, freq: str = "") -> dict:
     """
     분배금 안정성 지표 계산.
     - stab_score  : 매우 안정 / 안정 / 보통 / 주의 / 데이터 부족
     - stab_trend  : 증가 / 유지 / 감소 / 데이터 부족
     - stab_level  : 보수적 / 일반적 / 공격적 / 주의
+
+    집계 기준 (히스토리·안정성 일치):
+    - 월배당/월배당추정: 최근 6건 (개수 기준)
+    - 분기배당이상: 최근 4건 (개수 기준)
+    날짜 기준(182일)은 사용하지 않음 — 경계 날짜에 따라 7건/5건이 포함돼
+    분배금 히스토리 섹션(slice(-6/-4))과 값이 달라지는 문제가 있었음.
     """
     result = {
         "stab_score": "", "stab_variation": 0.0,
@@ -861,20 +867,23 @@ def calc_stability_metrics(isin: str, history: dict, current_price: int = 0) -> 
         return result
 
     records = history[isin]
-    now_str   = datetime.now().strftime("%Y-%m-%d")
-    jan1_str  = datetime.now().strftime("%Y-01-01")   # 올해 1월 1일
-    six_ago   = (datetime.now() - timedelta(days=182)).strftime("%Y-%m-%d")
-    three_ago = (datetime.now() - timedelta(days=91)).strftime("%Y-%m-%d")
+    jan1_str  = datetime.now().strftime("%Y-01-01")
 
     sorted_keys = sorted(records.keys())
-    year_dists  = [records[k]["dist"] for k in sorted_keys if k >= jan1_str]  # 올해 누적
-    six_dists   = [records[k]["dist"] for k in sorted_keys if k >= six_ago]
-    recent3     = [records[k]["dist"] for k in sorted_keys if k >= three_ago]
-    prev3       = [records[k]["dist"] for k in sorted_keys if six_ago <= k < three_ago]
+    year_dists  = [records[k]["dist"] for k in sorted_keys if k >= jan1_str]
 
     result["annual_dist"] = sum(year_dists)
 
-    # ① 안정성: 최근 6개월 변동폭 / 평균
+    # 월배당: 최근 6건, 비월배당: 최근 4건 (개수 기준)
+    is_monthly = freq in ("월배당", "월배당추정")
+    n_six   = 6 if is_monthly else 4
+    n_three = 3 if is_monthly else 2
+
+    six_dists = [records[k]["dist"] for k in sorted_keys[-n_six:]]
+    recent3   = [records[k]["dist"] for k in sorted_keys[-n_three:]]
+    prev3     = [records[k]["dist"] for k in sorted_keys[-n_six:-n_three]]
+
+    # ① 안정성: 최근 N건 변동폭 / 평균
     if len(six_dists) >= 2:
         avg = sum(six_dists) / len(six_dists)
         if avg > 0:
@@ -887,7 +896,7 @@ def calc_stability_metrics(isin: str, history: dict, current_price: int = 0) -> 
     elif six_dists:
         result["stab_score"] = "데이터 부족"
 
-    # ② 추세: 최근 3개월 vs 이전 3개월 평균
+    # ② 추세: 최근 N/2건 vs 이전 N/2건 평균
     if recent3 and prev3:
         r_avg = sum(recent3) / len(recent3)
         p_avg = sum(prev3)  / len(prev3)
@@ -900,10 +909,9 @@ def calc_stability_metrics(isin: str, history: dict, current_price: int = 0) -> 
     elif recent3:
         result["stab_trend"] = "데이터 부족"
 
-    # ③ 평균 월분배금·분배율 (최근 6개월, 동일유형 그룹비교용)
-    yr6_dists = [records[k]["dist"] for k in sorted_keys if k >= six_ago]
-    if yr6_dists:
-        avg_dist = sum(yr6_dists) / len(yr6_dists)
+    # ③ 평균 월분배금·분배율 (개수 기준, 동일유형 그룹비교용)
+    if six_dists:
+        avg_dist = sum(six_dists) / len(six_dists)
         result["avg_monthly_dist"] = round(avg_dist, 1)
         if current_price > 0:
             result["avg_monthly_rate"] = round(avg_dist / current_price * 100, 3)
@@ -1134,7 +1142,7 @@ if __name__ == "__main__":
                 if item.get("rate", 0) > 0 else item.get("price", 0)
             )
             stab = calc_stability_metrics(
-                item["isin"], history_for_returns, notice_prev_price)
+                item["isin"], history_for_returns, notice_prev_price, item.get("freq", ""))
             item.update(stab)
 
         # 피어그룹 평균 월분배율·월분배금 계산 → stab_level / stab_level_dist 설정
@@ -1268,7 +1276,46 @@ if __name__ == "__main__":
             rate_fallback += 1
     print(f"  → 공시일자 전일 기준: {rate_updated}개 | 현재 종가 fallback: {rate_fallback}개")
 
-    # 6. 기존 수익률·메타 필드 보존 (덮어쓰기 방지)
+    # 6. 안정성 지표 계산 (count 기준: 월배당 6건/3건, 비월배당 4건/2건)
+    for item in latest:
+        notice_prev_price = (
+            int(item["dist"] / item["rate"] * 100)
+            if item.get("rate", 0) > 0 else item.get("price", 0)
+        )
+        stab = calc_stability_metrics(
+            item["isin"], history, notice_prev_price, item.get("freq", ""))
+        item.update(stab)
+
+    # 피어그룹 평균 월분배율·월분배금 계산 → stab_level / stab_level_dist 설정
+    peer_rates = defaultdict(list)
+    peer_dists = defaultdict(list)
+    for item in latest:
+        g = get_peer_group(item)
+        r = item.get("avg_monthly_rate", 0)
+        d = item.get("avg_monthly_dist", 0)
+        if r > 0: peer_rates[g].append(r)
+        if d > 0: peer_dists[g].append(d)
+    group_avg_rate = {g: sum(v)/len(v) for g, v in peer_rates.items() if v}
+    group_avg_dist = {g: sum(v)/len(v) for g, v in peer_dists.items() if v}
+    for item in latest:
+        g        = get_peer_group(item)
+        my_rate  = item.get("avg_monthly_rate", 0)
+        ga_rate  = group_avg_rate.get(g, 0)
+        my_dist  = item.get("avg_monthly_dist", 0)
+        ga_dist  = group_avg_dist.get(g, 0)
+        item["peer_group"]      = g
+        item["group_avg_rate"]  = round(ga_rate, 3)
+        item["group_avg_dist"]  = round(ga_dist, 1)
+        if my_rate > 0 and ga_rate > 0:
+            if   my_rate > ga_rate * 1.1: item["stab_level"]      = "평균보다 높음"
+            elif my_rate < ga_rate * 0.9: item["stab_level"]      = "평균보다 낮음"
+            else:                          item["stab_level"]      = "평균 수준"
+        if my_dist > 0 and ga_dist > 0:
+            if   my_dist > ga_dist * 1.1: item["stab_level_dist"] = "평균보다 높음"
+            elif my_dist < ga_dist * 0.9: item["stab_level_dist"] = "평균보다 낮음"
+            else:                          item["stab_level_dist"] = "평균 수준"
+
+    # 7. 기존 수익률·메타 필드 보존 (덮어쓰기 방지)
     PRESERVE_FIELDS = [
         "listed_date", "manager", "index_name", "total_fee", "summary", "holdings", "market_cap",
         "return_1w", "return_1m", "return_3m", "return_6m", "return_1y", "return_listed",
@@ -1276,10 +1323,6 @@ if __name__ == "__main__":
         "total_return_6m", "total_return_1y", "total_return_listed",
         "return_1wf", "total_return_1wf",
         "price_1w", "price_1m", "price_3m", "price_6m", "price_1y", "price_listed",
-        "stab_score", "stab_variation", "stab_trend", "trend_change_pct",
-        "stab_level", "stab_level_dist", "annual_dist", "annual_rate",
-        "avg_monthly_dist", "avg_monthly_rate", "peer_group",
-        "group_avg_rate", "group_avg_dist",
     ]
     for item in latest:
         prev = prev_latest_map.get(item["code"])
@@ -1288,7 +1331,7 @@ if __name__ == "__main__":
                 if field in prev and field not in item:
                     item[field] = prev[field]
 
-    # 메타 캐시에서 상장일·운용사 강제 반영 (prev_latest가 없는 신규 ETF 포함)
+    # 메타 캐시에서 상장일·운용사 강제 반영 (prev_latest 없는 신규 ETF 포함)
     meta_cache: dict = {}
     if ETF_META_FILE.exists():
         with open(ETF_META_FILE, encoding="utf-8") as f:
@@ -1312,10 +1355,10 @@ if __name__ == "__main__":
     with open(LATEST_FILE, "w", encoding="utf-8") as f:
         json.dump(latest, f, ensure_ascii=False, indent=2)
 
-    # 7. JS 파일 생성
+    # 8. JS 파일 생성
     build_js(latest, price_date)
 
-    # 8. HTML 자동 삽입
+    # 9. HTML 자동 삽입
     inject_html()
 
     print("\n✅ 완료!")

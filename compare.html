@@ -161,12 +161,14 @@ function getPeerGroup(e) {
 
 function computeStab(e) {
   const trend = (e.trend || []).slice().sort((a,b) => a.ex_date < b.ex_date ? -1 : 1);
-  const now   = new Date();
-  const msBefore = days => new Date(now - days * 86400000).toISOString().slice(0,10);
-  const d6 = msBefore(182), d3 = msBefore(91);
-  const six   = trend.filter(t => t.ex_date >= d6).map(t => t.dist);
-  const rec3  = trend.filter(t => t.ex_date >= d3).map(t => t.dist);
-  const prev3 = trend.filter(t => t.ex_date >= d6 && t.ex_date < d3).map(t => t.dist);
+  const isMonthly = (e.freq === '월배당' || e.freq === '월배당추정');
+  // 월배당: 최근 6건, 비월배당: 최근 4건 (개수 기준)
+  // 날짜 기준(182일)은 경계에 따라 7건/5건 포함 가능 → 히스토리 섹션과 불일치 발생하여 제거
+  const nSix   = isMonthly ? 6 : 4;
+  const nThree = isMonthly ? 3 : 2;
+  const six   = trend.slice(-nSix).map(t => t.dist);
+  const rec3  = trend.slice(-nThree).map(t => t.dist);
+  const prev3 = trend.slice(-nSix, -nThree).map(t => t.dist);
   const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
   let score = '', variation = 0;
   if(six.length >= 2) {
@@ -185,7 +187,7 @@ function computeStab(e) {
   const jan1=new Date().getFullYear()+'-01-01';
   const annualDist=trend.filter(t=>t.ex_date>=jan1).reduce((a,b)=>a+b.dist,0);
 
-  // 월분배 수준: 최근 6개월 평균 월분배율·분배금 → 동일유형 그룹 비교
+  // 월분배 수준: 개수 기준 평균 월분배율·분배금 → 동일유형 그룹 비교
   let avgMonthlyRate = 0, groupAvgRate = 0, level = '';
   let avgMonthlyDist = 0, groupAvgDist = 0, levelDist = '';
   const peerGroup = getPeerGroup(e);
@@ -195,10 +197,12 @@ function computeStab(e) {
   }
   if(typeof ETF_ALL !== 'undefined') {
     const peers = ETF_ALL.filter(x => getPeerGroup(x) === peerGroup);
+    // peer도 캐시(x.stab) 대신 직접 계산 — 캐시 기준과 달라지는 문제 방지
     if(avgMonthlyRate > 0) {
       const peerRates = peers.map(x => {
-        if(x.stab && x.stab.avgMonthlyRate > 0) return x.stab.avgMonthlyRate;
-        const p6 = (x.trend||[]).filter(t=>t.ex_date>=d6).map(t=>t.dist);
+        const xIsMonthly = (x.freq === '월배당' || x.freq === '월배당추정');
+        const pN = xIsMonthly ? 6 : 4;
+        const p6 = (x.trend||[]).slice(-pN).map(t=>t.dist);
         return p6.length>0&&x.price>0 ? parseFloat((avg(p6)/x.price*100).toFixed(3)) : 0;
       }).filter(r => r > 0);
       if(peerRates.length > 0) {
@@ -210,8 +214,9 @@ function computeStab(e) {
     }
     if(avgMonthlyDist > 0) {
       const peerDists = peers.map(x => {
-        if(x.stab && x.stab.avgMonthlyDist > 0) return x.stab.avgMonthlyDist;
-        const p6 = (x.trend||[]).filter(t=>t.ex_date>=d6).map(t=>t.dist);
+        const xIsMonthly = (x.freq === '월배당' || x.freq === '월배당추정');
+        const pN = xIsMonthly ? 6 : 4;
+        const p6 = (x.trend||[]).slice(-pN).map(t=>t.dist);
         return p6.length > 0 ? parseFloat(avg(p6).toFixed(1)) : 0;
       }).filter(d => d > 0);
       if(peerDists.length > 0) {
