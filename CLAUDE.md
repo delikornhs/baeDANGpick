@@ -256,9 +256,38 @@ except urllib.error.HTTPError as e:
 - 응답 HTTP 204 = 성공
 - **주의: 재시도 금지** — 204가 와도 한 번만 호출할 것. 중복 발송됨
 
-### 5단계: 콘텐츠 작성 여부 확인
+### 5단계: 콘텐츠 작성 전 데이터 검증
 
-4단계까지 완료 후 반드시 아래 질문을 한다:
+콘텐츠 작성 전 반드시 아래 코드로 분배율 TOP 10을 뽑아 사용자에게 보여주고, 확인을 받은 후 진행한다.
+
+```python
+import json, sys
+sys.stdout.reconfigure(encoding='utf-8')
+with open('data/output/latest.json', encoding='utf-8') as f:
+    data = json.load(f)
+
+timing = '월말'  # 또는 '월중'
+ym = 'YYYY-MM'  # 해당 월로 변경
+
+target = [d for d in data if d.get('current') and d.get('timing') == timing
+          and d.get('freq') in ('월배당','월배당추정')
+          and d.get('ex_date','').startswith(ym)]
+by_rate = sorted(target, key=lambda x: x.get('rate',0), reverse=True)
+
+print(f'전체: {len(target)}개')
+for i, d in enumerate(by_rate[:10], 1):
+    trend = d.get('trend', [])
+    prev = trend[-2].get('dist',0) if len(trend)>=2 else 0
+    chg = round((d['dist']-prev)/prev*100,1) if prev else 0
+    chg_s = ('+' if chg>0 else '')+str(chg)+'%' if chg else '-'
+    print(f"{i}위 {d['name']} | {d['dist']}원 | {chg_s} | {d['rate']}%")
+```
+
+사용자가 순위를 확인하고 이상 없으면 콘텐츠 작성 진행.
+
+### 6단계: 콘텐츠 작성 여부 확인
+
+5단계까지 완료 후 반드시 아래 질문을 한다:
 
 > "데이터 업데이트 완료됐습니다. 콘텐츠 작성도 진행할까요?"
 
@@ -828,6 +857,15 @@ git push
 - 동일한 HTML 출력 방식 사용
 - 섹션 구조는 내용에 맞게 자유롭게
 - 주의사항 문구는 동일하게 포함
+
+---
+
+## ⚠️ 프로세서 재실행 시 콘텐츠 분배율 확인
+
+프로세서(`etf_data_processor.py`)를 재실행하면 현재 종가가 새로 반영되어 분배율(`rate`)이 바뀐다.
+공시일 전일 종가 조회에 실패한 ETF(약 322개)는 **현재 종가 fallback**으로 처리되기 때문이다.
+
+→ 프로세서를 재실행한 경우, 이미 작성된 콘텐츠(인사이트 글, 네이버 블로그 글)의 분배율 순위가 바뀌지 않았는지 반드시 확인하고, 달라졌으면 수정 후 push한다.
 
 ---
 
