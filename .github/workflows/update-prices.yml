@@ -46,13 +46,46 @@ jobs:
       - name: Fetch latest prices
         run: python etf_data_processor.py --prices-only
 
+      - name: Update sitemap lastmod
+        run: |
+          python - <<'EOF'
+          import re
+          from datetime import datetime, timezone, timedelta
+
+          KST = timezone(timedelta(hours=9))
+          today = datetime.now(KST).strftime('%Y-%m-%d')
+
+          with open('sitemap.xml', encoding='utf-8') as f:
+              content = f.read()
+
+          # 매일 갱신되는 페이지: 메인, 랭킹, ETF 상세(weekly/monthly 모두)
+          # priority 0.8 이상 + changefreq daily/weekly 페이지만 오늘 날짜로 갱신
+          def replace_lastmod(block):
+              loc = re.search(r'<loc>(.*?)</loc>', block)
+              if not loc:
+                  return block
+              url = loc.group(1)
+              # 인사이트 글(고정 날짜), 가이드(yearly) 제외
+              if '/insight/posts/' in url or 'guide-0' in url:
+                  return block
+              return re.sub(r'<lastmod>\d{4}-\d{2}-\d{2}</lastmod>',
+                            f'<lastmod>{today}</lastmod>', block)
+
+          parts = re.split(r'(?=<url>)', content)
+          content = ''.join(replace_lastmod(p) for p in parts)
+
+          with open('sitemap.xml', 'w', encoding='utf-8') as f:
+              f.write(content)
+          print(f'sitemap lastmod 갱신 완료: {today}')
+          EOF
+
       - name: Commit and push if changed
         id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/output/latest.json data/output/etf_data.js index.html
-          git add data/output/etf_meta.json 2>/dev/null || true
+          git add data/output/etf_meta.json sitemap.xml 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "변경 없음, 스킵"
             echo "changed=false" >> $GITHUB_OUTPUT
