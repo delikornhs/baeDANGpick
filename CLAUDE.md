@@ -215,10 +215,51 @@ git push
 
 ### 4단계: 뉴스레터 발송
 
-**⚠️ 발송 전 반드시 확인**: `latest.json`의 월말 `ex_date`가 해당 월인지 확인한다.
-지급일(pay_date)이 잘못되면 구독자에게 오정보가 전달된다.
+**⚠️ 발송 전 반드시 확인 (3가지 모두 통과해야 발송)**
+
+> 2026-06-26 오류 사례: `history.json`만 먼저 push하고 뉴스레터 워크플로우를 트리거했더니,
+> `latest.json`이 15분 뒤에 커밋되어 5월 데이터(pay_date 6월)가 그대로 발송됨.
+> **반드시 `latest.json` push 완료 후 트리거할 것.**
+
 ```bash
-python -X utf8 -c "import json; d=json.load(open('data/output/latest.json',encoding='utf-8')); eom=[x for x in d if x.get('timing')=='월말' and x.get('current')]; print(eom[0]['ex_date'], eom[0]['pay_date']) if eom else print('월말없음')"
+python -X utf8 -c "
+import json
+from datetime import datetime
+
+d = json.load(open('data/output/latest.json', encoding='utf-8'))
+timing = '월말'  # 또는 '월중'
+target_ym = '2026-06'  # 업데이트한 달로 변경
+
+eom = [x for x in d if x.get('timing')==timing and x.get('current')]
+if not eom:
+    print('❌ current=True 항목 없음')
+else:
+    sample = eom[0]
+    ex = sample.get('ex_date', '')
+    pay = sample.get('pay_date', '')
+    ex_ym = ex[:7] if ex else ''
+    pay_m = int(pay[5:7]) if pay else 0
+    ex_m = int(ex[5:7]) if ex else 0
+
+    print(f'ex_date: {ex}  pay_date: {pay}')
+
+    # 검증 1: ex_date가 업데이트한 달인지
+    if ex_ym != target_ym:
+        print(f'❌ ex_date가 {target_ym}이 아님 → latest.json이 이전 달 데이터일 가능성')
+    else:
+        print(f'✅ ex_date 월 확인: {ex_ym}')
+
+    # 검증 2: pay_date가 ex_date보다 나중인지 (지급일은 배당락 이후)
+    if pay_m <= ex_m:
+        print(f'❌ pay_date({pay})가 ex_date({ex})와 같은 달 이하 → 이전 달 데이터 혼입 의심')
+    else:
+        print(f'✅ pay_date 월 확인: {pay}')
+
+    # 검증 3: current=True 항목 수가 정상 범위인지
+    print(f'✅ current=True 항목 수: {len(eom)}개')
+    if len(eom) < 50:
+        print(f'⚠️ 항목 수가 너무 적음 — 필터링 이상 가능성')
+"
 ```
 
 이 환경에서는 `gh` CLI가 없으므로 Python urllib로 GitHub API를 직접 호출한다.
