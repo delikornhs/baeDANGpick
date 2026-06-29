@@ -343,6 +343,38 @@ for i, d in enumerate(by_rate[:10], 1):
 
 "N월 분석 작성해줘" 요청이 오면 아래 순서로 진행한다.
 
+### ⚠️ 월중+월말 전체 대상임을 반드시 확인
+
+월간 분석은 **월중 ETF + 월말 ETF 모두**를 대상으로 한다.
+월말 공시 직후에 작성 요청이 와도 월중 ETF를 빠뜨리면 안 된다.
+
+> 2026년 6월 오류 사례: 월말 데이터만 사용해 RISE 미국AI밸류체인(2.25%)을 분배율 1위로 기재했으나,
+> 실제 1위는 ACE미국반도체데일리타겟커버드콜(합성)(3.04%, 월중)이었다.
+
+데이터 추출 후 반드시 아래를 출력해 확인:
+```python
+import json, sys
+sys.stdout.reconfigure(encoding='utf-8')
+with open('data/output/latest.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+ym = 'YYYY-MM'  # 분석 월로 변경
+all_monthly = [d for d in data if d.get('current')
+               and d.get('freq') in ('월배당','월배당추정')
+               and d.get('ex_date','').startswith(ym)]
+
+mid = [d for d in all_monthly if d.get('timing') == '월중']
+eom = [d for d in all_monthly if d.get('timing') == '월말']
+print(f'월중 {len(mid)}개 + 월말 {len(eom)}개 = 합계 {len(all_monthly)}개')
+
+by_rate = sorted(all_monthly, key=lambda x: x.get('rate',0), reverse=True)
+print('=== 통합 분배율 TOP 5 ===')
+for i, d in enumerate(by_rate[:5], 1):
+    print(f'{i}위 [{d["timing"]}] {d["name"]} {d["rate"]}%')
+```
+
+월중·월말 합산 숫자가 합리적인지 확인 후 진행.
+
 ### 1단계: 데이터 추출
 
 ```python
@@ -350,12 +382,15 @@ import json, sys
 sys.stdout.reconfigure(encoding='utf-8')
 with open('data/output/latest.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
-# current=True, freq in ('월배당','월배당추정') 항목 전체 대상
+# ⚠️ timing 필터 없음 — 월중+월말 전체 대상
 # 분석 기준월: 요청한 달 (예: "6월" → ex_date startswith '2026-06')
+target = [d for d in data if d.get('current')
+          and d.get('freq') in ('월배당','월배당추정')
+          and d.get('ex_date','').startswith('YYYY-MM')]
 ```
 
 추출할 데이터:
-- 월배당 ETF 중 current=True인 항목
+- 월배당 ETF 중 current=True인 항목 (월중+월말 전체)
 - 3개월치 분배금 추이 (당월, 전월, 전전월)
 - 분배율(rate), 현재가(price)
 - 3개월 이상 연속 감소 ETF
