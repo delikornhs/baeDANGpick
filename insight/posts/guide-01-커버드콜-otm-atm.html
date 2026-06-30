@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-70RCL5E7B8"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());if(localStorage.getItem('bdp_admin')!=='1'){gtag('config','G-70RCL5E7B8');}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>커버드콜 OTM vs ATM — 분배금이 만들어지는 방식의 차이 - 배당픽 인사이트</title>
+<meta name="description" content="OTM과 ATM 커버드콜의 개념과 차이, 분배금이 만들어지는 원리를 쉬운 예시로 설명합니다. 국내 대표 상품 비교까지.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f7f7f4;--white:#fff;--ink:#1a1a18;--ink2:#4a4a45;--ink3:#9a9a93;--ink4:#d4d4cc;--accent:#1d6b38;--accent-bg:#edf7f1;--accent-mid:#6cba8b;--warn:#b45309;--warn-bg:#fffbeb;--red:#dc2626;--border:#e8e8e2;--radius:10px}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",sans-serif;min-height:100vh;line-height:1.8}
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200}
+.nav-inner{max-width:1100px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:15px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--ink)}
+.logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:6px;align-items:center}
+.nav-link{font-size:12px;color:var(--ink2);text-decoration:none;font-weight:600;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg);transition:all .15s;white-space:nowrap}
+.nav-link:hover{color:var(--accent);border-color:var(--accent-mid);background:var(--accent-bg)}
+.nav-link.on{color:var(--accent);border-color:var(--accent);background:var(--accent-bg)}
+.post-wrap{max-width:720px;margin:0 auto;padding:48px 20px 80px}
+.post-back{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);text-decoration:none;margin-bottom:28px;transition:color .15s}
+.post-back:hover{color:var(--accent)}
+.post-category{display:inline-block;font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);padding:3px 8px;border-radius:4px;margin-bottom:14px}
+.post-title{font-size:26px;font-weight:700;letter-spacing:-.6px;line-height:1.4;margin-bottom:10px}
+.post-date{font-size:12px;color:var(--ink3);margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.post-body h2{font-size:19px;font-weight:700;letter-spacing:-.3px;margin:40px 0 14px;padding-left:12px;border-left:3px solid var(--accent)}
+.post-body h3{font-size:16px;font-weight:700;margin:24px 0 10px;color:var(--ink)}
+.post-body p{font-size:15px;color:var(--ink2);margin-bottom:16px;line-height:1.85}
+.post-body p strong{color:var(--ink);font-weight:700}
+.post-body table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:13px}
+.post-body th{background:var(--accent-bg);color:var(--accent);font-weight:700;padding:9px 12px;border:1px solid var(--border);text-align:left;white-space:nowrap}
+.post-body td{padding:8px 12px;border:1px solid var(--border);color:var(--ink2)}
+.post-body tr:nth-child(even) td{background:#fafaf8}
+.post-body hr{border:none;border-top:1px solid var(--border);margin:36px 0}
+.post-body ul,.post-body ol{padding-left:20px;margin-bottom:16px}
+.post-body li{font-size:15px;color:var(--ink2);line-height:1.85}
+.post-body blockquote{border-left:3px solid var(--accent-mid);padding:10px 16px;margin:16px 0;background:var(--accent-bg);border-radius:0 6px 6px 0}
+.post-body blockquote p{color:var(--ink2);margin-bottom:0}
+.notice{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin:32px 0 0;font-size:12px;color:var(--ink3);line-height:1.7}
+.example-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin:16px 0 20px}
+.example-box .ex-title{font-size:12px;font-weight:700;color:var(--ink3);margin-bottom:10px;letter-spacing:.3px}
+.example-row{display:flex;gap:12px;margin-bottom:8px;align-items:flex-start}
+.ex-label{font-size:12px;font-weight:700;color:var(--white);padding:2px 8px;border-radius:4px;white-space:nowrap;margin-top:2px}
+.ex-label.atm{background:var(--accent)}
+.ex-label.otm{background:var(--warn)}
+.ex-text{font-size:13px;color:var(--ink2);line-height:1.7}
+footer{text-align:center;padding:24px 20px;font-size:12px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8}
+footer a{color:var(--ink3);text-underline-offset:2px}
+@media(max-width:600px){.post-title{font-size:21px}.nav-links{gap:4px}.nav-link{font-size:11px;padding:4px 8px}.post-body table{font-size:12px}}
+.pf-fab{position:fixed;bottom:24px;right:24px;z-index:500;background:var(--accent);color:#fff;border:none;border-radius:50px;padding:12px 20px;font-size:13px;font-weight:700;box-shadow:0 4px 16px rgba(29,107,56,.3);display:flex;align-items:center;gap:7px;text-decoration:none;transition:all .2s;font-family:"Noto Sans KR",sans-serif;white-space:nowrap}
+.pf-fab:hover{background:#165a2e;transform:translateY(-2px)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-mark">&#8361;</div>배당픽</a>
+    <div class="nav-links">
+      <a href="/ranking.html" class="nav-link">랭킹</a>
+      <a href="/calc.html" class="nav-link">계산기</a>
+      <a href="/insight.html" class="nav-link on">인사이트</a>
+      <a href="/newsletter.html" class="nav-link">뉴스레터</a>
+    </div>
+  </div>
+</nav>
+<div class="post-wrap">
+  <a href="/insight.html" class="post-back">← 인사이트 목록</a>
+  <div class="post-category">가이드</div>
+  <h1 class="post-title">커버드콜 OTM vs ATM — 분배금이 만들어지는 방식의 차이</h1>
+  <p class="post-date">2026-06-30</p>
+  <div class="post-body">
+
+<h2>ATM과 OTM이란</h2>
+<p>커버드콜 ETF 이름에 자주 등장하는 ATM과 OTM은 콜옵션의 <strong>행사가격(strike price)이 현재 주가와 얼마나 떨어져 있는가</strong>를 나타내는 용어입니다.</p>
+<ul>
+  <li><strong>ATM (At The Money, 등가격)</strong> — 행사가격이 현재 주가와 같거나 매우 가까운 수준</li>
+  <li><strong>OTM (Out of The Money, 외가격)</strong> — 행사가격이 현재 주가보다 높은 수준 (콜옵션 기준)</li>
+</ul>
+<p>커버드콜은 보유한 주식(또는 지수)에 대해 콜옵션을 매도하고 그 대가로 프리미엄(옵션료)을 받는 전략입니다. 이 프리미엄이 분배금의 재원이 됩니다. ATM과 OTM은 어느 가격대의 콜옵션을 매도하느냐의 차이입니다.</p>
+<hr>
+
+<h2>왜 이런 구분이 생겼나</h2>
+<p>커버드콜 전략에서 투자자는 두 가지를 동시에 원합니다. 하나는 <strong>높은 분배금</strong>이고, 다른 하나는 <strong>기초자산 상승 시 이익 참여</strong>입니다. 그런데 이 두 가지는 서로 반비례 관계에 있습니다.</p>
+<p>행사가격을 현재 주가와 가깝게 설정할수록(ATM에 가까울수록) 옵션 프리미엄이 커져 분배금은 많아지지만, 주가가 조금만 올라도 그 상승분을 포기해야 합니다. 반대로 행사가격을 현재 주가보다 높게 설정할수록(OTM으로 갈수록) 프리미엄은 작아지지만, 그만큼 상승 여력을 보유할 수 있습니다.</p>
+<p>이 트레이드오프를 어떻게 설정하느냐에 따라 ATM형과 OTM형으로 나뉘게 됐고, 투자 목적에 따라 두 전략을 선택할 수 있도록 다양한 상품이 출시되어 있습니다.</p>
+<hr>
+
+<h2>ATM과 OTM의 차이</h2>
+<table>
+  <tr><th>구분</th><th>ATM (등가격)</th><th>OTM (외가격)</th></tr>
+  <tr><td>행사가격 위치</td><td>현재 주가와 동일하거나 근접</td><td>현재 주가보다 높음</td></tr>
+  <tr><td>옵션 프리미엄</td><td>높음</td><td>낮음</td></tr>
+  <tr><td>분배금 수준</td><td>상대적으로 높음</td><td>상대적으로 낮음</td></tr>
+  <tr><td>상승 참여 가능 범위</td><td>거의 없음</td><td>행사가격까지 참여 가능</td></tr>
+  <tr><td>하락 시 완충 효과</td><td>프리미엄이 커서 완충 효과 큼</td><td>프리미엄이 작아 완충 효과 작음</td></tr>
+  <tr><td>적합한 시장 환경</td><td>횡보장 또는 완만한 상승장</td><td>상승 추세가 이어지는 국면</td></tr>
+</table>
+<hr>
+
+<h2>어떻게 작동해서 분배금이 만들어지나</h2>
+<p>나스닥100 지수가 현재 <strong>20,000pt</strong>라고 가정하겠습니다. ETF가 이 지수를 추종하며 커버드콜 전략을 적용하는 상황입니다.</p>
+
+<h3>ATM 커버드콜의 작동 방식</h3>
+<div class="example-box">
+  <div class="ex-title">예시 — 행사가격 20,000pt (현재 주가와 동일)</div>
+  <div class="example-row">
+    <span class="ex-label atm">설정</span>
+    <span class="ex-text">행사가 20,000pt 콜옵션을 매도 → 프리미엄 200pt 수취 (현재가 대비 약 1%)</span>
+  </div>
+  <div class="example-row">
+    <span class="ex-label atm">상승 시</span>
+    <span class="ex-text">지수가 21,000pt로 올랐다면, 1,000pt 상승분은 옵션 매수자에게 넘어감. ETF는 수취한 프리미엄 200pt만 가져감.</span>
+  </div>
+  <div class="example-row">
+    <span class="ex-label atm">횡보 시</span>
+    <span class="ex-text">지수가 20,000pt 그대로라면, 옵션은 행사되지 않고 프리미엄 200pt 전부 수익으로 확보.</span>
+  </div>
+  <div class="example-row">
+    <span class="ex-label atm">하락 시</span>
+    <span class="ex-text">지수가 19,500pt로 내렸다면, 하락폭 500pt에서 프리미엄 200pt만큼 손실을 줄여줌.</span>
+  </div>
+</div>
+<p>ATM 커버드콜은 프리미엄이 크기 때문에 분배금이 많지만, 지수가 오를 때 그 상승분을 거의 가져가지 못합니다. 지수는 올랐는데 ETF 주가가 제자리인 경우가 생기는 이유입니다.</p>
+
+<h3>OTM 커버드콜의 작동 방식</h3>
+<div class="example-box">
+  <div class="ex-title">예시 — 행사가격 21,000pt (현재 주가보다 5% 높음)</div>
+  <div class="example-row">
+    <span class="ex-label otm">설정</span>
+    <span class="ex-text">행사가 21,000pt 콜옵션을 매도 → 프리미엄 80pt 수취 (현재가 대비 약 0.4%)</span>
+  </div>
+  <div class="example-row">
+    <span class="ex-label otm">상승 시</span>
+    <span class="ex-text">지수가 21,000pt 이하로 올랐다면(예: 20,800pt), 상승분 800pt + 프리미엄 80pt 모두 ETF 수익. 행사가격을 넘지 않으면 상승 이익 전부 확보.</span>
+  </div>
+  <div class="example-row">
+    <span class="ex-label otm">행사가 초과 시</span>
+    <span class="ex-text">지수가 22,000pt까지 올랐다면, 21,000pt 초과분 1,000pt는 옵션 매수자에게 넘어감. ETF는 21,000까지의 상승분(1,000pt) + 프리미엄 80pt만 가져감.</span>
+  </div>
+  <div class="example-row">
+    <span class="ex-label otm">하락 시</span>
+    <span class="ex-text">지수가 19,500pt로 내렸다면, 프리미엄 80pt만큼만 손실을 줄여줌. ATM보다 완충 효과 작음.</span>
+  </div>
+</div>
+<p>OTM 커버드콜은 프리미엄이 작아 분배금이 낮지만, 행사가격까지는 지수 상승분을 그대로 가져갈 수 있습니다. 상승 추세가 이어지는 국면에서는 ATM보다 유리한 결과가 나올 수 있습니다.</p>
+
+<blockquote>
+  <p><strong>핵심 정리:</strong> ATM은 "프리미엄을 많이 받는 대신 상승은 포기", OTM은 "프리미엄은 적지만 일정 수준까지 상승도 참여". 어느 쪽이 낫다고 단정 짓기보다는 시장 환경과 투자 목적에 따라 선택이 달라집니다.</p>
+</blockquote>
+<hr>
+
+<h2>국내 대표 상품</h2>
+<h3>ATM 커버드콜</h3>
+<table>
+  <tr><th>ETF</th><th>기초자산</th><th>분배율(2026년 6월)</th></tr>
+  <tr><td>RISE 200위클리커버드콜</td><td>코스피200</td><td>1.70%</td></tr>
+  <tr><td>RISE 200고배당커버드콜ATM</td><td>코스피200 고배당</td><td>0.85%</td></tr>
+  <tr><td>ACE 고배당주Plus커버드콜액티브</td><td>국내 고배당주</td><td>1.69%</td></tr>
+  <tr><td>TIGER 미국나스닥100커버드콜(합성)</td><td>나스닥100</td><td>0.99%</td></tr>
+</table>
+<p>현재 주가 수준의 행사가격으로 콜옵션을 매도합니다. 프리미엄 수익이 크지만 기초자산이 상승할 때 그 상승분 대부분을 포기하게 됩니다. 지수가 횡보하거나 소폭 움직이는 구간에서 분배금 수익이 상대적으로 안정적입니다.</p>
+
+<h3>OTM 커버드콜</h3>
+<table>
+  <tr><th>ETF</th><th>기초자산</th><th>분배율(2026년 6월)</th></tr>
+  <tr><td>KODEX 미국나스닥100데일리커버드콜OTM</td><td>나스닥100</td><td>1.68%</td></tr>
+  <tr><td>KODEX 미국S&amp;P500데일리커버드콜OTM</td><td>S&amp;P500</td><td>1.24%</td></tr>
+  <tr><td>SOL 팔란티어커버드콜OTM채권혼합</td><td>팔란티어 + 채권</td><td>1.98%</td></tr>
+  <tr><td>TIGER 200커버드콜OTM</td><td>코스피200</td><td>0.40%</td></tr>
+</table>
+<p>현재 주가보다 높은 행사가격으로 콜옵션을 매도합니다. 프리미엄은 ATM보다 작아 분배율이 낮지만, 행사가격까지는 기초자산 상승분을 그대로 가져갈 수 있습니다. 기초자산의 성장성을 믿으면서 월배당도 함께 원하는 투자자에게 적합합니다.</p>
+<hr>
+
+<h2>어떤 상황에서 어느 쪽이 유리할까</h2>
+<table>
+  <tr><th>시장 상황</th><th>유리한 전략</th><th>이유</th></tr>
+  <tr><td>횡보장 (지수 제자리)</td><td>ATM</td><td>높은 프리미엄을 매달 수취, 상승 포기 비용 없음</td></tr>
+  <tr><td>완만한 상승장</td><td>ATM 또는 OTM 혼용</td><td>ATM은 분배금 유리, OTM은 일부 상승 참여</td></tr>
+  <tr><td>강한 상승장</td><td>OTM</td><td>행사가격까지 상승분 확보 가능, ATM은 상승 대부분 포기</td></tr>
+  <tr><td>하락장</td><td>ATM</td><td>프리미엄이 커서 하락 완충 효과 더 큼</td></tr>
+</table>
+<p>다만 실제로는 시장 방향을 미리 알 수 없기 때문에, 장기적으로 어느 전략이 우월하다고 단정하기 어렵습니다. 본인의 투자 목적(현금흐름 최대화 vs 성장 참여 병행)과 기초자산에 대한 시각을 기준으로 선택하는 것이 합리적입니다.</p>
+
+    <div class="notice">본 내용은 투자 이해를 돕기 위한 설명 목적으로 작성되었으며, 투자 권유가 아닙니다. 분석에서 언급된 ETF 상품명은 설명을 위한 예시로 활용된 것으로, 특정 상품에 대한 매수 추천 또는 매도 권유가 아닙니다. 최종 투자 판단은 본인에게 있습니다.</div>
+  </div>
+</div>
+<footer>
+  본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.<br>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSflCQap_v_YXjEwRVnjiaQhh9Nkppmw0HWK8YQ1HzR7lAKf9g/viewform?usp=publish-editor" target="_blank" rel="noopener">오류 및 개선 의견 보내기</a>
+  &nbsp;·&nbsp;<a href="/privacy.html">개인정보처리방침</a>
+</footer>
+<a href="/portfolio.html" class="pf-fab">⭐ <span>MY ETF</span></a>
+</body>
+</html>
