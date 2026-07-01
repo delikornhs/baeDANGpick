@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-70RCL5E7B8"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());if(localStorage.getItem('bdp_admin')!=='1'){gtag('config','G-70RCL5E7B8');}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>커버드콜 고정형 vs 타겟형 — 무엇을 고정하고 무엇을 조정하나 - 배당픽 인사이트</title>
+<meta name="description" content="고정형과 타겟형 커버드콜의 개념과 차이, 분배금이 만들어지는 원리를 쉬운 예시로 설명합니다. 국내 대표 상품 비교까지.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f7f7f4;--white:#fff;--ink:#1a1a18;--ink2:#4a4a45;--ink3:#9a9a93;--ink4:#d4d4cc;--accent:#1d6b38;--accent-bg:#edf7f1;--accent-mid:#6cba8b;--warn:#b45309;--warn-bg:#fffbeb;--red:#dc2626;--border:#e8e8e2;--radius:10px}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",sans-serif;min-height:100vh;line-height:1.8}
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200}
+.nav-inner{max-width:1100px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:15px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--ink)}
+.logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:6px;align-items:center}
+.nav-link{font-size:12px;color:var(--ink2);text-decoration:none;font-weight:600;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg);transition:all .15s;white-space:nowrap}
+.nav-link:hover{color:var(--accent);border-color:var(--accent-mid);background:var(--accent-bg)}
+.nav-link.on{color:var(--accent);border-color:var(--accent);background:var(--accent-bg)}
+.post-wrap{max-width:720px;margin:0 auto;padding:48px 20px 80px}
+.post-back{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);text-decoration:none;margin-bottom:28px;transition:color .15s}
+.post-back:hover{color:var(--accent)}
+.post-category{display:inline-block;font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);padding:3px 8px;border-radius:4px;margin-bottom:14px}
+.post-title{font-size:26px;font-weight:700;letter-spacing:-.6px;line-height:1.4;margin-bottom:10px}
+.post-date{font-size:12px;color:var(--ink3);margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.post-body h2{font-size:19px;font-weight:700;letter-spacing:-.3px;margin:40px 0 14px;padding-left:12px;border-left:3px solid var(--accent)}
+.post-body h3{font-size:16px;font-weight:700;margin:24px 0 10px;color:var(--ink)}
+.post-body p{font-size:15px;color:var(--ink2);margin-bottom:16px;line-height:1.85}
+.post-body p strong{color:var(--ink);font-weight:700}
+.post-body table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:13px}
+.post-body th{background:var(--accent-bg);color:var(--accent);font-weight:700;padding:9px 12px;border:1px solid var(--border);text-align:left;white-space:nowrap}
+.post-body td{padding:8px 12px;border:1px solid var(--border);color:var(--ink2)}
+.post-body tr:nth-child(even) td{background:#fafaf8}
+.post-body hr{border:none;border-top:1px solid var(--border);margin:36px 0}
+.post-body ul,.post-body ol{padding-left:20px;margin-bottom:16px}
+.post-body li{font-size:15px;color:var(--ink2);line-height:1.85}
+.post-body blockquote{border-left:3px solid var(--accent-mid);padding:10px 16px;margin:16px 0;background:var(--accent-bg);border-radius:0 6px 6px 0}
+.post-body blockquote p{color:var(--ink2);margin-bottom:0}
+.notice{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin:32px 0 0;font-size:12px;color:var(--ink3);line-height:1.7}
+.example-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin:16px 0 20px}
+.example-box .ex-title{font-size:12px;font-weight:700;color:var(--ink3);margin-bottom:10px;letter-spacing:.3px}
+.example-row{display:flex;gap:12px;margin-bottom:8px;align-items:flex-start}
+.ex-label{font-size:12px;font-weight:700;color:var(--white);padding:2px 8px;border-radius:4px;white-space:nowrap;margin-top:2px}
+.ex-label.fixed{background:var(--accent)}
+.ex-label.target{background:var(--warn)}
+.ex-text{font-size:13px;color:var(--ink2);line-height:1.7}
+footer{text-align:center;padding:24px 20px;font-size:12px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8}
+footer a{color:var(--ink3);text-underline-offset:2px}
+@media(max-width:600px){.post-title{font-size:21px}.nav-links{gap:4px}.nav-link{font-size:11px;padding:4px 8px}.post-body table{font-size:12px}}
+.pf-fab{position:fixed;bottom:24px;right:24px;z-index:500;background:var(--accent);color:#fff;border:none;border-radius:50px;padding:12px 20px;font-size:13px;font-weight:700;box-shadow:0 4px 16px rgba(29,107,56,.3);display:flex;align-items:center;gap:7px;text-decoration:none;transition:all .2s;font-family:"Noto Sans KR",sans-serif;white-space:nowrap}
+.pf-fab:hover{background:#165a2e;transform:translateY(-2px)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-mark">&#8361;</div>배당픽</a>
+    <div class="nav-links">
+      <a href="/ranking.html" class="nav-link">랭킹</a>
+      <a href="/calc.html" class="nav-link">계산기</a>
+      <a href="/insight.html" class="nav-link on">인사이트</a>
+      <a href="/newsletter.html" class="nav-link">뉴스레터</a>
+    </div>
+  </div>
+</nav>
+<div class="post-wrap">
+  <a href="/insight.html" class="post-back">← 인사이트 목록</a>
+  <div class="post-category">가이드</div>
+  <h1 class="post-title">커버드콜 고정형 vs 타겟형 — 무엇을 고정하고 무엇을 조정하나</h1>
+  <p class="post-date">2026-06-30</p>
+  <div class="post-body">
+
+<h2>고정형과 타겟형이란</h2>
+<p>커버드콜 ETF 이름에는 '고정'과 '타겟'이라는 표현도 자주 등장합니다. 이는 앞서 다룬 ATM·OTM(콜옵션 행사가격의 위치)과는 <strong>다른 축</strong>의 구분입니다. 고정형·타겟형은 <strong>콜옵션을 얼마나 매도할지(커버리지 비율)를 어떤 기준으로 정하는가</strong>의 차이입니다.</p>
+<ul>
+  <li><strong>고정형</strong> — 콜옵션 매도 비율(커버리지)이나 행사가 설정 규칙을 매번 동일하게 적용</li>
+  <li><strong>타겟형</strong> — 사전에 정한 목표 분배율을 달성하기 위해 매도 비율을 시장 상황에 따라 조정</li>
+</ul>
+<p>즉 두 방식은 "무엇을 고정할지"가 서로 반대입니다. 고정형은 매도 규칙을 고정하고 분배금이 변동하며, 타겟형은 분배금 목표를 고정하고 매도 비율이 변동합니다.</p>
+<hr>
+
+<h2>왜 이렇게 구분해서 운영하나</h2>
+<p>커버드콜 ETF는 콜옵션 매도로 프리미엄을 얻어 분배금을 만듭니다. 그런데 옵션 프리미엄은 시장 변동성에 따라 매번 달라지기 때문에, 매도 규칙을 고정하면 분배금이 들쭉날쭉해질 수 있습니다.</p>
+<p>일부 투자자는 매달 <strong>비슷한 수준의 분배금</strong>을 받는 것을 더 중요하게 여깁니다. 이런 수요에 맞춰 매도 비율을 유동적으로 조정해 목표 분배율을 맞추는 타겟형 상품이 나오게 됐습니다. 반대로 매도 규칙 자체를 단순하고 일관되게 유지하는 방식(고정형)을 선호하는 상품도 여전히 많습니다. 두 방식 모두 "분배금을 안정적으로 만들고 싶다"는 같은 목표에서 출발했지만, 그 목표를 달성하는 방법이 다른 셈입니다.</p>
+<hr>
+
+<h2>고정형과 타겟형의 차이</h2>
+<p>두 방식 모두 실제 분배금은 매달 변동합니다. 차이는 그 변동을 <strong>줄이려는 조정 메커니즘이 있는가</strong>에 있습니다.</p>
+<table>
+  <tr><th>구분</th><th>고정형</th><th>타겟형</th></tr>
+  <tr><td>고정되는 값</td><td>콜옵션 매도 비율(커버리지) 등 운용 규칙</td><td>목표 분배율(연 환산 기준)</td></tr>
+  <tr><td>조정되는 값</td><td>없음 (규칙을 매번 동일하게 적용)</td><td>매도 비율 등 운용 방식 (목표에 근접시키기 위해 조정)</td></tr>
+  <tr><td>실제 분배금</td><td>변동 (조정 장치 없이 시장에 그대로 노출)</td><td>변동하되, 목표치에 근접하도록 조정 시도</td></tr>
+  <tr><td>운용 방식</td><td>단순, 규칙 일관</td><td>매번 운용 방식 재조정 필요</td></tr>
+  <tr><td>변동성 급등 시</td><td>분배금이 함께 급등할 수 있음</td><td>조정을 시도하지만 목표치를 크게 벗어날 수 있음</td></tr>
+</table>
+<hr>
+
+<h2>어떻게 작동해서 분배금이 만들어지나</h2>
+<p>나스닥100 지수를 기초자산으로 하고, 목표 연 분배율이 12%(월 1%)로 설정된 상황을 가정하겠습니다.</p>
+
+<h3>고정형의 작동 방식</h3>
+<div class="example-box">
+  <div class="ex-title">예시 — 매주 보유 지수의 100%에 대해 콜옵션 매도 (규칙 고정)</div>
+  <div class="example-row">
+    <span class="ex-label fixed">변동성 낮은 달</span>
+    <span class="ex-text">시장이 잠잠해 옵션 프리미엄이 적게 형성됨 → 같은 100% 매도 규칙을 적용해도 받는 프리미엄이 적어 분배금 감소</span>
+  </div>
+  <div class="example-row">
+    <span class="ex-label fixed">변동성 높은 달</span>
+    <span class="ex-text">시장이 크게 흔들려 옵션 프리미엄이 커짐 → 동일한 100% 매도 규칙에서 받는 프리미엄이 커져 분배금 급증</span>
+  </div>
+</div>
+<p>고정형은 매도 규칙이 항상 같기 때문에 계산이 단순하지만, 분배금 자체는 시장 변동성에 그대로 노출됩니다. 2026년 6월 ACE·RISE 계열의 데일리·위클리 고정 상품들이 분배금 변동폭이 컸던 것도 이런 구조 때문입니다.</p>
+
+<h3>타겟형의 작동 방식</h3>
+<div class="example-box">
+  <div class="ex-title">예시 — 월 1% 분배율을 목표로 운용 방식 조정</div>
+  <div class="example-row">
+    <span class="ex-label target">변동성 낮은 달</span>
+    <span class="ex-text">프리미엄이 적게 형성되는 시기 → 목표치에 가까워지도록 매도 비율이나 행사가격 등 운용 방식을 프리미엄이 늘어나는 방향으로 조정</span>
+  </div>
+  <div class="example-row">
+    <span class="ex-label target">변동성 높은 달</span>
+    <span class="ex-text">프리미엄이 크게 형성되는 시기 → 목표치를 크게 초과하지 않도록 운용 방식을 프리미엄이 줄어드는 방향으로 조정</span>
+  </div>
+</div>
+<p>구체적으로 어떤 방식을 조정하는지는 상품·운용사마다 다르며, 정확한 운용 규칙은 투자설명서를 통해 확인할 수 있습니다. 다만 방향은 공통적으로 <strong>목표 분배율에 근접시키는 쪽</strong>입니다. 그럼에도 시장이 극단적으로 움직이면 조정만으로 목표를 완벽히 맞추기 어려운 달도 있습니다.</p>
+
+<blockquote>
+  <p><strong>핵심 정리:</strong> 상품명에 '타겟'이 붙어 있다고 매달 분배금이 완전히 고정되는 것은 아닙니다. 목표 분배율에 가깝게 유지하려 노력하는 구조일 뿐, 기초자산 자체가 급등락하면 타겟형도 분배금이 크게 달라질 수 있습니다. 실제로 2026년 6월 ACE의 '데일리타겟커버드콜' 시리즈(반도체·빅테크·S&amp;P500)는 기초자산인 미국 반도체·빅테크 주가가 크게 반등하면서 분배금이 최대 150% 이상 급등했는데, 이는 타겟형이라도 기초자산 변동 자체를 완전히 상쇄하지는 못한다는 것을 보여주는 사례입니다.</p>
+</blockquote>
+<hr>
+
+<h2>국내 대표 상품</h2>
+<h3>고정형 커버드콜</h3>
+<table>
+  <tr><th>ETF</th><th>기초자산</th><th>분배율(2026년 6월)</th></tr>
+  <tr><td>RISE 미국AI밸류체인데일리고정커버드콜</td><td>미국 AI 밸류체인</td><td>2.25%</td></tr>
+  <tr><td>RISE 미국테크100데일리고정커버드콜</td><td>나스닥100</td><td>2.25%</td></tr>
+  <tr><td>RISE 코리아밸류업위클리고정커버드콜</td><td>코리아 밸류업</td><td>2.04%</td></tr>
+  <tr><td>FOCUS AI반도체위클리고정커버드콜</td><td>AI 반도체</td><td>1.82%</td></tr>
+</table>
+<p>매도 규칙을 일관되게 적용하는 방식으로, 기초자산의 변동성이 커지는 국면에서 분배금이 함께 크게 늘어나는 경향이 있습니다.</p>
+
+<h3>타겟형 커버드콜</h3>
+<table>
+  <tr><th>ETF</th><th>기초자산</th><th>분배율(2026년 6월)</th></tr>
+  <tr><td>ACE미국반도체데일리타겟커버드콜(합성)</td><td>미국 반도체</td><td>3.13%</td></tr>
+  <tr><td>ACE미국빅테크7+데일리타겟커버드콜(합성)</td><td>미국 빅테크 7종</td><td>3.11%</td></tr>
+  <tr><td>ACE미국500데일리타겟커버드콜(합성)</td><td>S&amp;P500</td><td>2.04%</td></tr>
+  <tr><td>KODEX 200타겟위클리커버드콜</td><td>코스피200</td><td>1.46%</td></tr>
+</table>
+<p>목표 분배율에 맞춰 매도 비율을 조정하는 방식입니다. 다만 위 표에서도 볼 수 있듯, 기초자산이 급등한 2026년 6월에는 타겟형 상품들도 분배율이 목표치를 크게 웃돌았습니다. 목표는 어디까지나 운용 목표치일 뿐, 실제 분배금은 매달 달라질 수 있습니다.</p>
+<hr>
+
+<h2>투자 시 참고할 점</h2>
+<p>고정형은 매도 규칙이 단순해 상품 구조를 이해하기 쉽지만, 분배금의 월별 변동폭이 클 수 있습니다. 타겟형은 목표 분배율이라는 기준점이 있어 상대적으로 예측 가능성을 기대할 수 있지만, 기초자산이 급변동하는 시기에는 목표치와 실제 분배금 사이에 차이가 클 수 있습니다.</p>
+<p>두 방식 모두 절대적으로 우월하다고 보기 어렵고, 분배금의 예측 가능성을 중시하는지 아니면 매도 규칙의 단순함·투명성을 중시하는지에 따라 선택이 달라질 수 있습니다.</p>
+
+    <div class="notice">본 내용은 투자 이해를 돕기 위한 설명 목적으로 작성되었으며, 투자 권유가 아닙니다. 분석에서 언급된 ETF 상품명은 설명을 위한 예시로 활용된 것으로, 특정 상품에 대한 매수 추천 또는 매도 권유가 아닙니다. 최종 투자 판단은 본인에게 있습니다.</div>
+  </div>
+</div>
+<footer>
+  본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.<br>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSflCQap_v_YXjEwRVnjiaQhh9Nkppmw0HWK8YQ1HzR7lAKf9g/viewform?usp=publish-editor" target="_blank" rel="noopener">오류 및 개선 의견 보내기</a>
+  &nbsp;·&nbsp;<a href="/privacy.html">개인정보처리방침</a>
+</footer>
+<a href="/portfolio.html" class="pf-fab">⭐ <span>MY ETF</span></a>
+</body>
+</html>
