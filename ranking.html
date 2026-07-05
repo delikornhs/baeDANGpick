@@ -632,7 +632,7 @@ function renderList(section) {
       : `<div class="empty"><p>조건에 맞는 ETF가 없습니다.</p></div>`;
     const moreWrap = document.getElementById('distMoreWrap');
     moreWrap.style.display = data.length > distShown ? '' : 'none';
-  } else {
+  } else if (section === 'ret') {
     // 검색 선택 상태
     if (retSearchCode) {
       const rank = retBaseData.findIndex(e => e.code === retSearchCode) + 1;
