@@ -11,8 +11,8 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>분배율ㆍ수익률 랭킹 - 배당픽</title>
-<meta name="description" content="월배당 ETF 분배율ㆍ분배금 랭킹과 전체 ETF 기간별 수익률 랭킹을 한눈에 확인하세요.">
+<title>분배율ㆍ수익률ㆍ시가총액 랭킹 - 배당픽</title>
+<meta name="description" content="월배당 ETF 분배율ㆍ분배금 랭킹, 전체 ETF 기간별 수익률 랭킹, 전체 ETF 시가총액 랭킹을 한눈에 확인하세요.">
 <meta name="robots" content="index, follow">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="배당픽">
@@ -186,8 +186,8 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <div class="page-header">
   <div class="page-header-inner">
     <div>
-      <h1>분배율ㆍ수익률 랭킹</h1>
-      <p class="page-header-sub">월배당 ETF 분배율ㆍ분배금 랭킹, 전체 ETF 기간별 수익률 랭킹</p>
+      <h1>분배율ㆍ수익률ㆍ시가총액 랭킹</h1>
+      <p class="page-header-sub">월배당 ETF 분배율ㆍ분배금 랭킹, 전체 ETF 기간별 수익률ㆍ시가총액 랭킹</p>
     </div>
     <div class="update-badge" id="updateBadge">업데이트 중...</div>
   </div>
@@ -198,6 +198,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   <div class="tab-inner">
     <button class="tab-btn on" id="tabDist" onclick="switchTab('dist')">📊 월배당 ETF 분배율ㆍ분배금</button>
     <button class="tab-btn" id="tabRet" onclick="switchTab('ret')">📈 전체 ETF 기간별 수익률</button>
+    <button class="tab-btn" id="tabCap" onclick="switchTab('cap')">💰 전체 ETF 시가총액</button>
   </div>
 </div>
 
@@ -328,6 +329,46 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   </div>
 </div>
 
+<!-- ═══ 섹션 3: 시가총액 ═══ -->
+<div id="capSection" style="display:none">
+  <div class="stats-row" id="capStatsRow">
+    <div class="stat-card"><div class="stat-label">집계 ETF 수</div><div class="stat-val accent" id="cStatCount">-</div><div class="stat-sub">시가총액 있는 전체 ETF</div></div>
+    <div class="stat-card"><div class="stat-label">최대 시가총액</div><div class="stat-val accent" id="cStatMax">-</div><div class="stat-sub" id="cStatMaxName">-</div></div>
+    <div class="stat-card"><div class="stat-label">평균 시가총액</div><div class="stat-val" id="cStatAvg">-</div><div class="stat-sub">시가총액 있는 ETF 기준</div></div>
+  </div>
+
+  <div class="filter-wrap">
+    <div class="filter-row">
+      <span class="filter-label">유형</span>
+      <button class="ftog on" data-section="cap" data-v="all"    onclick="setTypeFilter('cap','all')">전체</button>
+      <button class="ftog"    data-section="cap" data-v="커버드콜" onclick="setTypeFilter('cap','커버드콜')">커버드콜</button>
+      <button class="ftog"    data-section="cap" data-v="리츠"    onclick="setTypeFilter('cap','리츠')">리츠</button>
+      <button class="ftog"    data-section="cap" data-v="일반배당" onclick="setTypeFilter('cap','일반배당')">일반배당</button>
+      <button class="ftog"    data-section="cap" data-v="기타"    onclick="setTypeFilter('cap','기타')">기타</button>
+    </div>
+    <div class="search-row">
+      <div class="search-wrap">
+        <input type="text" class="etf-search-input" id="capSearchInput"
+          placeholder="ETF 이름으로 검색 (예: KODEX, S&P500…)"
+          autocomplete="off"
+          oninput="onSearchInput('cap')"
+          onkeydown="onSearchKey(event,'cap')"
+          onfocus="onSearchInput('cap')"
+          onblur="setTimeout(()=>closeDropdown('cap'),150)">
+        <button class="search-clear-x" id="capSearchClearX" onclick="clearSearch('cap')" title="검색 초기화">×</button>
+        <div class="etf-search-dropdown" id="capDropdown"></div>
+      </div>
+      <div id="capSearchTag"></div>
+    </div>
+    <div class="result-meta" id="cResultMeta"></div>
+  </div>
+
+  <div class="ranking-wrap" id="capList"><div class="empty"><p>불러오는 중...</p></div></div>
+  <div class="loadmore-wrap" id="capMoreWrap" style="display:none">
+    <button class="loadmore-btn" onclick="loadMore('cap')">더보기</button>
+  </div>
+</div>
+
 <footer>
   본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.
   <br><a href="https://docs.google.com/forms/d/e/1FAIpQLSflCQap_v_YXjEwRVnjiaQhh9Nkppmw0HWK8YQ1HzR7lAKf9g/viewform?usp=publish-editor" target="_blank" rel="noopener" style="color:var(--ink3);text-decoration:underline;text-underline-offset:2px">오류 및 개선 의견 보내기</a>
@@ -393,16 +434,44 @@ let retBaseData    = [];
 let retShown       = 0;
 let retSearchCode  = null; // 검색으로 선택된 ETF code
 
+let capTypeFilter  = 'all';
+let capBaseData    = [];
+let capShown       = 0;
+let capSearchCode  = null;
+
 // ── 검색 ──
-let searchFocusIdx = { dist: -1, ret: -1 };
+let searchFocusIdx = { dist: -1, ret: -1, cap: -1 };
+
+// ── 시가총액 파싱 (문자열 → 억 단위 숫자) ──
+function parseMarketCap(str) {
+  if (!str) return 0;
+  const s = str.replace(/,/g, '');
+  let val = 0;
+  const jo  = s.match(/(\d+(?:\.\d+)?)조/);
+  const eok = s.match(/조\s*(\d+(?:\.\d+)?)억/) || s.match(/^(\d+(?:\.\d+)?)억/);
+  if (jo)  val += parseFloat(jo[1]) * 10000;
+  if (eok) val += parseFloat(eok[1]);
+  return val;
+}
+
+// ── 시가총액 숫자 → 표시 문자열 (억 단위) ──
+function fmtCap(billions) {
+  if (billions >= 10000) {
+    const jo  = Math.floor(billions / 10000);
+    const eok = Math.round(billions % 10000);
+    return eok > 0 ? `${jo}조 ${eok.toLocaleString()}억` : `${jo}조`;
+  }
+  return Math.round(billions).toLocaleString() + '억';
+}
 
 function onSearchInput(section) {
   const input = document.getElementById(section + 'SearchInput');
   const q = input.value.trim();
   const clearX = document.getElementById(section + 'SearchClearX');
-  clearX.classList.toggle('show', q.length > 0 || (section === 'dist' ? distSearchCode : retSearchCode));
+  const curCode = section === 'dist' ? distSearchCode : section === 'ret' ? retSearchCode : capSearchCode;
+  clearX.classList.toggle('show', q.length > 0 || !!curCode);
   if (!q) { closeDropdown(section); return; }
-  const base = section === 'dist' ? distBaseData : retBaseData;
+  const base = section === 'dist' ? distBaseData : section === 'ret' ? retBaseData : capBaseData;
   const hits = base.filter(e => e.name.toLowerCase().includes(q.toLowerCase())).slice(0, 20);
   const dd = document.getElementById(section + 'Dropdown');
   searchFocusIdx[section] = -1;
@@ -452,8 +521,9 @@ function closeDropdown(section) {
 }
 
 function selectSearch(section, code, name) {
-  if (section === 'dist') distSearchCode = code;
-  else                     retSearchCode  = code;
+  if (section === 'dist')      distSearchCode = code;
+  else if (section === 'ret')  retSearchCode  = code;
+  else                         capSearchCode  = code;
   const input = document.getElementById(section + 'SearchInput');
   input.value = '';
   closeDropdown(section);
@@ -466,8 +536,9 @@ function selectSearch(section, code, name) {
 }
 
 function clearSearch(section) {
-  if (section === 'dist') distSearchCode = null;
-  else                     retSearchCode  = null;
+  if (section === 'dist')      distSearchCode = null;
+  else if (section === 'ret')  retSearchCode  = null;
+  else                         capSearchCode  = null;
   document.getElementById(section + 'SearchInput').value = '';
   document.getElementById(section + 'SearchTag').innerHTML = '';
   document.getElementById(section + 'SearchClearX').classList.remove('show');
@@ -480,11 +551,14 @@ function switchTab(tab) {
   activeTab = tab;
   document.getElementById('distSection').style.display = tab === 'dist' ? '' : 'none';
   document.getElementById('retSection').style.display  = tab === 'ret'  ? '' : 'none';
+  document.getElementById('capSection').style.display  = tab === 'cap'  ? '' : 'none';
   document.getElementById('tabDist').classList.toggle('on', tab === 'dist');
   document.getElementById('tabRet').classList.toggle('on', tab === 'ret');
+  document.getElementById('tabCap').classList.toggle('on', tab === 'cap');
   // 탭 최초 진입 시 자동 로드
   if (tab === 'dist' && distBaseData.length === 0) runDistRanking();
   if (tab === 'ret'  && retBaseData.length  === 0) runRetRanking();
+  if (tab === 'cap'  && capBaseData.length  === 0) runCapRanking();
 }
 
 // ── 옵션 토글 ──
@@ -514,6 +588,7 @@ function setTypeFilter(section, val) {
 function loadMore(section) {
   if (section === 'dist') { distShown += PAGE_SIZE; renderList('dist'); }
   if (section === 'ret')  { retShown  += PAGE_SIZE; renderList('ret');  }
+  if (section === 'cap')  { capShown  += PAGE_SIZE; renderList('cap');  }
 }
 
 // ── 필터 적용 후 렌더 ──
@@ -521,9 +596,12 @@ function renderFiltered(section) {
   if (section === 'dist') {
     distShown = PAGE_SIZE;
     renderList('dist');
-  } else {
+  } else if (section === 'ret') {
     retShown = PAGE_SIZE;
     renderList('ret');
+  } else {
+    capShown = PAGE_SIZE;
+    renderList('cap');
   }
 }
 
@@ -579,6 +657,31 @@ function renderList(section) {
       : `<div class="empty"><p>조건에 맞는 ETF가 없습니다.</p></div>`;
     const moreWrap = document.getElementById('retMoreWrap');
     moreWrap.style.display = data.length > retShown ? '' : 'none';
+  } else {
+    // cap 검색 선택 상태
+    if (capSearchCode) {
+      const rank = capBaseData.findIndex(e => e.code === capSearchCode) + 1;
+      const etf  = capBaseData.find(e => e.code === capSearchCode);
+      const list = document.getElementById('capList');
+      if (!etf) {
+        list.innerHTML = `<div class="empty"><p>선택한 ETF가 현재 랭킹에 없습니다.</p></div>`;
+      } else {
+        const html = capItem(etf, rank);
+        list.innerHTML = html.replace('class="rank-item"', 'class="rank-item search-hit"');
+      }
+      document.getElementById('cResultMeta').textContent = `전체 ${capBaseData.length}개 중 ${rank}위`;
+      document.getElementById('capMoreWrap').style.display = 'none';
+      return;
+    }
+    const typeF = capTypeFilter;
+    let data = capBaseData.filter(e => typeF === 'all' || getCategory(e) === typeF);
+    document.getElementById('cResultMeta').textContent = `총 ${data.length}개 ETF`;
+    const shown = data.slice(0, capShown);
+    document.getElementById('capList').innerHTML = shown.length
+      ? shown.map((e,i) => capItem(e, i+1)).join('')
+      : `<div class="empty"><p>조건에 맞는 ETF가 없습니다.</p></div>`;
+    const moreWrap = document.getElementById('capMoreWrap');
+    moreWrap.style.display = data.length > capShown ? '' : 'none';
   }
 }
 
@@ -684,6 +787,60 @@ function updateRetStats(data) {
   }
 }
 
+// ── 시가총액 통계 업데이트 ──
+function updateCapStats(data) {
+  const sorted = [...data].sort((a,b) => b._capNum - a._capNum);
+  document.getElementById('cStatCount').textContent = data.length + '개';
+  if (sorted.length) {
+    const top = sorted[0];
+    document.getElementById('cStatMax').textContent = top.marketCap || '-';
+    const n = top.name;
+    document.getElementById('cStatMaxName').textContent = n.length > 14 ? n.slice(0,13)+'…' : n;
+    const avg = data.reduce((s,e) => s + e._capNum, 0) / data.length;
+    document.getElementById('cStatAvg').textContent = fmtCap(avg);
+  }
+}
+
+// ── 시가총액 아이템 렌더 ──
+function capItem(e, rank) {
+  const typeBadge  = `<span class="badge badge-type">${getCategory(e)}</span>`;
+  const freqBadge  = isMonthly(e) ? `<span class="badge badge-freq">월배당</span>` : '';
+  const priceStr   = e.price ? e.price.toLocaleString() + '원' : '-';
+  const listedStr  = e.listedDate ? e.listedDate.replace(/-/g,'.') : '-';
+  const feeStr     = e.totalFee != null ? e.totalFee.toFixed(2) + '%' : '-';
+  return `
+    <a href="/etf/${e.code}" class="rank-item" id="cap-rank-${e.code}" onclick="saveState('${e.code}')">
+      <div class="rank-num${rank <= 3 ? ' top' : ''}">${rank}</div>
+      <div class="rank-body">
+        <div class="rank-name">${e.name}${typeBadge}${freqBadge}</div>
+        <div class="rank-meta">
+          <span class="rank-meta-item">${e.brand}</span>
+          <span class="rank-meta-item">${priceStr}</span>
+          <span class="rank-meta-item">상장 ${listedStr}</span>
+          <span class="rank-meta-item">보수 ${feeStr}</span>
+        </div>
+      </div>
+      <div class="rank-right">
+        <div class="rank-main accent">${e.marketCap || '-'}</div>
+        <div class="rank-sub">시가총액</div>
+      </div>
+    </a>`;
+}
+
+// ── 시가총액 데이터 로드 ──
+function runCapRanking(restoreOpts) {
+  capBaseData = (ETF_ALL || [])
+    .filter(e => e.marketCap)
+    .map(e => ({ ...e, _capNum: parseMarketCap(e.marketCap) }))
+    .sort((a,b) => b._capNum - a._capNum);
+  updateCapStats(capBaseData);
+  capShown      = (restoreOpts && restoreOpts.shownCount)  || PAGE_SIZE;
+  capTypeFilter = (restoreOpts && restoreOpts.typeFilter)  || 'all';
+  document.querySelectorAll('[data-section="cap"]').forEach(b =>
+    b.classList.toggle('on', b.dataset.v === capTypeFilter));
+  renderList('cap');
+}
+
 // ── 분배율/분배금 데이터 로드 ──
 async function runDistRanking(restoreOpts) {
   const isAnnual = distPeriod === '연환산';
@@ -770,9 +927,11 @@ function saveState(code) {
     tab:            activeTab,
     distMetric,     distPeriod,     distTypeFilter, distShown,
     retMetric,      retPeriod,      retTypeFilter,  retShown,
+    capTypeFilter,  capShown,
     lastCode:       code,
     distRan:        distBaseData.length > 0,
     retRan:         retBaseData.length  > 0,
+    capRan:         capBaseData.length  > 0,
   }));
 }
 
@@ -835,14 +994,18 @@ function saveState(code) {
   if (s.retRan) {
     runRetRanking({ shownCount: s.retShown, typeFilter: s.retTypeFilter });
   }
+  if (s.capRan) {
+    runCapRanking({ shownCount: s.capShown, typeFilter: s.capTypeFilter });
+  }
 
-  // 탭 복원 (수익률 탭 복원 시엔 이미 위에서 로드됨)
+  // 탭 복원
   switchTab(s.tab || 'dist');
 
   // 마지막으로 클릭한 ETF 위치로 스크롤
   if (s.lastCode) {
     requestAnimationFrame(() => {
-      const el = document.getElementById(`${s.tab || 'dist'}-rank-${s.lastCode}`);
+      const tab = s.tab || 'dist';
+      const el = document.getElementById(`${tab}-rank-${s.lastCode}`);
       if (el) el.scrollIntoView({ behavior: 'auto', block: 'center' });
     });
   }
