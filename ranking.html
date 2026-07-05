@@ -54,8 +54,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .update-badge{font-size:11px;color:var(--ink3);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:4px 10px;white-space:nowrap;font-family:"DM Mono",monospace}
 
 /* TABS */
-.tab-wrap{background:var(--white);border-bottom:2px solid var(--border);padding:0 20px}
-.tab-inner{max-width:1100px;margin:0 auto;display:flex;gap:0}
+.tab-wrap{background:var(--white);border-bottom:2px solid var(--border);padding:0 20px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab-inner{max-width:1100px;margin:0 auto;display:flex;gap:0;width:max-content}
 .tab-btn{font-size:13px;font-weight:700;padding:13px 20px;border:none;background:none;cursor:pointer;color:var(--ink3);border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .15s;font-family:inherit;white-space:nowrap}
 .tab-btn:hover{color:var(--ink)}
 .tab-btn.on{color:var(--accent);border-bottom-color:var(--accent)}
@@ -579,6 +579,7 @@ function setRetOpt(group, val) {
 function setTypeFilter(section, val) {
   if (section === 'dist') distTypeFilter = val;
   if (section === 'ret')  retTypeFilter  = val;
+  if (section === 'cap')  capTypeFilter  = val;
   document.querySelectorAll(`[data-section="${section}"]`).forEach(b =>
     b.classList.toggle('on', b.dataset.v === val));
   renderFiltered(section);
