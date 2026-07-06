@@ -1,4 +1,6 @@
 ﻿User-agent: *
 Allow: /
+Disallow: /etf.html
+Disallow: /compare.html
 
 Sitemap: https://baedangetf.com/sitemap.xml
