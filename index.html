@@ -85,10 +85,52 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .hc-latest-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:640px){.hero-cards{grid-template-columns:1fr;gap:6px}}
 
+/* DASHBOARD */
+.dash-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.dash-title{font-size:13px;font-weight:700;color:var(--ink)}
+.dash-edit-btn{font-size:11px;font-weight:600;color:var(--ink2);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg);transition:all .15s;white-space:nowrap}
+.dash-edit-btn:hover{color:var(--accent);border-color:var(--accent-mid);background:var(--accent-bg)}
+.dash-tabs{display:flex;gap:6px;margin-bottom:14px}
+.dash-tab{font-size:12px;font-weight:700;padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--ink3);cursor:pointer;transition:all .15s;font-family:inherit}
+.dash-tab.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.dash-sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.dash-sum-card{background:var(--bg);border-radius:8px;padding:10px 12px}
+.dash-sum-label{font-size:10px;color:var(--ink3);margin-bottom:3px}
+.dash-sum-val{font-size:15px;font-weight:700;font-family:"DM Mono",monospace;letter-spacing:-.3px;color:var(--ink)}
+.dash-sum-val.pos{color:var(--accent)}
+.dash-sum-val.neg{color:var(--red)}
+.dash-list{display:flex;flex-direction:column;gap:6px}
+.dash-item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border-radius:8px;padding:10px 12px;text-decoration:none;color:inherit;transition:background .15s}
+.dash-item:hover{background:var(--accent-bg)}
+.dash-item-name{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.dash-item-right{text-align:right;flex-shrink:0;display:flex;flex-direction:column;gap:1px}
+.dash-item-val{font-size:12px;font-weight:700;font-family:"DM Mono",monospace}
+.dash-item-val.pos{color:var(--accent)}
+.dash-item-val.neg{color:var(--red)}
+.dash-item-sub{font-size:10px;color:var(--ink3)}
+.dash-empty{text-align:center;padding:28px 16px;color:var(--ink3)}
+.dash-empty p{font-size:13px;margin-bottom:10px}
+.dash-empty a{display:inline-block;font-size:12px;font-weight:700;color:#fff;background:var(--accent);text-decoration:none;padding:8px 18px;border-radius:8px;transition:background .15s}
+.dash-empty a:hover{background:#165a2e}
+@media(max-width:600px){.dash-sum-grid{grid-template-columns:1fr 1fr}.dash-sum-grid .dash-sum-card:last-child{grid-column:span 2}}
+
+/* STORY ACCORDION */
+.story-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.story-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:none;border:none;cursor:pointer;font-size:13px;font-weight:700;color:var(--ink);font-family:inherit}
+.story-toggle:hover{background:var(--bg)}
+.story-arrow{color:var(--ink3);transition:transform .2s;font-size:11px}
+.story-arrow.open{transform:rotate(180deg)}
+.story-body{padding:0 18px 20px;font-size:13px;color:var(--ink2);line-height:1.85}
+.story-body p{margin-bottom:12px}
+.story-body h4{font-size:12px;font-weight:700;color:var(--ink);margin:18px 0 6px;padding-top:14px;border-top:1px solid var(--border)}
+.story-body h4:first-of-type{border-top:none;padding-top:0;margin-top:4px}
+
 /* SECTION */
 .section{max-width:1100px;margin:0 auto;padding:24px 20px 0}
 .sec-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .sec-title::after{content:"";flex:1;height:1px;background:var(--border)}
+.sec-hint{font-size:12px;color:var(--ink3);margin:-8px 0 14px;line-height:1.6}
 
 /* CALENDAR */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--bg);border-bottom:1px solid var(--border)}
@@ -406,7 +448,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <div class="hero">
   <div class="hero-inner">
     <h1><span>월배당 ETF 분배금</span> — 일정부터 분석까지</h1>
-    <p>최종 매수일 · 분배율 랭킹 · 월간 분석 — 매달 업데이트</p>
+    <p>여러분의 시간과 수고를 아끼세요. 소중한 내 자산을 키울 기회가 늘어납니다!</p>
     <div class="hero-cards">
       <a href="/insight.html" class="hero-card">
         <span class="hc-icon">📖</span>
@@ -442,9 +484,50 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   </div>
 </div>
 
+<!-- MY ETF 대시보드 -->
+<div class="section">
+  <div class="dash-wrap">
+    <div class="dash-header">
+      <div class="dash-title">MY ETF 대시보드</div>
+      <a href="/portfolio.html" class="dash-edit-btn">✏️ 수정</a>
+    </div>
+    <div class="dash-tabs">
+      <button class="dash-tab on" id="dashTabPf" onclick="switchDashTab('pf')">💼 내 포트폴리오</button>
+      <button class="dash-tab" id="dashTabWl" onclick="switchDashTab('wl')">⭐ 관심 ETF</button>
+    </div>
+    <div id="dashPf"></div>
+    <div id="dashWl" style="display:none"></div>
+  </div>
+</div>
+
+<!-- 왜 배당픽인가 -->
+<div class="section">
+  <div class="story-wrap">
+    <button class="story-toggle" onclick="toggleStory()">
+      <span>왜 배당픽인가요?</span>
+      <span class="story-arrow" id="storyArrow">▾</span>
+    </button>
+    <div class="story-body" id="storyBody" style="display:none">
+      <p>우리는 언제까지 사야 분배금을 받는지, 분배금은 며칠에 그리고 얼마나 들어오는지 늘 궁금합니다.</p>
+      <p>그리고 내 상품이 잘 성장하고 있는지, 나에게 더 잘 맞는 상품이 있는데 모르고 있는 건 아닌지, 눈 앞의 숫자에 가려 놓치고 있는 건 없는지 늘 고민되고 불안합니다.</p>
+      <p>이를 위해 우리는 공시 사이트, 자산운용사 홈페이지, 각종 커뮤니티를 방문하고, 검색하며, 엑셀로 하나하나 계산하여 확인합니다.</p>
+      <p>참 많은 시간과 수고가 들지만 우리에겐 이게 당연하죠. 우리가 힘들게 노력해서 번 돈이 달린 문제니깐요.</p>
+      <p><strong>이제 여러분의 시간과 수고는 배당픽에 맡기세요. 배당픽은 여러분의 든든한 배당 투자 가이드가 되겠습니다.</strong></p>
+
+      <h4>언제까지 사야 분배금을 받는지, 며칠에 얼마나 들어오는지 궁금하다면?</h4>
+      <p>메인 페이지 달력을 확인하세요. 월중·월말 각각 최종매수일, 배당락일, 지급기준일이 확정되는 대로 달력에 표시됩니다. 이후 분배금 지급일과 주당 분배금이 확정되면 달력에 지급일이 표시되고, 관련 데이터는 해당 ETF에 업데이트됩니다.</p>
+      <p>업데이트된 정보는 달력 아래 ETF 목록에서 확인할 수 있고, 목록은 이번달 분배율이 높은 순으로 정렬되어 있습니다. 내가 받을 총 분배금이 궁금하다면 <a href="/calc.html" style="color:var(--accent);font-weight:700">계산기</a>를 사용해보세요. 상품명과 투자금액(또는 보유 수량)을 입력하면 총 분배금을 계산할 수 있고, 목표 분배금을 받기까지 걸리는 기간도 시뮬레이션할 수 있습니다.</p>
+
+      <h4>내 상품이 잘 성장하고 있는지, 더 잘 맞는 상품을 놓치고 있는 건 아닌지 궁금하다면?</h4>
+      <p>ETF 목록에서 보유 중이거나 궁금한 상품을 눌러보세요. 상세 페이지에서 시가총액, 수익률 추세, 구성종목 등 기본정보와 분배금 히스토리, 안정성 등 분배금 정보를 확인할 수 있습니다. 여러 ETF를 비교하고 싶다면 <strong>비교+</strong> 버튼으로 손쉽게 추가해 나란히 확인할 수 있습니다.</p>
+    </div>
+  </div>
+</div>
+
 <!-- 달력 -->
 <div class="section">
   <div class="sec-title">분배 일정 달력</div>
+  <p class="sec-hint">최종매수일부터 지급일까지, 확정되는 대로 이 달력에 표시됩니다.</p>
   <div class="cal-wrap">
     <div class="cal-nav">
       <div class="cal-nav-btns">
@@ -474,6 +557,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <!-- ETF 목록 -->
 <div class="section" style="padding-top:26px">
   <div class="sec-title">ETF 목록</div>
+  <p class="sec-hint">궁금한 상품을 눌러 상세정보를 확인하고, 비교+ 버튼으로 여러 상품을 한번에 비교해보세요.</p>
   <div class="controls">
     <div class="filter-row">
       <div class="search-wrap">
@@ -1874,6 +1958,92 @@ function goCmp(){
 function getWatchlist() { return JSON.parse(localStorage.getItem('bdp_watchlist') || '[]'); }
 function saveWatchlist(arr) { localStorage.setItem('bdp_watchlist', JSON.stringify(arr)); }
 
+// ── 왜 배당픽인가 아코디언 ──
+function toggleStory() {
+  const body = document.getElementById('storyBody');
+  const arrow = document.getElementById('storyArrow');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : '';
+  arrow.classList.toggle('open', !isOpen);
+}
+
+// ── MY ETF 대시보드 ──
+function switchDashTab(tab) {
+  document.getElementById('dashTabPf').classList.toggle('on', tab === 'pf');
+  document.getElementById('dashTabWl').classList.toggle('on', tab === 'wl');
+  document.getElementById('dashPf').style.display = tab === 'pf' ? '' : 'none';
+  document.getElementById('dashWl').style.display = tab === 'wl' ? '' : 'none';
+}
+
+function renderDashboard() {
+  renderDashPf();
+  renderDashWl();
+}
+
+function renderDashPf() {
+  const items = JSON.parse(localStorage.getItem('bdp_portfolio') || '[]');
+  const wrap = document.getElementById('dashPf');
+  if (!items.length) {
+    wrap.innerHTML = `<div class="dash-empty"><p>아직 등록한 보유 종목이 없어요</p><a href="/portfolio.html">포트폴리오 등록하기</a></div>`;
+    return;
+  }
+  let totalValue = 0, totalCost = 0, totalDist = 0;
+  const rows = items.map(item => {
+    const etf = (ETF_ALL || []).find(e => e.code === item.code);
+    if (!etf) return null;
+    const value = (etf.price || 0) * item.qty;
+    totalValue += value;
+    if (item.avgPrice > 0) totalCost += item.avgPrice * item.qty;
+    const isMon = isMonthlyETF(etf);
+    const monConfirmed = !isMon || isCurrentMonthDist(etf);
+    const distAmt = (isMon && monConfirmed && etf.dist > 0) ? etf.dist * item.qty : null;
+    if (distAmt) totalDist += distAmt;
+    const roi = (item.avgPrice > 0 && etf.price) ? (etf.price - item.avgPrice) / item.avgPrice * 100 : null;
+    return { etf, item, value, roi, distAmt, isMon, monConfirmed };
+  }).filter(Boolean);
+
+  const hasCost  = rows.some(r => r.item.avgPrice > 0);
+  const totalRoi = (hasCost && totalCost > 0) ? (totalValue - totalCost) / totalCost * 100 : null;
+  const roiSumCls = totalRoi == null ? '' : totalRoi > 0 ? 'pos' : totalRoi < 0 ? 'neg' : '';
+
+  const sumHtml = `
+    <div class="dash-sum-grid">
+      <div class="dash-sum-card"><div class="dash-sum-label">총 평가금액</div><div class="dash-sum-val">${Math.round(totalValue).toLocaleString()}원</div></div>
+      <div class="dash-sum-card"><div class="dash-sum-label">총 투자수익률</div><div class="dash-sum-val ${roiSumCls}">${totalRoi == null ? '-' : (totalRoi > 0 ? '+' : '') + totalRoi.toFixed(2) + '%'}</div></div>
+      <div class="dash-sum-card"><div class="dash-sum-label">이번달 예상 분배금</div><div class="dash-sum-val">${Math.round(totalDist).toLocaleString()}원</div></div>
+    </div>`;
+
+  const listHtml = rows.map(r => {
+    const roiStr = r.roi == null ? '-' : (r.roi > 0 ? '+' : '') + r.roi.toFixed(2) + '%';
+    const roiCls = r.roi == null ? '' : r.roi > 0 ? 'pos' : r.roi < 0 ? 'neg' : '';
+    const distStr = !r.isMon ? '월배당 아님' : (r.monConfirmed ? (r.distAmt ? Math.round(r.distAmt).toLocaleString() + '원' : '-') : '데이터 반영 전');
+    return `
+      <a href="/etf/${r.etf.code}" class="dash-item">
+        <div class="dash-item-name">${r.etf.name}</div>
+        <div class="dash-item-right">
+          <div class="dash-item-val">${Math.round(r.value).toLocaleString()}원</div>
+          <div class="dash-item-sub"><span class="${roiCls}" style="font-weight:700">${roiStr}</span> · ${distStr}</div>
+        </div>
+      </a>`;
+  }).join('');
+
+  wrap.innerHTML = sumHtml + `<div class="dash-list">${listHtml}</div>`;
+}
+
+function renderDashWl() {
+  const codes = getWatchlist();
+  const wrap = document.getElementById('dashWl');
+  if (!codes.length) {
+    wrap.innerHTML = `<div class="dash-empty"><p>아직 등록한 관심 ETF가 없어요</p><a href="/portfolio.html">관심 ETF 등록하기</a></div>`;
+    return;
+  }
+  const items = codes.map(code => (ETF_ALL || []).find(e => e.code === code)).filter(Boolean);
+  wrap.innerHTML = `<div class="dash-list">${items.map(e => `
+    <a href="/etf/${e.code}" class="dash-item">
+      <div class="dash-item-name">${e.name}</div>
+    </a>`).join('')}</div>`;
+}
+
 let myStarToastTimer = null;
 function toggleStar(ev, code) {
   ev.stopPropagation();
@@ -2140,6 +2310,7 @@ function restoreFilterState() {
 
 // ── 초기화 ──
 renderCalendar();
+renderDashboard();
 const _restoredScroll = restoreFilterState();
 applyFilter();
 updateCmpBar();
