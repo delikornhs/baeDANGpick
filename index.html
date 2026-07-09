@@ -68,7 +68,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .hero-inner{max-width:1100px;margin:0 auto}
 .hero h1{font-size:24px;font-weight:700;letter-spacing:-.5px;line-height:1.35;margin-bottom:8px}
 .hero h1 span{color:#6cba8b}
-.hero p{font-size:13px;color:#999;line-height:1.7;margin-bottom:20px}
+.hero p{font-size:17px;font-weight:600;color:#e8e8e6;line-height:1.6;margin-bottom:20px}
+@media(max-width:480px){.hero p{font-size:15px}}
 .hero-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
 .hero-card{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.93);border:1px solid rgba(255,255,255,.7);border-radius:10px;padding:11px 14px;text-decoration:none;color:var(--ink);transition:background .15s,border-color .15s,box-shadow .15s}
 .hero-card:hover{background:#fff;border-color:var(--accent-mid);box-shadow:0 2px 10px rgba(29,107,56,.15)}
@@ -103,12 +104,18 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .dash-list{display:flex;flex-direction:column;gap:6px}
 .dash-item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);border-radius:8px;padding:10px 12px;text-decoration:none;color:inherit;transition:background .15s}
 .dash-item:hover{background:var(--accent-bg)}
-.dash-item-name{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
-.dash-item-right{text-align:right;flex-shrink:0;display:flex;flex-direction:column;gap:1px}
+.dash-item-left{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+.dash-item-name{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.dash-item-freq{font-size:9px;font-weight:600;color:var(--ink3);background:var(--white);border:1px solid var(--border);border-radius:4px;padding:2px 5px;white-space:nowrap;flex-shrink:0}
+.dash-item-right{text-align:right;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
 .dash-item-val{font-size:12px;font-weight:700;font-family:"DM Mono",monospace}
 .dash-item-val.pos{color:var(--accent)}
 .dash-item-val.neg{color:var(--red)}
-.dash-item-sub{font-size:10px;color:var(--ink3)}
+.dash-item-sub{font-size:10px;color:var(--ink3);display:flex;flex-direction:column;align-items:flex-end;gap:1px;white-space:nowrap}
+.dash-item-sub .pos{color:var(--accent)}
+.dash-item-sub .neg{color:var(--red)}
+.dash-item-tag{font-size:9px;color:var(--ink4);font-weight:600}
+.dash-item-sep{color:var(--ink4)}
 .dash-empty{text-align:center;padding:28px 16px;color:var(--ink3)}
 .dash-empty p{font-size:13px;margin-bottom:10px}
 .dash-empty a{display:inline-block;font-size:12px;font-weight:700;color:#fff;background:var(--accent);text-decoration:none;padding:8px 18px;border-radius:8px;transition:background .15s}
@@ -434,7 +441,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 
 <nav>
   <div class="nav-inner">
-    <div class="logo"><div class="logo-mark">₩</div>배당픽<span style="font-size:13px;font-weight:500;color:var(--ink2);margin-left:5px">ETF 분배금 일정 &amp; 계산기</span></div>
+    <div class="logo"><div class="logo-mark">₩</div>배당픽<span style="font-size:13px;font-weight:500;color:var(--ink2);margin-left:5px">당신의 배당 투자 가이드</span></div>
     <div class="nav-links">
       <a href="/insight.html" class="nav-link">인사이트</a>
       <a href="/ranking.html" class="nav-link">랭킹</a>
@@ -447,7 +454,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 
 <div class="hero">
   <div class="hero-inner">
-    <h1><span>월배당 ETF 분배금</span> — 일정부터 분석까지</h1>
+    <h1><span>배당 ETF 분배금</span> — 일정부터 분석까지</h1>
     <p>여러분의 시간과 수고를 아끼세요. 소중한 내 자산을 키울 기회가 늘어납니다!</p>
     <div class="hero-cards">
       <a href="/insight.html" class="hero-card">
@@ -484,6 +491,41 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
   </div>
 </div>
 
+<!-- 왜 배당픽인가 / 배당픽 활용법 -->
+<div class="section">
+  <div class="story-wrap" style="margin-bottom:8px">
+    <button class="story-toggle" onclick="toggleAccordion('story')">
+      <span>왜 배당픽인가요?</span>
+      <span class="story-arrow" id="storyArrow">▾</span>
+    </button>
+    <div class="story-body" id="storyBody" style="display:none">
+      <p>우리는 언제까지 사야 분배금을 받는지, 분배금은 며칠에 그리고 얼마나 들어오는지 늘 궁금합니다.</p>
+      <p>그리고 내 상품이 잘 성장하고 있는지, 나에게 더 잘 맞는 상품이 있는데 모르고 있는 건 아닌지, 눈 앞의 숫자에 가려 놓치고 있는 건 없는지 늘 고민되고 불안합니다.</p>
+      <p>이를 위해 우리는 공시 사이트, 자산운용사 홈페이지, 각종 커뮤니티를 방문하고, 검색하며, 엑셀로 하나하나 계산하여 확인합니다.</p>
+      <p>참 많은 시간과 수고가 들지만 우리에겐 이게 당연하죠. 우리가 힘들게 노력해서 번 돈이 달린 문제니깐요.</p>
+      <p><strong>이제 여러분의 시간과 수고는 배당픽에 맡기세요. 배당픽은 여러분의 든든한 배당 투자 가이드가 되겠습니다.</strong></p>
+    </div>
+  </div>
+  <div class="story-wrap">
+    <button class="story-toggle" onclick="toggleAccordion('guide')">
+      <span>배당픽 활용법</span>
+      <span class="story-arrow" id="guideArrow">▾</span>
+    </button>
+    <div class="story-body" id="guideBody" style="display:none">
+      <h4>언제까지 사야 분배금을 받는지, 며칠에 얼마나 들어오는지 궁금하다면?</h4>
+      <p>메인 페이지 달력을 확인하세요. 월중·월말 각각 최종매수일, 배당락일, 지급기준일이 확정되는 대로 달력에 표시됩니다. 이후 분배금 지급일과 주당 분배금이 확정되면 달력에 지급일이 표시되고, 관련 데이터는 해당 ETF에 업데이트됩니다.</p>
+      <p>업데이트된 정보는 달력 아래 ETF 목록에서 확인할 수 있고, 목록은 이번달 분배율이 높은 순으로 정렬되어 있습니다. 내가 받을 총 분배금이 궁금하다면 <a href="/calc.html" style="color:var(--accent);font-weight:700">계산기</a>를 사용해보세요. 상품명과 투자금액(또는 보유 수량)을 입력하면 총 분배금을 계산할 수 있고, 목표 분배금을 받기까지 걸리는 기간도 시뮬레이션할 수 있습니다.</p>
+
+      <h4>내 상품이 잘 성장하고 있는지, 더 잘 맞는 상품을 놓치고 있는 건 아닌지 궁금하다면?</h4>
+      <p>ETF 목록에서 보유 중이거나 궁금한 상품을 눌러보세요. 상세 페이지에서 시가총액, 수익률 추세, 구성종목 등 기본정보와 분배금 히스토리, 안정성 등 분배금 정보를 확인할 수 있습니다. 여러 ETF를 비교하고 싶다면 <strong>비교+</strong> 버튼으로 손쉽게 추가해 나란히 확인할 수 있습니다.</p>
+      <p>더 나아가 내 상품이 전체 ETF 중 어디쯤 있는지, 더 나은 조건의 상품을 놓치고 있는 건 아닌지 궁금하다면 <a href="/ranking.html" style="color:var(--accent);font-weight:700">랭킹 페이지</a>를 확인하세요. 분배율·분배금 랭킹, 기간별 수익률 랭킹, 시가총액 랭킹을 한눈에 비교할 수 있어 내가 모르고 있던 상품을 발견하는 데 도움이 됩니다.</p>
+
+      <h4>눈 앞의 숫자에 가려 놓치고 있는 건 없는지 궁금하다면?</h4>
+      <p><a href="/insight.html" style="color:var(--accent);font-weight:700">인사이트 페이지</a>에서 매달 발행되는 분석 글을 확인하세요. 분배율이라는 숫자 하나만으로는 보이지 않는 분배금 추세, 구조적 변화, 상품별 전략 비교까지 짚어드립니다. 눈앞의 숫자 너머에 있는 흐름을 놓치지 않도록 돕는 것이 인사이트 페이지의 목적입니다.</p>
+    </div>
+  </div>
+</div>
+
 <!-- MY ETF 대시보드 -->
 <div class="section">
   <div class="dash-wrap">
@@ -497,30 +539,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     </div>
     <div id="dashPf"></div>
     <div id="dashWl" style="display:none"></div>
-  </div>
-</div>
-
-<!-- 왜 배당픽인가 -->
-<div class="section">
-  <div class="story-wrap">
-    <button class="story-toggle" onclick="toggleStory()">
-      <span>왜 배당픽인가요?</span>
-      <span class="story-arrow" id="storyArrow">▾</span>
-    </button>
-    <div class="story-body" id="storyBody" style="display:none">
-      <p>우리는 언제까지 사야 분배금을 받는지, 분배금은 며칠에 그리고 얼마나 들어오는지 늘 궁금합니다.</p>
-      <p>그리고 내 상품이 잘 성장하고 있는지, 나에게 더 잘 맞는 상품이 있는데 모르고 있는 건 아닌지, 눈 앞의 숫자에 가려 놓치고 있는 건 없는지 늘 고민되고 불안합니다.</p>
-      <p>이를 위해 우리는 공시 사이트, 자산운용사 홈페이지, 각종 커뮤니티를 방문하고, 검색하며, 엑셀로 하나하나 계산하여 확인합니다.</p>
-      <p>참 많은 시간과 수고가 들지만 우리에겐 이게 당연하죠. 우리가 힘들게 노력해서 번 돈이 달린 문제니깐요.</p>
-      <p><strong>이제 여러분의 시간과 수고는 배당픽에 맡기세요. 배당픽은 여러분의 든든한 배당 투자 가이드가 되겠습니다.</strong></p>
-
-      <h4>언제까지 사야 분배금을 받는지, 며칠에 얼마나 들어오는지 궁금하다면?</h4>
-      <p>메인 페이지 달력을 확인하세요. 월중·월말 각각 최종매수일, 배당락일, 지급기준일이 확정되는 대로 달력에 표시됩니다. 이후 분배금 지급일과 주당 분배금이 확정되면 달력에 지급일이 표시되고, 관련 데이터는 해당 ETF에 업데이트됩니다.</p>
-      <p>업데이트된 정보는 달력 아래 ETF 목록에서 확인할 수 있고, 목록은 이번달 분배율이 높은 순으로 정렬되어 있습니다. 내가 받을 총 분배금이 궁금하다면 <a href="/calc.html" style="color:var(--accent);font-weight:700">계산기</a>를 사용해보세요. 상품명과 투자금액(또는 보유 수량)을 입력하면 총 분배금을 계산할 수 있고, 목표 분배금을 받기까지 걸리는 기간도 시뮬레이션할 수 있습니다.</p>
-
-      <h4>내 상품이 잘 성장하고 있는지, 더 잘 맞는 상품을 놓치고 있는 건 아닌지 궁금하다면?</h4>
-      <p>ETF 목록에서 보유 중이거나 궁금한 상품을 눌러보세요. 상세 페이지에서 시가총액, 수익률 추세, 구성종목 등 기본정보와 분배금 히스토리, 안정성 등 분배금 정보를 확인할 수 있습니다. 여러 ETF를 비교하고 싶다면 <strong>비교+</strong> 버튼으로 손쉽게 추가해 나란히 확인할 수 있습니다.</p>
-    </div>
   </div>
 </div>
 
@@ -1958,10 +1976,12 @@ function goCmp(){
 function getWatchlist() { return JSON.parse(localStorage.getItem('bdp_watchlist') || '[]'); }
 function saveWatchlist(arr) { localStorage.setItem('bdp_watchlist', JSON.stringify(arr)); }
 
-// ── 왜 배당픽인가 아코디언 ──
-function toggleStory() {
-  const body = document.getElementById('storyBody');
-  const arrow = document.getElementById('storyArrow');
+// ── 왜 배당픽인가 / 배당픽 활용법 아코디언 ──
+function toggleAccordion(name) {
+  const idMap = { story: ['storyBody','storyArrow'], guide: ['guideBody','guideArrow'] };
+  const [bodyId, arrowId] = idMap[name];
+  const body = document.getElementById(bodyId);
+  const arrow = document.getElementById(arrowId);
   const isOpen = body.style.display !== 'none';
   body.style.display = isOpen ? 'none' : '';
   arrow.classList.toggle('open', !isOpen);
@@ -1978,6 +1998,11 @@ function switchDashTab(tab) {
 function renderDashboard() {
   renderDashPf();
   renderDashWl();
+}
+
+function dashFreqBadge(etf) {
+  if (isMonthlyETF(etf)) return `월배당${etf.timing ? '('+etf.timing+')' : ''}`;
+  return etf.freq === '분기배당이상' ? '분기배당 이상' : (etf.freq || '');
 }
 
 function renderDashPf() {
@@ -2016,13 +2041,22 @@ function renderDashPf() {
   const listHtml = rows.map(r => {
     const roiStr = r.roi == null ? '-' : (r.roi > 0 ? '+' : '') + r.roi.toFixed(2) + '%';
     const roiCls = r.roi == null ? '' : r.roi > 0 ? 'pos' : r.roi < 0 ? 'neg' : '';
-    const distStr = !r.isMon ? '월배당 아님' : (r.monConfirmed ? (r.distAmt ? Math.round(r.distAmt).toLocaleString() + '원' : '-') : '데이터 반영 전');
+    const roiTitle = r.roi == null ? '평균매입단가를 입력하면 수익률이 표시됩니다' : '';
+    const distStr = !r.isMon ? '해당없음' : (r.monConfirmed ? (r.distAmt ? Math.round(r.distAmt).toLocaleString() + '원' : '-') : '반영 전');
+    const distTitle = !r.isMon ? '월배당 상품이 아닙니다'
+      : (r.monConfirmed ? (r.distAmt ? '' : '분배금 정보가 없습니다') : '이번달 분배금 데이터가 아직 반영되지 않았습니다');
     return `
       <a href="/etf/${r.etf.code}" class="dash-item">
-        <div class="dash-item-name">${r.etf.name}</div>
+        <div class="dash-item-left">
+          <span class="dash-item-name">${r.etf.name}</span>
+          <span class="dash-item-freq">${dashFreqBadge(r.etf)}</span>
+        </div>
         <div class="dash-item-right">
           <div class="dash-item-val">${Math.round(r.value).toLocaleString()}원</div>
-          <div class="dash-item-sub"><span class="${roiCls}" style="font-weight:700">${roiStr}</span> · ${distStr}</div>
+          <div class="dash-item-sub">
+            <span title="${roiTitle}"><span class="dash-item-tag">수익률</span> <span class="${roiCls}" style="font-weight:700">${roiStr}</span></span>
+            <span title="${distTitle}"><span class="dash-item-tag">분배금</span> ${distStr}</span>
+          </div>
         </div>
       </a>`;
   }).join('');
@@ -2040,7 +2074,10 @@ function renderDashWl() {
   const items = codes.map(code => (ETF_ALL || []).find(e => e.code === code)).filter(Boolean);
   wrap.innerHTML = `<div class="dash-list">${items.map(e => `
     <a href="/etf/${e.code}" class="dash-item">
-      <div class="dash-item-name">${e.name}</div>
+      <div class="dash-item-left">
+        <span class="dash-item-name">${e.name}</span>
+        <span class="dash-item-freq">${dashFreqBadge(e)}</span>
+      </div>
     </a>`).join('')}</div>`;
 }
 
