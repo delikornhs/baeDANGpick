@@ -245,9 +245,10 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .weight-bar-bg{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
 .weight-bar-fill{height:100%;border-radius:3px}
 .weight-pct{font-size:11px;font-family:"DM Mono",monospace;color:var(--ink3);width:36px;text-align:right;flex-shrink:0}
-.pf-item-actions{display:flex;align-items:center;gap:8px}
-.qty-wrap{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink3)}
-.qty-edit{width:70px;border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;text-align:center;font-family:inherit;outline:none;background:var(--white)}
+.pf-item-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.qty-wrap{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink3);flex-shrink:0}
+.qty-label{white-space:nowrap;flex-shrink:0}
+.qty-edit{width:70px;flex-shrink:0;border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;text-align:center;font-family:inherit;outline:none;background:var(--white)}
 .qty-edit:focus{border-color:var(--accent-mid)}
 .qty-save{font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);border:1px solid #c5e8d2;border-radius:5px;padding:4px 10px;cursor:pointer;font-family:inherit;transition:background .15s}
 .qty-save:hover{background:#d1f0e0}
@@ -319,7 +320,7 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 
 <nav>
   <div class="nav-inner">
-    <a href="/" class="logo"><div class="logo-mark">&#8361;</div>배당픽</a>
+    <a href="/" class="logo"><div class="logo-mark"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="7.2" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="4.4"/><circle cx="12" cy="12" r="7.2" fill="none" stroke="#fff" stroke-width="4.4" stroke-dasharray="14.5 45.2" transform="rotate(-90 12 12)"/><circle cx="12" cy="12" r="7.2" fill="none" stroke="#a3e8bf" stroke-width="4.4" stroke-dasharray="11 45.2" stroke-dashoffset="-14.5" transform="rotate(-90 12 12)"/></svg></div>배당픽</a>
     <span class="nav-tag">⭐ MY ETF</span>
   </div>
 </nav>
@@ -340,20 +341,20 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 <!-- 탭 -->
 <div class="tab-wrap">
   <div class="tab-inner">
-    <button class="tab-btn on" id="tabBtnWl" onclick="switchTab('watchlist')">⭐ 내 관심 ETF <span class="tab-count" id="wlCount">0</span></button>
-    <button class="tab-btn" id="tabBtnPf" onclick="switchTab('portfolio')">💼 내 포트폴리오 <span class="tab-count" id="pfCount">0</span></button>
+    <button class="tab-btn on" id="tabBtnPf" onclick="switchTab('portfolio')">💼 내 포트폴리오 <span class="tab-count" id="pfCount">0</span></button>
+    <button class="tab-btn" id="tabBtnWl" onclick="switchTab('watchlist')">⭐ 내 관심 ETF <span class="tab-count" id="wlCount">0</span></button>
   </div>
 </div>
 
 <div class="wrap">
 
   <!-- 관심 ETF 탭 -->
-  <div id="tabWatchlist">
+  <div id="tabWatchlist" style="display:none">
     <div id="wlGrid" class="wl-grid"></div>
   </div>
 
   <!-- 포트폴리오 탭 -->
-  <div id="tabPortfolio" style="display:none">
+  <div id="tabPortfolio">
 
     <!-- 이미지 저장 버튼 -->
     <div class="pf-header-row">
@@ -376,7 +377,7 @@ footer a{color:var(--ink3);text-underline-offset:2px}
             <div class="search-dropdown" id="searchDropdown"></div>
           </div>
           <input type="number" class="qty-input" id="qtyInput" placeholder="수량" min="1">
-          <input type="number" class="qty-input" id="avgPriceInput" placeholder="평균매입단가(선택)" min="0">
+          <input type="number" class="qty-input" id="avgPriceInput" placeholder="평균매수단가(선택)" min="0">
           <button class="add-btn" id="addBtn" onclick="addItem()" disabled>추가</button>
         </div>
         <div class="selected-chip" id="selectedChip">
@@ -508,7 +509,7 @@ const distBadge = s => ({
 }[s] || '');
 
 // ── 탭 전환 ──
-let activeTab = 'watchlist';
+let activeTab = 'portfolio';
 function switchTab(tab) {
   activeTab = tab;
   document.getElementById('tabBtnWl').classList.toggle('on', tab === 'watchlist');
@@ -703,7 +704,7 @@ function updateQty(code) {
   if (item) { item.qty = qty; save(items); render(); }
 }
 
-// ── 평균매입단가 수정 ──
+// ── 평균매수단가 수정 ──
 function updateAvgPrice(code) {
   const val = parseFloat(document.getElementById('avgPrice-' + code).value) || 0;
   const items = load();
@@ -822,7 +823,7 @@ function render() {
     const prevDist     = prevT ? prevT.dist : 0;
     const prevDistAmt  = prevDist * item.qty;
     const distAmt      = confirmedAmt + (useEst ? estAmt : 0) + (usePrev ? prevDistAmt : 0);
-    return { code: item.code, qty: item.qty, etf, di, value, distAmt, confirmedAmt, estAmt, useEst, avgDist, usePrev, prevDist, prevDistAmt };
+    return { code: item.code, qty: item.qty, avgPrice: item.avgPrice, etf, di, value, distAmt, confirmedAmt, estAmt, useEst, avgDist, usePrev, prevDist, prevDistAmt };
   }).filter(Boolean).sort((a, b) => b.value - a.value);
 
   const totalValue    = enriched.reduce((s, i) => s + i.value, 0);
@@ -993,12 +994,12 @@ function render() {
         </div>
         <div class="pf-item-actions">
           <div class="qty-wrap">
-            수량
+            <span class="qty-label">수량</span>
             <input type="number" class="qty-edit" id="qty-${item.code}" value="${item.qty}" min="1">
             <button class="qty-save" onclick="updateQty('${item.code}')">수정</button>
           </div>
           <div class="qty-wrap">
-            평균단가
+            <span class="qty-label">평균매수단가</span>
             <input type="number" class="qty-edit" id="avgPrice-${item.code}" value="${item.avgPrice || ''}" min="0" placeholder="선택">
             <button class="qty-save" onclick="updateAvgPrice('${item.code}')">수정</button>
           </div>
@@ -1437,6 +1438,7 @@ function setCmpList(arr){ localStorage.setItem('compareList', JSON.stringify(arr
 function updateCmpBar(){
   const list = getCmpList();
   const bar  = document.getElementById('cmpBar');
+  if(!bar) return;
   const wrap = document.querySelector('.wrap');
   if(!list.length){
     bar.classList.remove('show');

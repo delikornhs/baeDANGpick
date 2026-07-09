@@ -59,8 +59,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
   .nav-links{gap:12px}
   .nav-meta{font-size:10px;text-align:left}
   .nav-meta-wrap{align-items:flex-start}
-  .nav-badge-row{justify-content:flex-start}
-  .notice-badge{font-size:10px}
+  .nav-badge-row{justify-content:flex-start;flex-wrap:nowrap}
+  .notice-badge{font-size:9px;padding:3px 7px}
 }
 
 /* HERO */
@@ -441,7 +441,7 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 
 <nav>
   <div class="nav-inner">
-    <div class="logo"><div class="logo-mark">₩</div>배당픽<span style="font-size:13px;font-weight:500;color:var(--ink2);margin-left:5px">당신의 배당 투자 가이드</span></div>
+    <div class="logo"><div class="logo-mark"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="7.2" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="4.4"/><circle cx="12" cy="12" r="7.2" fill="none" stroke="#fff" stroke-width="4.4" stroke-dasharray="14.5 45.2" transform="rotate(-90 12 12)"/><circle cx="12" cy="12" r="7.2" fill="none" stroke="#a3e8bf" stroke-width="4.4" stroke-dasharray="11 45.2" stroke-dashoffset="-14.5" transform="rotate(-90 12 12)"/></svg></div>배당픽<span style="font-size:13px;font-weight:500;color:var(--ink2);margin-left:5px">당신의 배당 투자 가이드</span></div>
     <div class="nav-links">
       <a href="/insight.html" class="nav-link">인사이트</a>
       <a href="/ranking.html" class="nav-link">랭킹</a>
@@ -545,7 +545,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <!-- 달력 -->
 <div class="section">
   <div class="sec-title">분배 일정 달력</div>
-  <p class="sec-hint">최종매수일부터 지급일까지, 확정되는 대로 이 달력에 표시됩니다.</p>
   <div class="cal-wrap">
     <div class="cal-nav">
       <div class="cal-nav-btns">
@@ -575,7 +574,6 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
 <!-- ETF 목록 -->
 <div class="section" style="padding-top:26px">
   <div class="sec-title">ETF 목록</div>
-  <p class="sec-hint">궁금한 상품을 눌러 상세정보를 확인하고, 비교+ 버튼으로 여러 상품을 한번에 비교해보세요.</p>
   <div class="controls">
     <div class="filter-row">
       <div class="search-wrap">
@@ -1692,8 +1690,9 @@ if(_endNotice) _metaParts.push(`월말 ${_endNotice.slice(5)}`);
     return d.getFullYear()===tY && d.getMonth()+1===tM;
   }
   function mkBadge(typeStr, ok){
-    const status = ok ? '정보 반영 완료' : '정보 확인 중(미반영)';
-    return `<span class="notice-badge ${ok?'done':'pending'}">${tM}월 ${typeStr} 분배금 ${status}</span>`;
+    const status = ok ? '반영완료' : '미반영';
+    const full = ok ? '분배금 정보 반영 완료' : '분배금 정보 확인 중 (미반영)';
+    return `<span class="notice-badge ${ok?'done':'pending'}" title="${tM}월 ${typeStr} ${full}">${tM}월 ${typeStr} ${status}</span>`;
   }
   const badges = mkBadge('월중', isOK(_midNotice)) + mkBadge('월말', isOK(_endNotice));
   const subParts = [];
