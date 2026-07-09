@@ -1690,9 +1690,8 @@ if(_endNotice) _metaParts.push(`월말 ${_endNotice.slice(5)}`);
     return d.getFullYear()===tY && d.getMonth()+1===tM;
   }
   function mkBadge(typeStr, ok){
-    const status = ok ? '반영완료' : '미반영';
-    const full = ok ? '분배금 정보 반영 완료' : '분배금 정보 확인 중 (미반영)';
-    return `<span class="notice-badge ${ok?'done':'pending'}" title="${tM}월 ${typeStr} ${full}">${tM}월 ${typeStr} ${status}</span>`;
+    const status = ok ? '분배금 정보 반영' : '분배금 정보 확인중';
+    return `<span class="notice-badge ${ok?'done':'pending'}">${tM}월 ${typeStr} ${status}</span>`;
   }
   const badges = mkBadge('월중', isOK(_midNotice)) + mkBadge('월말', isOK(_endNotice));
   const subParts = [];
