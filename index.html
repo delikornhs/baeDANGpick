@@ -120,6 +120,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .dash-empty p{font-size:13px;margin-bottom:10px}
 .dash-empty a{display:inline-block;font-size:12px;font-weight:700;color:#fff;background:var(--accent);text-decoration:none;padding:8px 18px;border-radius:8px;transition:background .15s}
 .dash-empty a:hover{background:#165a2e}
+.dash-sort-row{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-bottom:8px}
+.dash-sort-label{font-size:11px;color:var(--ink3);font-weight:600}
+.dash-sort-sel{font-size:11px;padding:5px 8px}
 @media(max-width:600px){.dash-sum-grid{grid-template-columns:1fr 1fr}.dash-sum-grid .dash-sum-card:last-child{grid-column:span 2}}
 
 /* STORY ACCORDION */
@@ -2003,6 +2006,47 @@ function dashFreqBadge(etf) {
   return etf.freq === '분기배당이상' ? '분기배당 이상' : (etf.freq || '');
 }
 
+// ── 대시보드 정렬 ──
+let dashPfSort = 'value_desc';
+let dashWlSort = 'name_asc';
+
+function setDashSort(section, val) {
+  if (section === 'pf') { dashPfSort = val; renderDashPf(); }
+  else                  { dashWlSort = val; renderDashWl(); }
+}
+
+function sortDashPf(rows) {
+  const arr = [...rows];
+  const byName = (a, b) => a.etf.name.localeCompare(b.etf.name, 'ko');
+  switch (dashPfSort) {
+    case 'value_asc': return arr.sort((a, b) => a.value - b.value);
+    case 'roi_desc':  return arr.sort((a, b) => (b.roi ?? -Infinity) - (a.roi ?? -Infinity));
+    case 'roi_asc':   return arr.sort((a, b) => (a.roi ?? Infinity) - (b.roi ?? Infinity));
+    case 'dist_desc': return arr.sort((a, b) => (b.distAmt ?? -Infinity) - (a.distAmt ?? -Infinity));
+    case 'name_asc':  return arr.sort(byName);
+    default:          return arr.sort((a, b) => b.value - a.value); // value_desc
+  }
+}
+
+function sortDashWl(items) {
+  const arr = [...items];
+  if (dashWlSort === 'freq') {
+    const rank = e => !isMonthlyETF(e) ? 2 : (e.timing === '월중' ? 0 : 1);
+    return arr.sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name, 'ko'));
+  }
+  return arr.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+}
+
+function dashSortRow(section, options) {
+  const cur = section === 'pf' ? dashPfSort : dashWlSort;
+  const opts = options.map(([v, l]) => `<option value="${v}" ${cur === v ? 'selected' : ''}>${l}</option>`).join('');
+  return `
+    <div class="dash-sort-row">
+      <span class="dash-sort-label">정렬</span>
+      <select class="sort-sel dash-sort-sel" onchange="setDashSort('${section}', this.value)">${opts}</select>
+    </div>`;
+}
+
 function renderDashPf() {
   const items = JSON.parse(localStorage.getItem('bdp_portfolio') || '[]');
   const wrap = document.getElementById('dashPf');
@@ -2036,7 +2080,17 @@ function renderDashPf() {
       <div class="dash-sum-card"><div class="dash-sum-label">이번달 예상 분배금</div><div class="dash-sum-val">${Math.round(totalDist).toLocaleString()}원</div></div>
     </div>`;
 
-  const listHtml = rows.map(r => {
+  const sortRowHtml = rows.length > 1 ? dashSortRow('pf', [
+    ['value_desc', '평가금액 높은순'],
+    ['value_asc',  '평가금액 낮은순'],
+    ['roi_desc',   '수익률 높은순'],
+    ['roi_asc',    '수익률 낮은순'],
+    ['dist_desc',  '이번달 분배금 높은순'],
+    ['name_asc',   '이름순'],
+  ]) : '';
+  const sortedRows = rows.length > 1 ? sortDashPf(rows) : rows;
+
+  const listHtml = sortedRows.map(r => {
     const roiStr = r.roi == null ? '-' : (r.roi > 0 ? '+' : '') + r.roi.toFixed(2) + '%';
     const roiCls = r.roi == null ? '' : r.roi > 0 ? 'pos' : r.roi < 0 ? 'neg' : '';
     const roiTitle = r.roi == null ? '평균매입단가를 입력하면 수익률이 표시됩니다' : '';
@@ -2059,7 +2113,7 @@ function renderDashPf() {
       </a>`;
   }).join('');
 
-  wrap.innerHTML = sumHtml + `<div class="dash-list">${listHtml}</div>`;
+  wrap.innerHTML = sumHtml + sortRowHtml + `<div class="dash-list">${listHtml}</div>`;
 }
 
 function renderDashWl() {
@@ -2070,7 +2124,12 @@ function renderDashWl() {
     return;
   }
   const items = codes.map(code => (ETF_ALL || []).find(e => e.code === code)).filter(Boolean);
-  wrap.innerHTML = `<div class="dash-list">${items.map(e => `
+  const sortRowHtml = items.length > 1 ? dashSortRow('wl', [
+    ['name_asc', '이름순'],
+    ['freq',     '분배주기순'],
+  ]) : '';
+  const sortedItems = items.length > 1 ? sortDashWl(items) : items;
+  wrap.innerHTML = sortRowHtml + `<div class="dash-list">${sortedItems.map(e => `
     <a href="/etf/${e.code}" class="dash-item">
       <div class="dash-item-left">
         <span class="dash-item-name">${e.name}</span>
