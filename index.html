@@ -123,6 +123,17 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .dash-sort-row{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-bottom:8px}
 .dash-sort-label{font-size:11px;color:var(--ink3);font-weight:600}
 .dash-sort-sel{font-size:11px;padding:5px 8px}
+.dash-list-viewport{overflow:hidden}
+.dash-list-track{display:flex;transition:transform .3s ease}
+.dash-list-page{flex:0 0 100%;min-width:0;display:flex;flex-direction:column;gap:6px}
+.dash-pg-nav{display:flex;align-items:center;justify-content:center;gap:10px;padding-top:12px}
+.dash-pg-btn{width:26px;height:26px;border:1px solid var(--border);border-radius:6px;background:var(--white);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3);transition:all .15s;flex-shrink:0}
+.dash-pg-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.dash-pg-btn:disabled{opacity:.35;cursor:default}
+.dash-pg-dots{display:flex;gap:5px}
+.dash-pg-dot{width:6px;height:6px;border-radius:50%;background:var(--ink4);cursor:pointer;padding:0;border:none;transition:background .15s}
+.dash-pg-dot.on{background:var(--accent)}
+.dash-pg-count{font-size:11px;color:var(--ink3);font-family:"DM Mono",monospace;min-width:34px;text-align:center}
 @media(max-width:600px){.dash-sum-grid{grid-template-columns:1fr 1fr}.dash-sum-grid .dash-sum-card:last-child{grid-column:span 2}}
 
 /* STORY ACCORDION */
@@ -2047,6 +2058,84 @@ function dashSortRow(section, options) {
     </div>`;
 }
 
+// ── 대시보드 페이지네이션 ──
+const DASH_PAGE_SIZE = 5;
+let dashPfPage = 0, dashPfPageCount = 1;
+let dashWlPage = 0, dashWlPageCount = 1;
+let dashTouch = { section: null, startX: 0, deltaX: 0, axis: null };
+
+function dashChunk(arr, size) {
+  const pages = [];
+  for (let i = 0; i < arr.length; i += size) pages.push(arr.slice(i, i + size));
+  return pages.length ? pages : [[]];
+}
+
+function dashPgNav(section, pageCount, page) {
+  if (pageCount <= 1) return '';
+  const dots = Array.from({length: pageCount}, (_, i) =>
+    `<button class="dash-pg-dot${i === page ? ' on' : ''}" onclick="dashGoPage('${section}', ${i - page})" title="${i + 1}페이지"></button>`
+  ).join('');
+  return `
+    <div class="dash-pg-nav">
+      <button class="dash-pg-btn" id="dash${section === 'pf' ? 'Pf' : 'Wl'}PrevBtn" onclick="dashGoPage('${section}', -1)" ${page === 0 ? 'disabled' : ''}>‹</button>
+      <div class="dash-pg-dots">${dots}</div>
+      <span class="dash-pg-count" id="dash${section === 'pf' ? 'Pf' : 'Wl'}PgCount">${page + 1} / ${pageCount}</span>
+      <button class="dash-pg-btn" id="dash${section === 'pf' ? 'Pf' : 'Wl'}NextBtn" onclick="dashGoPage('${section}', 1)" ${page === pageCount - 1 ? 'disabled' : ''}>›</button>
+    </div>`;
+}
+
+function dashGoPage(section, delta) {
+  const track = document.getElementById(section === 'pf' ? 'dashPfTrack' : 'dashWlTrack');
+  if (!track) return;
+  const total = section === 'pf' ? dashPfPageCount : dashWlPageCount;
+  let page = (section === 'pf' ? dashPfPage : dashWlPage) + delta;
+  page = Math.max(0, Math.min(total - 1, page));
+  if (section === 'pf') dashPfPage = page; else dashWlPage = page;
+  track.style.transition = 'transform .3s ease';
+  track.style.transform = `translateX(-${page * 100}%)`;
+  const countEl = document.getElementById(section === 'pf' ? 'dashPfPgCount' : 'dashWlPgCount');
+  if (countEl) countEl.textContent = `${page + 1} / ${total}`;
+  document.querySelectorAll(`#dash${section === 'pf' ? 'Pf' : 'Wl'} .dash-pg-dot`).forEach((d, i) => d.classList.toggle('on', i === page));
+  const prevBtn = document.getElementById(section === 'pf' ? 'dashPfPrevBtn' : 'dashWlPrevBtn');
+  const nextBtn = document.getElementById(section === 'pf' ? 'dashPfNextBtn' : 'dashWlNextBtn');
+  if (prevBtn) prevBtn.disabled = page === 0;
+  if (nextBtn) nextBtn.disabled = page === total - 1;
+}
+
+function dashAttachTouch(section) {
+  const viewport = document.getElementById(section === 'pf' ? 'dashPfViewport' : 'dashWlViewport');
+  const track = document.getElementById(section === 'pf' ? 'dashPfTrack' : 'dashWlTrack');
+  if (!viewport || !track) return;
+
+  viewport.addEventListener('touchstart', e => {
+    dashTouch = { section, startX: e.touches[0].clientX, startY: e.touches[0].clientY, deltaX: 0, axis: null };
+    track.style.transition = 'none';
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', e => {
+    if (dashTouch.section !== section) return;
+    const dx = e.touches[0].clientX - dashTouch.startX;
+    const dy = e.touches[0].clientY - dashTouch.startY;
+    if (dashTouch.axis == null) dashTouch.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+    if (dashTouch.axis !== 'x') return;
+    e.preventDefault();
+    dashTouch.deltaX = dx;
+    const page = section === 'pf' ? dashPfPage : dashWlPage;
+    track.style.transform = `translateX(calc(-${page * 100}% + ${dx}px))`;
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', () => {
+    if (dashTouch.section !== section) return;
+    const threshold = 40;
+    if (dashTouch.axis === 'x') {
+      if (dashTouch.deltaX < -threshold) dashGoPage(section, 1);
+      else if (dashTouch.deltaX > threshold) dashGoPage(section, -1);
+      else dashGoPage(section, 0);
+    }
+    dashTouch = { section: null, startX: 0, deltaX: 0, axis: null };
+  });
+}
+
 function renderDashPf() {
   const items = JSON.parse(localStorage.getItem('bdp_portfolio') || '[]');
   const wrap = document.getElementById('dashPf');
@@ -2090,7 +2179,7 @@ function renderDashPf() {
   ]) : '';
   const sortedRows = rows.length > 1 ? sortDashPf(rows) : rows;
 
-  const listHtml = sortedRows.map(r => {
+  function itemHtml(r) {
     const roiStr = r.roi == null ? '-' : (r.roi > 0 ? '+' : '') + r.roi.toFixed(2) + '%';
     const roiCls = r.roi == null ? '' : r.roi > 0 ? 'pos' : r.roi < 0 ? 'neg' : '';
     const roiTitle = r.roi == null ? '평균매입단가를 입력하면 수익률이 표시됩니다' : '';
@@ -2111,9 +2200,19 @@ function renderDashPf() {
           </div>
         </div>
       </a>`;
-  }).join('');
+  }
 
-  wrap.innerHTML = sumHtml + sortRowHtml + `<div class="dash-list">${listHtml}</div>`;
+  const pages = dashChunk(sortedRows, DASH_PAGE_SIZE);
+  dashPfPageCount = pages.length;
+  dashPfPage = Math.min(dashPfPage, pages.length - 1);
+  const trackHtml = pages.map(p => `<div class="dash-list-page">${p.map(itemHtml).join('')}</div>`).join('');
+
+  wrap.innerHTML = sumHtml + sortRowHtml + `
+    <div class="dash-list-viewport" id="dashPfViewport">
+      <div class="dash-list-track" id="dashPfTrack" style="transform:translateX(-${dashPfPage * 100}%)">${trackHtml}</div>
+    </div>
+    ${dashPgNav('pf', pages.length, dashPfPage)}`;
+  dashAttachTouch('pf');
 }
 
 function renderDashWl() {
@@ -2129,13 +2228,28 @@ function renderDashWl() {
     ['freq',     '분배주기순'],
   ]) : '';
   const sortedItems = items.length > 1 ? sortDashWl(items) : items;
-  wrap.innerHTML = sortRowHtml + `<div class="dash-list">${sortedItems.map(e => `
-    <a href="/etf/${e.code}" class="dash-item">
-      <div class="dash-item-left">
-        <span class="dash-item-name">${e.name}</span>
-        <span class="dash-item-freq">${dashFreqBadge(e)}</span>
-      </div>
-    </a>`).join('')}</div>`;
+
+  function itemHtml(e) {
+    return `
+      <a href="/etf/${e.code}" class="dash-item">
+        <div class="dash-item-left">
+          <span class="dash-item-name">${e.name}</span>
+          <span class="dash-item-freq">${dashFreqBadge(e)}</span>
+        </div>
+      </a>`;
+  }
+
+  const pages = dashChunk(sortedItems, DASH_PAGE_SIZE);
+  dashWlPageCount = pages.length;
+  dashWlPage = Math.min(dashWlPage, pages.length - 1);
+  const trackHtml = pages.map(p => `<div class="dash-list-page">${p.map(itemHtml).join('')}</div>`).join('');
+
+  wrap.innerHTML = sortRowHtml + `
+    <div class="dash-list-viewport" id="dashWlViewport">
+      <div class="dash-list-track" id="dashWlTrack" style="transform:translateX(-${dashWlPage * 100}%)">${trackHtml}</div>
+    </div>
+    ${dashPgNav('wl', pages.length, dashWlPage)}`;
+  dashAttachTouch('wl');
 }
 
 let myStarToastTimer = null;
