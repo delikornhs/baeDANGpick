@@ -1,5 +1,134 @@
 [
   {
+    "id": "2026-07-mid-data",
+    "type": "data",
+    "timing": "월중",
+    "month": "2026년 7월",
+    "sent_at": "2026-07-13",
+    "etfs": [
+      {
+        "code": "480020",
+        "name": "ACE미국빅테크7+데일리타겟커버드콜(합성)",
+        "brand": "ACE",
+        "pay": "2026-07-20",
+        "dist": 359,
+        "rate": 3.0
+      },
+      {
+        "code": "480040",
+        "name": "ACE미국반도체데일리타겟커버드콜(합성)",
+        "brand": "ACE",
+        "pay": "2026-07-20",
+        "dist": 569,
+        "rate": 2.99
+      },
+      {
+        "code": "0094M0",
+        "name": "RISE 코리아밸류업위클리고정커버드콜",
+        "brand": "RISE",
+        "pay": "2026-07-20",
+        "dist": 590,
+        "rate": 2.92
+      },
+      {
+        "code": "480030",
+        "name": "ACE미국500데일리타겟커버드콜(합성)",
+        "brand": "ACE",
+        "pay": "2026-07-20",
+        "dist": 224,
+        "rate": 2.0
+      },
+      {
+        "code": "0132K0",
+        "name": "PLUS 테슬라위클리커버드콜채권혼합",
+        "brand": "PLUS",
+        "pay": "2026-07-20",
+        "dist": 177,
+        "rate": 1.99
+      },
+      {
+        "code": "490600",
+        "name": "RISE 미국배당100데일리고정커버드콜",
+        "brand": "RISE",
+        "pay": "2026-07-20",
+        "dist": 149,
+        "rate": 1.55
+      },
+      {
+        "code": "0177R0",
+        "name": "TIGER 반도체TOP10커버드콜액티브",
+        "brand": "TIGER",
+        "pay": "2026-07-20",
+        "dist": 205,
+        "rate": 1.5
+      },
+      {
+        "code": "498400",
+        "name": "KODEX 200타겟위클리커버드콜",
+        "brand": "KODEX",
+        "pay": "2026-07-20",
+        "dist": 323,
+        "rate": 1.38
+      },
+      {
+        "code": "0138T0",
+        "name": "RISE 미국S&amp;P500데일리고정커버드콜",
+        "brand": "RISE",
+        "pay": "2026-07-20",
+        "dist": 144,
+        "rate": 1.38
+      },
+      {
+        "code": "0018C0",
+        "name": "PLUS 고배당주위클리고정커버드콜",
+        "brand": "PLUS",
+        "pay": "2026-07-20",
+        "dist": 138,
+        "rate": 1.27
+      },
+      {
+        "code": "493810",
+        "name": "TIGER 미국AI빅테크10타겟데일리커버드콜",
+        "brand": "TIGER",
+        "pay": "2026-07-20",
+        "dist": 155,
+        "rate": 1.26
+      },
+      {
+        "code": "0183V0",
+        "name": "KIWOOM 삼성전자&amp;SK하이닉스채권혼합50",
+        "brand": "KIWOOM",
+        "pay": "2026-07-20",
+        "dist": 160,
+        "rate": 1.25
+      },
+      {
+        "code": "494420",
+        "name": "PLUS 미국배당증가성장주데일리커버드콜",
+        "brand": "PLUS",
+        "pay": "2026-07-20",
+        "dist": 115,
+        "rate": 1.14
+      },
+      {
+        "code": "481060",
+        "name": "KODEX 미국30년국채타겟커버드콜(합성 H)",
+        "brand": "KODEX",
+        "pay": "2026-07-20",
+        "dist": 78,
+        "rate": 1.02
+      },
+      {
+        "code": "0008S0",
+        "name": "TIGER 미국배당다우존스타겟데일리커버드콜",
+        "brand": "TIGER",
+        "pay": "2026-07-20",
+        "dist": 104,
+        "rate": 1.0
+      }
+    ]
+  },
+  {
     "id": "2026-07-mid-schedule",
     "type": "schedule",
     "timing": "월중",
