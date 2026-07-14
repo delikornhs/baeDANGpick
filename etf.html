@@ -915,10 +915,12 @@ function render(e) {
   }
   const thisMonthOK = !isMonthlyE || isCurrentMonthDistE(e);
 
-  const lb  = prevBizDay(e.ex);
-  const ex  = e.ex  || '-';
+  // e.ex는 XLS 원본 컬럼("투자신탁 분배금 지급기준일") 값으로, 실제로는 배당락일이 아닌 기준일이다.
+  const record = e.ex || '-';
+  const ex  = prevBizDay(record);
+  const lb  = prevBizDay(ex);
   const pay = e.pay || '-';
-  const schedDates = { lb: fd(lb), ex: fd(ex), pay: fd(pay) };
+  const schedDates = { lb: fd(lb), ex: fd(ex), record: fd(record), pay: fd(pay) };
   const distAmt  = `${comma(e.dist)}원`;
   const distRate = `${e.rate}%`;
 
@@ -951,7 +953,7 @@ function render(e) {
     </div>
     <div class="sched-box">
       <div class="sched-label">📋 기준일</div>
-      <div class="sched-val">${schedDates.ex}</div>
+      <div class="sched-val">${schedDates.record}</div>
     </div>
     <div class="sched-box">
       <div class="sched-label">💸 지급일</div>
