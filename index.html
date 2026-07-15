@@ -2526,6 +2526,11 @@ updateCmpBar();
 if (_restoredScroll) {
   requestAnimationFrame(() => setTimeout(() => window.scrollTo({top: _restoredScroll, behavior: 'instant'}), 50));
 }
+// 다른 페이지에서 /#subscribe 로 진입 시 구독 모달 자동 오픈
+if (location.hash === '#subscribe') {
+  openSubModal();
+  history.replaceState(null, '', location.pathname + location.search);
+}
 
 let _toastTimer = null;
 function showToast(msg) {
