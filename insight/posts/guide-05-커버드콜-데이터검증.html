@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-70RCL5E7B8"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());if(localStorage.getItem('bdp_admin')!=='1'){gtag('config','G-70RCL5E7B8');}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>커버드콜이 순수형을 이겼다? 배당픽 데이터로 확인한 20개 페어 - 배당픽 인사이트</title>
+<meta name="description" content="국내·미국 상장 커버드콜 ETF 20개 페어를 직접 비교해보니, 최근 1년 결과는 통념과 정반대였습니다. 지역별로 갈린 이유와 한계까지.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f7f7f4;--white:#fff;--ink:#1a1a18;--ink2:#4a4a45;--ink3:#9a9a93;--ink4:#d4d4cc;--accent:#1d6b38;--accent-bg:#edf7f1;--accent-mid:#6cba8b;--warn:#b45309;--warn-bg:#fffbeb;--red:#dc2626;--border:#e8e8e2;--radius:10px}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",sans-serif;min-height:100vh;line-height:1.8}
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:200}
+.nav-inner{max-width:1100px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:15px;font-weight:700;letter-spacing:-.4px;display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--ink)}
+.logo-mark{width:22px;height:22px;background:var(--accent);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:6px;align-items:center}
+.nav-link{font-size:12px;color:var(--ink2);text-decoration:none;font-weight:600;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg);transition:all .15s;white-space:nowrap}
+.nav-link:hover{color:var(--accent);border-color:var(--accent-mid);background:var(--accent-bg)}
+.nav-link.on{color:var(--accent);border-color:var(--accent);background:var(--accent-bg)}
+.post-wrap{max-width:720px;margin:0 auto;padding:48px 20px 80px}
+.post-back{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);text-decoration:none;margin-bottom:28px;transition:color .15s}
+.post-back:hover{color:var(--accent)}
+.post-category{display:inline-block;font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);padding:3px 8px;border-radius:4px;margin-bottom:14px}
+.post-title{font-size:26px;font-weight:700;letter-spacing:-.6px;line-height:1.4;margin-bottom:10px}
+.post-date{font-size:12px;color:var(--ink3);margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.post-body h2{font-size:19px;font-weight:700;letter-spacing:-.3px;margin:40px 0 14px;padding-left:12px;border-left:3px solid var(--accent)}
+.post-body h3{font-size:16px;font-weight:700;margin:24px 0 10px;color:var(--ink)}
+.post-body p{font-size:15px;color:var(--ink2);margin-bottom:16px;line-height:1.85}
+.post-body p strong{color:var(--ink);font-weight:700}
+.post-body table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:13px}
+.post-body th{background:var(--accent-bg);color:var(--accent);font-weight:700;padding:9px 12px;border:1px solid var(--border);text-align:left;white-space:nowrap}
+.post-body td{padding:8px 12px;border:1px solid var(--border);color:var(--ink2)}
+.post-body tr:nth-child(even) td{background:#fafaf8}
+.post-body hr{border:none;border-top:1px solid var(--border);margin:36px 0}
+.post-body ul,.post-body ol{padding-left:20px;margin-bottom:16px}
+.post-body li{font-size:15px;color:var(--ink2);line-height:1.85}
+.post-body blockquote{border-left:3px solid var(--accent-mid);padding:10px 16px;margin:16px 0;background:var(--accent-bg);border-radius:0 6px 6px 0}
+.post-body blockquote p{color:var(--ink2);margin-bottom:0}
+.post-series{background:var(--accent-bg);border:1px solid var(--accent-mid);border-radius:var(--radius);padding:14px 18px;margin:0 0 32px;font-size:13px;color:var(--ink2);line-height:1.8}
+.post-series strong{color:var(--accent)}
+.post-series a{color:var(--accent);font-weight:700;text-decoration:none}
+.post-series a:hover{text-decoration:underline}
+.notice{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin:32px 0 0;font-size:12px;color:var(--ink3);line-height:1.7}
+footer{text-align:center;padding:24px 20px;font-size:12px;color:var(--ink3);border-top:1px solid var(--border);background:var(--white);line-height:1.8}
+footer a{color:var(--ink3);text-underline-offset:2px}
+@media(max-width:600px){.post-title{font-size:21px}.nav-links{gap:4px}.nav-link{font-size:11px;padding:4px 8px}.post-body table{font-size:12px}}
+.pf-fab{position:fixed;bottom:24px;right:24px;z-index:500;background:var(--accent);color:#fff;border:none;border-radius:50px;padding:12px 20px;font-size:13px;font-weight:700;box-shadow:0 4px 16px rgba(29,107,56,.3);display:flex;align-items:center;gap:7px;text-decoration:none;transition:all .2s;font-family:"Noto Sans KR",sans-serif;white-space:nowrap}
+.pf-fab:hover{background:#165a2e;transform:translateY(-2px)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-mark"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="7.2" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="4.4"/><circle cx="12" cy="12" r="7.2" fill="none" stroke="#fff" stroke-width="4.4" stroke-dasharray="14.5 45.2" transform="rotate(-90 12 12)"/><circle cx="12" cy="12" r="7.2" fill="none" stroke="#a3e8bf" stroke-width="4.4" stroke-dasharray="11 45.2" stroke-dashoffset="-14.5" transform="rotate(-90 12 12)"/></svg></div>배당픽</a>
+    <div class="nav-links">
+      <a href="/ranking.html" class="nav-link">랭킹</a>
+      <a href="/calc.html" class="nav-link">계산기</a>
+      <a href="/insight.html" class="nav-link on">인사이트</a>
+      <a href="/newsletter.html" class="nav-link">뉴스레터</a>
+    </div>
+  </div>
+</nav>
+<div class="post-wrap">
+  <a href="/insight.html" class="post-back">← 인사이트 목록</a>
+  <div class="post-category">가이드</div>
+  <h1 class="post-title">커버드콜이 순수형을 이겼다? 배당픽 데이터로 확인한 20개 페어</h1>
+  <p class="post-date">2026-07-18</p>
+  <div class="post-body">
+
+<div class="post-series"><strong>커버드콜 ETF의 진짜 장점과 착시 시리즈</strong> — <a href="/insight/posts/guide-03-커버드콜-캡비용-역전조건.html">1편: 캡비용과 역전조건</a> · <a href="/insight/posts/guide-04-커버드콜-하락장방어-착시.html">2편: 하락장 방어와 착시들</a> · <strong>3편(현재 글)</strong></div>
+
+<h2>이론은 확인했으니, 이제 실제 시장을 보자</h2>
+<p><a href="/insight/posts/guide-03-커버드콜-캡비용-역전조건.html">1편</a>·<a href="/insight/posts/guide-04-커버드콜-하락장방어-착시.html">2편</a>에서는 커버드콜의 캡비용·프리미엄 구조가 산수로 어떻게 작동하는지, 그리고 그 역전이 실제로 일어날 수 있다는 것까지 확인했습니다. 다만 "장기적으로는 지는 경우가 더 흔하다"는 서술은 일반적인 시장 전제를 깐 이론적 설명이었습니다. 실제로 지금 시장에서는 어느 쪽이 더 흔하게 나타나고 있을까요? 배당픽에 등록된 국내·미국 상장 커버드콜 ETF 중, 브랜드와 기초지수가 완전히 동일한 순수형-커버드콜형 페어만 20개를 골라 직접 확인했습니다.</p>
+<p><strong>비교 방법</strong>: 브랜드명과 재설정 주기(데일리·위클리 등)·행사가 구조(OTM·ATM 등) 표기를 제외했을 때 기초지수 서술어가 완전히 같은 경우만 페어로 인정했습니다. 순수형이 환헤지(H)형이고 커버드콜형은 환노출형인 것처럼 환헤지 여부가 서로 다른 페어는 환율 변동이 결과에 섞이므로 제외했고, 비교 가능한 기간 데이터가 부족한 페어도 제외했습니다. 총수익률은 배당픽이 매일 갱신하는 종가 기준입니다.</p>
+<hr>
+
+<h2>국내 코스피200 — 이론이 정확히 들어맞은 경우</h2>
+<table>
+<tr><th>순수형</th><th>커버드콜형</th><th>3개월 순수형</th><th>3개월 커버드콜형</th><th>6개월 순수형</th><th>6개월 커버드콜형</th><th>1년 순수형</th><th>1년 커버드콜형</th><th>전구간 비교</th></tr>
+<tr><td>KODEX 200</td><td>KODEX 200타겟위클리커버드콜</td><td>+21.82%</td><td>+25.84%</td><td>+61.19%</td><td>+67.47%</td><td>+156.53%</td><td>+153.76%</td><td>구간별 상이</td></tr>
+<tr><td>RISE 200</td><td>RISE 200위클리커버드콜</td><td>+21.68%</td><td>+13.46%</td><td>+61.29%</td><td>+38.23%</td><td>+156.97%</td><td>+95.50%</td><td>전구간 순수형 우위</td></tr>
+<tr><td>TIGER 200</td><td>TIGER 200커버드콜</td><td>+21.95%</td><td>+12.00%</td><td>+61.63%</td><td>+32.32%</td><td>+157.02%</td><td>+61.70%</td><td>전구간 순수형 우위</td></tr>
+<tr><td>TIGER 200</td><td>TIGER 200커버드콜OTM</td><td>+21.95%</td><td>+7.65%</td><td>+61.63%</td><td>+31.42%</td><td>+157.02%</td><td>+73.58%</td><td>전구간 순수형 우위</td></tr>
+<tr><td>TIGER 200</td><td>TIGER 200타겟위클리커버드콜</td><td>+21.95%</td><td>+24.34%</td><td>+61.63%</td><td>+65.87%</td><td colspan="2">1년 데이터 없음</td><td>전구간 커버드콜형 우위</td></tr>
+</table>
+<p>코스피200을 그대로 추종하는 순수형은 최근 1년 총수익률이 약 157%에 이릅니다. 매우 가파르고 쉬지 않고 이어진 상승이었다는 뜻입니다. 이 기간 매월 행사가가 고정되는 커버드콜형(TIGER 200커버드콜, TIGER 200커버드콜OTM)은 순수형보다 각각 95%p, 83%p 낮은 총수익률을 기록했습니다. 1편에서 설명한 캡비용 구조가 정확히 그대로 작동한 사례입니다.</p>
+<p>다만 같은 코스피200을 추종하면서도 매주 행사가가 재설정되는 위클리형(TIGER 200타겟위클리커버드콜)은 3개월·6개월 기준으로 오히려 순수형보다 총수익률이 높았습니다. 매월 고정형은 한 달 내내 같은 행사가에 묶여 그 기간 상승분을 통째로 놓치지만, 매주 재설정형은 매주 새로 오른 가격 수준에서 행사가가 다시 잡히기 때문에 급등장에서도 캡으로 인한 손실이 상대적으로 덜 누적된 것으로 보입니다. 같은 코스피200 상품이라도 행사가 재설정 주기에 따라 급등장 대응력이 크게 달랐던 사례입니다. 다만 이 비교가 가능했던 건 TIGER 브랜드 안의 3개 상품뿐이라, 재설정 주기의 일반적인 효과로 단정하기보다는 이번 사례 하나로 참고하는 정도가 적절해 보입니다.</p>
+<hr>
+
+<h2>국내 고배당/밸류업 — 뚜렷한 방향성 없이 엇갈림</h2>
+<table>
+<tr><th>순수형</th><th>커버드콜형</th><th>3개월 순수형</th><th>3개월 커버드콜형</th><th>6개월 순수형</th><th>6개월 커버드콜형</th><th>1년 순수형</th><th>1년 커버드콜형</th><th>전구간 비교</th></tr>
+<tr><td>KODEX 금융고배당TOP10</td><td>KODEX 금융고배당TOP10타겟위클리커버드콜</td><td>+3.34%</td><td>-2.06%</td><td>+33.76%</td><td>+22.69%</td><td colspan="2">1년 데이터 없음(6개월까지 순수형 우위)</td><td>전구간 순수형 우위</td></tr>
+<tr><td>PLUS 고배당주</td><td>PLUS 고배당주위클리고정커버드콜</td><td>-6.63%</td><td>-10.81%</td><td>+18.42%</td><td>+8.90%</td><td>+24.98%</td><td>+11.42%</td><td>전구간 순수형 우위</td></tr>
+<tr><td>PLUS 고배당주</td><td>PLUS 고배당주위클리커버드콜</td><td>-6.63%</td><td>-18.12%</td><td>+18.42%</td><td>-6.11%</td><td>+24.98%</td><td>-15.59%</td><td>전구간 순수형 우위</td></tr>
+<tr><td>RISE 코리아밸류업</td><td>RISE 코리아밸류업위클리고정커버드콜</td><td>+22.23%</td><td>+27.64%</td><td>+66.39%</td><td>+70.10%</td><td colspan="2">1년 데이터 없음(6개월까지 커버드콜형 우위)</td><td>전구간 커버드콜형 우위</td></tr>
+<tr><td>TIGER코리아배당다우존스</td><td>TIGER 코리아배당다우존스위클리커버드콜</td><td>-2.99%</td><td>-2.20%</td><td>+19.55%</td><td>+22.14%</td><td colspan="2">1년 데이터 없음(6개월까지 커버드콜형 우위)</td><td>전구간 커버드콜형 우위</td></tr>
+</table>
+<p>국내 고배당·밸류업 계열은 결과가 엇갈립니다. KODEX 금융고배당TOP10과 PLUS 고배당주는 순수형이 꾸준히 우위였고, RISE 코리아밸류업과 TIGER 코리아배당다우존스는 커버드콜형이 우위였습니다. 코스피200만큼 뚜렷한 단일 방향성은 보이지 않았습니다.</p>
+<hr>
+
+<h2>미국 지수 — 정반대 결과</h2>
+<table>
+<tr><th>순수형</th><th>커버드콜형</th><th>3개월 순수형</th><th>3개월 커버드콜형</th><th>6개월 순수형</th><th>6개월 커버드콜형</th><th>1년 순수형</th><th>1년 커버드콜형</th><th>전구간 비교</th></tr>
+<tr><td>KODEX 미국S&amp;P500</td><td>KODEX 미국S&amp;P500데일리커버드콜OTM</td><td>+10.38%</td><td>+14.52%</td><td>+10.34%</td><td>+18.55%</td><td>+33.51%</td><td>+49.23%</td><td>전구간 커버드콜형 우위</td></tr>
+<tr><td>RISE 미국S&amp;P500</td><td>RISE 미국S&amp;P500데일리고정커버드콜</td><td>+10.79%</td><td>+15.58%</td><td>+10.58%</td><td>+18.99%</td><td colspan="2">1년 데이터 없음(6개월까지 커버드콜형 우위)</td><td>전구간 커버드콜형 우위</td></tr>
+<tr><td>TIGER 미국S&amp;P500</td><td>TIGER 미국S&amp;P500타겟데일리커버드콜</td><td>+10.43%</td><td>+12.98%</td><td>+10.13%</td><td>+15.20%</td><td>+32.73%</td><td>+43.25%</td><td>전구간 커버드콜형 우위</td></tr>
+<tr><td>KODEX 미국나스닥100</td><td>KODEX 미국나스닥100데일리커버드콜OTM</td><td>+16.85%</td><td>+14.50%</td><td>+16.29%</td><td>+20.09%</td><td>+41.79%</td><td>+57.31%</td><td>구간별 상이</td></tr>
+<tr><td>TIGER 미국나스닥100</td><td>TIGER 미국나스닥100커버드콜(합성)</td><td>+16.71%</td><td>+10.45%</td><td>+16.01%</td><td>+16.02%</td><td>+41.18%</td><td>+47.37%</td><td>구간별 상이</td></tr>
+<tr><td>TIGER 미국나스닥100</td><td>TIGER 미국나스닥100타겟데일리커버드콜</td><td>+16.71%</td><td>+19.95%</td><td>+16.01%</td><td>+22.96%</td><td>+41.18%</td><td>+58.28%</td><td>전구간 커버드콜형 우위</td></tr>
+<tr><td>KODEX 미국배당다우존스</td><td>KODEX 미국배당다우존스타겟커버드콜</td><td>+8.27%</td><td>+8.53%</td><td>+19.40%</td><td>+23.95%</td><td>+36.94%</td><td>+45.72%</td><td>전구간 커버드콜형 우위</td></tr>
+<tr><td>TIGER 미국배당다우존스</td><td>TIGER 미국배당다우존스타겟데일리커버드콜</td><td>+8.09%</td><td>+11.12%</td><td>+19.02%</td><td>+25.21%</td><td>+36.50%</td><td>+48.08%</td><td>전구간 커버드콜형 우위</td></tr>
+<tr><td>KODEX 미국AI테크TOP10</td><td>KODEX 미국AI테크TOP10타겟커버드콜</td><td>+9.63%</td><td>+11.94%</td><td>+5.16%</td><td>+12.81%</td><td>+35.80%</td><td>+53.84%</td><td>전구간 커버드콜형 우위</td></tr>
+<tr><td>TIGER미국AI빅테크10</td><td>TIGER 미국AI빅테크10타겟데일리커버드콜</td><td>+10.12%</td><td>+14.71%</td><td>+7.65%</td><td>+16.22%</td><td>+39.16%</td><td>+59.78%</td><td>전구간 커버드콜형 우위</td></tr>
+</table>
+<p>미국 지수를 추종하는 10개 페어 중 8개는 3개월·6개월·1년 전 구간에서 커버드콜형이 순수형보다 총수익률이 높았습니다. 나머지 2개(나스닥100 계열)도 구간별로 엇갈렸을 뿐, 순수형이 전 구간에서 앞선 경우는 하나도 없었습니다. 같은 기간 코스피200에서는 순수형이 전 구간에서 앞섰던 것과 정반대입니다.</p>
+<p>1편에서 KODEX 미국AI테크TOP10 페어를 보며 남겨둔 질문 — "AI·테크처럼 강한 성장 스토리가 있는 자산은 캡손실이 누적되기 쉽다"는 설명과 반대되는 결과 — 도 여기서 다시 확인됩니다. AI·테크 계열 2개 페어 모두 커버드콜형이 전 구간 우위였습니다. 이론이 틀렸다기보다, <strong>"AI·테크라서" 캡손실이 커지는 게 아니라 "그 기간 실제로 얼마나 쉬지 않고, 얼마나 가파르게 올랐는지"가 진짜 변수라는 뜻</strong>으로 해석하는 게 맞아 보입니다. 이번 확인 구간에서는 코스피200이 미국 AI·테크 지수보다 오히려 더 가파르고 쉬지 않는 상승을 보였고, 그래서 캡손실이 누적된 쪽은 미국 AI·테크가 아니라 코스피200이었습니다.</p>
+<hr>
+
+<h2>이 결과를 일반화하면 안 되는 이유</h2>
+<h3>1) 특정 시점의 스냅샷입니다</h3>
+<p>20개 페어 중 3개는 3개월·6개월·1년 구간별로 순수형과 커버드콜형의 우열이 뒤바뀌었습니다. 즉 지금 시점에서 "커버드콜형이 우위"로 나온 결과도 몇 달 전이나 몇 달 후에 다시 확인하면 반대로 나올 수 있습니다. 이번 데이터는 구조적으로 고정된 우위가 아니라 확인 시점 기준의 결과로 봐야 합니다.</p>
+<h3>2) 표본이 많지 않습니다</h3>
+<p>같은 브랜드·같은 기초지수 안에서 재설정 주기만 다른 상품을 비교할 수 있었던 경우는 코스피200(TIGER) 정도였고, 전체 비교 대상도 20개 페어로 많지 않습니다. "미국 지수 커버드콜이 항상 유리하다"거나 "국내 지수 커버드콜이 항상 불리하다"는 결론을 내리기에는 근거가 부족합니다.</p>
+<h3>3) 시장가격 기준이라 순자산가치(NAV) 괴리는 반영되지 않았습니다</h3>
+<p>배당픽은 ETF의 시장 종가를 기준으로 수익률을 계산합니다. ETF 시장가격은 순자산가치(NAV)와 정확히 일치하지 않고 할증·할인 상태가 기간에 따라 벌어지거나 좁혀질 수 있는데, 이 변동분이 그대로 총수익률 차이에 섞여 들어갔을 가능성이 있습니다. 특히 위클리 재설정형·합성형처럼 상대적으로 유동성이 낮은 상품은 괴리가 더 크게 움직일 수 있어, 이번 결과의 일부는 옵션 구조 차이가 아니라 가격 괴리 변동 때문일 수 있습니다. 이 부분은 확인이 필요합니다.</p>
+<hr>
+
+<h2>그래서 결론은</h2>
+<p>1편·2편에서 정리한 원칙 — 캡비용은 항상 존재하는 구조적 비용이지만, 실제 승부는 그 시기의 프리미엄 수준에 달려있다 — 은 여전히 유효합니다. 다만 이번에 배당픽 자체 데이터로 확인해보니, 지금 시점 국내·미국 시장에서는 그 승부가 정반대 방향으로 갈렸습니다. 다만 코스피200 쪽은 한 방향으로 단정하기는 어렵습니다. 쉬지 않고 가파르게 오른 코스피200에서 매월 행사가가 고정되는 상품(TIGER 200커버드콜, TIGER 200커버드콜OTM)은 순수형이 크게 앞섰지만, 매주 재설정되는 상품(TIGER 200타겟위클리커버드콜, KODEX 200타겟위클리커버드콜)은 오히려 격차가 좁혀지거나 역전됐습니다. 반면 상대적으로 완만하게 오른 미국 지수에서는 재설정 주기와 무관하게 대부분 커버드콜형이 앞섰습니다.</p>
+<p>즉 "커버드콜은 장기적으로 순수형보다 불리하다"는 통념도, "지금 보니 커버드콜이 더 낫다"는 반대 결론도 둘 다 성급합니다. 진짜 변수는 커버드콜이라는 상품 구조 자체가 아니라 그 기간 기초지수가 얼마나 가파르게, 얼마나 쉬지 않고 움직였는지입니다. 이번 결과가 계속될지, 아니면 코스피200이 숨 고르기에 들어가고 미국 지수가 다시 가파르게 오르는 국면이 오면 뒤집힐지는 지켜봐야 합니다. 커버드콜 ETF에 투자할 때는 분배율이라는 숫자 하나보다, 그 시점 기초지수의 흐름과 재설정 주기 같은 구조적 특징을 함께 보는 습관이 필요해 보입니다.</p>
+
+    <div class="notice">본 내용은 투자 이해를 돕기 위한 설명 목적으로 작성되었으며, 투자 권유가 아닙니다. 분석에서 언급된 ETF 상품명은 설명을 위한 예시로 활용된 것으로, 특정 상품에 대한 매수 추천 또는 매도 권유가 아닙니다. 수익률은 배당픽이 종가 기준으로 계산한 값이며 순자산가치(NAV) 기준과 다를 수 있습니다. 최종 투자 판단은 본인에게 있습니다.</div>
+  </div>
+</div>
+<footer>
+  본 사이트의 정보는 참고 목적으로만 제공되며, 투자의 최종 판단은 본인에게 있습니다.<br>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSflCQap_v_YXjEwRVnjiaQhh9Nkppmw0HWK8YQ1HzR7lAKf9g/viewform?usp=publish-editor" target="_blank" rel="noopener">오류 및 개선 의견 보내기</a>
+  &nbsp;·&nbsp;<a href="/privacy.html">개인정보처리방침</a>
+</footer>
+<a href="/portfolio.html" class="pf-fab">⭐ <span>MY ETF</span></a>
+</body>
+</html>
