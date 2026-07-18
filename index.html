@@ -2550,9 +2550,9 @@ function closeToast() {
   try {
     const res = await fetch('/insight/posts.json?v=' + Date.now());
     const posts = await res.json();
-    // 가이드 제외, 날짜 내림차순 정렬에서 첫 번째
-    const latest = posts.find(p => p.category !== '가이드');
-    if (!latest) return;
+    if (!posts.length) return;
+    // 카테고리 무관하게 날짜가 가장 최근인 글 (가이드 포함)
+    const latest = posts.reduce((a, b) => new Date(b.date) > new Date(a.date) ? b : a, posts[0]);
     const postDate = new Date(latest.date);
     const diffDays = (Date.now() - postDate.getTime()) / (1000 * 60 * 60 * 24);
     const el = document.getElementById('insightLatest');
