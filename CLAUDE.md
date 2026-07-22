@@ -67,6 +67,21 @@ const lb     = prevBizDay(ex);      // 최종매수일 = 배당락일 1영업일
 
 ---
 
+## ⚠️ 네이버 fchart API로 일별 종가 조회 시 주의사항
+
+`fchart.stock.naver.com/sise.nhn`에 `count` 파라미터로 요청하면 **서버 자체에 최근 3000건 하드캡**이 있다. `count`를 10000처럼 크게 줘도 응답은 항상 최근 3000건까지만 온다 (우리 코드의 제한이 아니라 API 서버 자체의 제한임을 실제 호출로 확인).
+
+> 2026-07-15 오류 사례: 상장 후 3000영업일(약 12년)이 넘은 103개 종목의 "상장이후 수익률"이 실제 상장일이 아니라 그로부터 11~12년 뒤 시점의 가격을 기준으로 계산되고 있었음. (예: KODEX 200 — 2002-10-14 상장인데 응답 시작일이 2014-04-28이 되어 상장이후 수익률이 약 435%로 표시됨 → 정정 후 2055.95%)
+
+**해결 (`etf_data_processor.py`의 `fetch_daily_price_history()`에 적용됨):** `count` 대신 `fchart.stock.naver.com/siseJson.nhn`에 `startTime`(상장일, YYYYMMDD)·`endTime`(오늘, YYYYMMDD)을 직접 지정하면 캡 없이 상장일부터 전체 구간을 한 번의 요청으로 받아온다.
+
+- 응답 포맷: `["YYYYMMDD", 시가, 고가, 저가, 종가, 거래량, ...]` — 종가는 date 다음 4번째 숫자 필드
+- 인코딩은 UTF-8 (구 `sise.nhn`은 EUC-KR — 새 엔드포인트로 바꿀 때 함께 변경 필요)
+- 조회 결과는 `data/output/price_history/{code}.json`에 종목별로 영구 저장됨 (`--prices-only` 실행 시마다 갱신). 종가 이력이 필요한 작업은 재조회 없이 이 파일을 바로 읽을 것
+- `days_since_listed()` 함수는 이 수정으로 불필요해져 제거됨 — 유사한 "영업일 수 계산 후 count로 조회" 패턴을 다시 만들지 않도록 주의
+
+---
+
 ## ⚠️ git 커밋 주의사항
 
 코드 수정(HTML, JS 등)만 커밋할 때 반드시 `git status`로 staged 파일을 먼저 확인한다.
@@ -1215,6 +1230,7 @@ baedangetf.com
 - `data/output/latest.json` — 현재 ETF 분배금 데이터 (분배율, 분배금, 추이 등)
 - `data/output/etf_data.js` — ETF 전체 데이터 (수익률 포함)
 - `data/output/history.json` — 분배금 히스토리 데이터 (월별 누적)
+- `data/output/price_history/{code}.json` — 종목별 상장일~오늘 전체 일별 종가 이력 (915개 파일, ~29MB. `--prices-only` 실행 시 자동 갱신)
 - `insight/posts.json` — 인사이트 글 목록
 - `insight/posts/` — 개별 글 파일
 
