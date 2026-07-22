@@ -717,34 +717,30 @@ def fetch_etf_meta(codes: list) -> dict:
     return meta
 
 
-def days_since_listed(listed_date_str: str, fallback: int = 400) -> int:
-    """상장일로부터 현재까지 필요한 영업일 수 계산. 최대 3000일(약 12년)."""
-    if not listed_date_str:
-        return fallback
-    try:
-        listed = datetime.strptime(listed_date_str, "%Y-%m-%d")
-        calendar_days = (datetime.now() - listed).days + 20  # 여유 20일
-        trading_days = int(calendar_days * 5 / 7) + 10       # 영업일 환산
-        return min(max(trading_days, fallback), 3000)
-    except Exception:
-        return fallback
-
-
-def fetch_daily_price_history(code: str, days: int, headers: dict) -> list:
+def fetch_daily_price_history(code: str, listed_date_str: str, headers: dict) -> list:
     """
-    네이버 fchart API로 일별 종가 이력 반환.
+    네이버 fchart API(siseJson, startTime/endTime 방식)로 상장일부터 오늘까지
+    전체 일별 종가 이력 반환.
+
+    구 방식(sise.nhn + count)은 서버 자체에 최근 3000건 하드캡이 있어,
+    상장 12년 초과 종목은 상장일이 아닌 그보다 훨씬 최근 날짜가 시작점으로
+    조회되어 "상장이후 수익률"이 왜곡되는 문제가 있었다(2026-07 발견).
+    startTime/endTime 방식은 이 캡이 없어 전체 구간을 한 번에 받아온다.
+
     Returns: [(date_str 'YYYY-MM-DD', close_price int), ...] ascending
     """
-    url = (f"https://fchart.stock.naver.com/sise.nhn"
-           f"?symbol={code}&timeframe=day&count={days}&requestType=0")
+    start = (listed_date_str or "").replace("-", "") or "19900101"
+    end = datetime.now().strftime("%Y%m%d")
+    url = (f"https://fchart.stock.naver.com/siseJson.nhn"
+           f"?symbol={code}&requestType=1&startTime={start}&endTime={end}&timeframe=day")
     try:
         req = urllib.request.Request(url, headers=headers)
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            content = resp.read().decode("euc-kr", errors="replace")
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            content = resp.read().decode("utf-8", errors="replace")
         result = []
-        for m in re.finditer(r'<item data="(\d{8})\|[^|]+\|[^|]+\|[^|]+\|(\d+)\|', content):
+        for m in re.finditer(r'\["(\d{8})",\s*[\d.]+,\s*[\d.]+,\s*[\d.]+,\s*([\d.]+),', content):
             d = m.group(1)
-            price = int(m.group(2))
+            price = int(float(m.group(2)))
             if price > 0:
                 result.append((f"{d[:4]}-{d[4:6]}-{d[6:]}", price))
         return sorted(result)
@@ -1109,23 +1105,27 @@ if __name__ == "__main__":
                 item["price"] = p
             item["market_cap"] = market_caps.get(item["code"], "")
 
-        # 일별 이력 조회 → 수익률 계산 (상장일 기준 필요 영업일 수만큼 동적 조회)
+        # 일별 이력 조회 → 수익률 계산 (상장일부터 전체 구간 조회, 종목별 파일로 저장)
         hist_headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
             "Referer": "https://finance.naver.com/",
         }
+        PRICE_HISTORY_DIR = OUT_DIR / "price_history"
+        PRICE_HISTORY_DIR.mkdir(parents=True, exist_ok=True)
+
         print(f"\n{'='*50}")
         print("📈 일별 이력 조회 및 수익률 계산")
         print(f"{'='*50}")
         ret_ok = ret_fail = 0
         for i, item in enumerate(latest):
-            code   = item["code"]
-            needed = days_since_listed(item.get("listed_date", ""))
-            daily  = fetch_daily_price_history(code, needed, hist_headers)
+            code  = item["code"]
+            daily = fetch_daily_price_history(code, item.get("listed_date", ""), hist_headers)
             if daily:
                 rets = calc_returns(item, daily, history_for_returns)
                 for k, v in rets.items():
                     item[k] = v
+                with open(PRICE_HISTORY_DIR / f"{code}.json", "w", encoding="utf-8") as f:
+                    json.dump(daily, f, ensure_ascii=False)
                 ret_ok += 1
             else:
                 ret_fail += 1
@@ -1134,6 +1134,7 @@ if __name__ == "__main__":
                 print(f"  진행: {i+1}/{len(latest)} (성공 {ret_ok}개)")
 
         print(f"수익률 계산: {ret_ok}개 성공 / {ret_fail}개 실패")
+        print(f"💾 종목별 종가 이력 저장: {PRICE_HISTORY_DIR}")
 
         # 안정성 지표 계산 (분배율 수준은 공시일 전일 종가 기준)
         for item in latest:
