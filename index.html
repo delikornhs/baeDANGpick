@@ -10,6 +10,7 @@
   gtag('js', new Date());
   if (localStorage.getItem('bdp_admin') !== '1') { gtag('config', 'G-70RCL5E7B8'); }
 </script>
+<script src="/sync.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>배당픽 — 월배당 ETF 분배금, 일정부터 분석까지</title>
@@ -1988,7 +1989,7 @@ function goCmp(){
 
 // ── 관심 ETF (Watchlist) ──
 function getWatchlist() { return JSON.parse(localStorage.getItem('bdp_watchlist') || '[]'); }
-function saveWatchlist(arr) { localStorage.setItem('bdp_watchlist', JSON.stringify(arr)); }
+function saveWatchlist(arr) { localStorage.setItem('bdp_watchlist', JSON.stringify(arr)); if (window.bdpSync) bdpSync.push(); }
 
 // ── 왜 배당픽인가 / 배당픽 활용법 아코디언 ──
 function toggleAccordion(name) {
@@ -2287,6 +2288,7 @@ function addToPortfolio(ev, code) {
   if (existing) { existing.qty += 1; }
   else { items.push({ code, qty: 1 }); }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  if (window.bdpSync) bdpSync.push();
   const toast = document.getElementById('myAddToast');
   clearTimeout(myToastTimer);
   clearTimeout(myStarToastTimer);
@@ -2524,6 +2526,11 @@ renderDashboard();
 const _restoredScroll = restoreFilterState();
 applyFilter();
 updateCmpBar();
+
+// 기기 간 동기화: 로그인된 기기면 클라우드 최신 데이터를 내려받아 반영
+if (window.bdpSync) {
+  bdpSync.pull(() => { renderGrid(); renderDashboard(); });
+}
 if (_restoredScroll) {
   requestAnimationFrame(() => setTimeout(() => window.scrollTo({top: _restoredScroll, behavior: 'instant'}), 50));
 }

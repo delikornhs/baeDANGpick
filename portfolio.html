@@ -15,6 +15,7 @@
 <meta name="robots" content="noindex">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="/data/output/etf_data.js"></script>
+<script src="/sync.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -314,6 +315,38 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   .dist-stats{grid-template-columns:repeat(2,1fr)}
   .tab-btn{font-size:12px;padding:11px 14px}
 }
+
+/* ─────── SYNC (기기 간 동기화) ─────── */
+.sync-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.sync-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--ink2);background:var(--white);border:1px solid var(--border);border-radius:20px;padding:6px 14px;cursor:pointer;font-family:inherit;transition:all .15s}
+.sync-btn:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-bg)}
+.sync-btn.on{color:var(--accent);border-color:var(--accent);background:var(--accent-bg)}
+.sync-status{font-size:11px;color:var(--ink3)}
+.sync-status.ok{color:var(--accent)}
+.sync-status.err{color:var(--red)}
+.sync-modal{background:var(--white);border-radius:14px;width:100%;max-width:400px;max-height:92vh;overflow-y:auto}
+.sync-modal-hdr{padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.sync-modal-hdr span{font-size:14px;font-weight:700}
+.sync-modal-hdr button{width:26px;height:26px;border:1px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;font-size:13px;color:var(--ink3)}
+.sync-modal-hdr button:hover{background:var(--bg)}
+.sync-modal-body{padding:18px 20px 20px}
+.sync-desc{font-size:12.5px;color:var(--ink2);line-height:1.7;margin-bottom:14px}
+.sync-input{width:100%;border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-size:14px;font-family:inherit;outline:none;background:var(--bg);margin-bottom:12px}
+.sync-input:focus{border-color:var(--accent-mid);background:var(--white)}
+.sync-actions{display:flex;gap:8px}
+.sync-primary{flex:1;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+.sync-primary:hover{background:#165a2e}
+.sync-primary:disabled{background:var(--ink4);cursor:not-allowed}
+.sync-danger{flex:1;background:var(--white);color:var(--red);border:1px solid #fecaca;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+.sync-danger:hover{background:var(--red-bg)}
+.sync-info{font-size:12px;color:var(--ink3);background:var(--bg);border-radius:7px;padding:9px 12px;margin-bottom:14px}
+.sync-msg{font-size:12px;color:var(--red);margin-top:10px;min-height:16px}
+.sync-note{font-size:11px;color:var(--ink3);line-height:1.6;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.sync-choice{display:flex;flex-direction:column;gap:9px}
+.sync-choice-btn{display:flex;flex-direction:column;gap:3px;text-align:left;background:var(--white);border:1px solid var(--border);border-radius:9px;padding:12px 14px;cursor:pointer;font-family:inherit;transition:all .15s}
+.sync-choice-btn:hover{border-color:var(--accent);background:var(--accent-bg)}
+.sync-choice-btn .cc-title{font-size:13px;font-weight:700;color:var(--ink)}
+.sync-choice-btn .cc-sub{font-size:11px;color:var(--ink3)}
 </style>
 </head>
 <body>
@@ -334,7 +367,11 @@ footer a{color:var(--ink3);text-underline-offset:2px}
       <li>⭐ <b>내 관심 ETF</b>: 메인 페이지 ETF 카드의 ☆ 아이콘을 클릭하면 추가됩니다.</li>
       <li>💼 <b>내 포트폴리오</b>: 메인 페이지 ETF 카드의 +MY 버튼을 클릭하거나, 포트폴리오 탭에서 직접 추가할 수 있습니다.</li>
     </ul>
-    <div class="page-desc-warn">⚠️ 데이터는 이 브라우저의 로컬 저장소(localStorage)에만 저장됩니다. 서버에 전송되지 않습니다. 브라우저 캐시 또는 사이트 데이터를 삭제하면 사라지며, 시크릿/인코그니토 모드에서는 창 종료 시 삭제됩니다. 다른 기기나 다른 브라우저에서는 확인할 수 없습니다.</div>
+    <div class="page-desc-warn">⚠️ 데이터는 기본적으로 이 브라우저의 로컬 저장소(localStorage)에만 저장됩니다. 브라우저 캐시 또는 사이트 데이터를 삭제하면 사라지며, 시크릿/인코그니토 모드에서는 창 종료 시 삭제됩니다. 다른 기기에서도 보려면 아래 <b>기기 간 동기화</b>를 사용하세요.</div>
+    <div class="sync-row">
+      <button class="sync-btn" id="syncBtn" onclick="openSyncModal()">☁️ 기기 간 동기화</button>
+      <span class="sync-status" id="syncStatus"></span>
+    </div>
   </div>
 </div>
 
@@ -415,6 +452,17 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   </div>
 </div>
 
+<!-- 동기화 모달 -->
+<div class="modal-bg" id="syncModal" onclick="if(event.target===this)closeSyncModal()">
+  <div class="sync-modal">
+    <div class="sync-modal-hdr">
+      <span>☁️ 기기 간 동기화</span>
+      <button onclick="closeSyncModal()">✕</button>
+    </div>
+    <div class="sync-modal-body" id="syncModalBody"></div>
+  </div>
+</div>
+
 <!-- 이미지 캡처용 (off-screen) -->
 <div id="pfPrintArea"></div>
 
@@ -436,9 +484,9 @@ const PALETTE = [
 
 // ── 스토리지 ──
 const load   = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-const save   = items => localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+const save   = items => { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); if (window.bdpSync) bdpSync.push(); };
 const loadWl = () => JSON.parse(localStorage.getItem(WL_KEY) || '[]');
-const saveWl = codes => localStorage.setItem(WL_KEY, JSON.stringify(codes));
+const saveWl = codes => { localStorage.setItem(WL_KEY, JSON.stringify(codes)); if (window.bdpSync) bdpSync.push(); };
 
 // ── ETF 유틸 ──
 const findETF   = code => (ETF_ALL || []).find(e => e.code === code);
@@ -1489,10 +1537,120 @@ function goCmp(){
   location.href = '/compare?etf=' + list.join(',');
 }
 
+// ── 기기 간 동기화 UI ──
+function fmtSyncTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts), n = new Date();
+  const hh = String(d.getHours()).padStart(2, '0'), mm = String(d.getMinutes()).padStart(2, '0');
+  return d.toDateString() === n.toDateString()
+    ? `오늘 ${hh}:${mm}`
+    : `${d.getMonth() + 1}/${d.getDate()} ${hh}:${mm}`;
+}
+function refreshSyncUI() {
+  const btn = document.getElementById('syncBtn');
+  if (!btn) return;
+  const on = window.bdpSync && bdpSync.isEnabled();
+  btn.classList.toggle('on', !!on);
+  btn.textContent = on ? '☁️ 동기화 켜짐' : '☁️ 기기 간 동기화';
+}
+function setSyncStatus(text, cls) {
+  const el = document.getElementById('syncStatus');
+  if (!el) return;
+  el.textContent = text || '';
+  el.className = 'sync-status' + (cls ? ' ' + cls : '');
+}
+function openSyncModal() {
+  const body = document.getElementById('syncModalBody');
+  const on = window.bdpSync && bdpSync.isEnabled();
+  if (on) {
+    const m = bdpSync.getMeta();
+    body.innerHTML = `
+      <p class="sync-desc">✅ 이 기기는 동기화 중입니다. 다른 기기에서 같은 패스코드로 연결하면 관심 ETF·포트폴리오가 함께 보입니다.</p>
+      <div class="sync-info">마지막 변경: ${fmtSyncTime(m && m.updatedAt) || '-'}</div>
+      <div class="sync-actions"><button class="sync-danger" onclick="doUnlink()">이 기기 연결 해제</button></div>
+      <p class="sync-note">연결을 해제해도 이 기기와 클라우드의 데이터는 그대로 남습니다.</p>`;
+  } else {
+    body.innerHTML = `
+      <p class="sync-desc">개인 패스코드를 입력하면 관심 ETF·포트폴리오를 여러 기기에서 함께 볼 수 있습니다. 나만 쓰는 기능이라 다른 방문자에게는 영향이 없습니다.</p>
+      <input type="password" class="sync-input" id="syncPw" placeholder="개인 패스코드" onkeydown="if(event.key==='Enter')doLink()">
+      <div class="sync-actions"><button class="sync-primary" id="syncLinkBtn" onclick="doLink()">연결</button></div>
+      <div class="sync-msg" id="syncMsg"></div>
+      <p class="sync-note">🔒 관심 ETF·포트폴리오만 저장됩니다. 데이터는 패스코드로 잠긴 비공개 저장소에 보관됩니다.</p>`;
+    setTimeout(() => { const i = document.getElementById('syncPw'); if (i) i.focus(); }, 50);
+  }
+  document.getElementById('syncModal').classList.add('open');
+}
+function closeSyncModal() { document.getElementById('syncModal').classList.remove('open'); }
+
+async function doLink() {
+  const pw = (document.getElementById('syncPw').value || '').trim();
+  const msg = document.getElementById('syncMsg');
+  const btn = document.getElementById('syncLinkBtn');
+  if (!pw) { msg.textContent = '패스코드를 입력하세요.'; return; }
+  btn.disabled = true; btn.textContent = '연결 중...';
+  let r;
+  try { r = await bdpSync.link(pw); }
+  catch { r = { result: 'error', message: '네트워크 오류' }; }
+  btn.disabled = false; btn.textContent = '연결';
+  if (r.result === 'unauthorized') { msg.textContent = '패스코드가 올바르지 않습니다.'; return; }
+  if (r.result === 'error') { msg.textContent = r.message || '연결에 실패했습니다.'; return; }
+  if (r.result === 'need-choice') { showSyncConflict(r.token, r.cloud, r.cloudTs); return; }
+  afterLinked();
+}
+function showSyncConflict(token, cloud, cloudTs) {
+  const local = bdpSync.snapshot();
+  const cloudN = (cloud.portfolio || []).length + (cloud.watchlist || []).length;
+  const localN = (local.portfolio || []).length + (local.watchlist || []).length;
+  document.getElementById('syncModalBody').innerHTML = `
+    <p class="sync-desc">이 기기와 클라우드 양쪽에 데이터가 있습니다. 어느 쪽을 사용할지 선택하세요. <b>선택하지 않은 쪽은 덮어써집니다.</b></p>
+    <div class="sync-choice">
+      <button class="sync-choice-btn" onclick="chooseSyncConflict('local')">
+        <span class="cc-title">이 기기 데이터 유지</span>
+        <span class="cc-sub">관심·보유 ${localN}건 → 클라우드로 올림</span>
+      </button>
+      <button class="sync-choice-btn" onclick="chooseSyncConflict('cloud')">
+        <span class="cc-title">클라우드 데이터 불러오기</span>
+        <span class="cc-sub">관심·보유 ${cloudN}건${cloudTs ? ' (' + fmtSyncTime(cloudTs) + ')' : ''} → 이 기기에 적용</span>
+      </button>
+    </div>`;
+  window._syncConflict = { token, cloud, cloudTs };
+}
+async function chooseSyncConflict(choice) {
+  const c = window._syncConflict; if (!c) return;
+  try { await bdpSync.resolveChoice(c.token, choice, c.cloud, c.cloudTs); } catch {}
+  window._syncConflict = null;
+  afterLinked();
+}
+function afterLinked() {
+  refreshSyncUI();
+  render(); renderWatchlist(); updateTabCounts();
+  openSyncModal();
+}
+function doUnlink() {
+  if (!confirm('이 기기의 동기화를 해제할까요? (데이터는 남습니다)')) return;
+  bdpSync.unlink();
+  refreshSyncUI();
+  setSyncStatus('');
+  closeSyncModal();
+}
+
 updateTabCounts();
 renderWatchlist();
 render();
 updateCmpBar();
+
+// ── 동기화 초기화 ──
+if (window.bdpSync) {
+  bdpSync.onStatus(s => {
+    if (s === 'saving')      setSyncStatus('저장 중…');
+    else if (s === 'saved')  setSyncStatus('동기화됨', 'ok');
+    else if (s === 'synced') setSyncStatus('동기화됨', 'ok');
+    else if (s === 'error')  setSyncStatus('동기화 오류', 'err');
+    else if (s === 'off')    setSyncStatus('');
+  });
+  refreshSyncUI();
+  bdpSync.pull(() => { render(); renderWatchlist(); updateTabCounts(); });
+}
 </script>
 
 <!-- 비교 바 -->
