@@ -367,8 +367,8 @@ footer a{color:var(--ink3);text-underline-offset:2px}
       <li>⭐ <b>내 관심 ETF</b>: 메인 페이지 ETF 카드의 ☆ 아이콘을 클릭하면 추가됩니다.</li>
       <li>💼 <b>내 포트폴리오</b>: 메인 페이지 ETF 카드의 +MY 버튼을 클릭하거나, 포트폴리오 탭에서 직접 추가할 수 있습니다.</li>
     </ul>
-    <div class="page-desc-warn">⚠️ 데이터는 기본적으로 이 브라우저의 로컬 저장소(localStorage)에만 저장됩니다. 브라우저 캐시 또는 사이트 데이터를 삭제하면 사라지며, 시크릿/인코그니토 모드에서는 창 종료 시 삭제됩니다. 다른 기기에서도 보려면 아래 <b>기기 간 동기화</b>를 사용하세요.</div>
-    <div class="sync-row">
+    <div class="page-desc-warn">⚠️ 데이터는 이 브라우저의 로컬 저장소(localStorage)에 저장됩니다. 브라우저 캐시 또는 사이트 데이터를 삭제하면 사라지며, 시크릿/인코그니토 모드에서는 창 종료 시 삭제됩니다. 다른 기기나 다른 브라우저에서는 확인할 수 없습니다.</div>
+    <div class="sync-row" id="syncRow" style="display:none">
       <button class="sync-btn" id="syncBtn" onclick="openSyncModal()">☁️ 기기 간 동기화</button>
       <span class="sync-status" id="syncStatus"></span>
     </div>
@@ -1553,6 +1553,19 @@ function refreshSyncUI() {
   btn.classList.toggle('on', !!on);
   btn.textContent = on ? '☁️ 동기화 켜짐' : '☁️ 기기 간 동기화';
 }
+// 동기화 버튼 노출 제어: 소유자 전용(일반 방문자에겐 숨김)
+// - 주소에 ?sync 가 있으면 표시하고, 그 기기에 기억시켜 이후에도 계속 표시
+// - 이미 연결(로그인)된 기기면 항상 표시
+function refreshSyncVisibility() {
+  const row = document.getElementById('syncRow');
+  if (!row) return;
+  if (new URLSearchParams(location.search).has('sync')) {
+    localStorage.setItem('bdp_sync_reveal', '1');
+  }
+  const reveal = localStorage.getItem('bdp_sync_reveal') === '1'
+    || (window.bdpSync && bdpSync.isEnabled());
+  row.style.display = reveal ? 'flex' : 'none';
+}
 function setSyncStatus(text, cls) {
   const el = document.getElementById('syncStatus');
   if (!el) return;
@@ -1622,6 +1635,7 @@ async function chooseSyncConflict(choice) {
   afterLinked();
 }
 function afterLinked() {
+  refreshSyncVisibility();
   refreshSyncUI();
   render(); renderWatchlist(); updateTabCounts();
   openSyncModal();
@@ -1648,6 +1662,7 @@ if (window.bdpSync) {
     else if (s === 'error')  setSyncStatus('동기화 오류', 'err');
     else if (s === 'off')    setSyncStatus('');
   });
+  refreshSyncVisibility();
   refreshSyncUI();
   bdpSync.pull(() => { render(); renderWatchlist(); updateTabCounts(); });
 }
