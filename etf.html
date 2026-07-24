@@ -158,6 +158,35 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 .tab-btn{font-size:13px;font-weight:600;padding:10px 20px;border:none;background:transparent;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;font-family:inherit;letter-spacing:-.2px}
 .tab-btn:hover{color:var(--ink)}
 .tab-btn.on{color:var(--accent);border-bottom-color:var(--accent)}
+/* ── 종가 탭 ── */
+.px-ctrls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:14px}
+.px-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.px-group-label{font-size:11px;color:var(--ink3);font-weight:700;white-space:nowrap}
+.px-seg{display:inline-flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;background:var(--bg)}
+.px-seg button{border:none;background:transparent;font-family:inherit;font-size:11px;font-weight:600;color:var(--ink3);padding:5px 10px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.px-seg button:hover{color:var(--ink)}
+.px-seg button.on{background:var(--accent);color:#fff}
+.px-ma{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--ink2);cursor:pointer;border:1px solid var(--border);border-radius:6px;padding:4px 9px;background:var(--white);white-space:nowrap;transition:all .15s}
+.px-ma input{cursor:pointer;width:12px;height:12px;margin:0}
+.px-ma.on{border-color:var(--accent-mid);background:var(--accent-bg);color:var(--accent)}
+.px-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.px-sum{background:var(--bg);border-radius:7px;padding:9px 11px}
+.px-sum-l{font-size:10px;color:var(--ink3);margin-bottom:3px}
+.px-sum-v{font-size:13px;font-weight:700;font-family:"DM Mono",monospace;color:var(--ink)}
+.px-chart-wrap{position:relative;height:300px}
+.px-note{font-size:11px;color:var(--ink3);text-align:center;padding:34px 0}
+.px-tbl-wrap{max-height:520px;overflow-y:auto}
+.px-table{width:100%;border-collapse:collapse}
+.px-table th{background:var(--bg);padding:8px 10px;text-align:right;font-size:11px;font-weight:700;color:var(--ink3);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;z-index:1}
+.px-table th:first-child{text-align:center}
+.px-table td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--ink2);font-family:"DM Mono",monospace;font-size:12px;white-space:nowrap}
+.px-table td:first-child{text-align:center;font-family:inherit;color:var(--ink);font-weight:600}
+.px-table tbody tr:hover td{background:var(--bg)}
+.px-up{color:var(--red);font-weight:700}
+.px-down{color:var(--blue);font-weight:700}
+.px-flat{color:var(--ink3)}
+.px-more{display:block;width:100%;margin-top:12px;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--ink2);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.px-more:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-bg)}
 /* ── simulation tab ── */
 .sim-wrap{max-width:700px}
 .sim-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px;overflow:hidden}
@@ -255,6 +284,9 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   .sim-input-grid{grid-template-columns:1fr}
   .sim-summary{grid-template-columns:1fr}
   .tab-btn{font-size:12px;padding:8px 14px}
+  .px-chart-wrap{height:240px}
+  .px-summary{grid-template-columns:repeat(2,1fr)}
+  .px-ctrls{gap:10px}
 }
 /* ── 추종지수 ── */
 .index-box{background:var(--bg);border-radius:8px;padding:14px 16px}
@@ -304,6 +336,7 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   <div class="tab-nav">
     <button class="tab-btn on" id="tabBtnInfo" onclick="switchTab('info')">기본 정보</button>
     <button class="tab-btn" id="tabBtnSim" onclick="switchTab('sim')">📊 시뮬레이션</button>
+    <button class="tab-btn" id="tabBtnPrice" onclick="switchTab('price')">📈 종가</button>
   </div>
 
   <!-- 탭: 기본 정보 -->
@@ -518,6 +551,64 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 
     </div>
   </div><!-- /tabSim -->
+
+  <!-- 탭: 종가 -->
+  <div id="tabPrice" style="display:none">
+    <div class="card">
+      <div class="card-title">종가 차트</div>
+      <div class="px-ctrls">
+        <div class="px-group">
+          <span class="px-group-label">기간</span>
+          <div class="px-seg" id="pxPeriodSeg">
+            <button data-v="1m">1개월</button>
+            <button data-v="3m">3개월</button>
+            <button data-v="6m" class="on">6개월</button>
+            <button data-v="1y">1년</button>
+            <button data-v="3y">3년</button>
+            <button data-v="all">전체</button>
+          </div>
+        </div>
+        <div class="px-group">
+          <span class="px-group-label">주기</span>
+          <div class="px-seg" id="pxIntervalSeg">
+            <button data-v="day" class="on">일봉</button>
+            <button data-v="week">주봉</button>
+          </div>
+        </div>
+        <div class="px-group">
+          <span class="px-group-label">이평선</span>
+          <label class="px-ma" data-ma="5"><input type="checkbox" data-ma="5">5</label>
+          <label class="px-ma on" data-ma="20"><input type="checkbox" data-ma="20" checked>20</label>
+          <label class="px-ma" data-ma="60"><input type="checkbox" data-ma="60">60</label>
+          <label class="px-ma" data-ma="120"><input type="checkbox" data-ma="120">120</label>
+        </div>
+      </div>
+      <div class="px-summary" id="pxSummary"></div>
+      <div class="px-chart-wrap" id="pxChartWrap"><canvas id="pxChart"></canvas></div>
+      <div class="px-note" id="pxNote">종가 데이터를 불러오는 중…</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">일자별 종가</div>
+      <div class="px-tbl-wrap">
+        <table class="px-table">
+          <thead>
+            <tr>
+              <th>일자</th>
+              <th>종가</th>
+              <th id="pxThDiff">전일대비</th>
+              <th>등락률</th>
+            </tr>
+          </thead>
+          <tbody id="pxTableBody"></tbody>
+        </table>
+      </div>
+      <button class="px-more" id="pxMoreBtn" onclick="pxShowMore()" style="display:none">더 보기</button>
+      <div style="font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.7">
+        ※ 종가는 네이버 금융 기준이며, 분배금·액면분할 등은 반영되지 않은 <b>수정 전 종가</b>입니다. 참고용으로만 활용하세요.
+      </div>
+    </div>
+  </div><!-- /tabPrice -->
 
 </div>
 
@@ -1192,23 +1283,251 @@ function render(e) {
   const avgRate = (e.stab && e.stab.avgMonthlyRate > 0) ? e.stab.avgMonthlyRate : (e.rate || 0);
   if(avgRate > 0) document.getElementById('simRate').value = avgRate.toFixed(2);
 
-  // ?tab=sim 파라미터로 들어온 경우 자동으로 시뮬레이션 탭 활성화
+  // ?tab=sim / ?tab=price 파라미터로 들어온 경우 해당 탭 활성화
   const tabParam = new URLSearchParams(location.search).get('tab');
-  if(tabParam === 'sim') switchTab('sim');
+  if(tabParam === 'sim' || tabParam === 'price') switchTab(tabParam);
 }
 
 // ── 탭 전환 ──
 function switchTab(tab) {
-  const isInfo = tab === 'info';
-  document.getElementById('tabInfo').style.display   = isInfo ? '' : 'none';
-  document.getElementById('tabSim').style.display    = isInfo ? 'none' : '';
-  document.getElementById('tabBtnInfo').classList.toggle('on', isInfo);
-  document.getElementById('tabBtnSim').classList.toggle('on', !isInfo);
+  if(!['info','sim','price'].includes(tab)) tab = 'info';
+  document.getElementById('tabInfo').style.display  = tab === 'info'  ? '' : 'none';
+  document.getElementById('tabSim').style.display   = tab === 'sim'   ? '' : 'none';
+  document.getElementById('tabPrice').style.display = tab === 'price' ? '' : 'none';
+  document.getElementById('tabBtnInfo').classList.toggle('on',  tab === 'info');
+  document.getElementById('tabBtnSim').classList.toggle('on',   tab === 'sim');
+  document.getElementById('tabBtnPrice').classList.toggle('on', tab === 'price');
   // URL 파라미터 갱신 (히스토리 교체)
   const url = new URL(location.href);
-  if(tab === 'sim') url.searchParams.set('tab','sim');
-  else url.searchParams.delete('tab');
+  if(tab === 'info') url.searchParams.delete('tab');
+  else url.searchParams.set('tab', tab);
   history.replaceState(null, '', url.toString());
+  // 종가 탭은 최초 진입 시에만 데이터를 불러옴
+  if(tab === 'price') initPriceTab();
+}
+
+// ══════════════════════════════════════════
+// 종가 탭 (일자별 종가 차트 + 표)
+// 데이터: /data/output/price_history/{code}.json = [[YYYY-MM-DD, 종가], ...] 오름차순
+// ══════════════════════════════════════════
+let pxRaw       = null;    // 원본 (오름차순)
+let pxLoading   = false;
+let pxBound     = false;
+let pxChartInst = null;
+let pxPeriod    = '6m';
+let pxInterval  = 'day';
+let pxMA        = new Set([20]);
+let pxSeries    = [];      // 화면 표시 구간 [{date, close, prev, ma}]
+let pxShownRows = 0;
+const PX_PAGE      = 60;
+const PX_MONTHS    = { '1m':1, '3m':3, '6m':6, '1y':12, '3y':36 };
+const PX_MA_COLORS = { 5:'#f59e0b', 20:'#1a56db', 60:'#8b5cf6', 120:'#c0392b' };
+
+// 최초 진입 시 1회만 로드 (기본정보 탭 로딩에 영향 없도록 lazy)
+function initPriceTab() {
+  if(pxRaw || pxLoading || !ETF) return;
+  pxLoading = true;
+  fetch(`/data/output/price_history/${ETF.code}.json`)
+    .then(r => { if(!r.ok) throw new Error('no data'); return r.json(); })
+    .then(data => {
+      pxRaw = Array.isArray(data) ? data.filter(r => r && r.length >= 2 && r[1] > 0) : [];
+      pxLoading = false;
+      pxBindControls();
+      pxRender();
+    })
+    .catch(() => {
+      pxLoading = false;
+      pxRaw = [];
+      pxRender();
+    });
+}
+
+function pxSegOn(segId, val) {
+  document.querySelectorAll(`#${segId} button[data-v]`)
+    .forEach(b => b.classList.toggle('on', b.dataset.v === val));
+}
+
+function pxBindControls() {
+  if(pxBound) return;
+  pxBound = true;
+  document.getElementById('pxPeriodSeg').addEventListener('click', e => {
+    const b = e.target.closest('button[data-v]'); if(!b) return;
+    pxPeriod = b.dataset.v; pxSegOn('pxPeriodSeg', pxPeriod); pxRender();
+  });
+  document.getElementById('pxIntervalSeg').addEventListener('click', e => {
+    const b = e.target.closest('button[data-v]'); if(!b) return;
+    pxInterval = b.dataset.v; pxSegOn('pxIntervalSeg', pxInterval); pxRender();
+  });
+  document.querySelectorAll('.px-ma input[data-ma]').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const n = parseInt(inp.dataset.ma, 10);
+      if(inp.checked) pxMA.add(n); else pxMA.delete(n);
+      inp.closest('.px-ma').classList.toggle('on', inp.checked);
+      pxRender();
+    });
+  });
+}
+
+// 주봉 집계: 각 주(월요일 시작)의 마지막 거래일 종가
+function pxWeekly(rows) {
+  const out = [];
+  let curKey = null;
+  for(const [ds, close] of rows) {
+    const d = new Date(ds + 'T00:00:00');
+    const day = d.getDay();
+    const mon = new Date(d);
+    mon.setDate(d.getDate() + (day === 0 ? -6 : 1 - day));
+    const key = `${mon.getFullYear()}-${mon.getMonth()}-${mon.getDate()}`;
+    if(key === curKey) out[out.length - 1] = [ds, close];
+    else { out.push([ds, close]); curKey = key; }
+  }
+  return out;
+}
+
+function pxCalcMA(closes, n) {
+  const out = new Array(closes.length).fill(null);
+  let sum = 0;
+  for(let i = 0; i < closes.length; i++) {
+    sum += closes[i];
+    if(i >= n) sum -= closes[i - n];
+    if(i >= n - 1) out[i] = sum / n;
+  }
+  return out;
+}
+
+function pxRender() {
+  const note = document.getElementById('pxNote');
+  const wrap = document.getElementById('pxChartWrap');
+  if(!pxRaw || !pxRaw.length) {
+    note.textContent = '이 종목은 아직 종가 데이터가 없습니다.';
+    note.style.display = ''; wrap.style.display = 'none';
+    document.getElementById('pxSummary').innerHTML = '';
+    document.getElementById('pxTableBody').innerHTML = '';
+    document.getElementById('pxMoreBtn').style.display = 'none';
+    return;
+  }
+  note.style.display = 'none';
+  wrap.style.display = '';
+
+  // 1) 주기 집계는 전체 구간 기준
+  const base   = pxInterval === 'week' ? pxWeekly(pxRaw) : pxRaw;
+  const closes = base.map(r => r[1]);
+
+  // 2) 이평선은 전체 구간으로 먼저 계산 → 구간 첫 지점부터 값이 나옴
+  const maAll = {};
+  const maList = [...pxMA].sort((a, b) => a - b);
+  maList.forEach(n => { maAll[n] = pxCalcMA(closes, n); });
+
+  // 3) 기간 필터 (마지막 거래일 기준으로 역산)
+  let startIdx = 0;
+  if(pxPeriod !== 'all') {
+    const last = new Date(base[base.length - 1][0] + 'T00:00:00');
+    last.setMonth(last.getMonth() - PX_MONTHS[pxPeriod]);
+    const cutoff = last.toISOString().slice(0, 10);
+    while(startIdx < base.length && base[startIdx][0] < cutoff) startIdx++;
+    if(startIdx >= base.length) startIdx = 0;
+  }
+
+  pxSeries = base.slice(startIdx).map((r, i) => {
+    const gi = startIdx + i;
+    const ma = {};
+    maList.forEach(n => { ma[n] = maAll[n][gi]; });
+    return { date: r[0], close: r[1], prev: gi > 0 ? base[gi - 1][1] : null, ma };
+  });
+
+  pxRenderSummary();
+  pxRenderChart(maList);
+  pxShownRows = Math.min(PX_PAGE, pxSeries.length);
+  pxRenderTable();
+}
+
+function pxRenderSummary() {
+  const el = document.getElementById('pxSummary');
+  if(!pxSeries.length) { el.innerHTML = ''; return; }
+  let hi = -Infinity, lo = Infinity;
+  for(const x of pxSeries) { if(x.close > hi) hi = x.close; if(x.close < lo) lo = x.close; }
+  const first = pxSeries[0].close;
+  const last  = pxSeries[pxSeries.length - 1].close;
+  const chg   = first > 0 ? (last - first) / first * 100 : 0;
+  const cls   = chg > 0 ? 'px-up' : chg < 0 ? 'px-down' : 'px-flat';
+  el.innerHTML = `
+    <div class="px-sum"><div class="px-sum-l">최근 종가</div><div class="px-sum-v">${comma(last)}원</div></div>
+    <div class="px-sum"><div class="px-sum-l">기간 등락률</div><div class="px-sum-v ${cls}">${chg > 0 ? '+' : ''}${chg.toFixed(2)}%</div></div>
+    <div class="px-sum"><div class="px-sum-l">기간 최고</div><div class="px-sum-v">${comma(hi)}원</div></div>
+    <div class="px-sum"><div class="px-sum-l">기간 최저</div><div class="px-sum-v">${comma(lo)}원</div></div>`;
+}
+
+function pxRenderChart(maList) {
+  if(pxChartInst) { pxChartInst.destroy(); pxChartInst = null; }
+  const datasets = [{
+    label: '종가',
+    data: pxSeries.map(x => x.close),
+    borderColor: '#1d6b38',
+    backgroundColor: 'rgba(29,107,56,.07)',
+    borderWidth: 1.8, pointRadius: 0, pointHoverRadius: 3,
+    fill: true, tension: .15, order: 10,
+  }];
+  maList.forEach(n => {
+    datasets.push({
+      label: `MA${n}`,
+      data: pxSeries.map(x => x.ma[n]),
+      borderColor: PX_MA_COLORS[n] || '#9a9a93',
+      borderWidth: 1.2, pointRadius: 0, pointHoverRadius: 3,
+      fill: false, tension: .15, spanGaps: true,
+    });
+  });
+  pxChartInst = new Chart(document.getElementById('pxChart').getContext('2d'), {
+    type: 'line',
+    data: { labels: pxSeries.map(x => x.date), datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: pxSeries.length > 400 ? false : { duration: 300 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { font:{size:10}, color:'#9a9a93', boxWidth:14, padding:8, usePointStyle:true } },
+        tooltip: { callbacks: {
+          label: c => `${c.dataset.label}: ${c.raw == null ? '-' : comma(Math.round(c.raw))}원`
+        } }
+      },
+      scales: {
+        x: { grid:{display:false}, ticks:{ font:{size:9}, color:'#9a9a93', maxTicksLimit:8, autoSkip:true, maxRotation:0 } },
+        y: { grid:{color:'#f0f0f0'}, ticks:{ font:{size:9}, color:'#9a9a93',
+             callback: v => v >= 10000 ? (v/10000).toFixed(0)+'만' : comma(v) } }
+      }
+    }
+  });
+}
+
+function pxRenderTable() {
+  const body = document.getElementById('pxTableBody');
+  const more = document.getElementById('pxMoreBtn');
+  document.getElementById('pxThDiff').textContent = pxInterval === 'week' ? '전주대비' : '전일대비';
+  if(!pxSeries.length) { body.innerHTML = ''; more.style.display = 'none'; return; }
+
+  body.innerHTML = pxSeries.slice().reverse().slice(0, pxShownRows).map(x => {
+    const diff = x.prev == null ? null : x.close - x.prev;
+    const pct  = (x.prev && x.prev > 0) ? diff / x.prev * 100 : null;
+    const cls  = diff == null || diff === 0 ? 'px-flat' : diff > 0 ? 'px-up' : 'px-down';
+    const sign = diff == null || diff === 0 ? '' : diff > 0 ? '▲' : '▼';
+    return `<tr>
+      <td>${x.date}</td>
+      <td>${comma(x.close)}</td>
+      <td class="${cls}">${diff == null ? '-' : sign + comma(Math.abs(diff))}</td>
+      <td class="${cls}">${pct == null ? '-' : (pct > 0 ? '+' : '') + pct.toFixed(2) + '%'}</td>
+    </tr>`;
+  }).join('');
+
+  if(pxShownRows < pxSeries.length) {
+    more.style.display = '';
+    more.textContent = `더 보기 (${pxShownRows} / ${comma(pxSeries.length)})`;
+  } else {
+    more.style.display = 'none';
+  }
+}
+
+function pxShowMore() {
+  pxShownRows = Math.min(pxShownRows + PX_PAGE, pxSeries.length);
+  pxRenderTable();
 }
 
 // ── 한국어 금액 인라인 표시 ──
