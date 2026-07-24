@@ -185,6 +185,10 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 .px-up{color:var(--red);font-weight:700}
 .px-down{color:var(--blue);font-weight:700}
 .px-flat{color:var(--ink3)}
+/* .px-table td 가 color를 잡고 있어 우선순위를 올려야 색이 적용됨 */
+.px-table td.px-up{color:var(--red);font-weight:700}
+.px-table td.px-down{color:var(--blue);font-weight:700}
+.px-table td.px-flat{color:var(--ink3)}
 .px-more{display:block;width:100%;margin-top:12px;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--ink2);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
 .px-more:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-bg)}
 /* ── simulation tab ── */

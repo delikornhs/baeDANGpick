@@ -57,6 +57,17 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .sum-sub{font-size:11px;color:var(--accent);margin-top:3px}
 /* chart */
 .chart-wrap{position:relative;height:220px}
+/* ── 종가 추이 비교 ── */
+.cp-ctrls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:12px}
+.cp-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cp-group-label{font-size:11px;color:var(--ink3);font-weight:700;white-space:nowrap}
+.cp-seg{display:inline-flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;background:var(--bg)}
+.cp-seg button{border:none;background:transparent;font-family:inherit;font-size:11px;font-weight:600;color:var(--ink3);padding:5px 10px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.cp-seg button:hover{color:var(--ink)}
+.cp-seg button.on{background:var(--accent);color:#fff}
+.cp-chart-wrap{position:relative;height:260px}
+.cp-note{font-size:11px;color:var(--ink3);text-align:center;padding:30px 0;line-height:1.7}
+.cp-basis{font-size:11px;color:var(--ink3);margin-top:8px;line-height:1.7}
 /* comparison table */
 .cmp-table{width:100%;border-collapse:collapse;font-size:12px}
 .cmp-table th{background:var(--bg);color:var(--ink3);font-weight:600;padding:9px 12px;text-align:center;border-bottom:2px solid var(--border)}
@@ -112,6 +123,33 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   <div class="card">
     <div class="card-title">분배금 추이 비교</div>
     <div class="chart-wrap"><canvas id="cmpChart"></canvas></div>
+  </div>
+
+  <!-- 종가 추이 차트 -->
+  <div class="card">
+    <div class="card-title">종가 추이 비교</div>
+    <div class="cp-ctrls">
+      <div class="cp-group">
+        <span class="cp-group-label">기간</span>
+        <div class="cp-seg" id="cpPeriodSeg">
+          <button data-v="3m">3개월</button>
+          <button data-v="6m">6개월</button>
+          <button data-v="1y" class="on">1년</button>
+          <button data-v="3y">3년</button>
+          <button data-v="all">전체</button>
+        </div>
+      </div>
+      <div class="cp-group">
+        <span class="cp-group-label">기준</span>
+        <div class="cp-seg" id="cpModeSeg">
+          <button data-v="pct" class="on">등락률(%)</button>
+          <button data-v="price">종가(원)</button>
+        </div>
+      </div>
+    </div>
+    <div class="cp-chart-wrap" id="cpChartWrap"><canvas id="cpChart"></canvas></div>
+    <div class="cp-note" id="cpNote">종가 데이터를 불러오는 중…</div>
+    <div class="cp-basis" id="cpBasis"></div>
   </div>
 
   <!-- 비교 테이블 -->
@@ -457,6 +495,145 @@ function renderAll(etfs) {
   `;
 
   document.getElementById('main').style.display = '';
+
+  initComparePrice(etfs);
+}
+
+// ══════════════════════════════════════════
+// 종가 추이 비교
+// 가격대가 다른 ETF를 나란히 보려면 절대가격은 의미가 없어
+// '공통 시작일 = 0%' 로 정규화한 등락률 비교를 기본으로 한다.
+// ══════════════════════════════════════════
+let cpEtfs   = [];
+let cpData   = null;
+let cpChart  = null;
+let cpPeriod = '1y';
+let cpMode   = 'pct';
+let cpBound  = false;
+const CP_MONTHS = { '3m':3, '6m':6, '1y':12, '3y':36 };
+
+function initComparePrice(etfs) {
+  cpEtfs = etfs;
+  Promise.all(etfs.map(e =>
+    fetch(`/data/output/price_history/${e.code}.json`)
+      .then(r => r.ok ? r.json() : [])
+      .catch(() => [])
+  )).then(list => {
+    cpData = {};
+    etfs.forEach((e, i) => {
+      cpData[e.code] = Array.isArray(list[i]) ? list[i].filter(r => r && r.length >= 2 && r[1] > 0) : [];
+    });
+    cpBindControls();
+    cpRender();
+  });
+}
+
+function cpBindControls() {
+  if(cpBound) return;
+  cpBound = true;
+  document.getElementById('cpPeriodSeg').addEventListener('click', ev => {
+    const b = ev.target.closest('button[data-v]'); if(!b) return;
+    cpPeriod = b.dataset.v;
+    document.querySelectorAll('#cpPeriodSeg button').forEach(x => x.classList.toggle('on', x === b));
+    cpRender();
+  });
+  document.getElementById('cpModeSeg').addEventListener('click', ev => {
+    const b = ev.target.closest('button[data-v]'); if(!b) return;
+    cpMode = b.dataset.v;
+    document.querySelectorAll('#cpModeSeg button').forEach(x => x.classList.toggle('on', x === b));
+    cpRender();
+  });
+}
+
+function cpRender() {
+  const note  = document.getElementById('cpNote');
+  const wrap  = document.getElementById('cpChartWrap');
+  const basis = document.getElementById('cpBasis');
+  const avail = cpEtfs.filter(e => (cpData[e.code] || []).length);
+
+  if(avail.length < 2) {
+    note.textContent = '종가 데이터가 있는 ETF가 2개 미만이라 비교할 수 없습니다.';
+    note.style.display = ''; wrap.style.display = 'none'; basis.textContent = '';
+    if(cpChart) { cpChart.destroy(); cpChart = null; }
+    return;
+  }
+
+  // 공통 시작일: 각 ETF 첫 데이터일 중 가장 늦은 날 (= 모두 데이터가 있는 시점)
+  let start = '0000-00-00', lastDate = '0000-00-00';
+  avail.forEach(e => {
+    const arr = cpData[e.code];
+    if(arr[0][0] > start) start = arr[0][0];
+    if(arr[arr.length - 1][0] > lastDate) lastDate = arr[arr.length - 1][0];
+  });
+  if(cpPeriod !== 'all') {
+    const d = new Date(lastDate + 'T00:00:00');
+    d.setMonth(d.getMonth() - CP_MONTHS[cpPeriod]);
+    const cut = d.toISOString().slice(0, 10);
+    if(cut > start) start = cut;
+  }
+
+  // 마스터 날짜 = 구간 내 전 종목 거래일의 합집합
+  const dset = new Set();
+  avail.forEach(e => cpData[e.code].forEach(r => { if(r[0] >= start) dset.add(r[0]); }));
+  const dates = [...dset].sort();
+  if(dates.length < 2) {
+    note.textContent = '선택한 기간에 공통으로 존재하는 종가 데이터가 없습니다.';
+    note.style.display = ''; wrap.style.display = 'none'; basis.textContent = '';
+    if(cpChart) { cpChart.destroy(); cpChart = null; }
+    return;
+  }
+  note.style.display = 'none'; wrap.style.display = '';
+
+  // 종목별 시계열 (거래 없는 날은 직전 종가 유지)
+  const datasets = avail.map((e, i) => {
+    const map = new Map(cpData[e.code]);
+    let last = null;
+    for(const [d, c] of cpData[e.code]) { if(d < start) last = c; else break; }
+    const vals = dates.map(d => { if(map.has(d)) last = map.get(d); return last; });
+    const base = vals.find(v => v != null);
+    const data = cpMode === 'pct'
+      ? vals.map(v => (v == null || !base) ? null : (v / base - 1) * 100)
+      : vals;
+    return {
+      label: e.name,
+      data,
+      borderColor: PALETTE[i].line,
+      backgroundColor: PALETTE[i].fill,
+      borderWidth: 1.8, pointRadius: 0, pointHoverRadius: 3,
+      fill: false, tension: .15, spanGaps: true,
+    };
+  });
+
+  if(cpChart) { cpChart.destroy(); cpChart = null; }
+  cpChart = new Chart(document.getElementById('cpChart').getContext('2d'), {
+    type: 'line',
+    data: { labels: dates, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: dates.length > 400 ? false : { duration: 300 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top', labels: { font:{size:11}, boxWidth:12, usePointStyle:true } },
+        tooltip: { callbacks: {
+          label: ctx => ctx.raw == null ? `${ctx.dataset.label}: -`
+            : cpMode === 'pct'
+              ? `${ctx.dataset.label}: ${ctx.raw > 0 ? '+' : ''}${ctx.raw.toFixed(2)}%`
+              : `${ctx.dataset.label}: ${comma(Math.round(ctx.raw))}원`
+        } }
+      },
+      scales: {
+        x: { grid:{display:false}, ticks:{ font:{size:9}, color:'#9a9a93', maxTicksLimit:8, autoSkip:true, maxRotation:0 } },
+        y: { grid:{color:'#f0f0f0'}, ticks:{ font:{size:10}, color:'#9a9a93',
+             callback: v => cpMode === 'pct'
+               ? (v > 0 ? '+' : '') + v.toFixed(0) + '%'
+               : (v >= 10000 ? (v/10000).toFixed(0) + '만' : comma(v)) } }
+      }
+    }
+  });
+
+  basis.innerHTML = cpMode === 'pct'
+    ? `※ <b>${dates[0]}</b> 종가를 0%로 맞춰 비교합니다. 상장일이 다르면 모두 데이터가 존재하는 시점부터 시작합니다.`
+    : `※ 종가(원) 그대로 표시합니다. 가격대가 다른 종목은 <b>등락률(%)</b> 기준이 비교에 적합합니다.`;
 }
 
 // ── 초기화 ──
