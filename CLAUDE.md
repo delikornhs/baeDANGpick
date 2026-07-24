@@ -82,6 +82,20 @@ const lb     = prevBizDay(ex);      // 최종매수일 = 배당락일 1영업일
 
 ---
 
+## ⚠️ 데일리 업데이트 워크플로우에 새 출력 파일 추가 시 `git add`도 함께 수정
+
+`etf_data_processor.py`가 새로 쓰는 출력 파일/폴더를 추가하면, **반드시 `.github/workflows/update-prices.yml`의 `git add` 목록에도 그 경로를 추가**해야 한다. 안 그러면 워크플로우가 커밋 후 `git pull --rebase` 단계에서 죽는다.
+
+> 2026-07-23 오류 사례: "종가 이력 영구 저장"(price_history) 기능을 추가하면서 프로세서가 `--prices-only` 실행마다 `data/output/price_history/{code}.json` 915개를 새로 쓰게 됐는데, `update-prices.yml`의 `git add`에는 이 폴더가 빠져 있었다. 그 결과 매 실행마다 이 파일들이 **스테이징되지 않은 채로 남아**, 커밋 직후의 `git pull --rebase origin master`가 `error: cannot pull with rebase: You have unstaged changes`로 실패했다. 7/23·7/24 데일리 업데이트가 연속 실패해 사이트 종가가 7/22에 멈춰 있었음. (기능 추가 자체는 성공했으나 워크플로우 스테이징 목록을 함께 갱신하지 않은 게 원인)
+
+**해결 (`update-prices.yml`에 적용됨):** 커밋 스텝의 `git add`와 rebase 충돌 복구 블록(`git checkout --ours` / `git add`) 양쪽에 `data/output/price_history`를 추가했다.
+
+- 원인 진단은 `mcp__github__get_job_logs`로 실패 run의 로그를 직접 확인 (스텝 9 "Commit and push if changed"에서 exit 128)
+- 수정 후 `mcp__github__actions_run_trigger`로 수동 트리거해 검증 — 단, **수동 트리거(workflow_dispatch)는 메타 조회를 강제로 돌려서 완주에 ~1시간 걸린다.** 매일 자동 스케줄 실행은 월요일 빼고 메타를 건너뛰므로 훨씬 빠름
+- **트레이드오프**: 이 수정으로 데일리 커밋마다 price_history 900여 개 파일 변경이 함께 들어간다(매일 새 종가가 붙으므로). git 동작에는 문제없으나 저장소가 매일 그만큼 커진다. 저장소 비대화가 문제되면 나중에 price_history를 별도 브랜치/저장 방식으로 분리하는 것을 고려
+
+---
+
 ## ⚠️ git 커밋 주의사항
 
 코드 수정(HTML, JS 등)만 커밋할 때 반드시 `git status`로 staged 파일을 먼저 확인한다.
