@@ -139,14 +139,6 @@ footer a{color:var(--ink3);text-underline-offset:2px}
           <button data-v="all">전체</button>
         </div>
       </div>
-      <div class="cp-group">
-        <span class="cp-group-label">기준</span>
-        <div class="cp-seg" id="cpModeSeg">
-          <button data-v="pct" class="on">주가 수익률(%)</button>
-          <button data-v="total">총수익률(%)</button>
-          <button data-v="price">종가(원)</button>
-        </div>
-      </div>
     </div>
     <div class="cp-chart-wrap" id="cpChartWrap"><canvas id="cpChart"></canvas></div>
     <div class="cp-note" id="cpNote">종가 데이터를 불러오는 중…</div>
@@ -501,15 +493,13 @@ function renderAll(etfs) {
 }
 
 // ══════════════════════════════════════════
-// 종가 추이 비교
-// 가격대가 다른 ETF를 나란히 보려면 절대가격은 의미가 없어
-// '공통 시작일 = 0%' 로 정규화한 등락률 비교를 기본으로 한다.
+// 종가 추이 비교 (종가(원) 그대로 표시)
+// 수익률 비교는 아래 '상세 비교' 표에서 제공하므로 여기서는 순수 종가만 그린다.
 // ══════════════════════════════════════════
 let cpEtfs   = [];
 let cpData   = null;
 let cpChart  = null;
 let cpPeriod = '1y';
-let cpMode   = 'pct';
 let cpBound  = false;
 const CP_MONTHS = { '3m':3, '6m':6, '1y':12, '3y':36 };
 
@@ -538,42 +528,6 @@ function cpBindControls() {
     document.querySelectorAll('#cpPeriodSeg button').forEach(x => x.classList.toggle('on', x === b));
     cpRender();
   });
-  document.getElementById('cpModeSeg').addEventListener('click', ev => {
-    const b = ev.target.closest('button[data-v]'); if(!b) return;
-    cpMode = b.dataset.v;
-    document.querySelectorAll('#cpModeSeg button').forEach(x => x.classList.toggle('on', x === b));
-    cpRender();
-  });
-}
-
-// 배당락일에 분배금을 재투자한 것으로 보고 누적 총수익률(%)을 계산한다.
-// ⚠️ trend의 ex_date는 배당락일이 아니라 '기준일'이다(CLAUDE.md 참고).
-//    실제 배당락일 = 기준일 직전 거래일. price_history의 실제 거래일 목록에서
-//    역산하면 주말뿐 아니라 공휴일까지 자동으로 반영된다.
-function cpTotalReturn(etf, dates, vals) {
-  const allDates = cpData[etf.code].map(r => r[0]);   // 실제 거래일 (오름차순)
-  const distOn = new Map();
-  (etf.trend || []).forEach(t => {
-    if(!t.ex_date || !(t.dist > 0)) return;
-    let lo = 0, hi = allDates.length - 1, ex = null;
-    while(lo <= hi) {                                  // 기준일보다 앞선 마지막 거래일
-      const mid = (lo + hi) >> 1;
-      if(allDates[mid] < t.ex_date) { ex = allDates[mid]; lo = mid + 1; }
-      else hi = mid - 1;
-    }
-    if(ex) distOn.set(ex, (distOn.get(ex) || 0) + t.dist);
-  });
-
-  const out = [];
-  let idx = 100;
-  for(let i = 0; i < dates.length; i++) {
-    if(i === 0) { out.push(0); continue; }
-    const p0 = vals[i - 1], p1 = vals[i];
-    if(p0 == null || p1 == null || p0 <= 0) { out.push(out[i - 1]); continue; }
-    idx *= (p1 + (distOn.get(dates[i]) || 0)) / p0;    // 분배금 재투자
-    out.push(idx - 100);
-  }
-  return out;
 }
 
 function cpRender() {
@@ -603,20 +557,6 @@ function cpRender() {
     if(cut > start) start = cut;
   }
 
-  // 총수익률은 분배금 이력이 있는 구간에서만 정확하다.
-  // 그 이전까지 그리면 분배금이 통째로 누락돼 주가 수익률과 같아지므로 시작일을 당긴다.
-  let trClamped = false;
-  if(cpMode === 'total') {
-    let trStart = '';
-    avail.forEach(e => {
-      const ds = (e.trend || []).map(t => t.ex_date).filter(Boolean);
-      if(!ds.length) return;
-      const m = ds.reduce((a, b) => a < b ? a : b);
-      if(m > trStart) trStart = m;
-    });
-    if(trStart && trStart > start) { start = trStart; trClamped = true; }
-  }
-
   // 마스터 날짜 = 구간 내 전 종목 거래일의 합집합
   const dset = new Set();
   avail.forEach(e => cpData[e.code].forEach(r => { if(r[0] >= start) dset.add(r[0]); }));
@@ -629,20 +569,15 @@ function cpRender() {
   }
   note.style.display = 'none'; wrap.style.display = '';
 
-  // 종목별 시계열 (거래 없는 날은 직전 종가 유지)
+  // 종목별 종가 시계열 (거래 없는 날은 직전 종가 유지)
   const datasets = avail.map((e, i) => {
     const map = new Map(cpData[e.code]);
     let last = null;
     for(const [d, c] of cpData[e.code]) { if(d < start) last = c; else break; }
     const vals = dates.map(d => { if(map.has(d)) last = map.get(d); return last; });
-    const base = vals.find(v => v != null);
-    let data;
-    if(cpMode === 'total')    data = cpTotalReturn(e, dates, vals);
-    else if(cpMode === 'pct') data = vals.map(v => (v == null || !base) ? null : (v / base - 1) * 100);
-    else                      data = vals;
     return {
       label: e.name,
-      data,
+      data: vals,
       borderColor: PALETTE[i].line,
       backgroundColor: PALETTE[i].fill,
       borderWidth: 1.8, pointRadius: 0, pointHoverRadius: 3,
@@ -662,32 +597,18 @@ function cpRender() {
         legend: { position: 'top', labels: { font:{size:11}, boxWidth:12, usePointStyle:true } },
         tooltip: { callbacks: {
           label: ctx => ctx.raw == null ? `${ctx.dataset.label}: -`
-            : cpMode !== 'price'
-              ? `${ctx.dataset.label}: ${ctx.raw > 0 ? '+' : ''}${ctx.raw.toFixed(2)}%`
-              : `${ctx.dataset.label}: ${comma(Math.round(ctx.raw))}원`
+            : `${ctx.dataset.label}: ${comma(Math.round(ctx.raw))}원`
         } }
       },
       scales: {
         x: { grid:{display:false}, ticks:{ font:{size:9}, color:'#9a9a93', maxTicksLimit:8, autoSkip:true, maxRotation:0 } },
         y: { grid:{color:'#f0f0f0'}, ticks:{ font:{size:10}, color:'#9a9a93',
-             callback: v => cpMode !== 'price'
-               ? (v > 0 ? '+' : '') + v.toFixed(0) + '%'
-               : (v >= 10000 ? (v/10000).toFixed(0) + '만' : comma(v)) } }
+             callback: v => v >= 10000 ? (v/10000).toFixed(0) + '만' : comma(v) } }
       }
     }
   });
 
-  if(cpMode === 'total') {
-    basis.innerHTML =
-      `※ <b>${dates[0]}</b>을 0%로 맞추고, 배당락일마다 분배금을 재투자한 것으로 보고 누적한 수익률입니다. 주가 수익률과의 차이가 곧 분배금 기여분입니다.`
-      + (trClamped
-        ? `<br>※ 분배금 이력이 <b>${start}</b>부터만 있어 선택한 기간 대신 그 시점부터 계산했습니다. 그 이전은 분배금 데이터가 없어 총수익률을 정확히 구할 수 없습니다.`
-        : '');
-  } else if(cpMode === 'pct') {
-    basis.innerHTML = `※ <b>${dates[0]}</b> 종가를 0%로 맞춰 비교합니다(분배금 미포함). 상장일이 다르면 모두 데이터가 존재하는 시점부터 시작합니다.`;
-  } else {
-    basis.innerHTML = `※ 종가(원) 그대로 표시합니다. 가격대가 다른 종목은 <b>주가 수익률(%)</b>이나 <b>총수익률(%)</b> 기준이 비교에 적합합니다.`;
-  }
+  basis.innerHTML = `※ 종가(원) 기준입니다. 상장일이 다르면 모두 데이터가 존재하는 시점부터 표시합니다. 수익률(주가·총수익) 비교는 아래 <b>상세 비교</b> 표를 참고하세요.`;
 }
 
 // ── 초기화 ──

@@ -385,7 +385,7 @@ footer a{color:var(--ink3);text-underline-offset:2px}
           <tbody id="retBody"></tbody>
         </table>
         </div>
-        <p style="font-size:10px;color:var(--ink4);margin-top:8px;line-height:1.8">1) 수익률은 종가(시장가격) 기준이며, 운용사 공시 수익률(기준가격/NAV 기준)과 다를 수 있습니다.<br>2) 각 기간(1주·1개월·3개월 등)은 오늘 기준 해당 일수 전 종가 대비이며 매일 업데이트됩니다.<br>3) 상장이후는 상장일 첫날 종가 기준입니다.</p>
+        <p style="font-size:10px;color:var(--ink4);margin-top:8px;line-height:1.8">1) 수익률은 종가(시장가격) 기준이며, 운용사 공시 수익률(기준가격/NAV 기준)과 다를 수 있습니다.<br>2) 각 기간(1주·1개월·3개월 등)은 오늘 기준 해당 일수 전 종가 대비이며 매일 업데이트됩니다.<br>3) 상장이후는 상장일 첫날 종가 기준입니다.<span id="retFootnote4"></span></p>
       </div>
 
       <!-- 구성종목 -->
@@ -1067,6 +1067,10 @@ function render(e) {
   `;
 
   // 수익률 표
+  // 분배금 이력이 2025-04-15부터만 있어, 그 이전 상장 종목의 '상장이후 총수익률'은
+  // 과거 분배금이 누락돼 부정확하다 → 해당 셀만 '-'로 표시하고 사유를 각주/툴팁으로 안내.
+  const DIST_DATA_START = '2025-04-15';
+  const listedBeforeDist = e.listedDate && e.listedDate < DIST_DATA_START;
   const periods = ['1w','1m','3m','6m','1y','listed'];
   const priceRow = `<tr><td>주가 수익률</td>${periods.map(p=>{
     const v = e[p==='listed'?'retListed':`ret${p.charAt(0).toUpperCase()+p.slice(1)}`];
@@ -1074,11 +1078,17 @@ function render(e) {
     return `<td class="${cls}">${str}</td>`;
   }).join('')}</tr>`;
   const totalRow = `<tr><td>총수익률</td>${periods.map(p=>{
+    if(p==='listed' && listedBeforeDist){
+      return `<td class="na" title="분배금 데이터는 2025년 4월부터 집계되어, 그 이전에 상장한 종목은 과거 분배금을 반영할 수 없습니다.">-</td>`;
+    }
     const v = e[p==='listed'?'tretListed':`tret${p.charAt(0).toUpperCase()+p.slice(1)}`];
     const cls = retCls(v), str = retStr(v);
     return `<td class="${cls}">${str}</td>`;
   }).join('')}</tr>`;
   document.getElementById('retBody').innerHTML = priceRow + totalRow;
+  document.getElementById('retFootnote4').innerHTML = listedBeforeDist
+    ? '<br>4) 분배금 데이터는 2025년 4월부터 집계되어, 그 이전에 상장한 종목은 과거 분배금을 반영할 수 없습니다. 이 경우 상장이후 총수익률을 <b>-</b>로 표시합니다. (상장이후 주가 수익률과 1년 이하 총수익률은 정확합니다)'
+    : '';
 
   // 분배금 히스토리 차트
   const trend = (e.trend || []).slice(-12);
