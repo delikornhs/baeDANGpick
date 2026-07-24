@@ -85,7 +85,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/output/latest.json data/output/etf_data.js index.html
-          git add data/output/etf_meta.json sitemap.xml 2>/dev/null || true
+          git add data/output/etf_meta.json sitemap.xml data/output/price_history 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "변경 없음, 스킵"
             echo "changed=false" >> $GITHUB_OUTPUT
@@ -96,8 +96,8 @@ jobs:
             git commit -m "chore: daily price update $(date -u +%Y-%m-%d)"
             # rebase 충돌 시 데이터 파일은 워크플로우(최신 가격) 버전 우선
             if ! git pull --rebase origin master; then
-              git checkout --ours data/output/latest.json data/output/etf_data.js data/output/etf_meta.json index.html
-              git add data/output/latest.json data/output/etf_data.js data/output/etf_meta.json index.html
+              git checkout --ours data/output/latest.json data/output/etf_data.js data/output/etf_meta.json index.html data/output/price_history
+              git add data/output/latest.json data/output/etf_data.js data/output/etf_meta.json index.html data/output/price_history
               GIT_EDITOR=true git rebase --continue
             fi
             git push
