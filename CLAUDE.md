@@ -142,19 +142,28 @@ python -m playwright install chromium
 
 ### 1단계: index.html CONFIRMED_SCHEDULE 수정
 
-`index.html` 약 1546번째 줄의 `CONFIRMED_SCHEDULE` 배열을 새 일정으로 교체한다.
+`index.html`의 `CONFIRMED_SCHEDULE` 배열에서 **해당 회차(월중 또는 월말) 3줄만** 교체한다.
+
+> ⚠️ **배열 전체를 갈아끼우지 말 것.** 월중·월말은 서로 독립된 회차라 둘 다 배열에 남아 있어야 한다.
+> 월말만 넣고 월중을 지우면 달력에서 **월중 기준일 라벨이 사라진다.**
+> (최종매수·배당락·지급일은 ETF 데이터에서도 도출되어 남지만, 기준일 라벨은 이 배열에만 있음)
 
 ```js
 const CONFIRMED_SCHEDULE = [
-  {date:'YYYY-MM-DD', type:'buy',    label:'최종매수',         ex:'배당락일'},
-  {date:'YYYY-MM-DD', type:'ex',     label:'배당락',           ex:'배당락일'},
-  {date:'YYYY-MM-DD', type:'record', label:'기준일(월중/월말)', ex:'배당락일'},
+  // 월중 회차
+  {date:'YYYY-MM-DD', type:'buy',    label:'최종매수',     ex:'배당락일'},
+  {date:'YYYY-MM-DD', type:'ex',     label:'배당락',       ex:'배당락일'},
+  {date:'YYYY-MM-DD', type:'record', label:'기준일(월중)', ex:'배당락일'},
+  // 월말 회차
+  {date:'YYYY-MM-DD', type:'buy',    label:'최종매수',     ex:'배당락일'},
+  {date:'YYYY-MM-DD', type:'ex',     label:'배당락',       ex:'배당락일'},
+  {date:'YYYY-MM-DD', type:'record', label:'기준일(월말)', ex:'배당락일'},
 ];
 ```
 
 - `date`: 각 이벤트 날짜 (최종매수일 / 배당락일 / 기준일)
-- `ex`: 세 항목 모두 배당락일로 동일하게 설정
-- 월중이면 `label:'기준일(월중)'`, 월말이면 `label:'기준일(월말)'`
+- `ex`: 같은 회차 3항목 모두 그 회차의 배당락일로 동일하게 설정
+- 달력은 현재 월만 표시하므로, 지난달 회차는 자연히 안 보인다 (남겨둬도 무방)
 
 ### 2단계: git push
 
