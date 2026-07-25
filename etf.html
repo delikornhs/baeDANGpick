@@ -1508,7 +1508,7 @@ function pxRenderChart(maList) {
              maxTicksLimit: window.innerWidth < 480 ? 4 : 8, autoSkip:true, maxRotation:0,
              callback: function(val) {
                const label = this.getLabelForValue(val);
-               return label ? label.slice(5) : label; // YYYY-MM-DD → MM-DD
+               return label ? label.slice(2) : label; // YYYY-MM-DD → YY-MM-DD
              } } },
         y: { grid:{color:'#f0f0f0'}, ticks:{ font:{size:9}, color:'#9a9a93',
              callback: v => comma(Math.round(v)) } }
