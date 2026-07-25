@@ -5,8 +5,8 @@ __pycache__/
 .venv/
 venv/
 
-# 원본 XLS 데이터 (용량 큼, 개인정보 없으나 불필요)
-data/raw/
+# data/raw/ (KIND 원본 XLS)는 2026-07부터 저장소에 포함한다.
+# kind_fetch.py가 자동 수집하며, 파싱 로직을 고쳤을 때 재처리할 수 있도록 원본을 보존한다.
 
 # 개발 도구
 .claude/
