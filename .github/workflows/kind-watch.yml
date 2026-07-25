@@ -1,0 +1,125 @@
+name: KIND Disclosure Watch
+
+# KIND에 새 분배금 공시가 올라왔는지 평일 저녁에 확인한다.
+#
+# 하는 일: 공시 수집(data/raw 커밋) + 다가오는 일정 파악 + 새 소식이 있을 때만 이슈 알림
+# 하지 않는 일: 프로세서 실행, 사이트 데이터(latest.json 등) 갱신, 뉴스레터 발송
+#   → 이 셋은 데이터를 눈으로 확인한 뒤 사용자 승인을 받아 진행한다.
+#     (원본 XLS 커밋은 사이트에 영향을 주지 않으므로 자동으로 해도 안전하다)
+
+on:
+  schedule:
+    # 09:30 UTC = 18:30 KST, 평일. 분배금 공시는 오후에 걸쳐 올라오므로 장 마감 후에 확인.
+    - cron: '30 9 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONUTF8: 1
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+
+      - name: Collect distribution disclosures
+        id: fetch
+        run: |
+          set -o pipefail
+          python -X utf8 kind_fetch.py 2>&1 | tee fetch.log
+          # 새로 저장된 파일이 있는지 (working tree 기준)
+          if [ -n "$(git status --porcelain data/raw)" ]; then
+            echo "new_files=true" >> $GITHUB_OUTPUT
+          else
+            echo "new_files=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check upcoming schedule
+        id: schedule
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          python -X utf8 kind_schedule.py 2>&1 | tee schedule.log
+
+      - name: Commit new raw files
+        if: steps.fetch.outputs.new_files == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/raw
+          git commit -m "data: KIND 분배금 공시 자동 수집 $(date -u +%Y-%m-%d)"
+          # 리베이스 충돌 시 --theirs = 방금 수집한 파일 (--ours는 origin의 구버전).
+          # 리베이스 중에는 ours/theirs 의미가 뒤집히므로 주의 (CLAUDE.md 참조).
+          if ! git pull --rebase origin master; then
+            git checkout --theirs data/raw
+            git add data/raw
+            GIT_EDITOR=true git rebase --continue
+          fi
+          git push
+
+      - name: Open notification issue
+        if: steps.fetch.outputs.new_files == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "KIND에 새 분배금 공시가 올라와 원본 파일을 수집했습니다."
+            echo ""
+            echo "**아직 사이트에는 반영되지 않았습니다.** 반영하려면 Claude에게 이렇게 요청하세요:"
+            echo ""
+            echo '> "N월 [월중/월말] 분배금 업데이트해줘"'
+            echo ""
+            echo "그러면 프로세서 실행 → 검증 → 보고까지 진행하고, 사이트 반영(push)과"
+            echo "뉴스레터 발송은 확인을 받은 뒤에 처리합니다."
+            echo ""
+            echo "## 수집 결과"
+            echo '```'
+            cat fetch.log
+            echo '```'
+            echo ""
+            echo "## 다가오는 일정"
+            echo '```'
+            cat schedule.log 2>/dev/null || echo "(일정 확인 실패 — 수동으로 kind_schedule.py 실행 필요)"
+            echo '```'
+          } > issue_body.md
+
+          gh issue create \
+            --title "📥 분배금 공시 수집됨 ($(TZ=Asia/Seoul date +%Y-%m-%d))" \
+            --body-file issue_body.md
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## KIND 감시 결과"
+            echo ""
+            if [ "${{ steps.fetch.outputs.new_files }}" = "true" ]; then
+              echo "🆕 새 공시를 수집했습니다. 이슈를 확인하세요."
+            else
+              echo "변경 없음 — 새로 올라온 공시가 없습니다."
+            fi
+            echo ""
+            echo '```'
+            cat fetch.log 2>/dev/null || true
+            echo '```'
+            echo '```'
+            cat schedule.log 2>/dev/null || true
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
