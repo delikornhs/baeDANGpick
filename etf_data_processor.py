@@ -482,7 +482,14 @@ def _js(e: dict, key: str) -> str:
     return "null" if v is None else str(v)
 
 
-def build_js(latest: list, price_date: str = ""):
+def earliest_dist_date(history: dict) -> str:
+    """history 전체에서 가장 이른 배당락 기준일 (분배금 이력 시작일)."""
+    dates = [ex for recs in history.values() for ex in recs
+             if re.match(r"\d{4}-\d{2}-\d{2}", ex)]
+    return min(dates) if dates else ""
+
+
+def build_js(latest: list, price_date: str = "", dist_start: str = ""):
     """latest.json을 사이트에 바로 삽입할 etf_data.js로 변환. price/rate는 호출 전에 설정."""
     print("\n" + "=" * 50)
     print("📝 JS 데이터 파일 생성")
@@ -564,6 +571,10 @@ def build_js(latest: list, price_date: str = ""):
     header = f'const PRICE_DATE = "{price_date}";\n'
     header += f'const MID_NOTICE_DATE = "{mid_notice}";\n'
     header += f'const END_NOTICE_DATE = "{end_notice}";\n'
+    # 분배금 이력이 시작되는 날. 이보다 먼저 상장한 종목은 과거 분배금이 누락돼
+    # '상장이후 총수익률'을 정확히 구할 수 없다(etf.html에서 '-'로 표시).
+    # backfill로 이력이 앞당겨지면 이 값도 함께 움직여야 하므로 데이터에서 산출한다.
+    header += f'const DIST_DATA_START = "{dist_start}";\n'
     header += f'const WEEK_START = "{week_start}";\n'
     header += f'const WEEK_END = "{week_end}";\n\n'
     # ETF_END, ETF_MID는 JS에서 ETF_ALL로부터 파생
@@ -1206,7 +1217,7 @@ if __name__ == "__main__":
         with open(LATEST_FILE, "w", encoding="utf-8") as f:
             json.dump(latest, f, ensure_ascii=False, indent=2)
 
-        build_js(latest, price_date)
+        build_js(latest, price_date, earliest_dist_date(history_for_returns))
         inject_html()
 
         print("\n✅ 종가·수익률·안정성 업데이트 완료!")
@@ -1357,7 +1368,7 @@ if __name__ == "__main__":
         json.dump(latest, f, ensure_ascii=False, indent=2)
 
     # 8. JS 파일 생성
-    build_js(latest, price_date)
+    build_js(latest, price_date, earliest_dist_date(history))
 
     # 9. HTML 자동 삽입
     inject_html()

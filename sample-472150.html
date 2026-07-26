@@ -158,39 +158,24 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 .tab-btn{font-size:13px;font-weight:600;padding:10px 20px;border:none;background:transparent;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;font-family:inherit;letter-spacing:-.2px}
 .tab-btn:hover{color:var(--ink)}
 .tab-btn.on{color:var(--accent);border-bottom-color:var(--accent)}
-/* ── 종가 탭 ── */
-.px-ctrls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:14px}
-.px-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.px-group-label{font-size:11px;color:var(--ink3);font-weight:700;white-space:nowrap}
-.px-seg{display:inline-flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;background:var(--bg)}
-.px-seg button{border:none;background:transparent;font-family:inherit;font-size:11px;font-weight:600;color:var(--ink3);padding:5px 10px;cursor:pointer;transition:all .15s;white-space:nowrap}
-.px-seg button:hover{color:var(--ink)}
-.px-seg button.on{background:var(--accent);color:#fff}
-.px-ma{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--ink2);cursor:pointer;border:1px solid var(--border);border-radius:6px;padding:4px 9px;background:var(--white);white-space:nowrap;transition:all .15s}
-.px-ma input{cursor:pointer;width:12px;height:12px;margin:0}
-.px-ma.on{border-color:var(--accent-mid);background:var(--accent-bg);color:var(--accent)}
-.px-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
-.px-sum{background:var(--bg);border-radius:7px;padding:9px 11px}
-.px-sum-l{font-size:10px;color:var(--ink3);margin-bottom:3px}
-.px-sum-v{font-size:13px;font-weight:700;font-family:"DM Mono",monospace;color:var(--ink)}
-.px-chart-wrap{position:relative;height:300px}
-.px-note{font-size:11px;color:var(--ink3);text-align:center;padding:34px 0}
-.px-tbl-wrap{max-height:520px;overflow-y:auto}
-.px-table{width:100%;border-collapse:collapse}
-.px-table th{background:var(--bg);padding:8px 10px;text-align:right;font-size:11px;font-weight:700;color:var(--ink3);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;z-index:1}
-.px-table th:first-child{text-align:center}
-.px-table td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--ink2);font-family:"DM Mono",monospace;font-size:12px;white-space:nowrap}
-.px-table td:first-child{text-align:center;font-family:inherit;color:var(--ink);font-weight:600}
-.px-table tbody tr:hover td{background:var(--bg)}
-.px-up{color:var(--red);font-weight:700}
-.px-down{color:var(--blue);font-weight:700}
-.px-flat{color:var(--ink3)}
-/* .px-table td 가 color를 잡고 있어 우선순위를 올려야 색이 적용됨 */
-.px-table td.px-up{color:var(--red);font-weight:700}
-.px-table td.px-down{color:var(--blue);font-weight:700}
-.px-table td.px-flat{color:var(--ink3)}
-.px-more{display:block;width:100%;margin-top:12px;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--ink2);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
-.px-more:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-bg)}
+/* ── 추종지수 ── */
+.index-box{background:var(--bg);border-radius:8px;padding:14px 16px}
+.index-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px;line-height:1.4}
+.index-type{font-size:12px;color:var(--ink3)}
+/* ── 구성종목 ── */
+.holdings-table{width:100%;border-collapse:collapse;font-size:12px}
+.holdings-table th{background:var(--bg);color:var(--ink3);font-weight:600;padding:7px 10px;text-align:left;border-bottom:1px solid var(--border)}
+.holdings-table th:nth-child(2){text-align:right}
+.holdings-table td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.holdings-table td:nth-child(2){text-align:right;font-family:"DM Mono",monospace;font-weight:700;color:var(--accent)}
+.holdings-table tr:last-child td{border-bottom:none}
+.holdings-bar-wrap{background:var(--border);border-radius:2px;height:5px;margin-top:4px;overflow:hidden}
+.holdings-bar{background:var(--accent-mid);height:5px;border-radius:2px}
+/* ── 분배금 강조 (기본정보 탭 내) ── */
+.dist-highlight{display:flex;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.dist-hi-box{flex:1;background:var(--accent-bg);border-radius:8px;padding:10px 14px;text-align:center}
+.dist-hi-label{font-size:11px;color:var(--accent);margin-bottom:3px}
+.dist-hi-val{font-size:20px;font-weight:700;color:var(--accent);font-family:"DM Mono",monospace}
 /* ── simulation tab ── */
 .sim-wrap{max-width:700px}
 .sim-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px;overflow:hidden}
@@ -288,29 +273,13 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   .sim-input-grid{grid-template-columns:1fr}
   .sim-summary{grid-template-columns:1fr}
   .tab-btn{font-size:12px;padding:8px 14px}
-  .px-chart-wrap{height:240px}
-  .px-summary{grid-template-columns:repeat(2,1fr)}
-  .px-ctrls{gap:10px}
 }
-/* ── 추종지수 ── */
-.index-box{background:var(--bg);border-radius:8px;padding:14px 16px}
-.index-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px;line-height:1.4}
-.index-type{font-size:11px;color:var(--ink3)}
-/* ── 구성종목 ── */
-.holdings-table{width:100%;border-collapse:collapse;font-size:12px}
-.holdings-table th{background:var(--bg);color:var(--ink3);font-weight:600;padding:7px 10px;text-align:left;border-bottom:1px solid var(--border)}
-.holdings-table th:nth-child(2){text-align:right}
-.holdings-table td{padding:8px 10px;border-bottom:1px solid var(--border)}
-.holdings-table td:nth-child(2){text-align:right;font-family:"DM Mono",monospace;font-weight:700;color:var(--accent)}
-.holdings-table tr:last-child td{border-bottom:none}
-.holdings-bar-wrap{background:var(--border);border-radius:2px;height:5px;margin-top:4px;overflow:hidden}
-.holdings-bar{background:var(--accent-mid);height:5px;border-radius:2px}
 </style>
 </head>
 <body>
 <nav>
   <div class="nav-inner">
-    <a href="/" class="logo"><div class="logo-mark"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="7.2" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="4.4"/><circle cx="12" cy="12" r="7.2" fill="none" stroke="#fff" stroke-width="4.4" stroke-dasharray="14.5 45.2" transform="rotate(-90 12 12)"/><circle cx="12" cy="12" r="7.2" fill="none" stroke="#a3e8bf" stroke-width="4.4" stroke-dasharray="11 45.2" stroke-dashoffset="-14.5" transform="rotate(-90 12 12)"/></svg></div>배당픽</a>
+    <a href="/" class="logo"><div class="logo-mark">₩</div>배당픽</a>
     <div class="breadcrumb">
       <a href="/">홈</a><span>›</span><span id="bcName">ETF 상세</span>
     </div>
@@ -340,10 +309,9 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   <div class="tab-nav">
     <button class="tab-btn on" id="tabBtnInfo" onclick="switchTab('info')">기본 정보</button>
     <button class="tab-btn" id="tabBtnSim" onclick="switchTab('sim')">📊 시뮬레이션</button>
-    <button class="tab-btn" id="tabBtnPrice" onclick="switchTab('price')">📈 종가</button>
   </div>
 
-  <!-- 탭: 기본 정보 -->
+  <!-- 탭: 기본 정보 (전체) -->
   <div id="tabInfo">
   <div class="grid2 left-wide">
     <!-- 좌 -->
@@ -385,14 +353,14 @@ footer a{color:var(--ink3);text-underline-offset:2px}
           <tbody id="retBody"></tbody>
         </table>
         </div>
-        <p style="font-size:10px;color:var(--ink4);margin-top:8px;line-height:1.8">1) 수익률은 종가(시장가격) 기준이며, 운용사 공시 수익률(기준가격/NAV 기준)과 다를 수 있습니다.<br>2) 각 기간(1주·1개월·3개월 등)은 오늘 기준 해당 일수 전 종가 대비이며 매일 업데이트됩니다.<br>3) 상장이후는 상장일 첫날 종가 기준입니다.<span id="retFootnote4"></span></p>
+        <p style="font-size:10px;color:var(--ink4);margin-top:8px;line-height:1.8">1) 수익률은 종가(시장가격) 기준이며, 운용사 공시 수익률(기준가격/NAV 기준)과 다를 수 있습니다.<br>2) 각 기간(1주·1개월·3개월 등)은 오늘 기준 해당 일수 전 종가 대비이며 매일 업데이트됩니다.<br>3) 상장이후는 상장일 첫날 종가 기준입니다.</p>
       </div>
 
       <!-- 구성종목 -->
       <div class="card">
         <div class="card-title">구성종목 <span style="font-size:11px;font-weight:400;color:var(--ink3)">TOP 10</span></div>
         <div id="holdingsInfo"></div>
-        <p style="font-size:10px;color:var(--ink4);margin-top:10px;line-height:1.6">※ 네이버 금융 기준, 매주 월요일 업데이트. 구성종목은 운용사 리밸런싱에 따라 변동될 수 있습니다.</p>
+        <p style="font-size:10px;color:var(--ink4);margin-top:10px;line-height:1.6">※ 네이버 금융 기준. 구성종목은 운용사 리밸런싱에 따라 변동될 수 있습니다.</p>
       </div>
     </div>
 
@@ -556,64 +524,6 @@ footer a{color:var(--ink3);text-underline-offset:2px}
     </div>
   </div><!-- /tabSim -->
 
-  <!-- 탭: 종가 -->
-  <div id="tabPrice" style="display:none">
-    <div class="card">
-      <div class="card-title">종가 차트</div>
-      <div class="px-ctrls">
-        <div class="px-group">
-          <span class="px-group-label">기간</span>
-          <div class="px-seg" id="pxPeriodSeg">
-            <button data-v="1m">1개월</button>
-            <button data-v="3m">3개월</button>
-            <button data-v="6m" class="on">6개월</button>
-            <button data-v="1y">1년</button>
-            <button data-v="3y">3년</button>
-            <button data-v="all">전체</button>
-          </div>
-        </div>
-        <div class="px-group">
-          <span class="px-group-label">주기</span>
-          <div class="px-seg" id="pxIntervalSeg">
-            <button data-v="day" class="on">일봉</button>
-            <button data-v="week">주봉</button>
-          </div>
-        </div>
-        <div class="px-group">
-          <span class="px-group-label">이평선</span>
-          <label class="px-ma" data-ma="5"><input type="checkbox" data-ma="5">5</label>
-          <label class="px-ma on" data-ma="20"><input type="checkbox" data-ma="20" checked>20</label>
-          <label class="px-ma" data-ma="60"><input type="checkbox" data-ma="60">60</label>
-          <label class="px-ma" data-ma="120"><input type="checkbox" data-ma="120">120</label>
-        </div>
-      </div>
-      <div class="px-summary" id="pxSummary"></div>
-      <div class="px-chart-wrap" id="pxChartWrap"><canvas id="pxChart"></canvas></div>
-      <div class="px-note" id="pxNote">종가 데이터를 불러오는 중…</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">일자별 종가</div>
-      <div class="px-tbl-wrap">
-        <table class="px-table">
-          <thead>
-            <tr>
-              <th>일자</th>
-              <th>종가</th>
-              <th id="pxThDiff">전일대비</th>
-              <th>등락률</th>
-            </tr>
-          </thead>
-          <tbody id="pxTableBody"></tbody>
-        </table>
-      </div>
-      <button class="px-more" id="pxMoreBtn" onclick="pxShowMore()" style="display:none">더 보기</button>
-      <div style="font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.7">
-        ※ 종가는 네이버 금융 기준이며, 분배금·액면분할 등은 반영되지 않은 <b>수정 전 종가</b>입니다. 참고용으로만 활용하세요.
-      </div>
-    </div>
-  </div><!-- /tabPrice -->
-
 </div>
 
 <!-- 에러 -->
@@ -723,16 +633,13 @@ function getPeerGroup(e) {
 // ── trend 데이터로 안정성 지표 클라이언트 계산 (etf_data.js에 stab 필드 없을 때 fallback) ──
 function computeStab(e) {
   const trend = (e.trend || []).slice().sort((a,b) => a.ex_date < b.ex_date ? -1 : 1);
-  const isMonthly = (e.freq === '월배당' || e.freq === '월배당추정');
+  const now   = new Date();
+  const msBefore = days => new Date(now - days * 86400000).toISOString().slice(0,10);
+  const d6 = msBefore(182), d3 = msBefore(91);
 
-
-  // 월배당: 최근 6건, 비월배당: 최근 4건 (개수 기준)
-  // 날짜 기준(182일)은 경계에 따라 7건/5건이 포함돼 분배금 히스토리 섹션(slice(-6/-4))과 값이 달라지는 문제가 있어 제거
-  const nSix   = isMonthly ? 6 : 4;
-  const nThree = isMonthly ? 3 : 2;
-  const six   = trend.slice(-nSix).map(t => t.dist);
-  const rec3  = trend.slice(-nThree).map(t => t.dist);
-  const prev3 = trend.slice(-nSix, -nThree).map(t => t.dist);
+  const six   = trend.filter(t => t.ex_date >= d6).map(t => t.dist);
+  const rec3  = trend.filter(t => t.ex_date >= d3).map(t => t.dist);
+  const prev3 = trend.filter(t => t.ex_date >= d6 && t.ex_date < d3).map(t => t.dist);
 
   const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
 
@@ -773,13 +680,10 @@ function computeStab(e) {
   }
   if(typeof ETF_ALL !== 'undefined') {
     const peers = ETF_ALL.filter(x => getPeerGroup(x) === peerGroup);
-    // peer도 캐시(x.stab) 대신 직접 계산 — 캐시는 기준이 다를 수 있으므로
-    // peer의 월배당/비월배당 여부에 따라 동일한 개수 기준 적용
     if(avgMonthlyRate > 0) {
       const peerRates = peers.map(x => {
-        const xIsMonthly = (x.freq === '월배당' || x.freq === '월배당추정');
-        const pN = xIsMonthly ? 6 : 4;
-        const p6 = (x.trend || []).slice(-pN).map(t => t.dist);
+        if(x.stab && x.stab.avgMonthlyRate > 0) return x.stab.avgMonthlyRate;
+        const p6 = (x.trend || []).filter(t => t.ex_date >= d6).map(t => t.dist);
         return p6.length > 0 && x.price > 0 ? parseFloat((avg(p6) / x.price * 100).toFixed(3)) : 0;
       }).filter(r => r > 0);
       if(peerRates.length > 0) {
@@ -791,9 +695,8 @@ function computeStab(e) {
     }
     if(avgMonthlyDist > 0) {
       const peerDists = peers.map(x => {
-        const xIsMonthly = (x.freq === '월배당' || x.freq === '월배당추정');
-        const pN = xIsMonthly ? 6 : 4;
-        const p6 = (x.trend || []).slice(-pN).map(t => t.dist);
+        if(x.stab && x.stab.avgMonthlyDist > 0) return x.stab.avgMonthlyDist;
+        const p6 = (x.trend || []).filter(t => t.ex_date >= d6).map(t => t.dist);
         return p6.length > 0 ? parseFloat(avg(p6).toFixed(1)) : 0;
       }).filter(d => d > 0);
       if(peerDists.length > 0) {
@@ -834,39 +737,35 @@ function stabLevelBadge(level) {
 }
 
 // ── 한줄 평가 ──
-function autoComment(e, stab, isMonthly) {
-  const s = stab || e.stab || {};
-  const isM = isMonthly !== undefined ? isMonthly : (e.freq === '월배당' || e.freq === '월배당추정');
-  const period  = isM ? '최근 6개월' : '최근 4건';
-  const trendPeriod = isM ? '최근 3개월' : '최근 2회';
-  const rateLabel = isM ? '월분배율' : '분배율';
+function autoComment(e) {
+  const s = e.stab || {};
   const parts = [];
   if(s.score && s.score !== '데이터 부족') {
     const scoreDesc = {
-      '변동 적음':    `${period} 분배금 변동폭이 15% 이내로 비교적 일정하게 지급되었습니다.`,
-      '변동 보통':    `${period} 분배금 변동폭이 15~30% 수준입니다.`,
-      '변동 큼':      `${period} 분배금 변동폭이 30~50% 수준으로 차이가 있습니다.`,
-      '변동 매우 큰': `${period} 분배금 변동폭이 50%를 초과합니다.`,
-      '변동 매우 큼': `${period} 분배금 변동폭이 50%를 초과합니다.`,
+      '변동 적음':    `최근 6개월 분배금 변동폭이 15% 이내로 비교적 일정하게 지급되었습니다.`,
+      '변동 보통':    `최근 6개월 분배금 변동폭이 15~30% 수준입니다.`,
+      '변동 큼':      `최근 6개월 분배금 변동폭이 30~50% 수준으로 월별 차이가 있습니다.`,
+      '변동 매우 큼': `최근 6개월 분배금 변동폭이 50%를 초과합니다.`,
     };
     if(scoreDesc[s.score]) parts.push(scoreDesc[s.score]);
   }
-  if(s.trend === '증가') parts.push(`${trendPeriod} 평균 분배금이 이전 ${trendPeriod.replace('최근 ','')} 대비 10% 이상 증가했습니다.`);
-  else if(s.trend === '감소') parts.push(`${trendPeriod} 평균 분배금이 이전 ${trendPeriod.replace('최근 ','')} 대비 10% 이상 감소했습니다.`);
+  if(s.trend === '증가') parts.push(`최근 3개월 평균 분배금이 이전 3개월 대비 10% 이상 증가했습니다.`);
+  else if(s.trend === '감소') parts.push(`최근 3개월 평균 분배금이 이전 3개월 대비 10% 이상 감소했습니다.`);
   const pg = getPeerGroup(e);
   // 분배율 수준
-  if(s.level === '평균보다 높음') parts.push(`동일 유형(${pg}) ETF 평균 대비 ${rateLabel}이 높은 편입니다.`);
-  else if(s.level === '평균 수준') parts.push(`동일 유형(${pg}) ETF와 비슷한 수준의 ${rateLabel}입니다.`);
-  else if(s.level === '평균보다 낮음') parts.push(`동일 유형(${pg}) ETF 평균 대비 ${rateLabel}이 낮은 편입니다.`);
+  if(s.level === '평균보다 높음') parts.push(`동일 유형(${pg}) ETF 평균 대비 월분배율이 높은 편입니다.`);
+  else if(s.level === '평균 수준') parts.push(`동일 유형(${pg}) ETF와 비슷한 수준의 월분배율입니다.`);
+  else if(s.level === '평균보다 낮음') parts.push(`동일 유형(${pg}) ETF 평균 대비 월분배율이 낮은 편입니다.`);
   // 분배금 수준 (분배율과 다를 때만 추가 언급)
   if(s.levelDist && s.levelDist !== s.level) {
     if(s.levelDist === '평균보다 높음') parts.push(`주당 분배금액은 동일 유형 평균보다 높습니다.`);
     else if(s.levelDist === '평균 수준') parts.push(`주당 분배금액은 동일 유형 평균 수준입니다.`);
     else if(s.levelDist === '평균보다 낮음') parts.push(`주당 분배금액은 동일 유형 평균보다 낮습니다.`);
   } else if(s.levelDist && s.levelDist === s.level && s.level) {
-    if(s.levelDist === '평균보다 높음') parts[parts.length - 1] = `동일 유형(${pg}) ETF 평균 대비 ${rateLabel}과 주당 분배금액 모두 높은 편입니다.`;
-    else if(s.levelDist === '평균 수준') parts[parts.length - 1] = `동일 유형(${pg}) ETF와 비슷한 수준의 ${rateLabel}·분배금액입니다.`;
-    else if(s.levelDist === '평균보다 낮음') parts[parts.length - 1] = `동일 유형(${pg}) ETF 평균 대비 ${rateLabel}과 주당 분배금액 모두 낮은 편입니다.`;
+    // 분배율과 분배금 모두 같은 방향이면 한 문장으로 보강
+    if(s.levelDist === '평균보다 높음') parts[parts.length - 1] = `동일 유형(${pg}) ETF 평균 대비 월분배율과 주당 분배금액 모두 높은 편입니다.`;
+    else if(s.levelDist === '평균 수준') parts[parts.length - 1] = `동일 유형(${pg}) ETF와 비슷한 수준의 월분배율·분배금액입니다.`;
+    else if(s.levelDist === '평균보다 낮음') parts[parts.length - 1] = `동일 유형(${pg}) ETF 평균 대비 월분배율과 주당 분배금액 모두 낮은 편입니다.`;
   }
   if(!parts.length) return '분배금 데이터가 충분히 쌓이면 자동 평가가 표시됩니다.';
   return parts.map((p, i) => `${i+1}) ${p}`).join('<br>');
@@ -947,24 +846,28 @@ function render(e) {
     `<span class="badge badge-freq">${e.freq}</span>` +
     `<span class="badge badge-code">${e.code}</span>`;
 
-  // 기본 정보
-  const listedDate = e.listedDate || '-';
-  const mktCap = e.marketCap || '-';
-  const feeStr = e.totalFee ? `${e.totalFee.toFixed(2)}%` : '-';
+  // 기본 정보 (+ 시가총액)
+  const listedDate = e.listedDate || e.listed_date || '-';
+  const extraData = SAMPLE_EXTRA[e.code] || {};
+  const mktSum = extraData.marketSum
+    ? `${comma(extraData.marketSum)}억원`
+    : '-';
+  const feeStr = extraData.totalFee != null ? `${extraData.totalFee.toFixed(2)}%` : '-';
   document.getElementById('basicInfo').innerHTML = `
     <div class="info-row"><span class="info-label">운용사</span><span class="info-val">${e.manager || e.brand}</span></div>
     <div class="info-row"><span class="info-label">상장일</span><span class="info-val mono">${listedDate}</span></div>
     <div class="info-row"><span class="info-label">분배 주기</span><span class="info-val green">${e.freq}</span></div>
     <div class="info-row"><span class="info-label">전날 종가</span><span class="info-val mono">${comma(e.price)}원</span></div>
-    <div class="info-row"><span class="info-label">시가총액</span><span class="info-val mono">${mktCap}</span></div>
+    <div class="info-row"><span class="info-label">시가총액</span><span class="info-val mono">${mktSum}</span></div>
     <div class="info-row"><span class="info-label">총보수</span><span class="info-val mono">${feeStr}</span></div>
   `;
 
   // 추종지수
-  if (e.indexName) {
+  if (extraData.indexName) {
     document.getElementById('indexInfo').innerHTML = `
       <div class="index-box">
-        <div class="index-name">${e.indexName}</div>
+        <div class="index-name">${extraData.indexName}</div>
+        <div class="index-type">${extraData.indexType || ''}</div>
       </div>
     `;
   } else {
@@ -972,17 +875,17 @@ function render(e) {
   }
 
   // 상품설명
-  if (e.summary) {
+  if (extraData.summary) {
     document.getElementById('summaryInfo').innerHTML =
-      `<p style="font-size:13px;color:var(--ink2);line-height:1.75">${e.summary}</p>`;
+      `<p style="font-size:13px;color:var(--ink2);line-height:1.75">${extraData.summary}</p>`;
   } else {
     document.getElementById('summaryInfo').innerHTML = '<p style="font-size:12px;color:var(--ink3)">데이터 없음</p>';
   }
 
   // 구성종목
-  if (e.holdings && e.holdings.length) {
-    const maxPct = Math.max(...e.holdings.map(h => parseFloat(h.pct)));
-    const rows = e.holdings.map(h => {
+  if (extraData.holdings && extraData.holdings.length) {
+    const maxPct = Math.max(...extraData.holdings.map(h => parseFloat(h.pct)));
+    const rows = extraData.holdings.map(h => {
       const pctNum = parseFloat(h.pct);
       const barW = Math.round(pctNum / maxPct * 100);
       return `<tr>
@@ -1010,12 +913,10 @@ function render(e) {
   }
   const thisMonthOK = !isMonthlyE || isCurrentMonthDistE(e);
 
-  // e.ex는 XLS 원본 컬럼("투자신탁 분배금 지급기준일") 값으로, 실제로는 배당락일이 아닌 기준일이다.
-  const record = e.ex || '-';
-  const ex  = prevBizDay(record);
-  const lb  = prevBizDay(ex);
+  const lb  = prevBizDay(e.ex);
+  const ex  = e.ex  || '-';
   const pay = e.pay || '-';
-  const schedDates = { lb: fd(lb), ex: fd(ex), record: fd(record), pay: fd(pay) };
+  const schedDates = { lb: fd(lb), ex: fd(ex), pay: fd(pay) };
   const distAmt  = `${comma(e.dist)}원`;
   const distRate = `${e.rate}%`;
 
@@ -1048,7 +949,7 @@ function render(e) {
     </div>
     <div class="sched-box">
       <div class="sched-label">📋 기준일</div>
-      <div class="sched-val">${schedDates.record}</div>
+      <div class="sched-val">${schedDates.ex}</div>
     </div>
     <div class="sched-box">
       <div class="sched-label">💸 지급일</div>
@@ -1067,13 +968,6 @@ function render(e) {
   `;
 
   // 수익률 표
-  // 분배금 이력 시작일 이전에 상장한 종목은 과거 분배금이 누락돼
-  // '상장이후 총수익률'이 부정확하다 → 해당 셀만 '-'로 표시하고 사유를 각주/툴팁으로 안내.
-  // 시작일은 etf_data.js의 DIST_DATA_START(프로세서가 history에서 산출)를 쓴다.
-  // backfill로 이력이 앞당겨지면 이 값도 함께 움직인다.
-  const distStart = (typeof DIST_DATA_START !== 'undefined' && DIST_DATA_START) || '2025-04-15';
-  const distStartLabel = `${distStart.slice(0,4)}년 ${parseInt(distStart.slice(5,7))}월`;
-  const listedBeforeDist = e.listedDate && e.listedDate < distStart;
   const periods = ['1w','1m','3m','6m','1y','listed'];
   const priceRow = `<tr><td>주가 수익률</td>${periods.map(p=>{
     const v = e[p==='listed'?'retListed':`ret${p.charAt(0).toUpperCase()+p.slice(1)}`];
@@ -1081,21 +975,14 @@ function render(e) {
     return `<td class="${cls}">${str}</td>`;
   }).join('')}</tr>`;
   const totalRow = `<tr><td>총수익률</td>${periods.map(p=>{
-    if(p==='listed' && listedBeforeDist){
-      return `<td class="na" title="분배금 데이터는 ${distStartLabel}부터 집계되어, 그 이전에 상장한 종목은 과거 분배금을 반영할 수 없습니다.">-</td>`;
-    }
     const v = e[p==='listed'?'tretListed':`tret${p.charAt(0).toUpperCase()+p.slice(1)}`];
     const cls = retCls(v), str = retStr(v);
     return `<td class="${cls}">${str}</td>`;
   }).join('')}</tr>`;
   document.getElementById('retBody').innerHTML = priceRow + totalRow;
-  document.getElementById('retFootnote4').innerHTML = listedBeforeDist
-    ? `<br>4) 분배금 데이터는 ${distStartLabel}부터 집계되어, 그 이전에 상장한 종목은 과거 분배금을 반영할 수 없습니다. 이 경우 상장이후 총수익률을 <b>-</b>로 표시합니다. (상장이후 주가 수익률과 1년 이하 총수익률은 정확합니다)`
-    : '';
 
   // 분배금 히스토리 차트
   const trend = (e.trend || []).slice(-12);
-  const isMonthlyFreq = (e.freq === '월배당' || e.freq === '월배당추정');
   if(trend.length) {
     const labels = trend.map(t => {
       const m = parseInt(t.ex_date.slice(5,7));
@@ -1171,8 +1058,8 @@ function render(e) {
       }
     });
 
-    // 통계: 월배당은 최근 6건, 비월배당은 최근 4건 기준 / 연간합계는 올해 1월 1일부터 누적
-    const trendStats = isMonthlyFreq ? trend.slice(-6) : trend.slice(-4);
+    // 통계는 최근 6개월 기준, 연간합계는 올해 1월 1일부터 누적 (차트는 최대 12개월 유지)
+    const trendStats = trend.slice(-6);
     const valsStats  = trendStats.map(t => t.dist);
     const avgStats   = valsStats.length ? Math.round(valsStats.reduce((a,b)=>a+b,0)/valsStats.length) : 0;
     const maxS = valsStats.length ? Math.max(...valsStats) : 0;
@@ -1185,9 +1072,8 @@ function render(e) {
     const annualSum = yearTrend.reduce((a,b) => a + b.dist, 0);
     const noticePrevPriceHist = e.dist > 0 && e.rate > 0 ? (e.dist / e.rate * 100) : e.price;
     const annualRate = noticePrevPriceHist > 0 && annualSum > 0 ? (annualSum / noticePrevPriceHist * 100).toFixed(2) : null;
-    const avgLabel = isMonthlyFreq ? '월평균' : '평균 분배금';
     document.getElementById('distStats').innerHTML = `
-      <div class="ds-box"><div class="ds-label">${avgLabel}</div><div class="ds-val">${comma(avgStats)}원</div></div>
+      <div class="ds-box"><div class="ds-label">월평균</div><div class="ds-val">${comma(avgStats)}원</div></div>
       <div class="ds-box"><div class="ds-label">최고</div><div class="ds-val">${comma(maxS)}원</div></div>
       <div class="ds-box"><div class="ds-label">최저</div><div class="ds-val">${comma(minS)}원</div></div>
       <div class="ds-box">
@@ -1197,7 +1083,7 @@ function render(e) {
     `;
     document.getElementById('distStats').insertAdjacentHTML('afterend',
       `<div style="font-size:10px;color:var(--ink3);margin-top:5px;text-align:right">
-        변동폭 = (최고-최저)/평균 · 최근 ${trendStats.length}${isMonthlyFreq ? '개월' : '건'} 기준
+        변동폭 = (최고-최저)/평균 · 최근 ${trendStats.length}개월 기준
       </div>`);
     document.getElementById('distAnnual').innerHTML = `
       <div class="dist-annual">
@@ -1213,8 +1099,7 @@ function render(e) {
   }
 
   // 안정성 — stab 필드 없으면 trend 데이터로 클라이언트 계산
-  // 비월배당은 서버 계산값(date-based 6개월)이 맞지 않으므로 항상 클라이언트 재계산
-  const s = (e.stab && e.stab.score && isMonthlyFreq) ? e.stab : computeStab(e);
+  const s = (e.stab && e.stab.score) ? e.stab : computeStab(e);
   const stabAvgRate   = s.avgMonthlyRate  || 0;
   const stabGroupRate = s.groupAvgRate    || 0;
   const stabAvgDist   = s.avgMonthlyDist  || 0;
@@ -1231,24 +1116,24 @@ function render(e) {
       <span class="stab-label">분배금 추세</span>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         ${stabTrendBadge(s.trend)}
-        ${s.trendPct ? `<span style="font-size:11px;color:var(--ink3)">${isMonthlyFreq ? '최근 3개월' : '최근 2건'} ${s.trendPct > 0 ? '+' : ''}${s.trendPct}%</span>` : ''}
+        ${s.trendPct ? `<span style="font-size:11px;color:var(--ink3)">최근 3개월 ${s.trendPct > 0 ? '+' : ''}${s.trendPct}%</span>` : ''}
       </div>
     </div>
     <div class="stab-row">
-      <span class="stab-label">${isMonthlyFreq ? '월분배 수준' : '분배 수준'}<br><span style="font-size:10px;font-weight:400;color:var(--ink4)">(분배율)</span></span>
+      <span class="stab-label">월분배 수준<br><span style="font-size:10px;font-weight:400;color:var(--ink4)">(분배율)</span></span>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         ${stabLevelBadge(s.level)}
-        ${stabAvgRate ? `<span style="font-size:11px;color:var(--ink3)">${isMonthlyFreq ? '월평균' : '평균'} ${stabAvgRate.toFixed(2)}% · 그룹평균 ${stabGroupRate ? stabGroupRate.toFixed(2) : '-'}%</span>` : ''}
+        ${stabAvgRate ? `<span style="font-size:11px;color:var(--ink3)">월평균 ${stabAvgRate.toFixed(2)}% · 그룹평균 ${stabGroupRate ? stabGroupRate.toFixed(2) : '-'}%</span>` : ''}
       </div>
     </div>
     <div class="stab-row">
-      <span class="stab-label">${isMonthlyFreq ? '월분배 수준' : '분배 수준'}<br><span style="font-size:10px;font-weight:400;color:var(--ink4)">(분배금)</span></span>
+      <span class="stab-label">월분배 수준<br><span style="font-size:10px;font-weight:400;color:var(--ink4)">(분배금)</span></span>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         ${stabLevelBadge(s.levelDist)}
-        ${stabAvgDist ? `<span style="font-size:11px;color:var(--ink3)">${isMonthlyFreq ? '월평균' : '평균'} ${stabAvgDist.toFixed(0)}원 · 그룹평균 ${stabGroupDist ? stabGroupDist.toFixed(0) : '-'}원</span>` : ''}
+        ${stabAvgDist ? `<span style="font-size:11px;color:var(--ink3)">월평균 ${stabAvgDist.toFixed(0)}원 · 그룹평균 ${stabGroupDist ? stabGroupDist.toFixed(0) : '-'}원</span>` : ''}
       </div>
     </div>
-    <div class="comment-box">${autoComment(e, s, isMonthlyFreq)}</div>
+    <div class="comment-box">${autoComment(e)}</div>
     <div class="crit-table-wrap">
       <div class="crit-title">평가 기준</div>
       <table class="crit-table">
@@ -1268,7 +1153,7 @@ function render(e) {
               변동 큼 ≤50%<br>
               변동 매우 큼 &gt;50%
             </td>
-            <td>${isMonthlyFreq ? '최근 6개월' : '최근 4건'} (최고−최저) / 평균</td>
+            <td>최근 6개월 (최고−최저) / 평균</td>
           </tr>
           <tr>
             <td>추세</td>
@@ -1277,16 +1162,16 @@ function render(e) {
               유지 ±10% 이내<br>
               감소 &lt;−10%
             </td>
-            <td>${isMonthlyFreq ? '최근 3개월 평균 vs 이전 3개월 평균' : '최근 2건 평균 vs 이전 2건 평균'}</td>
+            <td>최근 3개월 평균 vs 이전 3개월 평균</td>
           </tr>
           <tr>
-            <td>${isMonthlyFreq ? '월분배 수준' : '분배 수준'}<br>(분배율 · 분배금)</td>
+            <td>월분배 수준<br>(분배율 · 분배금)</td>
             <td>
               평균보다 높음<br>
               평균 수준<br>
               평균보다 낮음
             </td>
-            <td>${isMonthlyFreq ? '최근 6개월' : '최근 4건'} 평균 ${isMonthlyFreq ? '월분배율·월분배금' : '분배율·분배금'}을 동일 유형 그룹 평균과 비교.<br>±10% 이내는 평균 수준<br><span style="color:var(--ink4)">유형: 커버드콜 / 리츠 / 일반배당 / 분기배당이상</span></td>
+            <td>최근 6개월 평균 월분배율·월분배금을 동일 유형 그룹 평균과 비교.<br>±10% 이내는 평균 수준<br><span style="color:var(--ink4)">유형: 커버드콜 / 리츠 / 일반배당 / 분기배당이상</span></td>
           </tr>
         </tbody>
       </table>
@@ -1300,256 +1185,22 @@ function render(e) {
   const avgRate = (e.stab && e.stab.avgMonthlyRate > 0) ? e.stab.avgMonthlyRate : (e.rate || 0);
   if(avgRate > 0) document.getElementById('simRate').value = avgRate.toFixed(2);
 
-  // ?tab=sim / ?tab=price 파라미터로 들어온 경우 해당 탭 활성화
+  // ?tab=sim 파라미터로 들어온 경우 자동으로 시뮬레이션 탭 활성화
   const tabParam = new URLSearchParams(location.search).get('tab');
-  if(tabParam === 'sim' || tabParam === 'price') switchTab(tabParam);
+  if(tabParam === 'sim') switchTab('sim');
 }
 
-// ── 탭 전환 ──
+// ── 탭 전환 (2탭) ──
 function switchTab(tab) {
-  if(!['info','sim','price'].includes(tab)) tab = 'info';
-  document.getElementById('tabInfo').style.display  = tab === 'info'  ? '' : 'none';
-  document.getElementById('tabSim').style.display   = tab === 'sim'   ? '' : 'none';
-  document.getElementById('tabPrice').style.display = tab === 'price' ? '' : 'none';
-  document.getElementById('tabBtnInfo').classList.toggle('on',  tab === 'info');
-  document.getElementById('tabBtnSim').classList.toggle('on',   tab === 'sim');
-  document.getElementById('tabBtnPrice').classList.toggle('on', tab === 'price');
-  // URL 파라미터 갱신 (히스토리 교체)
+  const isInfo = tab === 'info';
+  document.getElementById('tabInfo').style.display = isInfo ? '' : 'none';
+  document.getElementById('tabSim').style.display  = isInfo ? 'none' : '';
+  document.getElementById('tabBtnInfo').classList.toggle('on', isInfo);
+  document.getElementById('tabBtnSim').classList.toggle('on', !isInfo);
   const url = new URL(location.href);
-  if(tab === 'info') url.searchParams.delete('tab');
-  else url.searchParams.set('tab', tab);
+  if(tab === 'sim') url.searchParams.set('tab','sim');
+  else url.searchParams.delete('tab');
   history.replaceState(null, '', url.toString());
-  // 종가 탭은 최초 진입 시에만 데이터를 불러옴
-  if(tab === 'price') initPriceTab();
-}
-
-// ══════════════════════════════════════════
-// 종가 탭 (일자별 종가 차트 + 표)
-// 데이터: /data/output/price_history/{code}.json = [[YYYY-MM-DD, 종가], ...] 오름차순
-// ══════════════════════════════════════════
-let pxRaw       = null;    // 원본 (오름차순)
-let pxLoading   = false;
-let pxBound     = false;
-let pxChartInst = null;
-let pxPeriod    = '6m';
-let pxInterval  = 'day';
-let pxMA        = new Set([20]);
-let pxSeries    = [];      // 화면 표시 구간 [{date, close, prev, ma}]
-let pxShownRows = 0;
-const PX_PAGE      = 60;
-const PX_MONTHS    = { '1m':1, '3m':3, '6m':6, '1y':12, '3y':36 };
-const PX_MA_COLORS = { 5:'#f59e0b', 20:'#1a56db', 60:'#8b5cf6', 120:'#c0392b' };
-
-// 최초 진입 시 1회만 로드 (기본정보 탭 로딩에 영향 없도록 lazy)
-function initPriceTab() {
-  if(pxRaw || pxLoading || !ETF) return;
-  pxLoading = true;
-  fetch(`/data/output/price_history/${ETF.code}.json`)
-    .then(r => { if(!r.ok) throw new Error('no data'); return r.json(); })
-    .then(data => {
-      pxRaw = Array.isArray(data) ? data.filter(r => r && r.length >= 2 && r[1] > 0) : [];
-      pxLoading = false;
-      pxBindControls();
-      pxRender();
-    })
-    .catch(() => {
-      pxLoading = false;
-      pxRaw = [];
-      pxRender();
-    });
-}
-
-function pxSegOn(segId, val) {
-  document.querySelectorAll(`#${segId} button[data-v]`)
-    .forEach(b => b.classList.toggle('on', b.dataset.v === val));
-}
-
-function pxBindControls() {
-  if(pxBound) return;
-  pxBound = true;
-  document.getElementById('pxPeriodSeg').addEventListener('click', e => {
-    const b = e.target.closest('button[data-v]'); if(!b) return;
-    pxPeriod = b.dataset.v; pxSegOn('pxPeriodSeg', pxPeriod); pxRender();
-  });
-  document.getElementById('pxIntervalSeg').addEventListener('click', e => {
-    const b = e.target.closest('button[data-v]'); if(!b) return;
-    pxInterval = b.dataset.v; pxSegOn('pxIntervalSeg', pxInterval); pxRender();
-  });
-  document.querySelectorAll('.px-ma input[data-ma]').forEach(inp => {
-    inp.addEventListener('change', () => {
-      const n = parseInt(inp.dataset.ma, 10);
-      if(inp.checked) pxMA.add(n); else pxMA.delete(n);
-      inp.closest('.px-ma').classList.toggle('on', inp.checked);
-      pxRender();
-    });
-  });
-}
-
-// 주봉 집계: 각 주(월요일 시작)의 마지막 거래일 종가
-function pxWeekly(rows) {
-  const out = [];
-  let curKey = null;
-  for(const [ds, close] of rows) {
-    const d = new Date(ds + 'T00:00:00');
-    const day = d.getDay();
-    const mon = new Date(d);
-    mon.setDate(d.getDate() + (day === 0 ? -6 : 1 - day));
-    const key = `${mon.getFullYear()}-${mon.getMonth()}-${mon.getDate()}`;
-    if(key === curKey) out[out.length - 1] = [ds, close];
-    else { out.push([ds, close]); curKey = key; }
-  }
-  return out;
-}
-
-function pxCalcMA(closes, n) {
-  const out = new Array(closes.length).fill(null);
-  let sum = 0;
-  for(let i = 0; i < closes.length; i++) {
-    sum += closes[i];
-    if(i >= n) sum -= closes[i - n];
-    if(i >= n - 1) out[i] = sum / n;
-  }
-  return out;
-}
-
-function pxRender() {
-  const note = document.getElementById('pxNote');
-  const wrap = document.getElementById('pxChartWrap');
-  if(!pxRaw || !pxRaw.length) {
-    note.textContent = '이 종목은 아직 종가 데이터가 없습니다.';
-    note.style.display = ''; wrap.style.display = 'none';
-    document.getElementById('pxSummary').innerHTML = '';
-    document.getElementById('pxTableBody').innerHTML = '';
-    document.getElementById('pxMoreBtn').style.display = 'none';
-    return;
-  }
-  note.style.display = 'none';
-  wrap.style.display = '';
-
-  // 1) 주기 집계는 전체 구간 기준
-  const base   = pxInterval === 'week' ? pxWeekly(pxRaw) : pxRaw;
-  const closes = base.map(r => r[1]);
-
-  // 2) 이평선은 전체 구간으로 먼저 계산 → 구간 첫 지점부터 값이 나옴
-  const maAll = {};
-  const maList = [...pxMA].sort((a, b) => a - b);
-  maList.forEach(n => { maAll[n] = pxCalcMA(closes, n); });
-
-  // 3) 기간 필터 (마지막 거래일 기준으로 역산)
-  let startIdx = 0;
-  if(pxPeriod !== 'all') {
-    const last = new Date(base[base.length - 1][0] + 'T00:00:00');
-    last.setMonth(last.getMonth() - PX_MONTHS[pxPeriod]);
-    const cutoff = last.toISOString().slice(0, 10);
-    while(startIdx < base.length && base[startIdx][0] < cutoff) startIdx++;
-    if(startIdx >= base.length) startIdx = 0;
-  }
-
-  pxSeries = base.slice(startIdx).map((r, i) => {
-    const gi = startIdx + i;
-    const ma = {};
-    maList.forEach(n => { ma[n] = maAll[n][gi]; });
-    return { date: r[0], close: r[1], prev: gi > 0 ? base[gi - 1][1] : null, ma };
-  });
-
-  pxRenderSummary();
-  pxRenderChart(maList);
-  pxShownRows = Math.min(PX_PAGE, pxSeries.length);
-  pxRenderTable();
-}
-
-function pxRenderSummary() {
-  const el = document.getElementById('pxSummary');
-  if(!pxSeries.length) { el.innerHTML = ''; return; }
-  let hi = -Infinity, lo = Infinity;
-  for(const x of pxSeries) { if(x.close > hi) hi = x.close; if(x.close < lo) lo = x.close; }
-  const first = pxSeries[0].close;
-  const last  = pxSeries[pxSeries.length - 1].close;
-  const chg   = first > 0 ? (last - first) / first * 100 : 0;
-  const cls   = chg > 0 ? 'px-up' : chg < 0 ? 'px-down' : 'px-flat';
-  el.innerHTML = `
-    <div class="px-sum"><div class="px-sum-l">최근 종가</div><div class="px-sum-v">${comma(last)}원</div></div>
-    <div class="px-sum"><div class="px-sum-l">기간 등락률</div><div class="px-sum-v ${cls}">${chg > 0 ? '+' : ''}${chg.toFixed(2)}%</div></div>
-    <div class="px-sum"><div class="px-sum-l">기간 최고</div><div class="px-sum-v">${comma(hi)}원</div></div>
-    <div class="px-sum"><div class="px-sum-l">기간 최저</div><div class="px-sum-v">${comma(lo)}원</div></div>`;
-}
-
-function pxRenderChart(maList) {
-  if(pxChartInst) { pxChartInst.destroy(); pxChartInst = null; }
-  const datasets = [{
-    label: '종가',
-    data: pxSeries.map(x => x.close),
-    borderColor: '#1d6b38',
-    backgroundColor: 'rgba(29,107,56,.07)',
-    borderWidth: 1.8, pointRadius: 0, pointHoverRadius: 3,
-    fill: true, tension: .15, order: 10,
-  }];
-  maList.forEach(n => {
-    datasets.push({
-      label: `MA${n}`,
-      data: pxSeries.map(x => x.ma[n]),
-      borderColor: PX_MA_COLORS[n] || '#9a9a93',
-      borderWidth: 1.2, pointRadius: 0, pointHoverRadius: 3,
-      fill: false, tension: .15, spanGaps: true,
-    });
-  });
-  pxChartInst = new Chart(document.getElementById('pxChart').getContext('2d'), {
-    type: 'line',
-    data: { labels: pxSeries.map(x => x.date), datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      animation: pxSeries.length > 400 ? false : { duration: 300 },
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { labels: { font:{size:10}, color:'#9a9a93', boxWidth:14, padding:8, usePointStyle:true } },
-        tooltip: { callbacks: {
-          label: c => `${c.dataset.label}: ${c.raw == null ? '-' : comma(Math.round(c.raw))}원`
-        } }
-      },
-      scales: {
-        x: { grid:{display:false}, ticks:{ font:{size:9}, color:'#9a9a93',
-             maxTicksLimit: window.innerWidth < 480 ? 5 : 8, autoSkip:true, maxRotation:0,
-             callback: function(val) {
-               const label = this.getLabelForValue(val);
-               return label ? label.slice(2) : label; // YYYY-MM-DD → YY-MM-DD
-             } } },
-        y: { grid:{color:'#f0f0f0'}, ticks:{ font:{size:9}, color:'#9a9a93',
-             callback: v => comma(Math.round(v)) } }
-      }
-    }
-  });
-}
-
-function pxRenderTable() {
-  const body = document.getElementById('pxTableBody');
-  const more = document.getElementById('pxMoreBtn');
-  document.getElementById('pxThDiff').textContent = pxInterval === 'week' ? '전주대비' : '전일대비';
-  if(!pxSeries.length) { body.innerHTML = ''; more.style.display = 'none'; return; }
-
-  body.innerHTML = pxSeries.slice().reverse().slice(0, pxShownRows).map(x => {
-    const diff = x.prev == null ? null : x.close - x.prev;
-    const pct  = (x.prev && x.prev > 0) ? diff / x.prev * 100 : null;
-    const cls  = diff == null || diff === 0 ? 'px-flat' : diff > 0 ? 'px-up' : 'px-down';
-    const sign = diff == null || diff === 0 ? '' : diff > 0 ? '▲' : '▼';
-    return `<tr>
-      <td>${x.date}</td>
-      <td>${comma(x.close)}</td>
-      <td class="${cls}">${diff == null ? '-' : sign + comma(Math.abs(diff))}</td>
-      <td class="${cls}">${pct == null ? '-' : (pct > 0 ? '+' : '') + pct.toFixed(2) + '%'}</td>
-    </tr>`;
-  }).join('');
-
-  if(pxShownRows < pxSeries.length) {
-    more.style.display = '';
-    more.textContent = `더 보기 (${pxShownRows} / ${comma(pxSeries.length)})`;
-  } else {
-    more.style.display = 'none';
-  }
-}
-
-function pxShowMore() {
-  pxShownRows = Math.min(pxShownRows + PX_PAGE, pxSeries.length);
-  pxRenderTable();
 }
 
 // ── 한국어 금액 인라인 표시 ──
@@ -1999,16 +1650,30 @@ function kakaoShareSim(btn) {
   }).catch(() => { btn.innerHTML = orig; btn.disabled = false; alert('이미지 생성에 실패했습니다.'); });
 }
 
-// ── 초기화 ──
-(function() {
-  // Vercel 리라이트: 브라우저 URL이 /etf/069500 형태 → pathname에서 추출
-  const path = location.pathname; // "/etf/069500"
-  const code = path.startsWith('/etf/')
-    ? path.slice(5)
-    : (new URLSearchParams(location.search).get('code') || '');
-  if(!code) { showError(); return; }
+// ── 샘플용 추가 데이터 (시가총액·추종지수·구성종목) ──
+const SAMPLE_EXTRA = {
+  '472150': {
+    marketSum: 22345,
+    totalFee: 0.50,
+    indexName: '코스피 200 커버드콜 5% OTM 지수(PR 지수)',
+    indexType: '국내주식형 · 전략지수',
+    summary: '이 ETF는 주로 국내 주식을 주된 투자대상자산으로 하며, 코스피 200 커버드콜 5% OTM 지수를 비교지수로 하여 ETF 순자산가치의 변화가 비교지수를 초과하도록 운용하는 것을 목표로 하는 ETF입니다. 이 ETF는 초과수익 실현을 위해 업종 내 배당 수익률 및 배당 성장률이 높은 종목으로 주식 포트폴리오를 보유하면서 콜옵션을 매도하는 커버드콜 전략을 활용하여 주가하락 위험을 부분적으로 방어하고 콜옵션 매도에 따른 프리미엄을 확보합니다.',
+    holdings: [
+      { name: 'SK하이닉스',                      pct: '24.30%' },
+      { name: '삼성전자',                         pct: '23.13%' },
+      { name: 'TIGER 200',                        pct: '9.11%'  },
+      { name: '삼성전자우',                       pct: '5.90%'  },
+      { name: 'TIGER 200타겟위클리커버드콜',      pct: '3.46%'  },
+      { name: 'SK스퀘어',                         pct: '3.41%'  },
+      { name: '삼성전기',                         pct: '2.17%'  },
+      { name: '현대차',                           pct: '1.76%'  },
+    ],
+  },
+};
 
-  // ETF_ALL은 etf_data.js에서 전역 변수로 로드됨
+// ── 초기화 (샘플: 472150 고정) ──
+(function() {
+  const code = '472150';
   const e = (typeof ETF_ALL !== 'undefined' ? ETF_ALL : []).find(x => x.code === code);
   if(!e) { showError(); return; }
   render(e);

@@ -58,6 +58,28 @@ def default_range() -> tuple:
     return start.isoformat(), today.isoformat()
 
 
+def month_chunks(frm: str, to: str) -> list:
+    """
+    [frm, to] 구간을 월 단위로 쪼갠다.
+
+    ⚠️ KIND 검색은 한 번에 100건까지만 돌려주고, 초과분은 조용히 잘린다.
+       (2018년을 한 번에 검색하면 100건, 상·하반기로 나누면 100+77=177건)
+       한 달치는 아무리 많아도 20건 안팎이라 월 단위로 나누면 상한에 걸리지 않는다.
+    """
+    start = date.fromisoformat(frm)
+    end = date.fromisoformat(to)
+    out = []
+    cur = date(start.year, start.month, 1)
+    while cur <= end:
+        nxt = date(cur.year + 1, 1, 1) if cur.month == 12 else date(cur.year, cur.month + 1, 1)
+        lo = max(cur, start)
+        hi = min(date.fromordinal(nxt.toordinal() - 1), end)
+        if lo <= hi:
+            out.append((lo.isoformat(), hi.isoformat()))
+        cur = nxt
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description="KIND ETF 분배금 공시 수집")
     ap.add_argument("--month", help="YYYY-MM (해당 월만)")
@@ -88,11 +110,23 @@ def main():
     print(f"📡 KIND 분배금 공시 검색: {frm} ~ {to}")
     print("=" * 60)
 
-    rows = kc.search_disclosures(REPORT_NM, frm, to, title_filter=TITLE_RX)
+    chunks = month_chunks(frm, to)
+    rows, seen = [], set()
+    for lo, hi in chunks:
+        part = kc.search_disclosures(REPORT_NM, lo, hi, title_filter=TITLE_RX)
+        if len(chunks) > 1:
+            print(f"  {lo[:7]}: {len(part)}건")
+        if len(part) >= 100:
+            print(f"  ⚠️ {lo[:7]} 검색이 100건 상한에 걸렸을 수 있습니다 — 누락 가능")
+        for r in part:
+            if r["acptno"] not in seen:
+                seen.add(r["acptno"])
+                rows.append(r)
+
     if not rows:
         print("검색 결과가 없습니다.")
         return
-    print(f"공시 {len(rows)}건 발견\n")
+    print(f"\n공시 {len(rows)}건 발견\n")
 
     saved, skipped, failed = [], [], []
     all_records = {}
