@@ -1299,6 +1299,8 @@ baedangetf.com
   - 정정 공시는 뷰어 `mainDoc`의 최신(Y) 버전을 자동 선택
 - `kind_fetch.py` — 분배금 공시(XLS) 수집 → `data/raw/YY년 M월/`
 - `kind_schedule.py` — 설정/환매 공시에서 최종매수일·배당락일·기준일 산출
+- `kind_meta.py` — data/raw에 있는데 메타 캐시에 없는 신규 종목의 메타 보충 (프로세서 전에 실행)
+- `kind_verify.py` — 프로세서 결과가 사이트에 올려도 되는 상태인지 검증 (통과 0 / 실패 1)
 
 ---
 
