@@ -90,12 +90,19 @@ def search_disclosures(report_nm: str, from_date: str, to_date: str,
     """
     KIND 공시 검색.
 
-    report_nm   : 보고서명 검색어 (예: 'ETF이익금분배신고')
+    report_nm   : 보고서명 검색어 (예: 'ETF이익금분배신고'). 부분일치.
     from_date   : 'YYYY-MM-DD'
     to_date     : 'YYYY-MM-DD'
     title_filter: 결과 제목에 이 정규식이 맞는 것만 반환 (선택)
 
     Returns: [{acptno, date, corp, title}, ...]
+
+    ⚠️ 기간을 넓게 주지 말 것 — 두 제약 모두 오류 없이 '조용히' 결과가 잘린다.
+       1) 결과 100건 상한: 초과분이 잘리고, 최신순 정렬이라 오래된 것부터 사라진다.
+          (실측: 2018년 한 번에 100건 / 상·하반기로 나누면 100+77=177건)
+       2) 기간 3년 초과 시 0건: 5년 범위로 검색하면 오류 없이 빈 결과가 온다.
+          (실측: '이익금분배' 2005~2009 → 0건, 2009년 단독 → 77건)
+       → 호출 측에서 월 단위로 쪼갤 것. kind_fetch.month_chunks() 참고.
     """
     from playwright.sync_api import sync_playwright
 
