@@ -1,5 +1,15 @@
 [
   {
+    "id": "2026-07-end-schedule",
+    "type": "schedule",
+    "timing": "월말",
+    "month": "2026년 7월",
+    "sent_at": "2026-07-26",
+    "lastBuy": "2026-07-29",
+    "exDate": "2026-07-30",
+    "record": "2026-07-31"
+  },
+  {
     "id": "2026-07-mid-data",
     "type": "data",
     "timing": "월중",
