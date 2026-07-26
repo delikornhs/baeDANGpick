@@ -2,10 +2,18 @@ name: KIND Disclosure Watch
 
 # KIND에 새 분배금 공시가 올라왔는지 평일 저녁에 확인한다.
 #
-# 하는 일: 공시 수집(data/raw 커밋) + 다가오는 일정 파악 + 새 소식이 있을 때만 이슈 알림
-# 하지 않는 일: 프로세서 실행, 사이트 데이터(latest.json 등) 갱신, 뉴스레터 발송
-#   → 이 셋은 데이터를 눈으로 확인한 뒤 사용자 승인을 받아 진행한다.
-#     (원본 XLS 커밋은 사이트에 영향을 주지 않으므로 자동으로 해도 안전하다)
+# 하는 일
+#   1. 공시 수집 → data/raw
+#   2. 새 공시가 있으면 프로세서 실행 → latest.json / etf_data.js / index.html 갱신
+#   3. kind_verify.py 로 검증. 통과해야만 커밋·push (= 사이트 반영)
+#   4. 다가오는 일정 파악 (계산해서 보여주기만 함 — 달력 반영은 사람이 확인 후)
+#   5. 이슈로 결과 알림
+#
+# 하지 않는 일
+#   - 뉴스레터 발송: 되돌릴 수 없고 구독자에게 바로 나가므로 항상 사용자 승인 후 수동 발송
+#   - 달력(CONFIRMED_SCHEDULE) 수정: 미래 날짜는 공휴일을 반영할 수 없어 사람이 확인
+#
+# 검증 실패 시에는 사이트에 반영하지 않고 경고 이슈만 남긴다.
 
 on:
   schedule:
@@ -36,7 +44,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install playwright
+          pip install playwright requests xlrd
           playwright install --with-deps chromium
 
       - name: Collect distribution disclosures
@@ -58,18 +66,40 @@ jobs:
           set -o pipefail
           python -X utf8 kind_schedule.py 2>&1 | tee schedule.log
 
-      - name: Commit new raw files
+      - name: Run processor
         if: steps.fetch.outputs.new_files == 'true'
+        run: |
+          set -o pipefail
+          python -X utf8 etf_data_processor.py 2>&1 | tail -40 | tee process.log
+
+      - name: Verify data
+        id: verify
+        if: steps.fetch.outputs.new_files == 'true'
+        continue-on-error: true      # 실패해도 워크플로를 멈추지 않고 경고 이슈를 남긴다
+        run: |
+          set -o pipefail
+          python -X utf8 kind_verify.py 2>&1 | tee verify.log
+
+      - name: Commit and push
+        id: push
+        if: steps.fetch.outputs.new_files == 'true' && steps.verify.outcome == 'success'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/raw
-          git commit -m "data: KIND 분배금 공시 자동 수집 $(date -u +%Y-%m-%d)"
-          # 리베이스 충돌 시 --theirs = 방금 수집한 파일 (--ours는 origin의 구버전).
-          # 리베이스 중에는 ours/theirs 의미가 뒤집히므로 주의 (CLAUDE.md 참조).
+          git add data/raw data/output/latest.json data/output/history.json \
+                  data/output/etf_data.js index.html
+          if git diff --cached --quiet; then
+            echo "변경 없음"
+            exit 0
+          fi
+          git commit -m "data: KIND 분배금 자동 수집·반영 $(date -u +%Y-%m-%d)"
+          # 리베이스 충돌 시 --theirs = 이번 실행이 만든 최신 데이터
+          # (리베이스 중에는 ours/theirs 의미가 뒤집힌다 — CLAUDE.md 참조)
           if ! git pull --rebase origin master; then
-            git checkout --theirs data/raw
-            git add data/raw
+            git checkout --theirs data/raw data/output/latest.json data/output/history.json \
+                                  data/output/etf_data.js index.html
+            git add data/raw data/output/latest.json data/output/history.json \
+                    data/output/etf_data.js index.html
             GIT_EDITOR=true git rebase --continue
           fi
           git push
@@ -79,30 +109,44 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          OK="${{ steps.verify.outcome }}"
+          if [ "$OK" = "success" ]; then
+            TITLE="✅ 분배금 반영됨 — 뉴스레터 발송 대기 ($(TZ=Asia/Seoul date +%m/%d))"
+          else
+            TITLE="⚠️ 분배금 검증 실패 — 사이트 미반영 ($(TZ=Asia/Seoul date +%m/%d))"
+          fi
+
           {
-            echo "KIND에 새 분배금 공시가 올라와 원본 파일을 수집했습니다."
+            if [ "$OK" = "success" ]; then
+              echo "새 분배금 공시를 수집해 **사이트에 반영했습니다.**"
+              echo ""
+              echo "### 남은 일"
+              echo "- [ ] **뉴스레터 발송** — 자동 발송되지 않습니다. Claude에게 \`\"데이터 뉴스레터 보내줘\"\` 라고 요청하세요."
+              echo "- [ ] 달력 일정 반영이 필요하면 \`\"분배 일정 반영해줘\"\` (아래 '다가오는 일정' 참고)"
+            else
+              echo "새 분배금 공시를 수집했지만 **검증에 실패해 사이트에 반영하지 않았습니다.**"
+              echo ""
+              echo "원본 XLS도 커밋하지 않았습니다. 아래 검증 결과를 확인하고,"
+              echo "Claude에게 \`\"분배금 검증 실패 확인해줘\"\` 라고 요청하세요."
+            fi
             echo ""
-            echo "**아직 사이트에는 반영되지 않았습니다.** 반영하려면 Claude에게 이렇게 요청하세요:"
-            echo ""
-            echo '> "N월 [월중/월말] 분배금 업데이트해줘"'
-            echo ""
-            echo "그러면 프로세서 실행 → 검증 → 보고까지 진행하고, 사이트 반영(push)과"
-            echo "뉴스레터 발송은 확인을 받은 뒤에 처리합니다."
+            echo "## 검증 결과"
+            echo '```'
+            cat verify.log 2>/dev/null || echo "(검증 로그 없음)"
+            echo '```'
             echo ""
             echo "## 수집 결과"
             echo '```'
             cat fetch.log
             echo '```'
             echo ""
-            echo "## 다가오는 일정"
+            echo "## 다가오는 일정 (달력 반영은 수동)"
             echo '```'
-            cat schedule.log 2>/dev/null || echo "(일정 확인 실패 — 수동으로 kind_schedule.py 실행 필요)"
+            cat schedule.log 2>/dev/null || echo "(일정 확인 실패 — kind_schedule.py 수동 실행 필요)"
             echo '```'
           } > issue_body.md
 
-          gh issue create \
-            --title "📥 분배금 공시 수집됨 ($(TZ=Asia/Seoul date +%Y-%m-%d))" \
-            --body-file issue_body.md
+          gh issue create --title "$TITLE" --body-file issue_body.md
 
       - name: Summary
         if: always()
@@ -110,12 +154,17 @@ jobs:
           {
             echo "## KIND 감시 결과"
             echo ""
-            if [ "${{ steps.fetch.outputs.new_files }}" = "true" ]; then
-              echo "🆕 새 공시를 수집했습니다. 이슈를 확인하세요."
-            else
+            if [ "${{ steps.fetch.outputs.new_files }}" != "true" ]; then
               echo "변경 없음 — 새로 올라온 공시가 없습니다."
+            elif [ "${{ steps.verify.outcome }}" = "success" ]; then
+              echo "✅ 새 공시 수집 → 검증 통과 → 사이트 반영 완료. 뉴스레터는 수동 발송."
+            else
+              echo "⚠️ 새 공시 수집했으나 검증 실패 → 사이트 미반영. 이슈를 확인하세요."
             fi
             echo ""
+            echo '```'
+            cat verify.log 2>/dev/null || true
+            echo '```'
             echo '```'
             cat fetch.log 2>/dev/null || true
             echo '```'

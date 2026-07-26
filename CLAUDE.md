@@ -245,6 +245,10 @@ CLAUDE.md의 **양식 ①** (일정 안내) 참조해서 작성
 "N월 [월중/월말] 분배금 업데이트해줘" 요청이 오면 아래 순서로 진행한다.
 (사용자가 직접 XLS를 받아두고 "올렸어"라고 해도 동일하게 동작한다 — 1단계에서 건너뛴다)
 
+> ℹ️ **평일 18:30에는 `kind-watch.yml`이 1~4단계를 자동으로 수행한다.**
+> 즉 이미 반영이 끝나 있을 수 있으므로, 먼저 `git pull` 후 `latest.json`의 기준일을 확인할 것.
+> 이미 반영됐다면 남은 일은 **5단계 뉴스레터 발송(수동)** 뿐이다.
+
 ### 1단계: KIND에서 분배금 공시 자동 수집
 
 ```bash
@@ -272,18 +276,17 @@ python -X utf8 etf_data_processor.py
 - 비정기 ETF는 `timing`이 비고 `current=False`로 처리되는 것이 정상 (메인 달력엔 안 나오고
   상세페이지·랭킹에만 반영됨)
 
-### 3단계: index.html 헤더 상수 수정
+### 3단계: 데이터 검증
 
-`index.html` 약 610번째 줄의 상수 3개를 수정한다.
-
-```js
-const PRICE_DATE = "YYYY-MM-DD";       // 주가 기준일 (오늘 날짜)
-const MID_NOTICE_DATE = "YYYY-MM-DD";  // 월중 공시일 (월중 데이터 업데이트 시 오늘 날짜)
-const END_NOTICE_DATE = "YYYY-MM-DD";  // 월말 공시일 (월말 데이터 업데이트 시 오늘 날짜)
+```bash
+python -X utf8 kind_verify.py
 ```
 
-- 월중 업데이트 시: `PRICE_DATE`와 `MID_NOTICE_DATE`를 오늘 날짜로 변경
-- 월말 업데이트 시: `PRICE_DATE`와 `END_NOTICE_DATE`를 오늘 날짜로 변경
+종목 수·분배금·지급일·분배율·직전 대비 급감 여부를 확인한다. 통과(종료코드 0)해야 반영한다.
+
+> ℹ️ `PRICE_DATE` / `MID_NOTICE_DATE` / `END_NOTICE_DATE` 상수는 **손댈 필요 없다.**
+> 프로세서가 `current` 항목의 `notice_date`에서 자동 산출해 `etf_data.js`에 넣고,
+> `inject_html()`이 `index.html`에 반영한다. (과거 문서에는 수동 수정하라고 돼 있었으나 불필요)
 
 ### 4단계: git push
 
