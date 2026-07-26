@@ -1291,6 +1291,19 @@ baedangetf.com
 
 ---
 
+## ⚠️ 예정 작업: price_history 저장소 분리
+
+`data/output/price_history/`(915개, 29MB)가 매일 갱신·커밋되며 저장소가 **하루 약 1MB, 연 245MB**씩 커진다.
+**문제가 되기 전에 미리 분리하기로 결정**(2026-07-26). 아직 실행 전.
+
+- 계획·실측·비용 조사: **[docs/price_history_scaling.md](docs/price_history_scaling.md)**
+- 방식 후보: 별도 GitHub 저장소(⑤) 또는 Cloudflare R2(①) — 둘 다 비용 $0
+- 사용자가 "종가 파일 분리하자"고 하면 위 문서를 먼저 읽을 것
+
+> 참고: `data/raw`(원본 XLS)는 git에서 0.3MB(전체의 0.9%)라 **용량 걱정 대상이 아니다.**
+
+---
+
 ## KIND 자동 수집 스크립트
 
 - `kind_client.py` — KIND 접근 공용 모듈. 검색은 Playwright(브라우저), 문서 다운로드는 순수 HTTP.
