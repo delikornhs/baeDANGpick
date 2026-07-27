@@ -1,0 +1,129 @@
+
+<html>
+ <head>
+  <META content="gdi" http-equiv="X-UA-TextLayoutMetrics"/>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+  <link href="http://kind.krx.co.kr/external/xforms.css" rel="stylesheet" type="text/css"/>
+  <title>:: 68659_ETF이익금분배 신고(분배금 안내)(일괄공시)</title>
+ </head>
+ <body>
+  <div class="xforms">
+   <div>
+    <span class="noprint" style="display:none;width:600px;font-size:10pt;">
+    </span>
+    <div class="xforms_title">
+     <div>
+      <span style="width:592px;font-weight:bold;text-align:center;">ETF이익금분배신고(분배금안내)(일괄공시)</span>
+     </div>
+    </div>
+    <table border="1" borderColorDark="white" borderColorLight="#666666" cellpadding="1" cellspacing="0" id="XFormD2_Form0_RepeatTable0" style="margin:0px 0px 20px 0px;width:597px;font-size:10pt;border:1px solid #7f7f7f;">
+     <tbody>
+      <tr>
+       <td width="91">
+        <span style="width:91px;font-size:10pt;text-align:center;">종목코드</span>
+       </td>
+       <td width="133">
+        <span style="width:133px;font-size:10pt;text-align:center;">종목명</span>
+       </td>
+       <td width="95">
+        <span style="width:95px;font-size:10pt;text-align:center;">투자신탁 분배금 지급기준일</span>
+       </td>
+       <td width="95">
+        <span style="width:95px;font-size:10pt;text-align:center;">투자신탁 분배금 지급예정일</span>
+       </td>
+       <td width="81">
+        <span style="width:81px;font-size:10pt;text-align:center;">분배금(원)</span>
+       </td>
+       <td width="102">
+        <span style="width:102px;font-size:10pt;text-align:center;">기타</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7114460009</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">한국투자 KINDEX 중기국고채증권상장지수투자신탁(채권)</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2019-12-09</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2019-12-11</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">600</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7114470008</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">키움 KOSEF 국고채 상장지수증권투자신탁[채권]</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2019-12-09</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2019-12-11</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">600</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7176710002</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">교보악사파워국고채증권상장지수투자신탁(채권)</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2019-12-09</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2019-12-11</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">40</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7272910001</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">한국투자KINDEX중장기국공채액티브증권상장지수투자신탁(채권)</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2019-12-09</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2019-12-11</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">400</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   
+  </div>
+  </div>
+ 
+</body>
+
+</html>

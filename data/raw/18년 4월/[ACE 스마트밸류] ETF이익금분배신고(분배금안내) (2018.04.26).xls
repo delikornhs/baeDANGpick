@@ -1,0 +1,69 @@
+
+<html>
+ <head>
+  <META content="gdi" http-equiv="X-UA-TextLayoutMetrics"/>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+  <link href="http://kind.krx.co.kr/external/xforms.css" rel="stylesheet" type="text/css"/>
+  <title>:: 68621_ETF이익금분배 신고(분배금 안내)</title>
+ </head>
+ <body>
+  <div class="xforms">
+   <div>
+    <span class="noprint" style="display:none;width:600px;font-size:10pt;">
+    </span>
+    <div class="xforms_title">
+     <div>
+      <span style="width:592px;font-weight:bold;text-align:center;">ETF이익금분배 신고(분배금 안내)</span>
+     </div>
+    </div>
+    <table border="1" borderColorDark="white" borderColorLight="#666666" cellpadding="1" cellspacing="0" id="XFormD1_Form0_Table0" style="margin:0px 0px 20px 0px;width:596px;border:1px solid #7f7f7f;">
+     <tbody>
+      <tr>
+       <td width="196">
+        <span style="width:196px;font-size:10pt;text-align:center;">종목</span>
+       </td>
+       <td width="400">
+        <span class="xforms_input" style="width:400px;font-size:10pt;">한국투자 KINDEX 스마트밸류증권상장지수투자신탁(주식)</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="196">
+        <span style="width:196px;font-size:10pt;text-align:center;">투자신탁 분배금 지급기준일</span>
+       </td>
+       <td width="400">
+        <span class="xforms_input" style="width:400px;font-size:10pt;">2018-04-30</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="196">
+        <span style="width:196px;font-size:10pt;text-align:center;">투자신탁 분배금 지급예정일</span>
+       </td>
+       <td width="400">
+        <span class="xforms_input" style="width:400px;font-size:10pt;">2018-05-03</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="196">
+        <span style="width:196px;font-size:10pt;text-align:center;">1좌당 예상분배금(원)</span>
+       </td>
+       <td width="400">
+        <span class="xforms_input" style="width:400px;font-size:10pt;text-align:right;">180</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="196">
+        <span style="width:196px;font-size:10pt;text-align:center;">기타</span>
+       </td>
+       <td width="400">
+        <span class="xforms_input" style="width:400px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   
+  </div>
+  </div>
+ 
+</body>
+
+</html>

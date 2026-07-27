@@ -116,13 +116,22 @@ def main():
     print("=" * 60)
 
     chunks = month_chunks(frm, to)
+
+    def on_progress(i, total, month, n):
+        if total > 3:
+            print(f"  [{i}/{total}] {month[:7]}: {n}건")
+
+    # 브라우저 기동이 검색 시간의 대부분이라 한 세션으로 전 구간을 훑는다
+    parts = kc.search_disclosures_batch(REPORT_NM, chunks, title_filter=TITLE_RX,
+                                        progress=on_progress if len(chunks) > 3 else None)
     rows, seen = [], set()
-    for lo, hi in chunks:
-        part = kc.search_disclosures(REPORT_NM, lo, hi, title_filter=TITLE_RX)
-        if len(chunks) > 1:
+    for (lo, _hi), part in zip(chunks, parts):
+        if 3 >= len(chunks) > 1:
             print(f"  {lo[:7]}: {len(part)}건")
-        if len(part) >= 100:
-            print(f"  ⚠️ {lo[:7]} 검색이 100건 상한에 걸렸을 수 있습니다 — 누락 가능")
+        # 한 페이지 상한(100건)을 넘은 달. kind_client가 페이지를 넘겨 모두 가져오므로
+        # 누락은 아니지만, 결산 분배가 몰린 달이라 확인용으로 알린다.
+        if len(part) > 100:
+            print(f"  ℹ️ {lo[:7]}: {len(part)}건 — 페이지 상한(100) 초과분을 페이지네이션으로 수집")
         for r in part:
             if r["acptno"] not in seen:
                 seen.add(r["acptno"])

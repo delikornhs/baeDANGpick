@@ -1,0 +1,469 @@
+
+<html>
+ <head>
+  <META content="gdi" http-equiv="X-UA-TextLayoutMetrics"/>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+  <link href="http://kind.krx.co.kr/external/xforms.css" rel="stylesheet" type="text/css"/>
+  <title>:: 68659_ETF이익금분배 신고(분배금 안내)(일괄공시)</title>
+ </head>
+ <body>
+  <div class="xforms">
+   <div>
+    <span class="noprint" style="display:none;width:600px;font-size:10pt;">
+    </span>
+    <div class="xforms_title">
+     <div>
+      <span style="width:592px;font-weight:bold;text-align:center;">ETF이익금분배신고(분배금안내)(일괄공시)</span>
+     </div>
+    </div>
+    <table border="1" borderColorDark="white" borderColorLight="#666666" cellpadding="1" cellspacing="0" id="XFormD2_Form0_RepeatTable0" style="margin:0px 0px 20px 0px;width:597px;font-size:10pt;border:1px solid #7f7f7f;">
+     <tbody>
+      <tr>
+       <td width="91">
+        <span style="width:91px;font-size:10pt;text-align:center;">종목코드</span>
+       </td>
+       <td width="133">
+        <span style="width:133px;font-size:10pt;text-align:center;">종목약명</span>
+       </td>
+       <td width="95">
+        <span style="width:95px;font-size:10pt;text-align:center;">투자신탁 분배금 지급기준일</span>
+       </td>
+       <td width="95">
+        <span style="width:95px;font-size:10pt;text-align:center;">투자신탁 분배금 지급예정일</span>
+       </td>
+       <td width="81">
+        <span style="width:81px;font-size:10pt;text-align:center;">분배금(원)</span>
+       </td>
+       <td width="102">
+        <span style="width:102px;font-size:10pt;text-align:center;">기타</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7139260004</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 200 IT</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">15</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7292150000</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER TOP10</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">10</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7138520002</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 삼성그룹펀더멘털</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">10</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7170350003</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 베타플러스</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">25</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7217790005</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 가격조정</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">15</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7261140008</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 우선주</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">10</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7210780003</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 코스피고배당</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">15</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7211560008</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 배당성장</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">5</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7227570009</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 우량가치</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">5</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7245350004</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 유로스탁스배당30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">130</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7277630000</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 코스피</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">35</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7277640009</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 코스피대형주</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">15</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7292160009</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER KRX300</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">20</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7292110004</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 대형가치</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">20</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7289250003</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER MSCI KOREA ESG유니버설</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">10</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7292100005</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 대형성장</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">10</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7341850006</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGERKIS부동산인프라채권TR</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">75</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7329200000</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 부동산인프라고배당</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">60</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7139270003</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 200 금융</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">10</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7307520007</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 지주회사</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">10</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+      <tr>
+       <td width="91">
+        <span class="xforms_input" style="width:91px;font-size:10pt;text-align:center;">KR7360750004</span>
+       </td>
+       <td width="133">
+        <span class="xforms_input" style="width:133px;font-size:10pt;">TIGER 미국S&P500</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-10-30</span>
+       </td>
+       <td width="95">
+        <span class="xforms_input" style="width:95px;font-size:10pt;text-align:center;">2020-11-03</span>
+       </td>
+       <td width="81">
+        <span class="xforms_input" style="width:81px;font-size:10pt;text-align:right;">10</span>
+       </td>
+       <td width="102">
+        <span class="xforms_input" style="width:102px;font-size:10pt;">-</span>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   
+  </div>
+  </div>
+ 
+</body>
+
+</html>
