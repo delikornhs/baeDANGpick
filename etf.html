@@ -1081,16 +1081,18 @@ function render(e) {
     return `<td class="${cls}">${str}</td>`;
   }).join('')}</tr>`;
   const totalRow = `<tr><td>총수익률</td>${periods.map(p=>{
-    if(p==='listed' && listedBeforeDist){
-      return `<td class="na" title="분배금 데이터는 ${distStartLabel}부터 집계되어, 그 이전에 상장한 종목은 과거 분배금을 반영할 수 없습니다.">-</td>`;
-    }
     const v = e[p==='listed'?'tretListed':`tret${p.charAt(0).toUpperCase()+p.slice(1)}`];
     const cls = retCls(v), str = retStr(v);
+    // 분배금 이력 시작 이전에 상장한 종목은 그 이전 분배금이 빠져 실제보다 낮게 나온다.
+    // 값을 감추면 대략적인 규모조차 알 수 없으므로, 표시하되 * 로 구분한다.
+    if(p==='listed' && listedBeforeDist && v != null){
+      return `<td class="${cls}" title="분배금 데이터가 ${distStartLabel}부터 집계되어 그 이전 분배금이 빠져 있습니다. 실제 총수익률은 이 값보다 높습니다.">${str}<sup style="color:var(--ink3);font-weight:400">*</sup></td>`;
+    }
     return `<td class="${cls}">${str}</td>`;
   }).join('')}</tr>`;
   document.getElementById('retBody').innerHTML = priceRow + totalRow;
   document.getElementById('retFootnote4').innerHTML = listedBeforeDist
-    ? `<br>4) 분배금 데이터는 ${distStartLabel}부터 집계되어, 그 이전에 상장한 종목은 과거 분배금을 반영할 수 없습니다. 이 경우 상장이후 총수익률을 <b>-</b>로 표시합니다. (상장이후 주가 수익률과 1년 이하 총수익률은 정확합니다)`
+    ? `<br>4) <b>*</b> 분배금 데이터는 ${distStartLabel}부터 집계됩니다. 이 종목은 그 이전에 상장해 초기 분배금이 빠져 있어, <b>상장이후 총수익률이 실제보다 낮게</b> 표시됩니다. 대략적인 규모 참고용으로만 보시기 바랍니다. (상장이후 주가 수익률과 1년 이하 총수익률은 정확합니다)`
     : '';
 
   // 분배금 히스토리 차트
