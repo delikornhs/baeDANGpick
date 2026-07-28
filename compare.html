@@ -543,11 +543,11 @@ function cpRender() {
     return;
   }
 
-  // 공통 시작일: 각 ETF 첫 데이터일 중 가장 늦은 날 (= 모두 데이터가 있는 시점)
-  let start = '0000-00-00', lastDate = '0000-00-00';
+  // 시작일: 각 ETF 첫 데이터일 중 가장 이른 날 (상장일이 다르면 각자 자기 데이터부터 표시)
+  let start = '9999-99-99', lastDate = '0000-00-00';
   avail.forEach(e => {
     const arr = cpData[e.code];
-    if(arr[0][0] > start) start = arr[0][0];
+    if(arr[0][0] < start) start = arr[0][0];
     if(arr[arr.length - 1][0] > lastDate) lastDate = arr[arr.length - 1][0];
   });
   if(cpPeriod !== 'all') {
@@ -613,7 +613,7 @@ function cpRender() {
     }
   });
 
-  basis.innerHTML = `※ 종가(원) 기준입니다. 상장일이 다르면 모두 데이터가 존재하는 시점부터 표시합니다. 수익률(주가·총수익) 비교는 아래 <b>상세 비교</b> 표를 참고하세요.`;
+  basis.innerHTML = `※ 종가(원) 기준입니다. 상장일이 다른 경우 각 상품은 자기 데이터가 있는 시점부터 표시됩니다. 수익률(주가·총수익) 비교는 아래 <b>상세 비교</b> 표를 참고하세요.`;
 }
 
 // ── 초기화 ──
