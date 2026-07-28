@@ -136,6 +136,14 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .dash-pg-dot{width:6px;height:6px;border-radius:50%;background:var(--ink4);cursor:pointer;padding:0;border:none;transition:background .15s}
 .dash-pg-dot.on{background:var(--accent)}
 .dash-pg-count{font-size:11px;color:var(--ink3);font-family:"DM Mono",monospace;min-width:34px;text-align:center}
+.dash-rb-bar-track{position:relative;height:20px;border-radius:6px;background:var(--bg);overflow:hidden;border:1px solid var(--border);margin-bottom:8px}
+.dash-rb-bar-seg{position:absolute;top:0;bottom:0}
+.dash-rb-bar-tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.85;z-index:2}
+.dash-rb-legend{display:flex;flex-direction:column;gap:5px;margin-bottom:4px}
+.dash-rb-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2)}
+.dash-rb-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dash-rb-legend-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.dash-rb-legend-pct{font-size:10px;color:var(--ink3);flex-shrink:0;font-family:"DM Mono",monospace}
 .dash-rb-basket-hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
 .dash-rb-basket-name{font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .dash-rb-basket-total{font-size:12px;font-weight:700;font-family:"DM Mono",monospace;color:var(--ink2);flex-shrink:0}
@@ -2370,6 +2378,12 @@ function renderDashWl() {
 }
 
 // ── 리밸런싱 바구니 계산 (portfolio.html의 calcRebalBasket과 동일 로직) ──
+const RB_PALETTE = [
+  '#1d6b38','#3b82f6','#f59e0b','#ec4899','#8b5cf6',
+  '#06b6d4','#10b981','#f97316','#6366f1','#84cc16',
+  '#ef4444','#a855f7','#14b8a6','#fb923c','#64748b',
+];
+
 function calcRebalBasket(basket) {
   const rows = (basket.items || []).map(it => {
     const etf = (ETF_ALL || []).find(e => e.code === it.code);
@@ -2380,41 +2394,56 @@ function calcRebalBasket(basket) {
   }).filter(Boolean);
   const totalValue  = rows.reduce((s, r) => s + r.value, 0);
   const totalTarget = rows.reduce((s, r) => s + r.targetPct, 0);
-  const enriched = rows.map(r => {
+  const enriched = rows.map((r, i) => {
     const curPct      = totalValue > 0 ? r.value / totalValue * 100 : 0;
     const diffPct     = curPct - r.targetPct;
     const targetValue = totalValue * r.targetPct / 100;
     const diffValue   = targetValue - r.value; // >0 매수 필요, <0 매도 필요
     const diffQty     = r.price > 0 ? Math.round(diffValue / r.price) : 0;
-    return { ...r, curPct, diffPct, diffQty };
+    return { ...r, curPct, diffPct, diffQty, colorIdx: i }; // colorIdx: 바구니 내 원래 순서 기준 고정 색상
   }).sort((a, b) => b.value - a.value);
   return { totalValue, totalTarget, rows: enriched };
+}
+
+// ── 100% 기준 비중 가로바 (현재비중 색상 구간 + 목표비중 누적 경계선) ──
+function buildDashRebalBar(rows) {
+  if (!rows.length) return '<div class="dash-rb-empty-basket">담긴 종목이 없습니다.</div>';
+  const barRows = [...rows].sort((a, b) => a.colorIdx - b.colorIdx);
+  let curCum = 0, tgtCum = 0;
+  const segs = barRows.map(r => {
+    const left  = curCum;
+    const width = Math.max(0, r.curPct);
+    curCum += width;
+    const color = RB_PALETTE[r.colorIdx % RB_PALETTE.length];
+    return `<div class="dash-rb-bar-seg" style="left:${left.toFixed(2)}%;width:${width.toFixed(2)}%;background:${color}" title="${r.etf.name} · 현재 ${r.curPct.toFixed(1)}%"></div>`;
+  }).join('');
+  const ticks = barRows.map(r => {
+    tgtCum += r.targetPct;
+    const pos = Math.min(100, Math.max(0, tgtCum));
+    return `<div class="dash-rb-bar-tick" style="left:${pos.toFixed(2)}%" title="목표 누적 경계 ${tgtCum.toFixed(1)}%"></div>`;
+  }).join('');
+  const legend = barRows.map(r => `
+    <div class="dash-rb-legend-item">
+      <div class="dash-rb-legend-dot" style="background:${RB_PALETTE[r.colorIdx % RB_PALETTE.length]}"></div>
+      <div class="dash-rb-legend-name">${r.etf.name}</div>
+      <div class="dash-rb-legend-pct">${r.curPct.toFixed(1)}% · 목표 ${r.targetPct.toFixed(1)}%</div>
+    </div>`).join('');
+  return `
+    <div class="dash-rb-bar-track">${segs}${ticks}</div>
+    <div class="dash-rb-legend">${legend}</div>`;
 }
 
 function dashRbBasketPageHtml(basket) {
   const { totalValue, totalTarget, rows } = calcRebalBasket(basket);
   const warnHtml = rows.length && Math.abs(totalTarget - 100) > 0.5
     ? `<div class="dash-rb-warn">⚠️ 목표비중 합계 ${totalTarget.toFixed(1)}%</div>` : '';
-  const itemsHtml = rows.length ? rows.map(r => {
-    const diffStr = r.diffQty > 0 ? `<span class="pos">매수 ${r.diffQty.toLocaleString()}주</span>`
-      : r.diffQty < 0 ? `<span class="neg">매도 ${Math.abs(r.diffQty).toLocaleString()}주</span>`
-      : '적정';
-    return `
-      <a href="/etf/${r.code}" class="dash-item">
-        <div class="dash-item-left"><span class="dash-item-name">${r.etf.name}</span></div>
-        <div class="dash-item-right">
-          <div class="dash-item-val">목표 ${r.targetPct.toFixed(1)}% · 현재 ${r.curPct.toFixed(1)}%</div>
-          <div class="dash-item-sub"><span class="dash-item-tag">필요</span> ${diffStr}</div>
-        </div>
-      </a>`;
-  }).join('') : `<div class="dash-rb-empty-basket">담긴 종목이 없습니다.</div>`;
   return `
     <div class="dash-rb-basket-hdr">
       <span class="dash-rb-basket-name">${escHtml(basket.name)}</span>
       <span class="dash-rb-basket-total">${Math.round(totalValue).toLocaleString()}원</span>
     </div>
     ${warnHtml}
-    <div class="dash-list">${itemsHtml}</div>`;
+    ${buildDashRebalBar(rows)}`;
 }
 
 function renderDashRebal() {
