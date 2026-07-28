@@ -272,8 +272,10 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .rb-bar-track{position:relative;height:24px;border-radius:7px;background:var(--bg);overflow:hidden;border:1px solid var(--border)}
 .rb-bar-seg{position:absolute;top:0;bottom:0;transition:left .2s,width .2s}
 .rb-bar-tick{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);z-index:3;box-shadow:0 0 0 1px rgba(255,255,255,.7)}
-.rb-bar-band{position:absolute;top:0;bottom:0;z-index:2;background:repeating-linear-gradient(135deg,rgba(0,0,0,.38) 0 4px,rgba(255,255,255,.38) 4px 8px)}
+.rb-bar-band-line{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--blue);opacity:.9;z-index:2;box-shadow:0 0 0 1px rgba(255,255,255,.7)}
 .rb-bar-hint{font-size:10px;color:var(--ink3);margin-top:6px;line-height:1.6}
+.rb-bar-hint .hint-ref{color:var(--ink);font-weight:700}
+.rb-bar-hint .hint-band{color:var(--blue);font-weight:700}
 .rb-band-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:12px}
 .rb-band-label{font-size:11px;font-weight:700;color:var(--ink2);white-space:nowrap}
 .rb-band-preset{font-size:11px;font-weight:700;padding:4px 11px;border-radius:14px;border:1px solid var(--border);background:var(--bg);color:var(--ink3);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
@@ -830,12 +832,14 @@ function buildRebalBar(rows, bandPct) {
     return `<div class="rb-bar-seg" style="left:${left.toFixed(2)}%;width:${width.toFixed(2)}%;background:${color}" title="${r.etf.name} · 현재 ${r.curPct.toFixed(1)}%"></div>`;
   }).join('');
   // 마지막 항목의 누적 경계는 항상 100%=100%로 고정되어 표시할 의미가 없으므로 제외
+  // 기준선(진한 색, 목표 경계) + 그 양옆 밴드선(파란색, 허용 범위 경계) — 셋 다 항상 경계 지점 기준 대칭
   const bandsAndTicks = barRows.slice(0, -1).map(r => {
     tgtCum += r.targetPct;
-    const center = Math.min(100, Math.max(0, tgtCum));
+    const center    = Math.min(100, Math.max(0, tgtCum));
     const bandLeft  = Math.max(0, tgtCum - bandPct);
     const bandRight = Math.min(100, tgtCum + bandPct);
-    return `<div class="rb-bar-band" style="left:${bandLeft.toFixed(2)}%;width:${(bandRight - bandLeft).toFixed(2)}%" title="허용 밴드 ${(tgtCum - bandPct).toFixed(1)}%~${(tgtCum + bandPct).toFixed(1)}%"></div>
+    return `<div class="rb-bar-band-line" style="left:${bandLeft.toFixed(2)}%" title="밴드 하단 경계 ${(tgtCum - bandPct).toFixed(1)}%"></div>
+            <div class="rb-bar-band-line" style="left:${bandRight.toFixed(2)}%" title="밴드 상단 경계 ${(tgtCum + bandPct).toFixed(1)}%"></div>
             <div class="rb-bar-tick" style="left:${center.toFixed(2)}%" title="목표 누적 경계 ${tgtCum.toFixed(1)}%"></div>`;
   }).join('');
   const legend = barRows.map(r => `
@@ -847,7 +851,7 @@ function buildRebalBar(rows, bandPct) {
   return `
     <div class="rb-bar-wrap">
       <div class="rb-bar-track">${segs}${bandsAndTicks}</div>
-      <div class="rb-bar-hint">┃ 목표비중 누적 경계선, 음영 구간은 허용 밴드(±${bandPct}%p)입니다. 색상 구간이 음영 밖으로 벗어나면 리밸런싱 실행 기준을 넘은 것입니다.</div>
+      <div class="rb-bar-hint"><span class="hint-ref">┃</span> 기준선(목표비중 경계) · <span class="hint-band">┃</span> 밴드선(허용 범위 ±${bandPct}%p 경계). 색상 구간이 밴드선을 넘으면 리밸런싱 실행 기준을 넘은 것입니다.</div>
       <div class="chart-legend" style="margin-top:10px">${legend}</div>
     </div>`;
 }
