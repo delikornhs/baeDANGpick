@@ -366,6 +366,11 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   .dist-stats{grid-template-columns:repeat(2,1fr)}
   .tab-btn{font-size:12px;padding:11px 14px}
 }
+@media(max-width:480px){
+  .tab-inner{gap:2px}
+  .tab-btn{padding:10px 10px;font-size:15px;gap:4px}
+  .tab-label{display:none}
+}
 
 /* ─────── SYNC (기기 간 동기화) ─────── */
 .sync-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
@@ -429,9 +434,9 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 <!-- 탭 -->
 <div class="tab-wrap">
   <div class="tab-inner">
-    <button class="tab-btn on" id="tabBtnPf" onclick="switchTab('portfolio')">💼 내 포트폴리오 <span class="tab-count" id="pfCount">0</span></button>
-    <button class="tab-btn" id="tabBtnRb" onclick="switchTab('rebalance')">⚖️ 리밸런싱 <span class="tab-count" id="rbCount">0</span></button>
-    <button class="tab-btn" id="tabBtnWl" onclick="switchTab('watchlist')">⭐ 내 관심 ETF <span class="tab-count" id="wlCount">0</span></button>
+    <button class="tab-btn on" id="tabBtnPf" onclick="switchTab('portfolio')" title="내 포트폴리오">💼 <span class="tab-label">내 포트폴리오</span> <span class="tab-count" id="pfCount">0</span></button>
+    <button class="tab-btn" id="tabBtnRb" onclick="switchTab('rebalance')" title="리밸런싱">⚖️ <span class="tab-label">리밸런싱</span> <span class="tab-count" id="rbCount">0</span></button>
+    <button class="tab-btn" id="tabBtnWl" onclick="switchTab('watchlist')" title="내 관심 ETF">⭐ <span class="tab-label">내 관심 ETF</span> <span class="tab-count" id="wlCount">0</span></button>
   </div>
 </div>
 
