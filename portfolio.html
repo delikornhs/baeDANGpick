@@ -272,7 +272,20 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .rb-bar-track{position:relative;height:24px;border-radius:7px;background:var(--bg);overflow:hidden;border:1px solid var(--border)}
 .rb-bar-seg{position:absolute;top:0;bottom:0;transition:left .2s,width .2s}
 .rb-bar-tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.85;z-index:2}
+.rb-bar-band{position:absolute;top:0;bottom:0;background:rgba(26,26,24,.14);z-index:1}
 .rb-bar-hint{font-size:10px;color:var(--ink3);margin-top:6px;line-height:1.6}
+.rb-band-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.rb-band-label{font-size:11px;font-weight:700;color:var(--ink2);white-space:nowrap}
+.rb-band-preset{font-size:11px;font-weight:700;padding:4px 11px;border-radius:14px;border:1px solid var(--border);background:var(--bg);color:var(--ink3);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.rb-band-preset.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.rb-band-input{width:56px}
+.rb-band-hint-text{font-size:10px;color:var(--ink3)}
+.rb-band-summary{font-size:11px;border-radius:6px;padding:8px 12px;margin-bottom:12px;line-height:1.6}
+.rb-band-summary.warn{background:var(--red-bg);border:1px solid #fecaca;color:var(--red)}
+.rb-band-summary.ok{background:var(--accent-bg);border:1px solid #c5e8d2;color:var(--accent)}
+.rb-item-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;border:1px solid;white-space:nowrap;flex-shrink:0}
+.rb-item-badge.warn{background:var(--red-bg);color:var(--red);border-color:#fecaca}
+.rb-item-badge.ok{background:var(--accent-bg);color:var(--accent);border-color:#c5e8d2}
 .rb-item{padding:13px 0 13px 14px;border-bottom:1px solid var(--border);border-left:3px solid transparent}
 .rb-item:last-child{border-bottom:none}
 .rb-item-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:9px}
@@ -645,12 +658,23 @@ function ensureActiveBasket(baskets) {
 
 function createBasket() {
   const baskets = loadRebal();
-  const basket = { id: genBasketId(), name: `바구니 ${baskets.length + 1}`, items: [] };
+  const basket = { id: genBasketId(), name: `바구니 ${baskets.length + 1}`, items: [], bandPct: 5 };
   baskets.push(basket);
   saveRebal(baskets);
   activeBasketId = basket.id;
   renderRebalance();
   updateTabCounts();
+}
+
+function updateBasketBand(id, val) {
+  const v = parseFloat(val);
+  const bandPct = (isNaN(v) || v < 0) ? 5 : v;
+  const baskets = loadRebal();
+  const b = baskets.find(x => x.id === id);
+  if (!b) return;
+  b.bandPct = bandPct;
+  saveRebal(baskets);
+  renderRebalance();
 }
 
 function deleteBasket(id) {
@@ -793,8 +817,8 @@ function calcRebalBasket(basket) {
   return { totalValue, totalTarget, rows: enriched };
 }
 
-// ── 100% 기준 비중 가로바 (현재비중 색상 구간 + 목표비중 누적 경계선) ──
-function buildRebalBar(rows) {
+// ── 100% 기준 비중 가로바 (현재비중 색상 구간 + 목표비중 누적 경계선 + 밴드폭) ──
+function buildRebalBar(rows, bandPct) {
   if (!rows.length) return '';
   const barRows = [...rows].sort((a, b) => a.colorIdx - b.colorIdx);
   let curCum = 0, tgtCum = 0;
@@ -805,10 +829,13 @@ function buildRebalBar(rows) {
     const color = PALETTE[r.colorIdx % PALETTE.length];
     return `<div class="rb-bar-seg" style="left:${left.toFixed(2)}%;width:${width.toFixed(2)}%;background:${color}" title="${r.etf.name} · 현재 ${r.curPct.toFixed(1)}%"></div>`;
   }).join('');
-  const ticks = barRows.map(r => {
+  const bandsAndTicks = barRows.map(r => {
     tgtCum += r.targetPct;
-    const pos = Math.min(100, Math.max(0, tgtCum));
-    return `<div class="rb-bar-tick" style="left:${pos.toFixed(2)}%" title="목표 누적 경계 ${tgtCum.toFixed(1)}%"></div>`;
+    const center = Math.min(100, Math.max(0, tgtCum));
+    const bandLeft  = Math.max(0, tgtCum - bandPct);
+    const bandRight = Math.min(100, tgtCum + bandPct);
+    return `<div class="rb-bar-band" style="left:${bandLeft.toFixed(2)}%;width:${(bandRight - bandLeft).toFixed(2)}%" title="허용 밴드 ${(tgtCum - bandPct).toFixed(1)}%~${(tgtCum + bandPct).toFixed(1)}%"></div>
+            <div class="rb-bar-tick" style="left:${center.toFixed(2)}%" title="목표 누적 경계 ${tgtCum.toFixed(1)}%"></div>`;
   }).join('');
   const legend = barRows.map(r => `
     <div class="legend-item">
@@ -818,8 +845,8 @@ function buildRebalBar(rows) {
     </div>`).join('');
   return `
     <div class="rb-bar-wrap">
-      <div class="rb-bar-track">${segs}${ticks}</div>
-      <div class="rb-bar-hint">┃ 표시는 목표비중 누적 경계선입니다. 색상 구간이 경계선을 넘으면 초과, 못 미치면 부족을 뜻합니다.</div>
+      <div class="rb-bar-track">${segs}${bandsAndTicks}</div>
+      <div class="rb-bar-hint">┃ 목표비중 누적 경계선, 음영 구간은 허용 밴드(±${bandPct}%p)입니다. 색상 구간이 음영 밖으로 벗어나면 리밸런싱 실행 기준을 넘은 것입니다.</div>
       <div class="chart-legend" style="margin-top:10px">${legend}</div>
     </div>`;
 }
@@ -845,14 +872,32 @@ function renderRebalance() {
   const basket = baskets.find(b => b.id === activeBasketId);
   const pf = load();
   const { totalValue, totalTarget, rows } = calcRebalBasket(basket);
+  const bandPct = basket.bandPct ?? 5;
 
   const tabsHtml = baskets.map(b =>
     `<button class="rb-basket-tab ${b.id === activeBasketId ? 'on' : ''}" onclick="switchBasket('${b.id}')" title="${escHtml(b.name)}">${escHtml(b.name)}</button>`
   ).join('') + `<button class="rb-basket-add" onclick="createBasket()">⊕ 바구니 추가</button>`;
 
+  const bandRowHtml = `
+    <div class="rb-band-row">
+      <span class="rb-band-label">리밸런싱 밴드폭</span>
+      <button type="button" class="rb-band-preset ${bandPct === 5 ? 'on' : ''}" onclick="updateBasketBand('${basket.id}', 5)">±5%</button>
+      <button type="button" class="rb-band-preset ${bandPct === 10 ? 'on' : ''}" onclick="updateBasketBand('${basket.id}', 10)">±10%</button>
+      <input type="number" class="qty-edit rb-band-input" value="${bandPct}" min="0" max="50" step="0.5"
+        onchange="updateBasketBand('${basket.id}', this.value)">
+      <span class="rb-band-hint-text">%p — 목표비중에서 이 이상 벗어나면 리밸런싱 실행</span>
+    </div>`;
+
   const targetWarn = rows.length > 0 && Math.abs(totalTarget - 100) > 0.05
     ? `<div class="rb-warn-note">⚠️ 목표 비중 합계가 ${totalTarget.toFixed(1)}%입니다. 100%가 되도록 맞추면 더 정확하게 계산됩니다.</div>`
     : '';
+
+  const bandExceedCount = rows.filter(r => Math.abs(r.diffPct) > bandPct).length;
+  const bandSummaryHtml = rows.length ? (
+    bandExceedCount > 0
+      ? `<div class="rb-band-summary warn">⚠️ ${bandExceedCount}개 종목이 밴드(±${bandPct}%p)를 벗어났습니다. 리밸런싱 실행을 고려하세요.</div>`
+      : `<div class="rb-band-summary ok">✅ 모든 종목이 밴드(±${bandPct}%p) 안에 있습니다. 지금은 리밸런싱이 필요하지 않습니다.</div>`
+  ) : '';
 
   const summaryHtml = rows.length ? `
     <div class="summary-grid">
@@ -868,10 +913,17 @@ function renderRebalance() {
       : `<span class="pf-stat-val">-</span>`;
     const diffPctCls = r.diffPct > 0.05 ? 'sell' : r.diffPct < -0.05 ? 'buy' : '';
     const diffPctStr = r.diffPct > 0.05 ? `+${r.diffPct.toFixed(1)}%p 초과` : r.diffPct < -0.05 ? `${r.diffPct.toFixed(1)}%p 부족` : '적정';
+    const outOfBand = Math.abs(r.diffPct) > bandPct;
+    const bandBadge = outOfBand
+      ? `<span class="rb-item-badge warn">⚠️ 밴드 초과</span>`
+      : `<span class="rb-item-badge ok">밴드 내</span>`;
     return `
       <div class="rb-item" style="border-left-color:${PALETTE[r.colorIdx % PALETTE.length]}">
         <div class="rb-item-hdr">
-          <div class="rb-item-name">${r.etf.name}</div>
+          <div style="display:flex;align-items:center;gap:7px;min-width:0;flex-wrap:wrap">
+            <div class="rb-item-name">${r.etf.name}</div>
+            ${bandBadge}
+          </div>
           <button class="pf-delete" onclick="removeRbItem('${r.code}')">삭제</button>
         </div>
         <div class="rb-item-grid">
@@ -925,9 +977,11 @@ function renderRebalance() {
         <input type="text" class="rb-basket-name-input" value="${escHtml(basket.name)}" onchange="renameBasket('${basket.id}', this.value)">
         <button class="rb-basket-del" onclick="deleteBasket('${basket.id}')">🗑 바구니 삭제</button>
       </div>
+      ${bandRowHtml}
       ${targetWarn}
+      ${bandSummaryHtml}
       ${summaryHtml}
-      ${buildRebalBar(rows)}
+      ${buildRebalBar(rows, bandPct)}
       <div class="pf-card-items-label">담긴 종목</div>
       ${itemsHtml}
       ${addFormHtml}
