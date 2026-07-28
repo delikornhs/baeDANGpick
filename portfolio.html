@@ -256,6 +256,37 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .pf-delete{font-size:11px;color:var(--ink3);background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:4px 10px;cursor:pointer;margin-left:auto;font-family:inherit;transition:all .15s}
 .pf-delete:hover{color:var(--red);border-color:#fecaca;background:var(--red-bg)}
 
+/* ─────── 리밸런싱 ─────── */
+.rb-basket-tabs{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.rb-basket-tab{font-size:12px;font-weight:700;padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--ink3);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis}
+.rb-basket-tab.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.rb-basket-add{font-size:12px;font-weight:700;padding:7px 12px;border-radius:20px;border:1.5px dashed var(--accent-mid);background:var(--white);color:var(--accent);cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .15s}
+.rb-basket-add:hover{background:var(--accent-bg)}
+.rb-basket-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.rb-basket-name-input{font-size:14px;font-weight:700;border:1px solid transparent;border-radius:6px;padding:5px 8px;font-family:inherit;background:transparent;flex:1;min-width:0;color:var(--ink);outline:none}
+.rb-basket-name-input:hover,.rb-basket-name-input:focus{border-color:var(--border);background:var(--bg)}
+.rb-basket-del{font-size:11px;color:var(--ink3);background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:5px 10px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .15s;flex-shrink:0}
+.rb-basket-del:hover{color:var(--red);border-color:#fecaca;background:var(--red-bg)}
+.rb-warn-note{font-size:11px;color:var(--warn);background:var(--warn-bg);border:1px solid #fde68a;border-radius:6px;padding:8px 12px;margin-bottom:12px;line-height:1.6}
+.rb-item{padding:13px 0;border-bottom:1px solid var(--border)}
+.rb-item:last-child{border-bottom:none}
+.rb-item-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:9px}
+.rb-item-name{font-size:13px;font-weight:700;letter-spacing:-.2px}
+.rb-item-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:9px}
+.pf-stat-val.buy{color:var(--blue)}
+.pf-stat-val.sell{color:var(--red)}
+.rb-weight-cmp{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.rb-weight-track{flex:1;position:relative;height:6px;background:var(--border);border-radius:3px}
+.rb-weight-cur-fill{position:absolute;left:0;top:0;height:100%;border-radius:3px;background:var(--accent-mid)}
+.rb-weight-target-mark{position:absolute;top:-2px;width:2px;height:10px;background:var(--ink);border-radius:1px}
+.rb-add-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.rb-add-title{font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:8px}
+@media(max-width:600px){
+  .rb-item-grid{grid-template-columns:repeat(2,1fr)}
+  .rb-add-row{flex-direction:column}
+  .rb-add-row .search-wrap,.rb-add-row .qty-input,.rb-add-row .add-btn{width:100%}
+}
+
 /* EST INFO SECTION */
 .est-info{background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:10px 13px;margin-bottom:10px;font-size:11px;color:var(--warn)}
 .est-info-title{font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:5px}
@@ -379,6 +410,7 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 <div class="tab-wrap">
   <div class="tab-inner">
     <button class="tab-btn on" id="tabBtnPf" onclick="switchTab('portfolio')">💼 내 포트폴리오 <span class="tab-count" id="pfCount">0</span></button>
+    <button class="tab-btn" id="tabBtnRb" onclick="switchTab('rebalance')">⚖️ 리밸런싱 <span class="tab-count" id="rbCount">0</span></button>
     <button class="tab-btn" id="tabBtnWl" onclick="switchTab('watchlist')">⭐ 내 관심 ETF <span class="tab-count" id="wlCount">0</span></button>
   </div>
 </div>
@@ -427,6 +459,11 @@ footer a{color:var(--ink3);text-underline-offset:2px}
     <!-- 콘텐츠 영역 (JS 렌더) -->
     <div id="contentArea"></div>
 
+  </div>
+
+  <!-- 리밸런싱 탭 -->
+  <div id="tabRebalance" style="display:none">
+    <div id="rebalArea"></div>
   </div>
 
 </div>
@@ -562,16 +599,302 @@ function switchTab(tab) {
   activeTab = tab;
   document.getElementById('tabBtnWl').classList.toggle('on', tab === 'watchlist');
   document.getElementById('tabBtnPf').classList.toggle('on', tab === 'portfolio');
+  document.getElementById('tabBtnRb').classList.toggle('on', tab === 'rebalance');
   document.getElementById('tabWatchlist').style.display = tab === 'watchlist' ? '' : 'none';
   document.getElementById('tabPortfolio').style.display = tab === 'portfolio' ? '' : 'none';
+  document.getElementById('tabRebalance').style.display = tab === 'rebalance' ? '' : 'none';
+  if (tab === 'rebalance') renderRebalance();
 }
 
 // ── 탭 카운트 ──
 function updateTabCounts() {
   const wlLen = loadWl().length;
   const pfLen = load().length;
+  const rbLen = loadRebal().length;
   document.getElementById('wlCount').textContent = wlLen;
   document.getElementById('pfCount').textContent = pfLen;
+  document.getElementById('rbCount').textContent = rbLen;
+}
+
+// ── HTML 이스케이프 (바구니 이름은 자유 텍스트) ──
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ══════════════════════════════════════════
+// 리밸런싱
+// ══════════════════════════════════════════
+const REBAL_KEY = 'bdp_rebalance';
+const loadRebal = () => JSON.parse(localStorage.getItem(REBAL_KEY) || '[]');
+const saveRebal = baskets => { localStorage.setItem(REBAL_KEY, JSON.stringify(baskets)); if (window.bdpSync) bdpSync.push(); };
+
+let activeBasketId = null;
+let rbSelectedCode = null;
+
+function genBasketId() { return 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+function ensureActiveBasket(baskets) {
+  if (!baskets.length) { activeBasketId = null; return; }
+  if (!activeBasketId || !baskets.some(b => b.id === activeBasketId)) activeBasketId = baskets[0].id;
+}
+
+function createBasket() {
+  const baskets = loadRebal();
+  const basket = { id: genBasketId(), name: `바구니 ${baskets.length + 1}`, items: [] };
+  baskets.push(basket);
+  saveRebal(baskets);
+  activeBasketId = basket.id;
+  renderRebalance();
+  updateTabCounts();
+}
+
+function deleteBasket(id) {
+  if (!confirm('이 리밸런싱 바구니를 삭제하시겠습니까?')) return;
+  saveRebal(loadRebal().filter(b => b.id !== id));
+  if (activeBasketId === id) activeBasketId = null;
+  renderRebalance();
+  updateTabCounts();
+}
+
+function renameBasket(id, name) {
+  const baskets = loadRebal();
+  const b = baskets.find(x => x.id === id);
+  if (!b) return;
+  const trimmed = name.trim();
+  if (trimmed) b.name = trimmed;
+  saveRebal(baskets);
+  renderRebalance();
+}
+
+function switchBasket(id) {
+  activeBasketId = id;
+  clearRbSelected();
+  renderRebalance();
+}
+
+// ── 종목 검색 (포트폴리오 보유 종목 중 아직 바구니에 없는 것) ──
+function getRbCandidates() {
+  const pf = load();
+  const basket = loadRebal().find(b => b.id === activeBasketId);
+  const used = new Set((basket ? basket.items : []).map(i => i.code));
+  return pf.filter(i => !used.has(i.code) && findETF(i.code));
+}
+
+function onRbSearch(val) {
+  const q = (val || '').trim().toLowerCase();
+  const dd = document.getElementById('rbSearchDropdown');
+  if (!dd) return;
+  const candidates = getRbCandidates();
+  const results = candidates.filter(i => {
+    const etf = findETF(i.code);
+    return !q || etf.name.toLowerCase().includes(q) || etf.code.includes(q);
+  }).slice(0, 8);
+  dd.innerHTML = results.length
+    ? results.map(i => {
+        const etf = findETF(i.code);
+        return `<div class="search-result-item" onmousedown="selectRbETF('${i.code}')">
+          <div class="sri-name">${etf.name}</div>
+          <div class="sri-meta">${etf.code} · 포트폴리오 보유 ${i.qty.toLocaleString()}주</div>
+        </div>`;
+      }).join('')
+    : `<div style="padding:12px 14px;font-size:12px;color:var(--ink3)">${candidates.length ? '검색 결과 없음' : '추가할 수 있는 포트폴리오 종목이 없습니다'}</div>`;
+  dd.classList.add('open');
+}
+function selectRbETF(code) {
+  const etf = findETF(code);
+  const pfItem = load().find(i => i.code === code);
+  if (!etf || !pfItem) return;
+  rbSelectedCode = code;
+  document.getElementById('rbSearchInput').value = '';
+  document.getElementById('rbSearchDropdown').classList.remove('open');
+  document.getElementById('rbSelectedChipName').textContent = `[${etf.brand}] ${etf.name}`;
+  document.getElementById('rbSelectedChip').classList.add('show');
+  document.getElementById('rbQtyInput').value = pfItem.qty;
+  document.getElementById('rbAddBtn').disabled = false;
+  document.getElementById('rbTargetInput').focus();
+}
+function clearRbSelected() {
+  rbSelectedCode = null;
+  const chip = document.getElementById('rbSelectedChip');
+  if (chip) chip.classList.remove('show');
+  const btn = document.getElementById('rbAddBtn');
+  if (btn) btn.disabled = true;
+  const input = document.getElementById('rbSearchInput');
+  if (input) input.value = '';
+}
+function hideRbDropdown() {
+  setTimeout(() => { const dd = document.getElementById('rbSearchDropdown'); if (dd) dd.classList.remove('open'); }, 150);
+}
+
+function addRbItem() {
+  if (!rbSelectedCode) return;
+  const qty = parseInt(document.getElementById('rbQtyInput').value) || 0;
+  if (qty <= 0) { alert('수량을 입력해주세요.'); return; }
+  const target = parseFloat(document.getElementById('rbTargetInput').value) || 0;
+  const baskets = loadRebal();
+  const basket = baskets.find(b => b.id === activeBasketId);
+  if (!basket) return;
+  basket.items.push({ code: rbSelectedCode, qty, targetPct: target });
+  saveRebal(baskets);
+  clearRbSelected();
+  document.getElementById('rbQtyInput').value = '';
+  document.getElementById('rbTargetInput').value = '';
+  renderRebalance();
+}
+
+function removeRbItem(code) {
+  const baskets = loadRebal();
+  const basket = baskets.find(b => b.id === activeBasketId);
+  if (!basket) return;
+  basket.items = basket.items.filter(i => i.code !== code);
+  saveRebal(baskets);
+  renderRebalance();
+}
+
+function updateRbQty(code) {
+  const qty = parseInt(document.getElementById('rbQty-' + code).value) || 0;
+  if (qty <= 0) { alert('수량은 1 이상이어야 합니다.'); return; }
+  const baskets = loadRebal();
+  const item = (baskets.find(b => b.id === activeBasketId) || {}).items?.find(i => i.code === code);
+  if (item) { item.qty = qty; saveRebal(baskets); renderRebalance(); }
+}
+
+function updateRbTarget(code) {
+  const val = parseFloat(document.getElementById('rbTarget-' + code).value);
+  const baskets = loadRebal();
+  const item = (baskets.find(b => b.id === activeBasketId) || {}).items?.find(i => i.code === code);
+  if (item) { item.targetPct = isNaN(val) ? 0 : val; saveRebal(baskets); renderRebalance(); }
+}
+
+// ── 바구니 계산 (목표비중 대비 현재비중·초과부족·필요 매매 수량) ──
+function calcRebalBasket(basket) {
+  const rows = (basket.items || []).map(it => {
+    const etf = findETF(it.code);
+    if (!etf) return null;
+    const price = etf.price || 0;
+    const value = price * it.qty;
+    return { code: it.code, etf, qty: it.qty, targetPct: it.targetPct || 0, price, value };
+  }).filter(Boolean);
+  const totalValue  = rows.reduce((s, r) => s + r.value, 0);
+  const totalTarget = rows.reduce((s, r) => s + r.targetPct, 0);
+  const enriched = rows.map(r => {
+    const curPct      = totalValue > 0 ? r.value / totalValue * 100 : 0;
+    const diffPct     = curPct - r.targetPct;
+    const targetValue = totalValue * r.targetPct / 100;
+    const diffValue   = targetValue - r.value; // >0 매수 필요, <0 매도 필요
+    const diffQty     = r.price > 0 ? Math.round(diffValue / r.price) : 0;
+    return { ...r, curPct, diffPct, diffQty };
+  }).sort((a, b) => b.value - a.value);
+  return { totalValue, totalTarget, rows: enriched };
+}
+
+function renderRebalance() {
+  const baskets = loadRebal();
+  ensureActiveBasket(baskets);
+  const area = document.getElementById('rebalArea');
+
+  if (!baskets.length) {
+    area.innerHTML = `
+      <div class="card">
+        <div class="rb-basket-tabs"><button class="rb-basket-add" onclick="createBasket()">⊕ 바구니 추가</button></div>
+        <div class="empty-state">
+          <div class="empty-icon">⚖️</div>
+          <div class="empty-title">리밸런싱 바구니가 없습니다</div>
+          <div class="empty-desc">⊕ 바구니 추가 버튼을 눌러 새 바구니를 만들고,<br>포트폴리오 종목 중 리밸런싱할 상품을 담아보세요.</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const basket = baskets.find(b => b.id === activeBasketId);
+  const pf = load();
+  const { totalValue, totalTarget, rows } = calcRebalBasket(basket);
+
+  const tabsHtml = baskets.map(b =>
+    `<button class="rb-basket-tab ${b.id === activeBasketId ? 'on' : ''}" onclick="switchBasket('${b.id}')" title="${escHtml(b.name)}">${escHtml(b.name)}</button>`
+  ).join('') + `<button class="rb-basket-add" onclick="createBasket()">⊕ 바구니 추가</button>`;
+
+  const targetWarn = rows.length > 0 && Math.abs(totalTarget - 100) > 0.05
+    ? `<div class="rb-warn-note">⚠️ 목표 비중 합계가 ${totalTarget.toFixed(1)}%입니다. 100%가 되도록 맞추면 더 정확하게 계산됩니다.</div>`
+    : '';
+
+  const summaryHtml = rows.length ? `
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-label">바구니 총 평가금액</div><div class="sum-val">${comma(totalValue)}<span class="unit">원</span></div><div class="sum-sub">${rows.length}개 종목</div></div>
+      <div class="sum-card"><div class="sum-label">목표 비중 합계</div><div class="sum-val ${Math.abs(totalTarget - 100) > 0.05 ? 'accent' : ''}">${totalTarget.toFixed(1)}<span class="unit">%</span></div></div>
+    </div>` : '';
+
+  const itemsHtml = rows.length ? rows.map(r => {
+    const diffQtyHtml = r.diffQty > 0
+      ? `<span class="pf-stat-val buy">매수 ${r.diffQty.toLocaleString()}주</span>`
+      : r.diffQty < 0
+      ? `<span class="pf-stat-val sell">매도 ${Math.abs(r.diffQty).toLocaleString()}주</span>`
+      : `<span class="pf-stat-val">-</span>`;
+    const diffPctCls = r.diffPct > 0.05 ? 'sell' : r.diffPct < -0.05 ? 'buy' : '';
+    const diffPctStr = r.diffPct > 0.05 ? `+${r.diffPct.toFixed(1)}%p 초과` : r.diffPct < -0.05 ? `${r.diffPct.toFixed(1)}%p 부족` : '적정';
+    return `
+      <div class="rb-item">
+        <div class="rb-item-hdr">
+          <div class="rb-item-name">${r.etf.name}</div>
+          <button class="pf-delete" onclick="removeRbItem('${r.code}')">삭제</button>
+        </div>
+        <div class="rb-item-grid">
+          <div class="pf-stat"><div class="pf-stat-label">목표비중</div><div class="pf-stat-val">${r.targetPct.toFixed(1)}%</div></div>
+          <div class="pf-stat"><div class="pf-stat-label">현재비중</div><div class="pf-stat-val">${r.curPct.toFixed(1)}%</div></div>
+          <div class="pf-stat"><div class="pf-stat-label">초과/부족</div><div class="pf-stat-val ${diffPctCls}">${diffPctStr}</div></div>
+          <div class="pf-stat"><div class="pf-stat-label">필요 매매</div>${diffQtyHtml}</div>
+        </div>
+        <div class="rb-weight-cmp">
+          <div class="rb-weight-track">
+            <div class="rb-weight-cur-fill" style="width:${Math.min(100, r.curPct).toFixed(1)}%"></div>
+            <div class="rb-weight-target-mark" style="left:${Math.min(100, r.targetPct).toFixed(1)}%"></div>
+          </div>
+          <div class="weight-pct" style="width:auto">${comma(r.value)}원</div>
+        </div>
+        <div class="pf-item-actions">
+          <div class="qty-wrap">
+            <span class="qty-label">수량</span>
+            <input type="number" class="qty-edit" id="rbQty-${r.code}" value="${r.qty}" min="1">
+            <button class="qty-save" onclick="updateRbQty('${r.code}')">수정</button>
+          </div>
+          <div class="qty-wrap">
+            <span class="qty-label">목표비중(%)</span>
+            <input type="number" class="qty-edit" id="rbTarget-${r.code}" value="${r.targetPct}" min="0" max="100" step="0.1">
+            <button class="qty-save" onclick="updateRbTarget('${r.code}')">수정</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('') : `<div class="pf-mini-empty">이 바구니에 담긴 종목이 없습니다. 아래에서 포트폴리오 종목을 추가하세요.</div>`;
+
+  const addFormHtml = pf.length ? `
+    <div class="rb-add-row">
+      <div class="search-wrap">
+        <input type="text" class="search-input" id="rbSearchInput" placeholder="포트폴리오 보유 종목 검색" autocomplete="off"
+          oninput="onRbSearch(this.value)" onfocus="onRbSearch(this.value)" onblur="hideRbDropdown()">
+        <div class="search-dropdown" id="rbSearchDropdown"></div>
+      </div>
+      <input type="number" class="qty-input" id="rbQtyInput" placeholder="수량" min="1">
+      <input type="number" class="qty-input" id="rbTargetInput" placeholder="목표비중(%)" min="0" max="100" step="0.1">
+      <button class="add-btn" id="rbAddBtn" onclick="addRbItem()" disabled>추가</button>
+    </div>
+    <div class="selected-chip" id="rbSelectedChip">
+      <span class="selected-chip-name" id="rbSelectedChipName"></span>
+      <button class="selected-chip-clear" onclick="clearRbSelected()" title="선택 취소">✕</button>
+    </div>` : `<div class="pf-mini-empty" style="margin-top:12px">포트폴리오에 등록된 종목이 없습니다. 먼저 포트폴리오 탭에서 종목을 추가하세요.</div>`;
+
+  area.innerHTML = `
+    <div class="card">
+      <div class="rb-basket-tabs">${tabsHtml}</div>
+      <div class="rb-basket-hdr">
+        <input type="text" class="rb-basket-name-input" value="${escHtml(basket.name)}" onchange="renameBasket('${basket.id}', this.value)">
+        <button class="rb-basket-del" onclick="deleteBasket('${basket.id}')">🗑 바구니 삭제</button>
+      </div>
+      ${targetWarn}
+      ${summaryHtml}
+      <div class="pf-card-items-label">담긴 종목</div>
+      ${itemsHtml}
+      ${addFormHtml}
+    </div>`;
 }
 
 // ── 관심 ETF 렌더 ──
@@ -1476,7 +1799,9 @@ function kakaoShareFromModal() {
 // URL 파라미터로 탭 선택
 (function(){
   const p = new URLSearchParams(location.search).get('tab');
-  if (p === 'portfolio') switchTab('portfolio');
+  if (p === 'rebalance') switchTab('rebalance');
+  else if (p === 'watchlist') switchTab('watchlist');
+  else if (p === 'portfolio') switchTab('portfolio');
 })();
 
 // ── 비교 목록 관리 ──
@@ -1637,7 +1962,7 @@ async function chooseSyncConflict(choice) {
 function afterLinked() {
   refreshSyncVisibility();
   refreshSyncUI();
-  render(); renderWatchlist(); updateTabCounts();
+  render(); renderWatchlist(); renderRebalance(); updateTabCounts();
   openSyncModal();
 }
 function doUnlink() {
@@ -1651,6 +1976,7 @@ function doUnlink() {
 updateTabCounts();
 renderWatchlist();
 render();
+renderRebalance();
 updateCmpBar();
 
 // ── 동기화 초기화 ──
@@ -1664,7 +1990,7 @@ if (window.bdpSync) {
   });
   refreshSyncVisibility();
   refreshSyncUI();
-  bdpSync.pull(() => { render(); renderWatchlist(); updateTabCounts(); });
+  bdpSync.pull(() => { render(); renderWatchlist(); renderRebalance(); updateTabCounts(); });
 }
 </script>
 

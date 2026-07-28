@@ -136,6 +136,13 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .dash-pg-dot{width:6px;height:6px;border-radius:50%;background:var(--ink4);cursor:pointer;padding:0;border:none;transition:background .15s}
 .dash-pg-dot.on{background:var(--accent)}
 .dash-pg-count{font-size:11px;color:var(--ink3);font-family:"DM Mono",monospace;min-width:34px;text-align:center}
+.dash-rb-basket-hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.dash-rb-basket-name{font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.dash-rb-basket-total{font-size:12px;font-weight:700;font-family:"DM Mono",monospace;color:var(--ink2);flex-shrink:0}
+.dash-rb-warn{font-size:10px;color:var(--warn);background:var(--warn-bg);border:1px solid #fde68a;border-radius:6px;padding:6px 10px;margin-bottom:8px;line-height:1.5}
+.dash-rb-empty-basket{font-size:12px;color:var(--ink3);padding:12px 0;text-align:center}
+.dash-rb-edit-link{display:block;text-align:center;font-size:11px;font-weight:700;color:var(--accent);text-decoration:none;margin-top:12px}
+.dash-rb-edit-link:hover{text-decoration:underline}
 @media(max-width:600px){.dash-sum-grid{grid-template-columns:1fr 1fr}.dash-sum-grid .dash-sum-card:last-child{grid-column:span 2}}
 
 /* STORY ACCORDION */
@@ -551,9 +558,11 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
     </div>
     <div class="dash-tabs">
       <button class="dash-tab on" id="dashTabPf" onclick="switchDashTab('pf')">💼 내 포트폴리오</button>
+      <button class="dash-tab" id="dashTabRb" onclick="switchDashTab('rb')">⚖️ 리밸런싱</button>
       <button class="dash-tab" id="dashTabWl" onclick="switchDashTab('wl')">⭐ 관심 ETF</button>
     </div>
     <div id="dashPf"></div>
+    <div id="dashRb" style="display:none"></div>
     <div id="dashWl" style="display:none"></div>
   </div>
 </div>
@@ -2090,14 +2099,21 @@ function toggleAccordion(name) {
 // ── MY ETF 대시보드 ──
 function switchDashTab(tab) {
   document.getElementById('dashTabPf').classList.toggle('on', tab === 'pf');
+  document.getElementById('dashTabRb').classList.toggle('on', tab === 'rb');
   document.getElementById('dashTabWl').classList.toggle('on', tab === 'wl');
   document.getElementById('dashPf').style.display = tab === 'pf' ? '' : 'none';
+  document.getElementById('dashRb').style.display = tab === 'rb' ? '' : 'none';
   document.getElementById('dashWl').style.display = tab === 'wl' ? '' : 'none';
 }
 
 function renderDashboard() {
   renderDashPf();
+  renderDashRebal();
   renderDashWl();
+}
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 function dashFreqBadge(etf) {
@@ -2150,6 +2166,7 @@ function dashSortRow(section, options) {
 const DASH_PAGE_SIZE = 5;
 let dashPfPage = 0, dashPfPageCount = 1;
 let dashWlPage = 0, dashWlPageCount = 1;
+let dashRbPage = 0, dashRbPageCount = 1;
 let dashTouch = { section: null, startX: 0, deltaX: 0, axis: null };
 
 function dashChunk(arr, size) {
@@ -2158,41 +2175,53 @@ function dashChunk(arr, size) {
   return pages.length ? pages : [[]];
 }
 
+function dashSecId(section) { return section === 'pf' ? 'Pf' : section === 'wl' ? 'Wl' : 'Rb'; }
+function dashGetPage(section) { return section === 'pf' ? dashPfPage : section === 'wl' ? dashWlPage : dashRbPage; }
+function dashGetPageCount(section) { return section === 'pf' ? dashPfPageCount : section === 'wl' ? dashWlPageCount : dashRbPageCount; }
+function dashSetPage(section, val) {
+  if (section === 'pf') dashPfPage = val;
+  else if (section === 'wl') dashWlPage = val;
+  else dashRbPage = val;
+}
+
 function dashPgNav(section, pageCount, page) {
   if (pageCount <= 1) return '';
+  const id = dashSecId(section);
   const dots = Array.from({length: pageCount}, (_, i) =>
     `<button class="dash-pg-dot${i === page ? ' on' : ''}" onclick="dashGoPage('${section}', ${i - page})" title="${i + 1}페이지"></button>`
   ).join('');
   return `
     <div class="dash-pg-nav">
-      <button class="dash-pg-btn" id="dash${section === 'pf' ? 'Pf' : 'Wl'}PrevBtn" onclick="dashGoPage('${section}', -1)" ${page === 0 ? 'disabled' : ''}>‹</button>
+      <button class="dash-pg-btn" id="dash${id}PrevBtn" onclick="dashGoPage('${section}', -1)" ${page === 0 ? 'disabled' : ''}>‹</button>
       <div class="dash-pg-dots">${dots}</div>
-      <span class="dash-pg-count" id="dash${section === 'pf' ? 'Pf' : 'Wl'}PgCount">${page + 1} / ${pageCount}</span>
-      <button class="dash-pg-btn" id="dash${section === 'pf' ? 'Pf' : 'Wl'}NextBtn" onclick="dashGoPage('${section}', 1)" ${page === pageCount - 1 ? 'disabled' : ''}>›</button>
+      <span class="dash-pg-count" id="dash${id}PgCount">${page + 1} / ${pageCount}</span>
+      <button class="dash-pg-btn" id="dash${id}NextBtn" onclick="dashGoPage('${section}', 1)" ${page === pageCount - 1 ? 'disabled' : ''}>›</button>
     </div>`;
 }
 
 function dashGoPage(section, delta) {
-  const track = document.getElementById(section === 'pf' ? 'dashPfTrack' : 'dashWlTrack');
+  const id = dashSecId(section);
+  const track = document.getElementById(`dash${id}Track`);
   if (!track) return;
-  const total = section === 'pf' ? dashPfPageCount : dashWlPageCount;
-  let page = (section === 'pf' ? dashPfPage : dashWlPage) + delta;
+  const total = dashGetPageCount(section);
+  let page = dashGetPage(section) + delta;
   page = Math.max(0, Math.min(total - 1, page));
-  if (section === 'pf') dashPfPage = page; else dashWlPage = page;
+  dashSetPage(section, page);
   track.style.transition = 'transform .3s ease';
   track.style.transform = `translateX(-${page * 100}%)`;
-  const countEl = document.getElementById(section === 'pf' ? 'dashPfPgCount' : 'dashWlPgCount');
+  const countEl = document.getElementById(`dash${id}PgCount`);
   if (countEl) countEl.textContent = `${page + 1} / ${total}`;
-  document.querySelectorAll(`#dash${section === 'pf' ? 'Pf' : 'Wl'} .dash-pg-dot`).forEach((d, i) => d.classList.toggle('on', i === page));
-  const prevBtn = document.getElementById(section === 'pf' ? 'dashPfPrevBtn' : 'dashWlPrevBtn');
-  const nextBtn = document.getElementById(section === 'pf' ? 'dashPfNextBtn' : 'dashWlNextBtn');
+  document.querySelectorAll(`#dash${id} .dash-pg-dot`).forEach((d, i) => d.classList.toggle('on', i === page));
+  const prevBtn = document.getElementById(`dash${id}PrevBtn`);
+  const nextBtn = document.getElementById(`dash${id}NextBtn`);
   if (prevBtn) prevBtn.disabled = page === 0;
   if (nextBtn) nextBtn.disabled = page === total - 1;
 }
 
 function dashAttachTouch(section) {
-  const viewport = document.getElementById(section === 'pf' ? 'dashPfViewport' : 'dashWlViewport');
-  const track = document.getElementById(section === 'pf' ? 'dashPfTrack' : 'dashWlTrack');
+  const id = dashSecId(section);
+  const viewport = document.getElementById(`dash${id}Viewport`);
+  const track = document.getElementById(`dash${id}Track`);
   if (!viewport || !track) return;
 
   viewport.addEventListener('touchstart', e => {
@@ -2208,7 +2237,7 @@ function dashAttachTouch(section) {
     if (dashTouch.axis !== 'x') return;
     e.preventDefault();
     dashTouch.deltaX = dx;
-    const page = section === 'pf' ? dashPfPage : dashWlPage;
+    const page = dashGetPage(section);
     track.style.transform = `translateX(calc(-${page * 100}% + ${dx}px))`;
   }, { passive: false });
 
@@ -2338,6 +2367,81 @@ function renderDashWl() {
     </div>
     ${dashPgNav('wl', pages.length, dashWlPage)}`;
   dashAttachTouch('wl');
+}
+
+// ── 리밸런싱 바구니 계산 (portfolio.html의 calcRebalBasket과 동일 로직) ──
+function calcRebalBasket(basket) {
+  const rows = (basket.items || []).map(it => {
+    const etf = (ETF_ALL || []).find(e => e.code === it.code);
+    if (!etf) return null;
+    const price = etf.price || 0;
+    const value = price * it.qty;
+    return { code: it.code, etf, qty: it.qty, targetPct: it.targetPct || 0, price, value };
+  }).filter(Boolean);
+  const totalValue  = rows.reduce((s, r) => s + r.value, 0);
+  const totalTarget = rows.reduce((s, r) => s + r.targetPct, 0);
+  const enriched = rows.map(r => {
+    const curPct      = totalValue > 0 ? r.value / totalValue * 100 : 0;
+    const diffPct     = curPct - r.targetPct;
+    const targetValue = totalValue * r.targetPct / 100;
+    const diffValue   = targetValue - r.value; // >0 매수 필요, <0 매도 필요
+    const diffQty     = r.price > 0 ? Math.round(diffValue / r.price) : 0;
+    return { ...r, curPct, diffPct, diffQty };
+  }).sort((a, b) => b.value - a.value);
+  return { totalValue, totalTarget, rows: enriched };
+}
+
+function dashRbBasketPageHtml(basket) {
+  const { totalValue, totalTarget, rows } = calcRebalBasket(basket);
+  const warnHtml = rows.length && Math.abs(totalTarget - 100) > 0.5
+    ? `<div class="dash-rb-warn">⚠️ 목표비중 합계 ${totalTarget.toFixed(1)}%</div>` : '';
+  const itemsHtml = rows.length ? rows.map(r => {
+    const diffStr = r.diffQty > 0 ? `<span class="pos">매수 ${r.diffQty.toLocaleString()}주</span>`
+      : r.diffQty < 0 ? `<span class="neg">매도 ${Math.abs(r.diffQty).toLocaleString()}주</span>`
+      : '적정';
+    return `
+      <a href="/etf/${r.code}" class="dash-item">
+        <div class="dash-item-left"><span class="dash-item-name">${r.etf.name}</span></div>
+        <div class="dash-item-right">
+          <div class="dash-item-val">목표 ${r.targetPct.toFixed(1)}% · 현재 ${r.curPct.toFixed(1)}%</div>
+          <div class="dash-item-sub"><span class="dash-item-tag">필요</span> ${diffStr}</div>
+        </div>
+      </a>`;
+  }).join('') : `<div class="dash-rb-empty-basket">담긴 종목이 없습니다.</div>`;
+  return `
+    <div class="dash-rb-basket-hdr">
+      <span class="dash-rb-basket-name">${escHtml(basket.name)}</span>
+      <span class="dash-rb-basket-total">${Math.round(totalValue).toLocaleString()}원</span>
+    </div>
+    ${warnHtml}
+    <div class="dash-list">${itemsHtml}</div>`;
+}
+
+function renderDashRebal() {
+  const baskets = JSON.parse(localStorage.getItem('bdp_rebalance') || '[]');
+  const wrap = document.getElementById('dashRb');
+  if (!baskets.length) {
+    wrap.innerHTML = `<div class="dash-empty"><p>아직 등록한 리밸런싱 바구니가 없어요</p><a href="/portfolio.html?tab=rebalance">리밸런싱 바구니 만들기</a></div>`;
+    return;
+  }
+
+  if (baskets.length === 1) {
+    wrap.innerHTML = dashRbBasketPageHtml(baskets[0])
+      + `<a href="/portfolio.html?tab=rebalance" class="dash-rb-edit-link">리밸런싱 관리하기 →</a>`;
+    return;
+  }
+
+  dashRbPageCount = baskets.length;
+  dashRbPage = Math.min(dashRbPage, baskets.length - 1);
+  const trackHtml = baskets.map(b => `<div class="dash-list-page">${dashRbBasketPageHtml(b)}</div>`).join('');
+
+  wrap.innerHTML = `
+    <div class="dash-list-viewport" id="dashRbViewport">
+      <div class="dash-list-track" id="dashRbTrack" style="transform:translateX(-${dashRbPage * 100}%)">${trackHtml}</div>
+    </div>
+    ${dashPgNav('rb', baskets.length, dashRbPage)}
+    <a href="/portfolio.html?tab=rebalance" class="dash-rb-edit-link">리밸런싱 관리하기 →</a>`;
+  dashAttachTouch('rb');
 }
 
 let myStarToastTimer = null;

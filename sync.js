@@ -4,13 +4,14 @@
 // 로그인하지 않은 방문자에게는 window.bdpSync.isEnabled()가 false라
 // 네트워크 요청도, 동작 변화도 전혀 없다. (기존 localStorage 방식 그대로)
 //
-// 동기화 대상 키: bdp_portfolio, bdp_watchlist
+// 동기화 대상 키: bdp_portfolio, bdp_watchlist, bdp_rebalance
 // 충돌 처리: updatedAt 타임스탬프 기반 "최신 기기 우선".
 //            최초 연결 시 양쪽 모두 데이터가 있으면 사용자에게 선택을 요청.
 (function () {
   const META_KEY = 'bdp_sync';        // { token, enabled, updatedAt }
   const PF_KEY   = 'bdp_portfolio';
   const WL_KEY   = 'bdp_watchlist';
+  const RB_KEY   = 'bdp_rebalance';
   const ENDPOINT = '/api/sync';
 
   // ── 메타(로그인 상태) ──
@@ -23,12 +24,13 @@
 
   // ── 로컬 데이터 ──
   function readArr(k) { try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch { return []; } }
-  function snapshot() { return { portfolio: readArr(PF_KEY), watchlist: readArr(WL_KEY) }; }
-  function hasLocalData() { const s = snapshot(); return s.portfolio.length > 0 || s.watchlist.length > 0; }
+  function snapshot() { return { portfolio: readArr(PF_KEY), watchlist: readArr(WL_KEY), rebalance: readArr(RB_KEY) }; }
+  function hasLocalData() { const s = snapshot(); return s.portfolio.length > 0 || s.watchlist.length > 0 || s.rebalance.length > 0; }
   function applySnapshot(d) {
     if (!d) return;
     if (Array.isArray(d.portfolio)) localStorage.setItem(PF_KEY, JSON.stringify(d.portfolio));
     if (Array.isArray(d.watchlist)) localStorage.setItem(WL_KEY, JSON.stringify(d.watchlist));
+    if (Array.isArray(d.rebalance)) localStorage.setItem(RB_KEY, JSON.stringify(d.rebalance));
   }
 
   // ── 서버 호출 ──
