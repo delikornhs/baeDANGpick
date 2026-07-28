@@ -956,10 +956,13 @@ function render(e) {
     <div class="info-row"><span class="info-label">운용사</span><span class="info-val">${e.manager || e.brand}</span></div>
     <div class="info-row"><span class="info-label">상장일</span><span class="info-val mono">${listedDate}</span></div>
     <div class="info-row"><span class="info-label">분배 주기</span><span class="info-val green">${e.freq}</span></div>
-    <div class="info-row"><span class="info-label">최근 종가</span><span class="info-val mono">${comma(e.price)}원${e.chg==null?'':`<span class="info-chg ${retCls(e.chg)}">${retStr(e.chg)}</span>`}</span></div>
+    <div class="info-row"><span class="info-label">최근 종가</span><span class="info-val mono">${comma(e.price)}원<span class="info-chg ${e.chg==null?'':retCls(e.chg)}" id="infoChg">${e.chg==null?'':retStr(e.chg)}</span></span></div>
     <div class="info-row"><span class="info-label">시가총액</span><span class="info-val mono">${mktCap}</span></div>
     <div class="info-row"><span class="info-label">총보수</span><span class="info-val mono">${feeStr}</span></div>
   `;
+  // e.chg(배치로 계산된 값, 다음 데일리 갱신 전까지 최대 하루 지연)는 즉시 표시하고,
+  // 종가 탭에서 쓰는 것과 같은 price_history를 곧바로 받아와 더 정확한 값으로 교체한다.
+  loadLiveChg(e);
 
   // 추종지수
   if (e.indexName) {
@@ -1342,6 +1345,25 @@ let pxShownRows = 0;
 const PX_PAGE      = 60;
 const PX_MONTHS    = { '1m':1, '3m':3, '6m':6, '1y':12, '3y':36 };
 const PX_MA_COLORS = { 5:'#f59e0b', 20:'#1a56db', 60:'#8b5cf6', 120:'#c0392b' };
+
+// 기본정보 탭의 "최근 종가" 등락률: 종가 탭과 같은 price_history를 별도로 즉시 받아와
+// 서버 배치값(e.chg)보다 더 정확하고 즉각적인 값으로 교체한다.
+// initPriceTab()의 pxRaw/pxLoading 상태는 건드리지 않아 종가 탭 lazy-load에 영향 없음.
+function loadLiveChg(e) {
+  fetch(`/data/output/price_history/${e.code}.json`)
+    .then(r => r.ok ? r.json() : [])
+    .then(data => {
+      const arr = Array.isArray(data) ? data.filter(r => r && r.length >= 2 && r[1] > 0) : [];
+      if(arr.length < 2) return;
+      const last = arr[arr.length - 1][1];
+      const prev = arr[arr.length - 2][1];
+      if(prev <= 0) return;
+      const chg = (last - prev) / prev * 100;
+      const el = document.getElementById('infoChg');
+      if(el) el.outerHTML = `<span class="info-chg ${retCls(chg)}" id="infoChg">${retStr(chg)}</span>`;
+    })
+    .catch(() => {});
+}
 
 // 최초 진입 시 1회만 로드 (기본정보 탭 로딩에 영향 없도록 lazy)
 function initPriceTab() {

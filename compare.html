@@ -457,8 +457,8 @@ function renderAll(etfs) {
         const bi = bestIdx(vals.map(v=>parseFloat(v)||0), true);
         const cells = etfs.map((e,i) => {
           const cls = i===bi && vals.filter(x=>x!=null&&x!=='').length>1 ? ' class="best"' : '';
-          const chgHtml = e.chg==null ? '' : ` <span style="font-size:11px">${retStr(e.chg)}</span>`;
-          return `<td${cls}>${comma(e.price)}원${chgHtml}</td>`;
+          const chgHtml = e.chg==null ? '' : retStr(e.chg);
+          return `<td${cls}>${comma(e.price)}원 <span id="cmpChg-${e.code}" style="font-size:11px">${chgHtml}</span></td>`;
         }).join('');
         return `<tr><td>최근 종가</td>${cells}</tr>`;
       })()}
@@ -525,6 +525,22 @@ function initComparePrice(etfs) {
     });
     cpBindControls();
     cpRender();
+    updateLiveChg(etfs);
+  });
+}
+
+// "최근 종가" 행의 등락률: 서버 배치값(e.chg)보다, 방금 받아온 price_history로
+// 계산한 더 정확하고 즉각적인 값으로 교체한다.
+function updateLiveChg(etfs) {
+  etfs.forEach(e => {
+    const arr = cpData[e.code];
+    if (!arr || arr.length < 2) return;
+    const last = arr[arr.length - 1][1];
+    const prev = arr[arr.length - 2][1];
+    if (prev <= 0) return;
+    const chg = (last - prev) / prev * 100;
+    const el = document.getElementById(`cmpChg-${e.code}`);
+    if (el) el.innerHTML = retStr(chg);
   });
 }
 
