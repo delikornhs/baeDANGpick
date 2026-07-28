@@ -192,6 +192,23 @@ footer a{color:var(--ink3);text-underline-offset:2px}
 .px-table td.px-flat{color:var(--ink3)}
 .px-more{display:block;width:100%;margin-top:12px;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--ink2);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
 .px-more:hover{border-color:var(--accent-mid);color:var(--accent);background:var(--accent-bg)}
+/* ── 수익률 차트 탭 ── */
+.rc-chart-wrap{position:relative;height:320px}
+.rc-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.rc-sum{background:var(--bg);border-radius:7px;padding:10px 12px}
+.rc-sum.hi{background:var(--accent-bg)}
+.rc-sum-l{font-size:10px;color:var(--ink3);margin-bottom:4px}
+.rc-sum-v{font-size:15px;font-weight:700;font-family:"DM Mono",monospace;color:var(--ink)}
+.rc-sum-v.pos{color:var(--red)}
+.rc-sum-v.neg{color:var(--blue)}
+.rc-sum-v.dist{color:var(--accent)}
+.rc-sum-sub{font-size:10px;color:var(--ink3);margin-top:3px}
+.rc-note{font-size:11px;color:var(--ink3);margin-top:12px;line-height:1.8}
+.rc-warn{background:var(--warn-bg);border:1px solid #fde68a;border-radius:7px;padding:10px 13px;margin-bottom:12px;font-size:11px;color:var(--warn);line-height:1.7}
+.rc-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;font-size:11px;color:var(--ink2)}
+.rc-legend span{display:inline-flex;align-items:center;gap:5px}
+.rc-key{width:14px;height:3px;border-radius:2px;display:inline-block}
+.rc-key.area{height:10px;border-radius:2px}
 /* ── simulation tab ── */
 .sim-wrap{max-width:700px}
 .sim-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px;overflow:hidden}
@@ -292,6 +309,8 @@ footer a{color:var(--ink3);text-underline-offset:2px}
   .px-chart-wrap{height:240px}
   .px-summary{grid-template-columns:repeat(2,1fr)}
   .px-ctrls{gap:10px}
+  .rc-chart-wrap{height:250px}
+  .rc-summary{grid-template-columns:repeat(2,1fr)}
 }
 /* ── 추종지수 ── */
 .index-box{background:var(--bg);border-radius:8px;padding:14px 16px}
@@ -342,6 +361,7 @@ footer a{color:var(--ink3);text-underline-offset:2px}
     <button class="tab-btn on" id="tabBtnInfo" onclick="switchTab('info')">기본 정보</button>
     <button class="tab-btn" id="tabBtnSim" onclick="switchTab('sim')">📊 시뮬레이션</button>
     <button class="tab-btn" id="tabBtnPrice" onclick="switchTab('price')">📈 종가</button>
+    <button class="tab-btn" id="tabBtnRet" onclick="switchTab('ret')">💰 수익률</button>
   </div>
 
   <!-- 탭: 기본 정보 -->
@@ -385,6 +405,12 @@ footer a{color:var(--ink3);text-underline-offset:2px}
           </thead>
           <tbody id="retBody"></tbody>
         </table>
+        </div>
+        <div style="margin-top:10px">
+          <a href="#" onclick="switchTab('ret');window.scrollTo({top:0,behavior:'smooth'});return false;"
+             style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-bg);border:1px solid #c5e8d2;border-radius:7px;padding:7px 12px;text-decoration:none">
+            💰 수익률 차트에서 분배금 기여를 확인하세요 →
+          </a>
         </div>
         <p style="font-size:10px;color:var(--ink4);margin-top:8px;line-height:1.8">1) 수익률은 종가(시장가격) 기준이며, 운용사 공시 수익률(기준가격/NAV 기준)과 다를 수 있습니다.<br>2) 각 기간(1주·1개월·3개월 등)은 오늘 기준 해당 일수 전 종가 대비이며 매일 업데이트됩니다.<br>3) 상장이후는 상장일 첫날 종가 기준입니다.<span id="retFootnote4"></span></p>
       </div>
@@ -614,6 +640,32 @@ footer a{color:var(--ink3);text-underline-offset:2px}
       </div>
     </div>
   </div><!-- /tabPrice -->
+
+  <!-- 탭: 수익률 차트 -->
+  <div id="tabRet" style="display:none">
+    <div class="card">
+      <div class="card-title">주가 수익률 vs 총수익률</div>
+      <div class="px-ctrls">
+        <div class="px-group">
+          <span class="px-group-label">기간</span>
+          <div class="px-seg" id="rcPeriodSeg">
+            <button data-v="1y" class="on">1년</button>
+            <button data-v="3y">3년</button>
+            <button data-v="all">전체</button>
+          </div>
+        </div>
+      </div>
+      <div id="rcWarn"></div>
+      <div class="rc-summary" id="rcSummary"></div>
+      <div class="rc-legend">
+        <span><i class="rc-key" style="background:#1a56db"></i>주가 수익률 (분배금 제외)</span>
+        <span><i class="rc-key" style="background:#1d6b38"></i>총수익률 (분배금 포함)</span>
+        <span><i class="rc-key area" style="background:rgba(29,107,56,.22)"></i>분배금 기여분</span>
+      </div>
+      <div class="rc-chart-wrap" id="rcChartWrap"><canvas id="rcChart"></canvas></div>
+      <div class="rc-note" id="rcNote"></div>
+    </div>
+  </div><!-- /tabRet -->
 
 </div>
 
@@ -1306,27 +1358,28 @@ function render(e) {
   const avgRate = (e.stab && e.stab.avgMonthlyRate > 0) ? e.stab.avgMonthlyRate : (e.rate || 0);
   if(avgRate > 0) document.getElementById('simRate').value = avgRate.toFixed(2);
 
-  // ?tab=sim / ?tab=price 파라미터로 들어온 경우 해당 탭 활성화
+  // ?tab=sim / price / ret 파라미터로 들어온 경우 해당 탭 활성화
   const tabParam = new URLSearchParams(location.search).get('tab');
-  if(tabParam === 'sim' || tabParam === 'price') switchTab(tabParam);
+  if(['sim','price','ret'].includes(tabParam)) switchTab(tabParam);
 }
 
 // ── 탭 전환 ──
 function switchTab(tab) {
-  if(!['info','sim','price'].includes(tab)) tab = 'info';
-  document.getElementById('tabInfo').style.display  = tab === 'info'  ? '' : 'none';
-  document.getElementById('tabSim').style.display   = tab === 'sim'   ? '' : 'none';
-  document.getElementById('tabPrice').style.display = tab === 'price' ? '' : 'none';
-  document.getElementById('tabBtnInfo').classList.toggle('on',  tab === 'info');
-  document.getElementById('tabBtnSim').classList.toggle('on',   tab === 'sim');
-  document.getElementById('tabBtnPrice').classList.toggle('on', tab === 'price');
+  const TABS = { info:'tabInfo', sim:'tabSim', price:'tabPrice', ret:'tabRet' };
+  const BTNS = { info:'tabBtnInfo', sim:'tabBtnSim', price:'tabBtnPrice', ret:'tabBtnRet' };
+  if(!TABS[tab]) tab = 'info';
+  for(const [k, id] of Object.entries(TABS)) {
+    document.getElementById(id).style.display = (k === tab) ? '' : 'none';
+    document.getElementById(BTNS[k]).classList.toggle('on', k === tab);
+  }
   // URL 파라미터 갱신 (히스토리 교체)
   const url = new URL(location.href);
   if(tab === 'info') url.searchParams.delete('tab');
   else url.searchParams.set('tab', tab);
   history.replaceState(null, '', url.toString());
-  // 종가 탭은 최초 진입 시에만 데이터를 불러옴
+  // 데이터가 필요한 탭은 최초 진입 시에만 불러옴
   if(tab === 'price') initPriceTab();
+  if(tab === 'ret')   initRetTab();
 }
 
 // ══════════════════════════════════════════
@@ -1575,6 +1628,216 @@ function pxRenderTable() {
 function pxShowMore() {
   pxShownRows = Math.min(pxShownRows + PX_PAGE, pxSeries.length);
   pxRenderTable();
+}
+
+// ══════════════════════════════════════════
+// 수익률 차트 탭 — 주가 수익률 vs 총수익률
+// 두 선의 간격이 곧 분배금 기여분이다.
+//
+// ⚠️ 총수익률은 프로세서(calc_returns)와 같은 '단순 합산'으로 계산한다.
+//      (현재가 - 시작가 + 구간 분배금 합) / 시작가
+//    재투자 복리로 하면 값이 더 커져 기본정보 탭의 수익률 표와 어긋난다.
+//    같은 페이지에서 두 숫자가 다르면 안 되므로 반드시 표와 같은 식을 쓸 것.
+// ══════════════════════════════════════════
+let rcLoaded  = false;
+let rcPeriod  = '1y';
+let rcBound   = false;
+let rcChartInst = null;
+// 프로세서 calc_returns가 1년을 365일로 계산하므로 동일하게 일수로 맞춘다
+const RC_DAYS = { '1y': 365, '3y': 365 * 3 };
+
+function initRetTab() {
+  if(rcLoaded || !ETF) return;
+  rcLoaded = true;
+  // 종가 탭과 같은 파일을 쓰므로 이미 받아왔으면 재사용
+  if(pxRaw) { rcBind(); rcRender(); return; }
+  fetch(`/data/output/price_history/${ETF.code}.json`)
+    .then(r => { if(!r.ok) throw new Error('no data'); return r.json(); })
+    .then(data => {
+      pxRaw = Array.isArray(data) ? data.filter(r => r && r.length >= 2 && r[1] > 0) : [];
+      rcBind(); rcRender();
+    })
+    .catch(() => { pxRaw = []; rcRender(); });
+}
+
+function rcBind() {
+  if(rcBound) return;
+  rcBound = true;
+  document.getElementById('rcPeriodSeg').addEventListener('click', e => {
+    const b = e.target.closest('button[data-v]'); if(!b) return;
+    rcPeriod = b.dataset.v;
+    document.querySelectorAll('#rcPeriodSeg button[data-v]')
+      .forEach(x => x.classList.toggle('on', x === b));
+    rcRender();
+  });
+}
+
+function rcRender() {
+  const wrap = document.getElementById('rcChartWrap');
+  const note = document.getElementById('rcNote');
+  if(!pxRaw || !pxRaw.length) {
+    wrap.style.display = 'none';
+    document.getElementById('rcSummary').innerHTML = '';
+    note.textContent = '이 종목은 아직 종가 데이터가 없습니다.';
+    return;
+  }
+  wrap.style.display = '';
+
+  // 1) 기간 구간 자르기
+  //    프로세서(calc_returns)와 동일하게 '오늘 기준 N일 전'을 목표일로 잡고,
+  //    그 날짜 이하의 마지막 거래일부터 시작한다.
+  //    (마지막 거래일 기준으로 잡으면 휴장일수만큼 어긋나 표와 값이 달라진다)
+  let startIdx = 0, target = '';
+  if(rcPeriod !== 'all') {
+    // 기준은 '오늘'이 아니라 프로세서가 수익률을 계산한 날(PRICE_DATE)이다.
+    // 오늘로 잡으면 프로세서 실행일과 어긋나 기본정보 표의 값과 달라진다.
+    const baseDay = (typeof PRICE_DATE !== 'undefined' && PRICE_DATE) || new Date().toISOString().slice(0,10);
+    const d = new Date(baseDay + 'T00:00:00');
+    d.setDate(d.getDate() - RC_DAYS[rcPeriod]);
+    target = d.toISOString().slice(0, 10);
+    let found = -1;
+    for(let i = 0; i < pxRaw.length; i++) {
+      if(pxRaw[i][0] <= target) found = i; else break;
+    }
+    startIdx = found >= 0 ? found : 0;
+  }
+  const seg = pxRaw.slice(startIdx);
+  const base = seg[0][1];
+
+  // 2) 분배금 배치
+  //    포함 판정은 프로세서와 동일하게 '기준일(ex_date) >= target' 으로 한다.
+  //    표시 위치는 실제로 주가가 떨어지는 배당락일(기준일 직전 거래일)로 잡는다.
+  //    trend의 ex_date는 배당락일이 아니라 기준일이다(CLAUDE.md 참조).
+  //    price_history의 실제 거래일에서 역산하므로 공휴일도 자동 반영된다.
+  const allDates = pxRaw.map(r => r[0]);
+  const segStart = seg[0][0];
+  const distOn = new Map();
+  (ETF.trend || []).forEach(t => {
+    if(!t.ex_date || !(t.dist > 0)) return;
+    if(target && t.ex_date < target) return;          // 프로세서와 같은 포함 조건
+    let lo = 0, hi = allDates.length - 1, ex = null;
+    while(lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      if(allDates[mid] < t.ex_date) { ex = allDates[mid]; lo = mid + 1; }
+      else hi = mid - 1;
+    }
+    // 배당락일이 구간 시작보다 앞서면 첫 지점에 얹어 합계에서 누락되지 않게 한다
+    const at = (!ex || ex < segStart) ? segStart : ex;
+    distOn.set(at, (distOn.get(at) || 0) + t.dist);
+  });
+
+  // 3) 시계열 — 누적 분배금을 더해가며 단순 합산 총수익률 계산
+  const labels = [], prSeries = [], trSeries = [];
+  let cumDist = 0;
+  for(const [d, p] of seg) {
+    cumDist += (distOn.get(d) || 0);
+    labels.push(d);
+    prSeries.push((p - base) / base * 100);
+    trSeries.push((p - base + cumDist) / base * 100);
+  }
+
+  const prEnd = prSeries[prSeries.length - 1];
+  const trEnd = trSeries[trSeries.length - 1];
+  const contrib = trEnd - prEnd;
+
+  // 4) 분배금 이력이 없는 구간 (이 기간에 걸쳐 있을 때만)
+  const distStart = (typeof DIST_DATA_START !== 'undefined' && DIST_DATA_START) || '';
+  const noDataUntil = (distStart && labels[0] < distStart) ? distStart : null;
+
+  rcRenderSummary(prEnd, trEnd, contrib, labels[0]);
+  rcRenderChart(labels, prSeries, trSeries, noDataUntil);
+
+  const warn = document.getElementById('rcWarn');
+  warn.innerHTML = noDataUntil
+    ? `<div class="rc-warn">⚠️ 분배금 데이터는 <b>${distStart}</b>부터 집계됩니다. 그 이전 구간(회색 음영)은 분배금이 반영되지 않아 두 선이 붙어 있으며, <b>총수익률이 실제보다 낮게</b> 표시됩니다.</div>`
+    : '';
+  note.innerHTML = `※ 총수익률은 <b>(현재가 − 시작가 + 기간 분배금)</b> ÷ 시작가로, 기본 정보 탭의 수익률 표와 같은 방식입니다. 재투자 복리는 반영하지 않습니다.<br>
+    ※ 종가(시장가격) 기준이며 운용사 공시 수익률(NAV 기준)과 다를 수 있습니다.`;
+}
+
+function rcRenderSummary(pr, tr, contrib, from) {
+  const cls = v => v > 0 ? 'pos' : v < 0 ? 'neg' : '';
+  const sign = v => (v > 0 ? '+' : '') + v.toFixed(2) + '%';
+  const share = tr !== 0 ? (contrib / Math.abs(tr) * 100) : 0;
+  document.getElementById('rcSummary').innerHTML = `
+    <div class="rc-sum"><div class="rc-sum-l">주가 수익률</div>
+      <div class="rc-sum-v ${cls(pr)}">${sign(pr)}</div>
+      <div class="rc-sum-sub">분배금 제외</div></div>
+    <div class="rc-sum"><div class="rc-sum-l">총수익률</div>
+      <div class="rc-sum-v ${cls(tr)}">${sign(tr)}</div>
+      <div class="rc-sum-sub">분배금 포함</div></div>
+    <div class="rc-sum hi"><div class="rc-sum-l">분배금 기여</div>
+      <div class="rc-sum-v dist">+${contrib.toFixed(2)}%p</div>
+      <div class="rc-sum-sub">두 선의 간격</div></div>
+    <div class="rc-sum"><div class="rc-sum-l">기여 비중</div>
+      <div class="rc-sum-v">${share > 0 ? share.toFixed(0) + '%' : '-'}</div>
+      <div class="rc-sum-sub">총수익 중 분배금</div></div>`;
+}
+
+function rcRenderChart(labels, pr, tr, noDataUntil) {
+  if(rcChartInst) { rcChartInst.destroy(); rcChartInst = null; }
+
+  // 분배금 데이터가 없는 구간을 회색으로 덮는 플러그인
+  const shadePlugin = {
+    id: 'rcShade',
+    beforeDatasetsDraw(chart) {
+      if(!noDataUntil) return;
+      const idx = labels.findIndex(d => d >= noDataUntil);
+      if(idx <= 0) return;
+      const { ctx, chartArea: ca, scales: { x } } = chart;
+      const x1 = x.getPixelForValue(idx);
+      ctx.save();
+      ctx.fillStyle = 'rgba(154,154,147,.13)';
+      ctx.fillRect(ca.left, ca.top, x1 - ca.left, ca.bottom - ca.top);
+      ctx.fillStyle = '#9a9a93';
+      ctx.font = '10px "Noto Sans KR", sans-serif';
+      ctx.fillText('분배금 데이터 없음', ca.left + 6, ca.top + 14);
+      ctx.restore();
+    }
+  };
+
+  rcChartInst = new Chart(document.getElementById('rcChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: '총수익률', data: tr, borderColor: '#1d6b38',
+          backgroundColor: 'rgba(29,107,56,.22)', borderWidth: 2,
+          pointRadius: 0, pointHoverRadius: 3, fill: 1, tension: .15, order: 1 },
+        { label: '주가 수익률', data: pr, borderColor: '#1a56db',
+          backgroundColor: 'transparent', borderWidth: 1.6,
+          pointRadius: 0, pointHoverRadius: 3, fill: false, tension: .15, order: 2 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: labels.length > 400 ? false : { duration: 300 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: c => `${c.dataset.label}: ${c.raw > 0 ? '+' : ''}${c.raw.toFixed(2)}%`,
+            afterBody: items => {
+              if(items.length < 2) return '';
+              const a = items.find(i => i.dataset.label === '총수익률');
+              const b = items.find(i => i.dataset.label === '주가 수익률');
+              if(!a || !b) return '';
+              return `분배금 기여: +${(a.raw - b.raw).toFixed(2)}%p`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false },
+             ticks: { font: { size: 9 }, color: '#9a9a93', maxTicksLimit: 8, autoSkip: true, maxRotation: 0 } },
+        y: { grid: { color: '#f0f0f0' },
+             ticks: { font: { size: 10 }, color: '#9a9a93',
+                      callback: v => (v > 0 ? '+' : '') + v.toFixed(0) + '%' } }
+      }
+    },
+    plugins: [shadePlugin]
+  });
 }
 
 // ── 한국어 금액 인라인 표시 ──

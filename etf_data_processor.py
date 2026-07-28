@@ -455,13 +455,17 @@ def build_latest(history: dict, target_month: str = None):
         latest.append(make_entry(isin, r, r["ex"], False))
         seen_isins.add(isin)
 
-    # 분배금 추이 추가 (최근 12개월)
+    # 분배금 추이 추가 (전 기간)
+    # 예전에는 최근 12건만 담았으나, etf.html의 수익률 차트가 전 구간 총수익률을
+    # 계산하려면 모든 분배금이 필요하다(12건만 있으면 오래된 분배가 빠져
+    # 기본정보 표의 상장이후 총수익률과 어긋난다).
+    # 전체를 담아도 etf_data.js 증가는 약 95KB(4%) 수준이다.
+    # 화면에서 최근 N건만 쓰는 곳은 각자 slice 한다.
     for item in latest:
         isin = item["isin"]
         trend = []
         if isin in history:
-            sorted_records = sorted(history[isin].items(), key=lambda x: x[0])[-12:]
-            for ex_key, rec in sorted_records:
+            for ex_key, rec in sorted(history[isin].items(), key=lambda x: x[0]):
                 trend.append({"ex_date": ex_key, "dist": rec["dist"]})
         item["trend"] = trend
 
