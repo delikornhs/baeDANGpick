@@ -452,7 +452,16 @@ function renderAll(etfs) {
       ${sectionHead('기본 정보')}
       ${row('분배 주기', etfs.map(e=>e.freq),  v=>v, false)}
       ${(()=>{const cells=etfs.map(e=>`<td>${e.listedDate||'-'}</td>`).join('');return`<tr><td>상장일</td>${cells}</tr>`;})()}
-      ${row('전날 종가', etfs.map(e=>e.price), v=>`${comma(v)}원`, true)}
+      ${(()=>{
+        const vals = etfs.map(e=>e.price);
+        const bi = bestIdx(vals.map(v=>parseFloat(v)||0), true);
+        const cells = etfs.map((e,i) => {
+          const cls = i===bi && vals.filter(x=>x!=null&&x!=='').length>1 ? ' class="best"' : '';
+          const chgHtml = e.chg==null ? '' : ` <span style="font-size:11px">${retStr(e.chg)}</span>`;
+          return `<td${cls}>${comma(e.price)}원${chgHtml}</td>`;
+        }).join('');
+        return `<tr><td>최근 종가</td>${cells}</tr>`;
+      })()}
 
       ${sectionHead('이번달 분배')}
       ${row('주당 분배금', etfs.map(e=>e.dist),            v=>`${comma(v)}원`)}

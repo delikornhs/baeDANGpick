@@ -75,6 +75,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .info-val{font-size:13px;color:var(--ink);font-weight:500;flex:1}
 .info-val.mono{font-family:"DM Mono",monospace}
 .info-val.green{color:var(--accent)}
+.info-chg{font-size:11px;margin-left:4px}
 /* ── schedule ── */
 .sched-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .sched-box{background:var(--bg);border-radius:8px;padding:12px 14px}
@@ -955,7 +956,7 @@ function render(e) {
     <div class="info-row"><span class="info-label">운용사</span><span class="info-val">${e.manager || e.brand}</span></div>
     <div class="info-row"><span class="info-label">상장일</span><span class="info-val mono">${listedDate}</span></div>
     <div class="info-row"><span class="info-label">분배 주기</span><span class="info-val green">${e.freq}</span></div>
-    <div class="info-row"><span class="info-label">전날 종가</span><span class="info-val mono">${comma(e.price)}원</span></div>
+    <div class="info-row"><span class="info-label">최근 종가</span><span class="info-val mono">${comma(e.price)}원${e.chg==null?'':`<span class="info-chg ${retCls(e.chg)}">${retStr(e.chg)}</span>`}</span></div>
     <div class="info-row"><span class="info-label">시가총액</span><span class="info-val mono">${mktCap}</span></div>
     <div class="info-row"><span class="info-label">총보수</span><span class="info-val mono">${feeStr}</span></div>
   `;

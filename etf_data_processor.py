@@ -541,7 +541,7 @@ def build_js(latest: list, price_date: str = "", dist_start: str = ""):
                 f"type:'{e['type']}',freq:'{e['freq']}',"
                 f"timing:'{e.get('timing','')}', "
                 f"ex:'{e['ex_date']}',pay:'{e['pay_date']}',"
-                f"dist:{e['dist']},price:{e['price']},rate:{e['rate']},"
+                f"dist:{e['dist']},price:{e['price']},chg:{_js(e,'chg_pct')},rate:{e['rate']},"
                 f"listedDate:'{e.get('listed_date','')}', "
                 f"marketCap:'{e.get('market_cap','')}', "
                 f"totalFee:{e.get('total_fee') or 0},"
@@ -1135,6 +1135,15 @@ if __name__ == "__main__":
                 rets = calc_returns(item, daily, history_for_returns)
                 for k, v in rets.items():
                     item[k] = v
+                # 전일 대비 등락률: price_date 이전 가장 최근 종가와 오늘 종가(item["price"]) 비교
+                # daily의 마지막 항목이 아직 오늘 날짜로 안 갱신됐을 수 있어 날짜 비교로 직접 탐색
+                prev_close = 0
+                for d, c in reversed(daily):
+                    if d < price_date:
+                        prev_close = c
+                        break
+                if prev_close > 0 and item.get("price"):
+                    item["chg_pct"] = round((item["price"] - prev_close) / prev_close * 100, 2)
                 with open(PRICE_HISTORY_DIR / f"{code}.json", "w", encoding="utf-8") as f:
                     json.dump(daily, f, ensure_ascii=False)
                 ret_ok += 1
@@ -1335,6 +1344,7 @@ if __name__ == "__main__":
         "total_return_6m", "total_return_1y", "total_return_listed",
         "return_1wf", "total_return_1wf",
         "price_1w", "price_1m", "price_3m", "price_6m", "price_1y", "price_listed",
+        "chg_pct",
     ]
     for item in latest:
         prev = prev_latest_map.get(item["code"])

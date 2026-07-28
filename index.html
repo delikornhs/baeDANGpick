@@ -257,6 +257,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .cs-vals{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
 .cs-vals .cs-sep{font-size:11px;color:var(--ink4);font-weight:400}
 .cs-vals .cs-v2{font-size:13px;font-weight:700;font-family:"DM Mono",monospace;color:var(--blue)}
+.cs-chg{font-size:11px;font-weight:700;font-family:"DM Mono",monospace;color:var(--ink3)}
+.cs-chg.pos{color:var(--accent)}
+.cs-chg.neg{color:var(--red)}
 /* Middle section (full-bleed bg) */
 .card-body{background:#e4e4df;margin:8px -15px;padding:10px 15px}
 /* Pending note */
@@ -1792,6 +1795,13 @@ function status(e) {
 function fd(d){return `${d.getMonth()+1}/${String(d.getDate()).padStart(2,'0')}`;}
 function fds(s){return fd(new Date(s));}
 function comma(n){return n.toLocaleString();}
+// 전일 대비 등락률 배지 (데이터 없으면 빈 문자열)
+function chgBadge(e){
+  if(e.chg==null) return '';
+  const cls = e.chg > 0 ? 'pos' : e.chg < 0 ? 'neg' : '';
+  const sign = e.chg > 0 ? '+' : '';
+  return `<span class="cs-chg ${cls}">${sign}${e.chg}%</span>`;
+}
 
 // 전체 ETF
 const ALL_ETF = typeof ETF_ALL !== 'undefined' ? ETF_ALL : [...ETF_END, ...ETF_MID];
@@ -2011,8 +2021,11 @@ function renderGrid() {
             </div>
           </div>
           <div class="cs">
-            <div class="cs-l">현재 주가</div>
-            <div class="cs-v">${comma(e.price)}원</div>
+            <div class="cs-l">최근 종가</div>
+            <div class="cs-vals">
+              <span class="cs-v">${comma(e.price)}원</span>
+              ${chgBadge(e)}
+            </div>
           </div>
         </div>
         ${isPending ? '<div class="card-pending">ℹ️ 공시 대기 중. 위 분배율ㆍ분배금은 직전 공시 정보로 표시</div>' : ''}
@@ -2573,7 +2586,7 @@ function openModal(isin) {
   document.getElementById('mStats').innerHTML=`
     <div class="ms"><div class="l">주당 분배금</div><div class="v" style="color:var(--blue)">${comma(e.dist)}원</div></div>
     <div class="ms"><div class="l">이번달 분배율</div><div class="v g">${e.rate}%</div></div>
-    <div class="ms"><div class="l">전날 종가</div><div class="v">${comma(e.price)}원</div></div>
+    <div class="ms"><div class="l">최근 종가</div><div class="v">${comma(e.price)}원 ${chgBadge(e)}</div></div>
   `;
 
   const rawTrend = (e.trend||[]).map(t=>({
