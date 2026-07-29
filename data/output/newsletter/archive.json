@@ -1,5 +1,134 @@
 [
   {
+    "id": "2026-07-end-data",
+    "type": "data",
+    "timing": "월말",
+    "month": "2026년 7월",
+    "sent_at": "2026-07-29",
+    "etfs": [
+      {
+        "code": "0198A0",
+        "name": "KIWOOM 코스닥150커버드콜액티브",
+        "brand": "KIWOOM",
+        "pay": "2026-08-04",
+        "dist": 175,
+        "rate": 2.19
+      },
+      {
+        "code": "472150",
+        "name": "TIGER 배당커버드콜액티브",
+        "brand": "TIGER",
+        "pay": "2026-08-04",
+        "dist": 375,
+        "rate": 2.02
+      },
+      {
+        "code": "0210E0",
+        "name": "PLUS 200커버드콜액티브",
+        "brand": "PLUS",
+        "pay": "2026-08-04",
+        "dist": 139,
+        "rate": 2.0
+      },
+      {
+        "code": "0040Y0",
+        "name": "SOL 팔란티어커버드콜OTM채권혼합",
+        "brand": "SOL",
+        "pay": "2026-08-03",
+        "dist": 162,
+        "rate": 2.0
+      },
+      {
+        "code": "0219E0",
+        "name": "KODEX 200커버드콜액티브",
+        "brand": "KODEX",
+        "pay": "2026-08-04",
+        "dist": 153,
+        "rate": 1.99
+      },
+      {
+        "code": "475720",
+        "name": "RISE 200위클리커버드콜",
+        "brand": "RISE",
+        "pay": "2026-08-04",
+        "dist": 235,
+        "rate": 1.96
+      },
+      {
+        "code": "0199C0",
+        "name": "ACE 고배당주Plus커버드콜액티브",
+        "brand": "ACE",
+        "pay": "2026-08-04",
+        "dist": 175,
+        "rate": 1.89
+      },
+      {
+        "code": "494300",
+        "name": "KODEX 미국나스닥100데일리커버드콜OTM",
+        "brand": "KODEX",
+        "pay": "2026-08-04",
+        "dist": 166,
+        "rate": 1.75
+      },
+      {
+        "code": "490590",
+        "name": "RISE 미국AI밸류체인데일리고정커버드콜",
+        "brand": "RISE",
+        "pay": "2026-08-04",
+        "dist": 218,
+        "rate": 1.59
+      },
+      {
+        "code": "0176P0",
+        "name": "FOCUS AI반도체위클리고정커버드콜",
+        "brand": "FOCUS",
+        "pay": "2026-08-04",
+        "dist": 165,
+        "rate": 1.53
+      },
+      {
+        "code": "489030",
+        "name": "PLUS 고배당주위클리커버드콜",
+        "brand": "PLUS",
+        "pay": "2026-08-04",
+        "dist": 103,
+        "rate": 1.52
+      },
+      {
+        "code": "0040X0",
+        "name": "SOL 팔란티어미국채커버드콜혼합",
+        "brand": "SOL",
+        "pay": "2026-08-03",
+        "dist": 141,
+        "rate": 1.51
+      },
+      {
+        "code": "476850",
+        "name": "KoAct 배당성장액티브",
+        "brand": "KoAct",
+        "pay": "2026-08-04",
+        "dist": 290,
+        "rate": 1.5
+      },
+      {
+        "code": "491620",
+        "name": "RISE 미국테크100데일리고정커버드콜",
+        "brand": "RISE",
+        "pay": "2026-08-04",
+        "dist": 161,
+        "rate": 1.5
+      },
+      {
+        "code": "290080",
+        "name": "RISE 200고배당커버드콜ATM",
+        "brand": "RISE",
+        "pay": "2026-08-04",
+        "dist": 100,
+        "rate": 1.42
+      }
+    ]
+  },
+  {
     "id": "2026-07-end-schedule",
     "type": "schedule",
     "timing": "월말",
