@@ -96,6 +96,21 @@ const lb     = prevBizDay(ex);      // 최종매수일 = 배당락일 1영업일
 
 ---
 
+## ⚠️ update-prices.yml 리베이스 충돌 시 --ours/--theirs를 반대로 써서 방금 계산한 수익률이 버려짐
+
+리베이스(`git rebase`) 도중에는 `--ours`/`--theirs`의 의미가 평소(merge)와 반대로 뒤집힌다 — `--ours`는 리베이스 대상(origin/master, 구버전), `--theirs`는 지금 재생 중인 내 커밋(방금 만든 새 데이터)이다. `update-prices.yml`은 (위 2026-07-23 수정 때도) 계속 `--ours`를 쓰고 있었는데, 이는 충돌 시 **origin/master의 구버전을 채택**하는 것과 같아서 주석("데이터 파일은 워크플로우(최신 가격) 버전 우선")의 의도와 정반대로 동작하고 있었다.
+
+> 2026-07-29 오류 사례: 코스피가 크게 하락한 날, ETF 상세페이지 "1주 수익률"이 이상하게 플러스로 나온다는 제보로 발견. `kind-watch.yml`(분배금 공시 처리 — 수익률 필드는 재계산 없이 보존만 함)이 먼저 push했고, 뒤이어 돌린 `update-prices.yml`(`--prices-only`, 수익률 재계산)이 그 위에서 리베이스 충돌을 겪었다. `--ours`를 쓴 탓에 방금 계산한 정확한 값(RISE 200위클리커버드콜 ret1w -16.15%)이 버려지고, `kind-watch.yml`이 보존해뒀던 며칠 전 stale한 값(+2.04%)이 그대로 사이트에 남았다. `kind-watch.yml` 자신은 처음부터 `--theirs`를 올바르게 쓰고 있어 문제없었다.
+
+**해결 (`update-prices.yml`에 적용됨):** 커밋 스텝(`data/output/*` 파일)과 포스트 커밋 스텝(`posts/`) 두 곳 모두 `git checkout --ours` → `git checkout --theirs`로 수정.
+
+- 이 버그는 두 워크플로우가 **비슷한 시간에 겹쳐 실행돼 리베이스 충돌이 날 때만** 증상이 나타난다. 평소처럼 순차 실행되면 충돌 자체가 없어 드러나지 않으므로, 2026-07-23 이후 계속 잠복해 있었을 가능성이 있다.
+- 진단 순서: "1주 수익률이 이상하다"는 지적 → 해당 종목 `price_history/{code}.json`으로 직접 검산해 실제로는 마이너스여야 함을 확인 → `mcp__github__get_job_logs`로 문제 발생 실행의 커밋 스텝 로그를 읽어 `Auto-merging ... CONFLICT` → `checkout --ours` 흐름을 직접 확인
+- 수정 후 검증: 워크플로우 재트리거 → `etf_data.js`에서 `ret1w`가 실제로 -16.15%로 바뀐 것을 직접 확인
+- `send-data-newsletter.yml`/`send-schedule-newsletter.yml`도 `archive.json` 충돌 처리에 `--ours`를 쓰고 있다 — 다만 이 파일은 "이미 발송한 기록"을 다루므로 의미가 다를 수 있어 이번에는 건드리지 않았다. 비슷한 증상(발송 여부가 꼬임)이 생기면 함께 점검할 것
+
+---
+
 ## ⚠️ git 커밋 주의사항
 
 코드 수정(HTML, JS 등)만 커밋할 때 반드시 `git status`로 staged 파일을 먼저 확인한다.
