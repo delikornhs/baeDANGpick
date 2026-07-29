@@ -697,11 +697,11 @@ function distItem(e, rank) {
   if (isAnnual) {
     mainVal  = isDist ? fmtWon(e.annualDist)                : (e.annualRate?.toFixed(2) ?? '0.00') + '%';
     subVal   = isDist ? (e.annualRate?.toFixed(2) ?? '-') + '%/년' : fmtWon(e.annualDist) + '/년';
-    metaItems = `<span class="rank-meta-item">${e.brand}</span>`;
+    metaItems = `<span class="rank-meta-item">${e.manager || e.brand}</span>`;
   } else {
     mainVal  = isDist ? fmtWon(e.dist) : e.rate + '%';
     subVal   = isDist ? e.rate + '%/월' : fmtWon(e.dist) + '/좌';
-    metaItems = `<span class="rank-meta-item">${e.brand}</span>
+    metaItems = `<span class="rank-meta-item">${e.manager || e.brand}</span>
       <span class="rank-meta-item">배당락 ${fmtDate(e.ex)}</span>
       <span class="rank-meta-item">지급 ${fmtDate(e.pay)}</span>`;
   }
@@ -734,7 +734,7 @@ function retItem(e, rank) {
       <div class="rank-body">
         <div class="rank-name">${e.name}${typeBadge}${freqBadge}</div>
         <div class="rank-meta">
-          <span class="rank-meta-item">${e.brand}</span>
+          <span class="rank-meta-item">${e.manager || e.brand}</span>
           <span class="rank-meta-item">${e.price ? e.price.toLocaleString()+'원' : '-'}</span>
         </div>
       </div>
@@ -815,7 +815,7 @@ function capItem(e, rank) {
       <div class="rank-body">
         <div class="rank-name">${e.name}${typeBadge}${freqBadge}</div>
         <div class="rank-meta">
-          <span class="rank-meta-item">${e.brand}</span>
+          <span class="rank-meta-item">${e.manager || e.brand}</span>
           <span class="rank-meta-item">${priceStr}</span>
           <span class="rank-meta-item">상장 ${listedStr}</span>
           <span class="rank-meta-item">보수 ${feeStr}</span>

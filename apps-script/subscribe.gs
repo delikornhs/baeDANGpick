@@ -201,7 +201,7 @@ function buildScheduleNewsletterHtml(data, watchlist, scriptUrl, token) {
     const names = myEtfs.map(e =>
       `<div style="font-size:13px;color:#1a1a18;padding:4px 0;border-bottom:1px solid #e8f5ee">
          <span style="color:#1d6b38;font-weight:700">·</span> ${e.name}
-         <span style="font-size:11px;color:#9a9a93;margin-left:4px">${e.brand || ''}</span>
+         <span style="font-size:11px;color:#9a9a93;margin-left:4px">${e.manager || e.brand || ''}</span>
        </div>`
     ).join('');
     myEtfSection = `
@@ -311,7 +311,7 @@ function buildDataNewsletterHtml(data, watchlist, scriptUrl, token) {
           font-size:12px;color:#9a9a93;text-align:center;width:24px">${i + 1}</td>
         <td style="padding:9px 8px;border-bottom:1px solid #f0f0f0">
           <div style="font-size:13px;font-weight:600;color:#1a1a18;line-height:1.3">${e.name}</div>
-          <div style="font-size:11px;color:#9a9a93;margin-top:2px">${e.brand || ''}</div>
+          <div style="font-size:11px;color:#9a9a93;margin-top:2px">${e.manager || e.brand || ''}</div>
         </td>
         <td style="padding:9px 8px;border-bottom:1px solid #f0f0f0;
           font-size:13px;font-weight:700;color:#1a1a18;text-align:right;white-space:nowrap">

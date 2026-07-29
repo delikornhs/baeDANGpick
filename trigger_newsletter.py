@@ -93,7 +93,8 @@ def main():
             with open(LATEST_JSON, 'r', encoding='utf-8') as f:
                 latest_data = json.load(f)
             timing_etfs = [
-                {'code': e['code'], 'name': e['name'], 'brand': e.get('brand', '')}
+                {'code': e['code'], 'name': e['name'], 'brand': e.get('brand', ''),
+                 'manager': e.get('manager', e.get('brand', ''))}
                 for e in latest_data
                 if e.get('timing') == timing_label
                 and e.get('freq') in ('월배당', '월배당추정')
@@ -144,12 +145,13 @@ def main():
 
         etfs = [
             {
-                'code':  e['code'],
-                'name':  e['name'],
-                'brand': e['brand'],
-                'pay':   e.get('pay_date', e.get('pay', '')),
-                'dist':  e['dist'],
-                'rate':  e['rate'],
+                'code':    e['code'],
+                'name':    e['name'],
+                'brand':   e['brand'],
+                'manager': e.get('manager', e['brand']),
+                'pay':     e.get('pay_date', e.get('pay', '')),
+                'dist':    e['dist'],
+                'rate':    e['rate'],
             }
             for e in current[:TOP_N]
         ]

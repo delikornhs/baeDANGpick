@@ -995,7 +995,7 @@ function render(e) {
   // 헤더
   document.getElementById('hName').textContent = name;
   document.getElementById('hBadges').innerHTML =
-    `<span class="badge badge-brand">${e.brand}</span>` +
+    `<span class="badge badge-brand">${e.manager || e.brand}</span>` +
     `<span class="badge badge-type">${e.type || '기타'}</span>` +
     `<span class="badge badge-freq">${e.freq}</span>` +
     `<span class="badge badge-code">${e.code}</span>`;
