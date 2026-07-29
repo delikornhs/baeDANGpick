@@ -95,8 +95,28 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .dash-edit-btn{font-size:11px;font-weight:600;color:var(--ink2);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg);transition:all .15s;white-space:nowrap}
 .dash-edit-btn:hover{color:var(--accent);border-color:var(--accent-mid);background:var(--accent-bg)}
 .dash-tabs{display:flex;gap:6px;margin-bottom:14px}
-.dash-tab{font-size:12px;font-weight:700;padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--ink3);cursor:pointer;transition:all .15s;font-family:inherit}
+.dash-tab{font-size:12px;font-weight:700;padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--ink3);cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap}
 .dash-tab.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+@media(max-width:480px){
+  .dash-tab{padding:8px 12px;font-size:15px}
+  .dash-tab-label{display:none}
+}
+.dash-rb-bar-track{position:relative;height:20px;border-radius:6px;background:var(--bg);overflow:hidden;border:1px solid var(--border);margin-bottom:8px}
+.dash-rb-bar-seg{position:absolute;top:0;bottom:0}
+.dash-rb-bar-tick{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);z-index:3;box-shadow:0 0 0 1px rgba(255,255,255,.7)}
+.dash-rb-bar-band-line{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--blue);opacity:.9;z-index:2;box-shadow:0 0 0 1px rgba(255,255,255,.7)}
+.dash-rb-legend{display:flex;flex-direction:column;gap:5px;margin-bottom:4px}
+.dash-rb-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2)}
+.dash-rb-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dash-rb-legend-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.dash-rb-legend-pct{font-size:10px;color:var(--ink3);flex-shrink:0;font-family:"DM Mono",monospace}
+.dash-rb-basket-hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.dash-rb-basket-name{font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.dash-rb-basket-total{font-size:12px;font-weight:700;font-family:"DM Mono",monospace;color:var(--ink2);flex-shrink:0}
+.dash-rb-warn{font-size:10px;color:var(--warn);background:var(--warn-bg);border:1px solid #fde68a;border-radius:6px;padding:6px 10px;margin-bottom:8px;line-height:1.5}
+.dash-rb-empty-basket{font-size:12px;color:var(--ink3);padding:12px 0;text-align:center}
+.dash-rb-edit-link{display:block;text-align:center;font-size:11px;font-weight:700;color:var(--accent);text-decoration:none;margin-top:12px}
+.dash-rb-edit-link:hover{text-decoration:underline}
 .dash-sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .dash-sum-card{background:var(--bg);border-radius:8px;padding:10px 12px}
 .dash-sum-label{font-size:10px;color:var(--ink3);margin-bottom:3px}
@@ -237,6 +257,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .cs-vals{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
 .cs-vals .cs-sep{font-size:11px;color:var(--ink4);font-weight:400}
 .cs-vals .cs-v2{font-size:13px;font-weight:700;font-family:"DM Mono",monospace;color:var(--blue)}
+.cs-chg{font-size:11px;font-weight:700;font-family:"DM Mono",monospace;color:var(--ink3)}
+.cs-chg.pos{color:var(--accent)}
+.cs-chg.neg{color:var(--red)}
 /* Middle section (full-bleed bg) */
 .card-body{background:#e4e4df;margin:8px -15px;padding:10px 15px}
 /* Pending note */
@@ -550,10 +573,12 @@ footer{padding:18px;text-align:center;font-size:11px;color:var(--ink3);border-to
       <a href="/portfolio.html" class="dash-edit-btn">✏️ 수정</a>
     </div>
     <div class="dash-tabs">
-      <button class="dash-tab on" id="dashTabPf" onclick="switchDashTab('pf')">💼 내 포트폴리오</button>
-      <button class="dash-tab" id="dashTabWl" onclick="switchDashTab('wl')">⭐ 관심 ETF</button>
+      <button class="dash-tab on" id="dashTabPf" onclick="switchDashTab('pf')" title="내 포트폴리오">💼 <span class="dash-tab-label">내 포트폴리오</span></button>
+      <button class="dash-tab" id="dashTabRb" onclick="switchDashTab('rb')" title="리밸런싱">⚖️ <span class="dash-tab-label">리밸런싱</span></button>
+      <button class="dash-tab" id="dashTabWl" onclick="switchDashTab('wl')" title="관심 ETF">⭐ <span class="dash-tab-label">관심 ETF</span></button>
     </div>
     <div id="dashPf"></div>
+    <div id="dashRb" style="display:none"></div>
     <div id="dashWl" style="display:none"></div>
   </div>
 </div>
@@ -1770,6 +1795,13 @@ function status(e) {
 function fd(d){return `${d.getMonth()+1}/${String(d.getDate()).padStart(2,'0')}`;}
 function fds(s){return fd(new Date(s));}
 function comma(n){return n.toLocaleString();}
+// 전일 대비 등락률 배지 (데이터 없으면 빈 문자열)
+function chgBadge(e){
+  if(e.chg==null) return '';
+  const cls = e.chg > 0 ? 'pos' : e.chg < 0 ? 'neg' : '';
+  const sign = e.chg > 0 ? '+' : '';
+  return `<span class="cs-chg ${cls}">${sign}${e.chg}%</span>`;
+}
 
 // 전체 ETF
 const ALL_ETF = typeof ETF_ALL !== 'undefined' ? ETF_ALL : [...ETF_END, ...ETF_MID];
@@ -1989,8 +2021,11 @@ function renderGrid() {
             </div>
           </div>
           <div class="cs">
-            <div class="cs-l">현재 주가</div>
-            <div class="cs-v">${comma(e.price)}원</div>
+            <div class="cs-l">최근 종가</div>
+            <div class="cs-vals">
+              <span class="cs-v">${comma(e.price)}원</span>
+              ${chgBadge(e)}
+            </div>
           </div>
         </div>
         ${isPending ? '<div class="card-pending">ℹ️ 공시 대기 중. 위 분배율ㆍ분배금은 직전 공시 정보로 표시</div>' : ''}
@@ -2090,14 +2125,21 @@ function toggleAccordion(name) {
 // ── MY ETF 대시보드 ──
 function switchDashTab(tab) {
   document.getElementById('dashTabPf').classList.toggle('on', tab === 'pf');
+  document.getElementById('dashTabRb').classList.toggle('on', tab === 'rb');
   document.getElementById('dashTabWl').classList.toggle('on', tab === 'wl');
   document.getElementById('dashPf').style.display = tab === 'pf' ? '' : 'none';
+  document.getElementById('dashRb').style.display = tab === 'rb' ? '' : 'none';
   document.getElementById('dashWl').style.display = tab === 'wl' ? '' : 'none';
 }
 
 function renderDashboard() {
   renderDashPf();
+  renderDashRebal();
   renderDashWl();
+}
+
+function escHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 function dashFreqBadge(etf) {
@@ -2150,6 +2192,7 @@ function dashSortRow(section, options) {
 const DASH_PAGE_SIZE = 5;
 let dashPfPage = 0, dashPfPageCount = 1;
 let dashWlPage = 0, dashWlPageCount = 1;
+let dashRbPage = 0, dashRbPageCount = 1;
 let dashTouch = { section: null, startX: 0, deltaX: 0, axis: null };
 
 function dashChunk(arr, size) {
@@ -2158,41 +2201,53 @@ function dashChunk(arr, size) {
   return pages.length ? pages : [[]];
 }
 
+function dashSecId(section) { return section === 'pf' ? 'Pf' : section === 'wl' ? 'Wl' : 'Rb'; }
+function dashGetPage(section) { return section === 'pf' ? dashPfPage : section === 'wl' ? dashWlPage : dashRbPage; }
+function dashGetPageCount(section) { return section === 'pf' ? dashPfPageCount : section === 'wl' ? dashWlPageCount : dashRbPageCount; }
+function dashSetPage(section, val) {
+  if (section === 'pf') dashPfPage = val;
+  else if (section === 'wl') dashWlPage = val;
+  else dashRbPage = val;
+}
+
 function dashPgNav(section, pageCount, page) {
   if (pageCount <= 1) return '';
+  const id = dashSecId(section);
   const dots = Array.from({length: pageCount}, (_, i) =>
     `<button class="dash-pg-dot${i === page ? ' on' : ''}" onclick="dashGoPage('${section}', ${i - page})" title="${i + 1}페이지"></button>`
   ).join('');
   return `
     <div class="dash-pg-nav">
-      <button class="dash-pg-btn" id="dash${section === 'pf' ? 'Pf' : 'Wl'}PrevBtn" onclick="dashGoPage('${section}', -1)" ${page === 0 ? 'disabled' : ''}>‹</button>
+      <button class="dash-pg-btn" id="dash${id}PrevBtn" onclick="dashGoPage('${section}', -1)" ${page === 0 ? 'disabled' : ''}>‹</button>
       <div class="dash-pg-dots">${dots}</div>
-      <span class="dash-pg-count" id="dash${section === 'pf' ? 'Pf' : 'Wl'}PgCount">${page + 1} / ${pageCount}</span>
-      <button class="dash-pg-btn" id="dash${section === 'pf' ? 'Pf' : 'Wl'}NextBtn" onclick="dashGoPage('${section}', 1)" ${page === pageCount - 1 ? 'disabled' : ''}>›</button>
+      <span class="dash-pg-count" id="dash${id}PgCount">${page + 1} / ${pageCount}</span>
+      <button class="dash-pg-btn" id="dash${id}NextBtn" onclick="dashGoPage('${section}', 1)" ${page === pageCount - 1 ? 'disabled' : ''}>›</button>
     </div>`;
 }
 
 function dashGoPage(section, delta) {
-  const track = document.getElementById(section === 'pf' ? 'dashPfTrack' : 'dashWlTrack');
+  const id = dashSecId(section);
+  const track = document.getElementById(`dash${id}Track`);
   if (!track) return;
-  const total = section === 'pf' ? dashPfPageCount : dashWlPageCount;
-  let page = (section === 'pf' ? dashPfPage : dashWlPage) + delta;
+  const total = dashGetPageCount(section);
+  let page = dashGetPage(section) + delta;
   page = Math.max(0, Math.min(total - 1, page));
-  if (section === 'pf') dashPfPage = page; else dashWlPage = page;
+  dashSetPage(section, page);
   track.style.transition = 'transform .3s ease';
   track.style.transform = `translateX(-${page * 100}%)`;
-  const countEl = document.getElementById(section === 'pf' ? 'dashPfPgCount' : 'dashWlPgCount');
+  const countEl = document.getElementById(`dash${id}PgCount`);
   if (countEl) countEl.textContent = `${page + 1} / ${total}`;
-  document.querySelectorAll(`#dash${section === 'pf' ? 'Pf' : 'Wl'} .dash-pg-dot`).forEach((d, i) => d.classList.toggle('on', i === page));
-  const prevBtn = document.getElementById(section === 'pf' ? 'dashPfPrevBtn' : 'dashWlPrevBtn');
-  const nextBtn = document.getElementById(section === 'pf' ? 'dashPfNextBtn' : 'dashWlNextBtn');
+  document.querySelectorAll(`#dash${id} .dash-pg-dot`).forEach((d, i) => d.classList.toggle('on', i === page));
+  const prevBtn = document.getElementById(`dash${id}PrevBtn`);
+  const nextBtn = document.getElementById(`dash${id}NextBtn`);
   if (prevBtn) prevBtn.disabled = page === 0;
   if (nextBtn) nextBtn.disabled = page === total - 1;
 }
 
 function dashAttachTouch(section) {
-  const viewport = document.getElementById(section === 'pf' ? 'dashPfViewport' : 'dashWlViewport');
-  const track = document.getElementById(section === 'pf' ? 'dashPfTrack' : 'dashWlTrack');
+  const id = dashSecId(section);
+  const viewport = document.getElementById(`dash${id}Viewport`);
+  const track = document.getElementById(`dash${id}Track`);
   if (!viewport || !track) return;
 
   viewport.addEventListener('touchstart', e => {
@@ -2208,7 +2263,7 @@ function dashAttachTouch(section) {
     if (dashTouch.axis !== 'x') return;
     e.preventDefault();
     dashTouch.deltaX = dx;
-    const page = section === 'pf' ? dashPfPage : dashWlPage;
+    const page = dashGetPage(section);
     track.style.transform = `translateX(calc(-${page * 100}% + ${dx}px))`;
   }, { passive: false });
 
@@ -2340,6 +2395,113 @@ function renderDashWl() {
   dashAttachTouch('wl');
 }
 
+// ── 리밸런싱 바구니 계산 (portfolio.html의 calcRebalBasket과 동일 로직) ──
+const RB_PALETTE = [
+  '#1d6b38','#3b82f6','#f59e0b','#ec4899','#8b5cf6',
+  '#06b6d4','#10b981','#f97316','#6366f1','#84cc16',
+  '#ef4444','#a855f7','#14b8a6','#fb923c','#64748b',
+];
+
+function calcRebalBasket(basket) {
+  const rows = (basket.items || []).map(it => {
+    const etf = (ETF_ALL || []).find(e => e.code === it.code);
+    if (!etf) return null;
+    const price = etf.price || 0;
+    const value = price * it.qty;
+    return { code: it.code, etf, qty: it.qty, targetPct: it.targetPct || 0, price, value };
+  }).filter(Boolean);
+  const totalValue  = rows.reduce((s, r) => s + r.value, 0);
+  const totalTarget = rows.reduce((s, r) => s + r.targetPct, 0);
+  const enriched = rows.map((r, i) => {
+    const curPct      = totalValue > 0 ? r.value / totalValue * 100 : 0;
+    const diffPct     = curPct - r.targetPct;
+    const targetValue = totalValue * r.targetPct / 100;
+    const diffValue   = targetValue - r.value; // >0 매수 필요, <0 매도 필요
+    const diffQty     = r.price > 0 ? Math.round(diffValue / r.price) : 0;
+    return { ...r, curPct, diffPct, diffQty, colorIdx: i }; // colorIdx: 바구니 내 원래 순서 기준 고정 색상
+  }).sort((a, b) => b.value - a.value);
+  return { totalValue, totalTarget, rows: enriched };
+}
+
+// ── 100% 기준 비중 가로바 (현재비중 색상 구간 + 목표비중 누적 경계선 + 밴드폭) ──
+function buildDashRebalBar(rows, bandPct) {
+  if (!rows.length) return '<div class="dash-rb-empty-basket">담긴 종목이 없습니다.</div>';
+  const barRows = [...rows].sort((a, b) => a.colorIdx - b.colorIdx);
+  let curCum = 0, tgtCum = 0;
+  const segs = barRows.map(r => {
+    const left  = curCum;
+    const width = Math.max(0, r.curPct);
+    curCum += width;
+    const color = RB_PALETTE[r.colorIdx % RB_PALETTE.length];
+    return `<div class="dash-rb-bar-seg" style="left:${left.toFixed(2)}%;width:${width.toFixed(2)}%;background:${color}" title="${r.etf.name} · 현재 ${r.curPct.toFixed(1)}%"></div>`;
+  }).join('');
+  // 마지막 항목의 누적 경계는 항상 100%=100%로 고정되어 표시할 의미가 없으므로 제외
+  // 기준선(진한 색, 목표 경계) + 그 양옆 밴드선(파란색, 허용 범위 경계) — 셋 다 항상 경계 지점 기준 대칭
+  const bandsAndTicks = barRows.slice(0, -1).map(r => {
+    tgtCum += r.targetPct;
+    const center    = Math.min(100, Math.max(0, tgtCum));
+    const bandLeft  = Math.max(0, tgtCum - bandPct);
+    const bandRight = Math.min(100, tgtCum + bandPct);
+    return `<div class="dash-rb-bar-band-line" style="left:${bandLeft.toFixed(2)}%" title="밴드 하단 경계 ${(tgtCum - bandPct).toFixed(1)}%"></div>
+            <div class="dash-rb-bar-band-line" style="left:${bandRight.toFixed(2)}%" title="밴드 상단 경계 ${(tgtCum + bandPct).toFixed(1)}%"></div>
+            <div class="dash-rb-bar-tick" style="left:${center.toFixed(2)}%" title="목표 누적 경계 ${tgtCum.toFixed(1)}%"></div>`;
+  }).join('');
+  const legend = barRows.map(r => `
+    <div class="dash-rb-legend-item">
+      <div class="dash-rb-legend-dot" style="background:${RB_PALETTE[r.colorIdx % RB_PALETTE.length]}"></div>
+      <div class="dash-rb-legend-name">${r.etf.name}</div>
+      <div class="dash-rb-legend-pct">${r.curPct.toFixed(1)}% · 목표 ${r.targetPct.toFixed(1)}%</div>
+    </div>`).join('');
+  return `
+    <div class="dash-rb-bar-track">${segs}${bandsAndTicks}</div>
+    <div class="dash-rb-legend">${legend}</div>`;
+}
+
+function dashRbBasketPageHtml(basket) {
+  const { totalValue, totalTarget, rows } = calcRebalBasket(basket);
+  const bandPct = basket.bandPct ?? 5;
+  const warnHtml = rows.length && Math.abs(totalTarget - 100) > 0.5
+    ? `<div class="dash-rb-warn">⚠️ 목표비중 합계 ${totalTarget.toFixed(1)}%</div>` : '';
+  const bandExceedCount = rows.filter(r => Math.abs(r.diffPct) > bandPct).length;
+  const bandSummaryHtml = rows.length && bandExceedCount > 0
+    ? `<div class="dash-rb-warn">⚠️ ${bandExceedCount}개 종목이 밴드(±${bandPct}%p) 초과 — 리밸런싱 고려</div>` : '';
+  return `
+    <div class="dash-rb-basket-hdr">
+      <span class="dash-rb-basket-name">${escHtml(basket.name)}</span>
+      <span class="dash-rb-basket-total">${Math.round(totalValue).toLocaleString()}원</span>
+    </div>
+    ${warnHtml}
+    ${bandSummaryHtml}
+    ${buildDashRebalBar(rows, bandPct)}`;
+}
+
+function renderDashRebal() {
+  const baskets = JSON.parse(localStorage.getItem('bdp_rebalance') || '[]');
+  const wrap = document.getElementById('dashRb');
+  if (!baskets.length) {
+    wrap.innerHTML = `<div class="dash-empty"><p>아직 등록한 리밸런싱 바구니가 없어요</p><a href="/portfolio.html?tab=rebalance">리밸런싱 바구니 만들기</a></div>`;
+    return;
+  }
+
+  if (baskets.length === 1) {
+    wrap.innerHTML = dashRbBasketPageHtml(baskets[0])
+      + `<a href="/portfolio.html?tab=rebalance" class="dash-rb-edit-link">리밸런싱 관리하기 →</a>`;
+    return;
+  }
+
+  dashRbPageCount = baskets.length;
+  dashRbPage = Math.min(dashRbPage, baskets.length - 1);
+  const trackHtml = baskets.map(b => `<div class="dash-list-page">${dashRbBasketPageHtml(b)}</div>`).join('');
+
+  wrap.innerHTML = `
+    <div class="dash-list-viewport" id="dashRbViewport">
+      <div class="dash-list-track" id="dashRbTrack" style="transform:translateX(-${dashRbPage * 100}%)">${trackHtml}</div>
+    </div>
+    ${dashPgNav('rb', baskets.length, dashRbPage)}
+    <a href="/portfolio.html?tab=rebalance" class="dash-rb-edit-link">리밸런싱 관리하기 →</a>`;
+  dashAttachTouch('rb');
+}
+
 let myStarToastTimer = null;
 function toggleStar(ev, code) {
   ev.stopPropagation();
@@ -2424,7 +2586,7 @@ function openModal(isin) {
   document.getElementById('mStats').innerHTML=`
     <div class="ms"><div class="l">주당 분배금</div><div class="v" style="color:var(--blue)">${comma(e.dist)}원</div></div>
     <div class="ms"><div class="l">이번달 분배율</div><div class="v g">${e.rate}%</div></div>
-    <div class="ms"><div class="l">전날 종가</div><div class="v">${comma(e.price)}원</div></div>
+    <div class="ms"><div class="l">최근 종가</div><div class="v">${comma(e.price)}원 ${chgBadge(e)}</div></div>
   `;
 
   const rawTrend = (e.trend||[]).map(t=>({
