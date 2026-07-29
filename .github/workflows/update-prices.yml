@@ -95,8 +95,9 @@ jobs:
             OLD_HASH=$(git rev-parse HEAD)
             git commit -m "chore: daily price update $(date -u +%Y-%m-%d)"
             # rebase 충돌 시 데이터 파일은 워크플로우(최신 가격) 버전 우선
+            # ⚠️ 리베이스 도중 --ours = origin/master(구버전), --theirs = 내가 만든 새 데이터 (git 관례상 반대로 뒤집힘)
             if ! git pull --rebase origin master; then
-              git checkout --ours data/output/latest.json data/output/etf_data.js data/output/etf_meta.json index.html data/output/price_history
+              git checkout --theirs data/output/latest.json data/output/etf_data.js data/output/etf_meta.json index.html data/output/price_history
               git add data/output/latest.json data/output/etf_data.js data/output/etf_meta.json index.html data/output/price_history
               GIT_EDITOR=true git rebase --continue
             fi
@@ -136,7 +137,7 @@ jobs:
           else
             git commit -m "chore: auto-generate threads post $(date -u +%Y-%m-%d)"
             if ! git pull --rebase origin master; then
-              git checkout --ours posts/
+              git checkout --theirs posts/
               git add posts/
               GIT_EDITOR=true git rebase --continue
             fi
