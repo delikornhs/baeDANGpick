@@ -272,41 +272,64 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .rb-basket-del{font-size:11px;color:var(--ink3);background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:5px 10px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .15s;flex-shrink:0}
 .rb-basket-del:hover{color:var(--red);border-color:#fecaca;background:var(--red-bg)}
 .rb-warn-note{font-size:11px;color:var(--warn);background:var(--warn-bg);border:1px solid #fde68a;border-radius:6px;padding:8px 12px;margin-bottom:12px;line-height:1.6}
+/* 바구니 구성 바 — 목표·밴드 표시 없이 "무엇이 얼마나 담겼나"만 보여준다.
+   목표 대비 판정은 종목별 2단 바(.rbb)가 담당한다. */
 .rb-bar-wrap{margin-bottom:16px}
 .rb-bar-track{position:relative;height:24px;border-radius:7px;background:var(--bg);overflow:hidden;border:1px solid var(--border)}
 .rb-bar-seg{position:absolute;top:0;bottom:0;transition:left .2s,width .2s}
-.rb-bar-tick{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);z-index:3;box-shadow:0 0 0 1px rgba(255,255,255,.7)}
-.rb-bar-band-line{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--blue);opacity:.9;z-index:2;box-shadow:0 0 0 1px rgba(255,255,255,.7)}
-.rb-bar-hint{font-size:10px;color:var(--ink3);margin-top:6px;line-height:1.6}
-.rb-bar-hint .hint-ref{color:var(--ink);font-weight:700}
-.rb-bar-hint .hint-band{color:var(--blue);font-weight:700}
 .rb-band-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:12px}
 .rb-band-label{font-size:11px;font-weight:700;color:var(--ink2);white-space:nowrap}
 .rb-band-preset{font-size:11px;font-weight:700;padding:4px 11px;border-radius:14px;border:1px solid var(--border);background:var(--bg);color:var(--ink3);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
 .rb-band-preset.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
 .rb-band-input{width:56px}
 .rb-band-hint-text{font-size:10px;color:var(--ink3)}
-.rb-band-summary{font-size:11px;border-radius:6px;padding:8px 12px;margin-bottom:12px;line-height:1.6}
-.rb-band-summary.warn{background:var(--red-bg);border:1px solid #fecaca;color:var(--red)}
-.rb-band-summary.ok{background:var(--accent-bg);border:1px solid #c5e8d2;color:var(--accent)}
-.rb-item-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;border:1px solid;white-space:nowrap;flex-shrink:0}
-.rb-item-badge.warn{background:var(--red-bg);color:var(--red);border-color:#fecaca}
-.rb-item-badge.ok{background:var(--accent-bg);color:var(--accent);border-color:#c5e8d2}
+/* 참고 밴드 안내 — 판정이 아니라 사실 진술이므로 중립 톤을 유지한다 */
+.rb-band-note{font-size:11px;color:var(--ink2);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-bottom:12px;line-height:1.6}
+.rb-band-note b{color:var(--ink);font-weight:700}
+.rb-band-note-sub{color:var(--ink3)}
 .rb-item{padding:13px 0 13px 14px;border-bottom:1px solid var(--border);border-left:3px solid transparent}
 .rb-item:last-child{border-bottom:none}
-.rb-item-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:9px}
-.rb-item-name{font-size:13px;font-weight:700;letter-spacing:-.2px}
-.rb-item-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:9px}
+.rb-item-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.rb-item-name{font-size:13px;font-weight:700;letter-spacing:-.2px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rb-dev{font-size:11px;font-family:"DM Mono",monospace;font-weight:700;color:var(--ink3);flex-shrink:0}
+.rb-dev.buy{color:var(--blue)}
+.rb-dev.sell{color:var(--red)}
 .pf-stat-val.buy{color:var(--blue)}
 .pf-stat-val.sell{color:var(--red)}
-.rb-weight-cmp{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.rb-weight-track{flex:1;position:relative;height:6px;background:var(--border);border-radius:3px}
-.rb-weight-cur-fill{position:absolute;left:0;top:0;height:100%;border-radius:3px;background:var(--accent-mid)}
-.rb-weight-target-mark{position:absolute;top:-2px;width:2px;height:10px;background:var(--ink);border-radius:1px}
+
+/* 종목별 목표/현재 2단 바 — 모든 종목이 같은 가로 축(0~max)을 공유한다 */
+.rb-axis{display:grid;grid-template-columns:30px 1fr 54px;gap:9px;align-items:center;margin-bottom:7px}
+.rb-axis-track{position:relative;height:12px}
+.rb-axis-lbl{position:absolute;top:0;font-size:9px;font-family:"DM Mono",monospace;color:var(--ink3);transform:translateX(-50%);white-space:nowrap}
+.rbb{display:grid;grid-template-columns:30px 1fr 54px;gap:5px 9px;align-items:center;margin-bottom:10px}
+/* 두 행에 걸치는 레이어(.zn/.ln)가 있으므로 나머지 칸도 명시 배치해야 한다.
+   자동 배치는 점유된 칸을 건너뛰어 트랙이 엉뚱한 열로 밀린다. */
+.rbb>.zn,.rbb>.ln{grid-column:2;grid-row:1/3;position:relative;pointer-events:none;height:100%}
+.rbb>.zn{z-index:0}
+.rbb>.ln{z-index:9}
+.rbb>.a1{grid-column:1;grid-row:1}.rbb>.a2{grid-column:2;grid-row:1}.rbb>.a3{grid-column:3;grid-row:1}
+.rbb>.b1{grid-column:1;grid-row:2}.rbb>.b2{grid-column:2;grid-row:2}.rbb>.b3{grid-column:3;grid-row:2}
+.rb-lbl{font-size:10px;font-weight:700;color:var(--ink3);text-align:right}
+.rb-val{font-size:11px;font-family:"DM Mono",monospace;font-weight:700;color:var(--ink2);text-align:right}
+.rb-val.buy{color:var(--blue)}
+.rb-val.sell{color:var(--red)}
+.rb-track{position:relative;height:14px;border-radius:4px;box-shadow:inset 0 0 0 1px var(--border);z-index:1}
+.rb-fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;transition:width .2s}
+.rb-fill.tgt{opacity:.30}
+.rb-zone{position:absolute;top:-2px;bottom:-2px;background:var(--accent-bg);border-radius:4px}
+.rb-edge{position:absolute;top:-4px;bottom:-4px;width:0;border-left:1px dashed var(--accent-mid)}
+.rb-mark{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--ink);border-radius:1px}
+.rb-out{position:absolute;top:0;bottom:0;z-index:4;border-radius:0 4px 4px 0}
+.rb-out.over{background:repeating-linear-gradient(45deg,rgba(220,38,38,.55) 0 3px,rgba(220,38,38,.2) 3px 6px)}
+.rb-out.under{background:repeating-linear-gradient(45deg,rgba(29,78,216,.4) 0 3px,rgba(29,78,216,.13) 3px 6px)}
+.rb-meta{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:11px;color:var(--ink3);margin-bottom:10px}
+.rb-meta b{font-family:"DM Mono",monospace;font-weight:700;color:var(--ink2)}
+.rb-meta b.buy{color:var(--blue)}
+.rb-meta b.sell{color:var(--red)}
 .rb-add-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
 .rb-add-title{font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:8px}
 @media(max-width:600px){
-  .rb-item-grid{grid-template-columns:repeat(2,1fr)}
+  .rb-axis,.rbb{grid-template-columns:26px 1fr 48px;gap:5px 7px}
   .rb-add-row{flex-direction:column}
   .rb-add-row .search-wrap,.rb-add-row .qty-input,.rb-add-row .add-btn{width:100%}
 }
@@ -831,28 +854,20 @@ function calcRebalBasket(basket) {
   return { totalValue, totalTarget, rows: enriched };
 }
 
-// ── 100% 기준 비중 가로바 (현재비중 색상 구간 + 목표비중 누적 경계선 + 밴드폭) ──
-function buildRebalBar(rows, bandPct) {
+// ── 바구니 구성 가로바 (현재비중 색상 구간만) ──
+// 목표 경계선·밴드선은 그리지 않는다. 그 선들은 "누적" 경계 기준이라
+// 종목별 판정(|diffPct| > bandPct, 개별 기준)과 어긋나 서로 다른 결론을 보여줬다.
+// 목표 대비 비교는 종목별 2단 바(buildRebalItemBars)가 담당한다.
+function buildRebalBar(rows) {
   if (!rows.length) return '';
   const barRows = [...rows].sort((a, b) => a.colorIdx - b.colorIdx);
-  let curCum = 0, tgtCum = 0;
+  let curCum = 0;
   const segs = barRows.map(r => {
     const left  = curCum;
     const width = Math.max(0, r.curPct);
     curCum += width;
     const color = PALETTE[r.colorIdx % PALETTE.length];
     return `<div class="rb-bar-seg" style="left:${left.toFixed(2)}%;width:${width.toFixed(2)}%;background:${color}" title="${r.etf.name} · 현재 ${r.curPct.toFixed(1)}%"></div>`;
-  }).join('');
-  // 마지막 항목의 누적 경계는 항상 100%=100%로 고정되어 표시할 의미가 없으므로 제외
-  // 기준선(진한 색, 목표 경계) + 그 양옆 밴드선(파란색, 허용 범위 경계) — 셋 다 항상 경계 지점 기준 대칭
-  const bandsAndTicks = barRows.slice(0, -1).map(r => {
-    tgtCum += r.targetPct;
-    const center    = Math.min(100, Math.max(0, tgtCum));
-    const bandLeft  = Math.max(0, tgtCum - bandPct);
-    const bandRight = Math.min(100, tgtCum + bandPct);
-    return `<div class="rb-bar-band-line" style="left:${bandLeft.toFixed(2)}%" title="밴드 하단 경계 ${(tgtCum - bandPct).toFixed(1)}%"></div>
-            <div class="rb-bar-band-line" style="left:${bandRight.toFixed(2)}%" title="밴드 상단 경계 ${(tgtCum + bandPct).toFixed(1)}%"></div>
-            <div class="rb-bar-tick" style="left:${center.toFixed(2)}%" title="목표 누적 경계 ${tgtCum.toFixed(1)}%"></div>`;
   }).join('');
   const legend = barRows.map(r => `
     <div class="legend-item">
@@ -862,9 +877,56 @@ function buildRebalBar(rows, bandPct) {
     </div>`).join('');
   return `
     <div class="rb-bar-wrap">
-      <div class="rb-bar-track">${segs}${bandsAndTicks}</div>
-      <div class="rb-bar-hint"><span class="hint-ref">┃</span> 기준선(목표비중 경계) · <span class="hint-band">┃</span> 밴드선(허용 범위 ±${bandPct}%p 경계). 색상 구간이 밴드선을 넘으면 리밸런싱 실행 기준을 넘은 것입니다.</div>
+      <div class="rb-bar-track">${segs}</div>
       <div class="chart-legend" style="margin-top:10px">${legend}</div>
+    </div>`;
+}
+
+// ── 종목별 목표/현재 2단 바 ──
+// 모든 종목이 같은 가로 축을 공유해야 종목 간 크기 비교가 되고 축도 한 번만 그린다.
+function rebalScaleMax(rows, bandPct) {
+  if (!rows.length) return 100;
+  const need = Math.max(...rows.map(r => Math.max(r.curPct, r.targetPct + bandPct)));
+  return [10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 100].find(x => x >= need * 1.03) || 100;
+}
+
+function buildRebalAxis(max) {
+  const step = max <= 20 ? 5 : max <= 50 ? 10 : 20;
+  let labels = '';
+  for (let v = 0; v <= max + 0.001; v += step) {
+    labels += `<div class="rb-axis-lbl" style="left:${(v / max * 100).toFixed(2)}%">${v}%</div>`;
+  }
+  return `<div class="rb-axis"><div></div><div class="rb-axis-track">${labels}</div><div></div></div>`;
+}
+
+function buildRebalItemBars(r, bandPct, max) {
+  const pos   = v => (v / max * 100);
+  const color = PALETTE[r.colorIdx % PALETTE.length];
+  // 비중은 음수가 될 수 없으므로 밴드 하단은 0에서 잘린다 (목표비중 < 밴드폭인 종목)
+  const lo    = Math.max(0, r.targetPct - bandPct);
+  const hi    = Math.min(max, r.targetPct + bandPct);
+  const curCls = r.diffPct > 0.05 ? 'sell' : r.diffPct < -0.05 ? 'buy' : '';
+  let zone = '', edges = '', outMark = '';
+  if (bandPct > 0) {
+    zone  = `<div class="rb-zone" style="left:${pos(lo).toFixed(2)}%;width:${(pos(hi) - pos(lo)).toFixed(2)}%"></div>`;
+    edges = `<div class="rb-edge" style="left:${pos(lo).toFixed(2)}%"></div>`
+          + `<div class="rb-edge" style="left:${pos(hi).toFixed(2)}%"></div>`;
+    if (r.curPct > hi) {
+      outMark = `<div class="rb-out over" style="left:${pos(hi).toFixed(2)}%;width:${(pos(r.curPct) - pos(hi)).toFixed(2)}%" title="밴드 상단 ${hi.toFixed(1)}% 초과"></div>`;
+    } else if (r.curPct < lo) {
+      outMark = `<div class="rb-out under" style="left:${pos(r.curPct).toFixed(2)}%;width:${(pos(lo) - pos(r.curPct)).toFixed(2)}%" title="밴드 하단 ${lo.toFixed(1)}%까지 부족"></div>`;
+    }
+  }
+  return `
+    <div class="rbb">
+      <div class="zn">${zone}</div>
+      <div class="rb-lbl a1">목표</div>
+      <div class="rb-track a2"><div class="rb-fill tgt" style="width:${pos(r.targetPct).toFixed(2)}%;background:${color}"></div></div>
+      <div class="rb-val a3">${r.targetPct.toFixed(1)}%</div>
+      <div class="rb-lbl b1">현재</div>
+      <div class="rb-track b2"><div class="rb-fill" style="width:${pos(r.curPct).toFixed(2)}%;background:${color}"></div>${outMark}</div>
+      <div class="rb-val b3 ${curCls}">${r.curPct.toFixed(1)}%</div>
+      <div class="ln">${edges}<div class="rb-mark" style="left:${pos(r.targetPct).toFixed(2)}%" title="목표 ${r.targetPct.toFixed(1)}%"></div></div>
     </div>`;
 }
 
@@ -897,24 +959,28 @@ function renderRebalance() {
 
   const bandRowHtml = `
     <div class="rb-band-row">
-      <span class="rb-band-label">리밸런싱 밴드폭</span>
+      <span class="rb-band-label">참고 밴드</span>
+      <button type="button" class="rb-band-preset ${bandPct === 0 ? 'on' : ''}" onclick="updateBasketBand('${basket.id}', 0)">표시 안 함</button>
       <button type="button" class="rb-band-preset ${bandPct === 5 ? 'on' : ''}" onclick="updateBasketBand('${basket.id}', 5)">±5%</button>
       <button type="button" class="rb-band-preset ${bandPct === 10 ? 'on' : ''}" onclick="updateBasketBand('${basket.id}', 10)">±10%</button>
       <input type="number" class="qty-edit rb-band-input" value="${bandPct}" min="0" max="50" step="0.5"
         onchange="updateBasketBand('${basket.id}', this.value)">
-      <span class="rb-band-hint-text">%p — 목표비중에서 이 이상 벗어나면 리밸런싱 실행</span>
+      <span class="rb-band-hint-text">%p — 그래프에 참고 구간으로 표시됩니다</span>
     </div>`;
 
   const targetWarn = rows.length > 0 && Math.abs(totalTarget - 100) > 0.05
     ? `<div class="rb-warn-note">⚠️ 목표 비중 합계가 ${totalTarget.toFixed(1)}%입니다. 100%가 되도록 맞추면 더 정확하게 계산됩니다.</div>`
     : '';
 
+  // 밴드는 참고선일 뿐이므로 실행 여부를 판정하지 않고 사실만 적는다.
+  // 필요 매매 수량(diffQty)은 밴드와 무관하게 항상 목표 비중까지의 수량이라 그 점을 함께 밝힌다.
   const bandExceedCount = rows.filter(r => Math.abs(r.diffPct) > bandPct).length;
-  const bandSummaryHtml = rows.length ? (
-    bandExceedCount > 0
-      ? `<div class="rb-band-summary warn">⚠️ ${bandExceedCount}개 종목이 밴드(±${bandPct}%p)를 벗어났습니다. 리밸런싱 실행을 고려하세요.</div>`
-      : `<div class="rb-band-summary ok">✅ 모든 종목이 밴드(±${bandPct}%p) 안에 있습니다. 지금은 리밸런싱이 필요하지 않습니다.</div>`
-  ) : '';
+  const bandSummaryHtml = (rows.length && bandPct > 0) ? `
+    <div class="rb-band-note">${bandExceedCount > 0
+      ? `${rows.length}개 종목 중 <b>${bandExceedCount}개</b>가 참고 밴드(±${bandPct}%p) 밖에 있습니다.`
+      : `모든 종목이 참고 밴드(±${bandPct}%p) 안에 있습니다.`}
+      <span class="rb-band-note-sub">· 아래 <b>필요 매매</b>는 밴드와 무관하게 목표 비중까지 맞추는 수량입니다.</span>
+    </div>` : '';
 
   const summaryHtml = rows.length ? `
     <div class="summary-grid">
@@ -922,39 +988,29 @@ function renderRebalance() {
       <div class="sum-card"><div class="sum-label">목표 비중 합계</div><div class="sum-val ${Math.abs(totalTarget - 100) > 0.05 ? 'accent' : ''}">${totalTarget.toFixed(1)}<span class="unit">%</span></div></div>
     </div>` : '';
 
+  const scaleMax = rebalScaleMax(rows, bandPct);
+  const axisHtml = rows.length ? buildRebalAxis(scaleMax) : '';
+
   const itemsHtml = rows.length ? rows.map(r => {
     const diffQtyHtml = r.diffQty > 0
-      ? `<span class="pf-stat-val buy">매수 ${r.diffQty.toLocaleString()}주</span>`
+      ? `<b class="buy">매수 ${r.diffQty.toLocaleString()}주</b>`
       : r.diffQty < 0
-      ? `<span class="pf-stat-val sell">매도 ${Math.abs(r.diffQty).toLocaleString()}주</span>`
-      : `<span class="pf-stat-val">-</span>`;
+      ? `<b class="sell">매도 ${Math.abs(r.diffQty).toLocaleString()}주</b>`
+      : `<b>-</b>`;
     const diffPctCls = r.diffPct > 0.05 ? 'sell' : r.diffPct < -0.05 ? 'buy' : '';
-    const diffPctStr = r.diffPct > 0.05 ? `+${r.diffPct.toFixed(1)}%p 초과` : r.diffPct < -0.05 ? `${r.diffPct.toFixed(1)}%p 부족` : '적정';
-    const outOfBand = Math.abs(r.diffPct) > bandPct;
-    const bandBadge = outOfBand
-      ? `<span class="rb-item-badge warn">⚠️ 밴드 초과</span>`
-      : `<span class="rb-item-badge ok">밴드 내</span>`;
+    const diffPctStr = r.diffPct > 0.05 ? `+${r.diffPct.toFixed(1)}%p` : r.diffPct < -0.05 ? `${r.diffPct.toFixed(1)}%p` : '적정';
     return `
       <div class="rb-item" style="border-left-color:${PALETTE[r.colorIdx % PALETTE.length]}">
         <div class="rb-item-hdr">
-          <div style="display:flex;align-items:center;gap:7px;min-width:0;flex-wrap:wrap">
-            <div class="rb-item-name">${r.etf.name}</div>
-            ${bandBadge}
-          </div>
+          <div class="rb-item-name">${r.etf.name}</div>
+          <span class="rb-dev ${diffPctCls}">${diffPctStr}</span>
           <button class="pf-delete" onclick="removeRbItem('${r.code}')">삭제</button>
         </div>
-        <div class="rb-item-grid">
-          <div class="pf-stat"><div class="pf-stat-label">목표비중</div><div class="pf-stat-val">${r.targetPct.toFixed(1)}%</div></div>
-          <div class="pf-stat"><div class="pf-stat-label">현재비중</div><div class="pf-stat-val">${r.curPct.toFixed(1)}%</div></div>
-          <div class="pf-stat"><div class="pf-stat-label">초과/부족</div><div class="pf-stat-val ${diffPctCls}">${diffPctStr}</div></div>
-          <div class="pf-stat"><div class="pf-stat-label">필요 매매</div>${diffQtyHtml}</div>
-        </div>
-        <div class="rb-weight-cmp">
-          <div class="rb-weight-track">
-            <div class="rb-weight-cur-fill" style="width:${Math.min(100, r.curPct).toFixed(1)}%"></div>
-            <div class="rb-weight-target-mark" style="left:${Math.min(100, r.targetPct).toFixed(1)}%"></div>
-          </div>
-          <div class="weight-pct" style="width:auto">${comma(r.value)}원</div>
+        ${buildRebalItemBars(r, bandPct, scaleMax)}
+        <div class="rb-meta">
+          <span>필요 매매 ${diffQtyHtml}</span>
+          <span>평가금액 <b>${comma(r.value)}원</b></span>
+          <span>보유 <b>${r.qty.toLocaleString()}주</b></span>
         </div>
         <div class="pf-item-actions">
           <div class="qty-wrap">
@@ -998,8 +1054,9 @@ function renderRebalance() {
       ${targetWarn}
       ${bandSummaryHtml}
       ${summaryHtml}
-      ${buildRebalBar(rows, bandPct)}
+      ${buildRebalBar(rows)}
       <div class="pf-card-items-label">담긴 종목</div>
+      ${axisHtml}
       ${itemsHtml}
       ${addFormHtml}
     </div>`;
