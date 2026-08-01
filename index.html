@@ -103,8 +103,6 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 }
 .dash-rb-bar-track{position:relative;height:20px;border-radius:6px;background:var(--bg);overflow:hidden;border:1px solid var(--border);margin-bottom:8px}
 .dash-rb-bar-seg{position:absolute;top:0;bottom:0}
-.dash-rb-bar-tick{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);z-index:3;box-shadow:0 0 0 1px rgba(255,255,255,.7)}
-.dash-rb-bar-band-line{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--blue);opacity:.9;z-index:2;box-shadow:0 0 0 1px rgba(255,255,255,.7)}
 .dash-rb-legend{display:flex;flex-direction:column;gap:5px;margin-bottom:4px}
 .dash-rb-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2)}
 .dash-rb-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
@@ -114,6 +112,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .dash-rb-basket-name{font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .dash-rb-basket-total{font-size:12px;font-weight:700;font-family:"DM Mono",monospace;color:var(--ink2);flex-shrink:0}
 .dash-rb-warn{font-size:10px;color:var(--warn);background:var(--warn-bg);border:1px solid #fde68a;border-radius:6px;padding:6px 10px;margin-bottom:8px;line-height:1.5}
+/* 참고 밴드 안내 — 판정이 아니라 사실 진술이므로 경고색을 쓰지 않는다 */
+.dash-rb-note{font-size:10px;color:var(--ink2);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 10px;margin-bottom:8px;line-height:1.5}
+.dash-rb-note b{color:var(--ink);font-weight:700}
 .dash-rb-empty-basket{font-size:12px;color:var(--ink3);padding:12px 0;text-align:center}
 .dash-rb-edit-link{display:block;text-align:center;font-size:11px;font-weight:700;color:var(--accent);text-decoration:none;margin-top:12px}
 .dash-rb-edit-link:hover{text-decoration:underline}
@@ -2438,28 +2439,20 @@ function calcRebalBasket(basket) {
   return { totalValue, totalTarget, rows: enriched };
 }
 
-// ── 100% 기준 비중 가로바 (현재비중 색상 구간 + 목표비중 누적 경계선 + 밴드폭) ──
-function buildDashRebalBar(rows, bandPct) {
+// ── 바구니 구성 가로바 (현재비중 색상 구간만) ──
+// 목표 경계선·밴드선은 그리지 않는다. 그 선들은 "누적" 경계 기준이라
+// 종목별 판정(|diffPct| > bandPct, 개별 기준)과 어긋나 서로 다른 결론을 보여줬다.
+// 목표 대비 비교는 portfolio.html 리밸런싱 탭의 종목별 2단 바가 담당한다.
+function buildDashRebalBar(rows) {
   if (!rows.length) return '<div class="dash-rb-empty-basket">담긴 종목이 없습니다.</div>';
   const barRows = [...rows].sort((a, b) => a.colorIdx - b.colorIdx);
-  let curCum = 0, tgtCum = 0;
+  let curCum = 0;
   const segs = barRows.map(r => {
     const left  = curCum;
     const width = Math.max(0, r.curPct);
     curCum += width;
     const color = RB_PALETTE[r.colorIdx % RB_PALETTE.length];
     return `<div class="dash-rb-bar-seg" style="left:${left.toFixed(2)}%;width:${width.toFixed(2)}%;background:${color}" title="${r.etf.name} · 현재 ${r.curPct.toFixed(1)}%"></div>`;
-  }).join('');
-  // 마지막 항목의 누적 경계는 항상 100%=100%로 고정되어 표시할 의미가 없으므로 제외
-  // 기준선(진한 색, 목표 경계) + 그 양옆 밴드선(파란색, 허용 범위 경계) — 셋 다 항상 경계 지점 기준 대칭
-  const bandsAndTicks = barRows.slice(0, -1).map(r => {
-    tgtCum += r.targetPct;
-    const center    = Math.min(100, Math.max(0, tgtCum));
-    const bandLeft  = Math.max(0, tgtCum - bandPct);
-    const bandRight = Math.min(100, tgtCum + bandPct);
-    return `<div class="dash-rb-bar-band-line" style="left:${bandLeft.toFixed(2)}%" title="밴드 하단 경계 ${(tgtCum - bandPct).toFixed(1)}%"></div>
-            <div class="dash-rb-bar-band-line" style="left:${bandRight.toFixed(2)}%" title="밴드 상단 경계 ${(tgtCum + bandPct).toFixed(1)}%"></div>
-            <div class="dash-rb-bar-tick" style="left:${center.toFixed(2)}%" title="목표 누적 경계 ${tgtCum.toFixed(1)}%"></div>`;
   }).join('');
   const legend = barRows.map(r => `
     <div class="dash-rb-legend-item">
@@ -2468,7 +2461,7 @@ function buildDashRebalBar(rows, bandPct) {
       <div class="dash-rb-legend-pct">${r.curPct.toFixed(1)}% · 목표 ${r.targetPct.toFixed(1)}%</div>
     </div>`).join('');
   return `
-    <div class="dash-rb-bar-track">${segs}${bandsAndTicks}</div>
+    <div class="dash-rb-bar-track">${segs}</div>
     <div class="dash-rb-legend">${legend}</div>`;
 }
 
@@ -2477,9 +2470,10 @@ function dashRbBasketPageHtml(basket) {
   const bandPct = basket.bandPct ?? 5;
   const warnHtml = rows.length && Math.abs(totalTarget - 100) > 0.5
     ? `<div class="dash-rb-warn">⚠️ 목표비중 합계 ${totalTarget.toFixed(1)}%</div>` : '';
+  // 밴드는 참고선이므로 실행 여부를 판정하지 않고 사실만 적는다 (portfolio.html과 동일 기준)
   const bandExceedCount = rows.filter(r => Math.abs(r.diffPct) > bandPct).length;
-  const bandSummaryHtml = rows.length && bandExceedCount > 0
-    ? `<div class="dash-rb-warn">⚠️ ${bandExceedCount}개 종목이 밴드(±${bandPct}%p) 초과 — 리밸런싱 고려</div>` : '';
+  const bandSummaryHtml = (rows.length && bandPct > 0 && bandExceedCount > 0)
+    ? `<div class="dash-rb-note">${rows.length}개 종목 중 <b>${bandExceedCount}개</b>가 참고 밴드(±${bandPct}%p) 밖</div>` : '';
   return `
     <div class="dash-rb-basket-hdr">
       <span class="dash-rb-basket-name">${escHtml(basket.name)}</span>
@@ -2487,7 +2481,7 @@ function dashRbBasketPageHtml(basket) {
     </div>
     ${warnHtml}
     ${bandSummaryHtml}
-    ${buildDashRebalBar(rows, bandPct)}`;
+    ${buildDashRebalBar(rows)}`;
 }
 
 function renderDashRebal() {
