@@ -338,6 +338,21 @@ def build_history():
 
         notice_date = extract_date_from_filename(xls_path.name)
         for r in records:
+            # ⚠️ KIND 원문에 기준일 연도 오타가 있는 경우가 있다.
+            #    분배금 공시는 기준일 며칠 전에 나오므로 기준일 < 공시일이면 원문이 틀린 것이다.
+            #    (실제 사례: 2021.03.05 공시의 HANARO KAP초장기국고채 기준일이 2020-03-09.
+            #     지급일은 2021-03-11로 정상이라 연도만 잘못 적힌 게 분명했다.)
+            #    그냥 두면 1년 전 회차를 덮어써서 두 회차가 한꺼번에 망가진다.
+            if notice_date and r["ex_date"] < notice_date:
+                fixed = f"{notice_date[:4]}{r['ex_date'][4:]}"
+                if notice_date <= fixed <= (r["pay_date"] or fixed):
+                    print(f"  ⚠️  기준일 연도 오타 보정: {r['name']} "
+                          f"{r['ex_date']} → {fixed} (공시 {notice_date}, 지급 {r['pay_date']})")
+                    r["ex_date"] = fixed
+                else:
+                    print(f"  ⚠️  기준일({r['ex_date']})이 공시일({notice_date})보다 앞섬 — "
+                          f"{r['name']}. 자동 보정 불가, 원문 확인 필요")
+
             isin = r["isin"]
             ex_key = r["ex_date"]
             if isin not in history:

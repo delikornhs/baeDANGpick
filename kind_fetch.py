@@ -163,9 +163,18 @@ def main():
             for x in recs:
                 all_records[(x["isin"], x["ex_date"])] = x
 
+            # ⚠️ 같은 회사가 같은 날 여러 건을 공시하면 파일명이 완전히 같아진다.
+            #    (예: 2022-04-27 한국예탁결제원 2건 — 서로 다른 종목 묶음)
+            #    파일명만 보고 건너뛰면 뒤 건이 통째로 누락된다.
+            #    이미 있는 파일이 '같은 공시'인지 내용으로 확인하고, 다르면 접수번호를 붙여 저장한다.
             if path.exists():
-                skipped.append(path.name)
-                continue
+                if path.read_text(encoding="utf-8", errors="replace") == doc:
+                    skipped.append(path.name)
+                    continue
+                path = folder / f"{file_name} [{r['acptno']}].xls"
+                if path.exists():
+                    skipped.append(path.name)
+                    continue
             if args.dry_run:
                 saved.append(f"(dry-run) {path.name}  {len(recs)}건")
                 continue
