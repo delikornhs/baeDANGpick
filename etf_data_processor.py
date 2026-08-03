@@ -1154,14 +1154,22 @@ if __name__ == "__main__":
                 rets = calc_returns(item, daily, history_for_returns)
                 for k, v in rets.items():
                     item[k] = v
-                # 전일 대비 등락률: price_date 이전 가장 최근 종가와 오늘 종가(item["price"]) 비교
-                # daily의 마지막 항목이 아직 오늘 날짜로 안 갱신됐을 수 있어 날짜 비교로 직접 탐색
+                # 전일 대비 등락률: 현재가(item["price"])가 속한 거래일의 직전 거래일 종가와 비교
+                # ⚠️ 비거래일(주말·공휴일)에 실행하면 현재가 = daily 마지막 종가가 된다.
+                #    이때 "price_date 이전 가장 최근 종가"를 그대로 쓰면 자기 자신과 비교해
+                #    등락률이 전 종목 0%가 되므로, 한 칸 더 앞의 거래일을 전일로 잡는다.
                 prev_close = 0
-                for d, c in reversed(daily):
-                    if d < price_date:
-                        prev_close = c
-                        break
-                if prev_close > 0 and item.get("price"):
+                cur_price  = item.get("price")
+                for idx in range(len(daily) - 1, -1, -1):
+                    d, c = daily[idx]
+                    if d >= price_date:
+                        continue
+                    if c == cur_price and idx > 0:
+                        prev_close = daily[idx - 1][1]   # 이 종가가 곧 현재가 → 그 직전 거래일
+                    else:
+                        prev_close = c                   # 장중 실행 등 — 현재가는 아직 daily에 없음
+                    break
+                if prev_close > 0 and cur_price:
                     item["chg_pct"] = round((item["price"] - prev_close) / prev_close * 100, 2)
                 with open(PRICE_HISTORY_DIR / f"{code}.json", "w", encoding="utf-8") as f:
                     json.dump(daily, f, ensure_ascii=False)
