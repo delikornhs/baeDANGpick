@@ -1010,6 +1010,57 @@ def fetch_naver_prices(codes: list) -> tuple:
     return prices, market_caps, price_date
 
 
+def resolve_price_date(price_date: str, samples: list) -> str:
+    """
+    실제 종가 기준일을 판별한다.
+
+    fetch_naver_prices()가 돌려주는 price_date는 '실행 당일' 날짜일 뿐이다.
+    주말·공휴일에 실행하면 네이버가 주는 값은 직전 거래일 종가인데
+    라벨만 비거래일 날짜(예: 토요일)로 표시된다.
+
+    samples: [(마지막_거래일, 마지막_종가, 현재가), ...]
+    """
+    # 종가 조회에 실패한 종목(price=0)은 판별 근거가 못 되므로 제외
+    samples = [s for s in samples if s[0] and s[2]]
+    if not samples:
+        return price_date
+
+    real = max(d for d, _, _ in samples)
+    if real >= price_date:
+        return price_date       # 당일 종가가 이미 이력에 있음 = 거래일이 맞다
+
+    # 최근 거래일까지 이력이 있는 종목만 평가 (상장폐지 종목은 노이즈)
+    active = [(c, p) for d, c, p in samples if d == real]
+    if not active:
+        return price_date
+
+    # 현재가가 이력 마지막 종가와 다르면 장중 실행 — 오늘 시세가 맞다
+    stale = sum(1 for c, p in active if c == p)
+    if stale < len(active) * 0.9:
+        return price_date
+
+    return real
+
+
+def sample_last_closes(latest: list, limit: int = 100) -> list:
+    """저장된 종가 이력에서 (마지막 거래일, 마지막 종가, 현재가) 샘플 추출"""
+    samples = []
+    for item in latest:
+        if len(samples) >= limit:
+            break
+        f = OUT_DIR / "price_history" / f"{item['code']}.json"
+        if not f.exists():
+            continue
+        try:
+            with open(f, encoding="utf-8") as fp:
+                daily = json.load(fp)
+            if daily:
+                samples.append((daily[-1][0], daily[-1][1], item.get("price")))
+        except Exception:
+            pass
+    return samples
+
+
 def update_prices(latest: list, price_map: dict):
     """
     주가 데이터를 업데이트하고 분배율 재계산.
@@ -1147,10 +1198,12 @@ if __name__ == "__main__":
         print("📈 일별 이력 조회 및 수익률 계산")
         print(f"{'='*50}")
         ret_ok = ret_fail = 0
+        close_samples = []
         for i, item in enumerate(latest):
             code  = item["code"]
             daily = fetch_daily_price_history(code, item.get("listed_date", ""), hist_headers)
             if daily:
+                close_samples.append((daily[-1][0], daily[-1][1], item.get("price")))
                 rets = calc_returns(item, daily, history_for_returns)
                 for k, v in rets.items():
                     item[k] = v
@@ -1182,6 +1235,12 @@ if __name__ == "__main__":
 
         print(f"수익률 계산: {ret_ok}개 성공 / {ret_fail}개 실패")
         print(f"💾 종목별 종가 이력 저장: {PRICE_HISTORY_DIR}")
+
+        # 종가 기준일 보정 (비거래일 실행 시 실제 종가 날짜로 교체)
+        real_date = resolve_price_date(price_date, close_samples)
+        if real_date != price_date:
+            print(f"⚠️  {price_date}는 거래일이 아님 → 종가 기준일을 {real_date}로 보정")
+            price_date = real_date
 
         # 안정성 지표 계산 (분배율 수준은 공시일 전일 종가 기준)
         for item in latest:
@@ -1300,6 +1359,12 @@ if __name__ == "__main__":
             item["price"] = p
             item["rate"] = round(item["dist"] / p * 100, 2)  # 임시값 (다음 단계에서 재계산)
         item["market_cap"] = market_caps.get(item["code"], "")
+
+    # 종가 기준일 보정 (비거래일 실행 시 저장된 종가 이력으로 실제 날짜 판별)
+    real_date = resolve_price_date(price_date, sample_last_closes(latest))
+    if real_date != price_date:
+        print(f"⚠️  {price_date}는 거래일이 아님 → 종가 기준일을 {real_date}로 보정")
+        price_date = real_date
 
     # 5. 공시일자 전일 역사 종가로 분배율 재계산
     hist_headers = {
