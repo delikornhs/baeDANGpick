@@ -105,6 +105,9 @@ async function loadPosts() {
   try {
     const res = await fetch('/insight/posts.json?v=' + Date.now());
     allPosts = await res.json();
+    // posts.json은 api/publish.js가 '가이드를 맨 뒤'로 정렬해 저장한다.
+    // 목록에서는 카테고리와 무관하게 작성일 최신순으로 보여준다.
+    allPosts.sort((a, b) => b.date.localeCompare(a.date));
     renderPosts();
   } catch(e) {
     document.getElementById('postGrid').innerHTML = '<div class="empty">글을 불러오지 못했습니다.</div>';
