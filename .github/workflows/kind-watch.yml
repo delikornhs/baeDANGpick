@@ -7,7 +7,9 @@ name: KIND Disclosure Watch
 #   2. 새 공시가 있으면 프로세서 실행 → latest.json / etf_data.js / index.html 갱신
 #   3. kind_verify.py 로 검증. 통과해야만 커밋·push (= 사이트 반영)
 #   4. 다가오는 일정 파악 (계산해서 보여주기만 함 — 달력 반영은 사람이 확인 후)
-#   5. 이슈로 결과 알림
+#   5. 이슈로 결과 알림 — 두 가지가 독립적으로 나간다
+#        · 분배금 반영 알림: 새 공시를 수집했을 때
+#        · 분배 일정 알림:   달력에 없는 정규 회차를 발견했을 때 (회차당 한 번)
 #
 # 하지 않는 일
 #   - 뉴스레터 발송: 되돌릴 수 없고 구독자에게 바로 나가므로 항상 사용자 승인 후 수동 발송
@@ -70,6 +72,16 @@ jobs:
         run: |
           set -o pipefail
           python -X utf8 kind_schedule.py 2>&1 | tee schedule.log
+          # 스크립트가 달력(CONFIRMED_SCHEDULE)과 대조해 미반영 회차를 알려준다.
+          if grep -q '^PENDING_SCHEDULE=1' schedule.log; then
+            echo "pending=true" >> $GITHUB_OUTPUT
+            # 중복 알림 방지 키 = 미반영 회차의 기준일. 회차가 바뀌어야 새 이슈가 나간다.
+            KEY=$(grep '^PENDING_ROUND=' schedule.log \
+                  | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | sort -u | tr '\n' '_' | sed 's/_$//')
+            echo "key=$KEY" >> $GITHUB_OUTPUT
+          else
+            echo "pending=false" >> $GITHUB_OUTPUT
+          fi
 
       # 신규 상장 ETF의 첫 분배를 반영할 때, 프로세서 기본 경로는 메타 캐시를 읽기만 한다.
       # 캐시를 채우는 건 매일 종가 워크플로(--prices-only)뿐이라 그대로 두면
@@ -163,12 +175,50 @@ jobs:
 
           gh issue create --title "$TITLE" --body-file issue_body.md
 
+      # 일정 알림은 분배금 공시와 무관하게 나간다.
+      # 일정 공시(설정/환매 안내)는 최종매수일 5~9일 전에 먼저 올라오는데,
+      # 그때는 새 분배금 공시가 없어 위 알림 조건(new_files)에 안 걸린다.
+      # 그래서 일정을 멀쩡히 계산해 놓고도 아무도 모르는 구간이 있었다.
+      - name: Open schedule issue
+        if: steps.schedule.outputs.pending == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          MARKER="[sched-${{ steps.schedule.outputs.key }}]"
+          # 달력에 반영하기 전까지는 매일 pending이므로, 같은 회차로 두 번 알리지 않는다.
+          if gh issue list --state all --limit 100 --json title --jq '.[].title' | grep -qF "$MARKER"; then
+            echo "이미 알림한 회차입니다: $MARKER"
+            exit 0
+          fi
+          {
+            echo "KIND 공시에서 새 분배 일정이 확인됐습니다. **달력에 아직 반영되지 않았습니다.**"
+            echo ""
+            echo "### 할 일"
+            echo "- [ ] Claude에게 \`\"분배 일정 반영해줘\"\` 요청 (index.html CONFIRMED_SCHEDULE)"
+            echo ""
+            echo "일정 뉴스레터는 늘 그렇듯 승인 후 수동 발송입니다."
+            echo ""
+            echo "> 최종매수일은 공시 원문의 중지기간 종료일(실측)이고,"
+            echo "> 배당락일·기준일은 주말만 반영한 계산값입니다."
+            echo "> 종목수는 지금까지 공시한 운용사 기준이라 앞으로 늘어납니다 — 날짜는 확정값입니다."
+            echo ""
+            echo "## 일정 확인 결과"
+            echo '```'
+            cat schedule.log
+            echo '```'
+          } > schedule_issue.md
+          gh issue create --title "📅 분배 일정 확인 — 달력 미반영 $MARKER" --body-file schedule_issue.md
+
       - name: Summary
         if: always()
         run: |
           {
             echo "## KIND 감시 결과"
             echo ""
+            if [ "${{ steps.schedule.outputs.pending }}" = "true" ]; then
+              echo "📅 달력 미반영 회차 있음 (기준일 ${{ steps.schedule.outputs.key }})"
+              echo ""
+            fi
             if [ "${{ steps.fetch.outputs.new_files }}" != "true" ]; then
               echo "변경 없음 — 새로 올라온 공시가 없습니다."
             elif [ "${{ steps.verify.outcome }}" = "success" ]; then
