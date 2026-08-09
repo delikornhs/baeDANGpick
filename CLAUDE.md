@@ -252,13 +252,26 @@ git push
 이 환경에서는 `gh` CLI가 없으므로 Python urllib로 GitHub API를 직접 호출한다.
 토큰은 git credential manager에서 자동으로 가져온다.
 
+> ⚠️ 2026-08-09 수정: 종전 코드는 `echo "protocol=https\nhost=github.com" | git credential fill`로
+> 토큰을 가져왔는데, 셸에 따라 `\n`이 개행이 아니라 **문자 그대로** 넘어가 입력이 한 줄로 깨진다.
+> 그러면 `git credential fill`이 빈 값을 돌려주고 `.split("password=")[1]`이 IndexError로 죽는다.
+> 아래처럼 stdin으로 직접 넘기면 셸을 타지 않아 안정적이다. 빈 줄로 입력을 끝내야 하는 것도 규약이다.
+> **토큰 확보 실패 시 반드시 호출 전에 멈출 것** — 발송 직전 단계라 어중간하게 진행하면 위험하다.
+
 ```python
 import json, urllib.request, subprocess
 
-token = subprocess.check_output(
-    'echo "protocol=https\\nhost=github.com" | git credential fill',
-    shell=True, text=True
-).strip().split("password=")[1]
+# git credential fill은 "키=값" 줄들 뒤에 빈 줄이 와야 입력이 끝난 것으로 본다.
+# echo로 파이프하면 셸에 따라 \n이 문자 그대로 넘어가 입력이 깨지므로 stdin으로 직접 넘긴다.
+out = subprocess.run(
+    ["git", "credential", "fill"],
+    input="protocol=https\nhost=github.com\n\n",
+    capture_output=True, text=True, timeout=60,
+).stdout
+token = next((l.split("=", 1)[1].strip()
+              for l in out.splitlines() if l.startswith("password=")), "")
+if not token:
+    raise SystemExit("토큰을 가져오지 못했습니다 — 호출하지 않았습니다.")
 
 payload = json.dumps({
     "ref": "master",
@@ -426,10 +439,17 @@ else:
 ```python
 import json, urllib.request, subprocess
 
-token = subprocess.check_output(
-    'echo "protocol=https\\nhost=github.com" | git credential fill',
-    shell=True, text=True
-).strip().split("password=")[1]
+# git credential fill은 "키=값" 줄들 뒤에 빈 줄이 와야 입력이 끝난 것으로 본다.
+# echo로 파이프하면 셸에 따라 \n이 문자 그대로 넘어가 입력이 깨지므로 stdin으로 직접 넘긴다.
+out = subprocess.run(
+    ["git", "credential", "fill"],
+    input="protocol=https\nhost=github.com\n\n",
+    capture_output=True, text=True, timeout=60,
+).stdout
+token = next((l.split("=", 1)[1].strip()
+              for l in out.splitlines() if l.startswith("password=")), "")
+if not token:
+    raise SystemExit("토큰을 가져오지 못했습니다 — 호출하지 않았습니다.")
 
 payload = json.dumps({
     "ref": "master",
