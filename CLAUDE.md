@@ -421,18 +421,31 @@ else:
     else:
         print(f'✅ ex_date 월 확인: {ex_ym}')
 
-    # 검증 2: pay_date가 ex_date보다 나중인지 (지급일은 배당락 이후)
-    if pay_m <= ex_m:
-        print(f'❌ pay_date({pay})가 ex_date({ex})와 같은 달 이하 → 이전 달 데이터 혼입 의심')
+    # 검증 2: 지급일이 기준일보다 나중인지
+    #   월말은 기준일이 말일이라 지급일이 '다음 달'로 넘어간다 → 월 비교가 의미 있음
+    #   월중은 기준일이 15일 전후라 지급일도 '같은 달'이 정상 → 월 비교하면 안 됨
+    if pay <= ex:
+        print(f'❌ pay_date({pay})가 ex_date({ex}) 이하 → 데이터 이상')
+    elif timing == '월말' and pay_m <= ex_m:
+        print(f'❌ pay_date({pay})가 ex_date({ex})와 같은 달 → 이전 달 데이터 혼입 의심')
     else:
-        print(f'✅ pay_date 월 확인: {pay}')
+        print(f'✅ pay_date 확인: {pay}')
 
     # 검증 3: current=True 항목 수가 정상 범위인지
-    print(f'✅ current=True 항목 수: {len(eom)}개')
-    if len(eom) < 50:
+    # 실측 분포(2025-09~2026-08): 월중 37~71개 / 월말은 분기배당 겹침에 따라 편차 큼
+    MIN_CNT = {'월중': 35, '월말': 100}[timing]
+    print(f'✅ current=True 항목 수: {len(eom)}개 (하한 {MIN_CNT})')
+    if len(eom) < MIN_CNT:
         print(f'⚠️ 항목 수가 너무 적음 — 필터링 이상 가능성')
 "
 ```
+
+> ⚠️ 위 3가지는 보조 점검이고, **정식 게이트는 `kind_verify.py`**(종료코드 0)다. 발송 전 함께 돌릴 것.
+>
+> 2026-08-12 오탐 사례: 8월 월중 발송 때 검증2·검증3이 동시에 실패로 떴으나 둘 다 스크립트 문제였다.
+> 검증2는 월말 전용 로직(`pay_m <= ex_m`)을 월중에 적용해 **월중은 구조상 항상 실패**했고,
+> 검증3은 임계값 50이 월중 실측 분포(43~52)보다 높아 정상인 49개를 경고로 잡았다.
+> 데이터 자체는 `kind_verify.py` 통과 상태였다.
 
 이 환경에서는 `gh` CLI가 없으므로 Python urllib로 GitHub API를 직접 호출한다.
 
