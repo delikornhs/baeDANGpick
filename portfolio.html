@@ -257,6 +257,31 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px
 .qty-edit:focus{border-color:var(--accent-mid)}
 .qty-save{font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);border:1px solid #c5e8d2;border-radius:5px;padding:4px 10px;cursor:pointer;font-family:inherit;transition:background .15s}
 .qty-save:hover{background:#d1f0e0}
+.acct-toggle{font-size:11px;font-weight:600;color:var(--ink3);background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:4px 10px;cursor:pointer;font-family:inherit;transition:all .15s}
+.acct-toggle:hover{color:var(--accent);border-color:#c5e8d2;background:var(--accent-bg)}
+.acct-box{margin-top:10px;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px}
+.acct-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.acct-title{font-size:12px;font-weight:700;color:var(--ink)}
+.acct-cols{display:grid;grid-template-columns:1fr 74px 92px 26px;gap:6px;font-size:10px;color:var(--ink3);padding:0 2px 4px;text-align:center}
+.acct-cols span:first-child{text-align:left}
+.acct-row{display:grid;grid-template-columns:1fr 74px 92px 26px;gap:6px;margin-bottom:6px;align-items:center}
+.acct-row input{border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit;outline:none;background:var(--white);min-width:0}
+.acct-row input:focus{border-color:var(--accent-mid)}
+.acct-row .acct-num{text-align:center}
+.acct-del{font-size:14px;line-height:1;color:var(--ink3);background:none;border:none;cursor:pointer;padding:4px;font-family:inherit}
+.acct-del:hover{color:var(--red)}
+.acct-foot{display:flex;gap:6px;margin-top:8px}
+.acct-add{flex:1;font-size:11px;font-weight:600;color:var(--ink2);background:var(--white);border:1px dashed var(--border);border-radius:6px;padding:6px;cursor:pointer;font-family:inherit}
+.acct-add:hover{color:var(--accent);border-color:var(--accent-mid)}
+.acct-total{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-size:12px;color:var(--ink2);display:flex;flex-wrap:wrap;gap:4px 12px}
+.acct-total b{color:var(--ink);font-family:"DM Mono",monospace}
+.acct-total b.pos{color:var(--accent)}
+.acct-total b.neg{color:var(--red)}
+.acct-note{margin-top:6px;font-size:10.5px;color:var(--ink3);line-height:1.5}
+@media(max-width:480px){
+  .acct-cols,.acct-row{grid-template-columns:1fr 60px 78px 24px}
+  .acct-row input{padding:6px 5px;font-size:11.5px}
+}
 .pf-delete{font-size:11px;color:var(--ink3);background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:4px 10px;cursor:pointer;margin-left:auto;font-family:inherit;transition:all .15s}
 .pf-delete:hover{color:var(--red);border-color:#fecaca;background:var(--red-bg)}
 
@@ -568,10 +593,114 @@ const PALETTE = [
 ];
 
 // ── 스토리지 ──
-const load   = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+// 계좌별 항목은 읽어올 때마다 합계를 다시 맞춘다 (다른 기기에서 동기화된 데이터 대비)
+const load   = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+                       .map(i => (i && i.accounts ? syncTotals(i) : i));
 const save   = items => { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); if (window.bdpSync) bdpSync.push(); };
 const loadWl = () => JSON.parse(localStorage.getItem(WL_KEY) || '[]');
 const saveWl = codes => { localStorage.setItem(WL_KEY, JSON.stringify(codes)); if (window.bdpSync) bdpSync.push(); };
+
+// ── 계좌별 보유 ──
+// item.accounts = [{name, qty, avgPrice}] (선택). 존재하면 item.qty / item.avgPrice 를
+// 여기서 파생해 항상 채워 넣는다. 리밸런싱·차트·공유·동기화가 두 필드를 그대로 읽으므로
+// 이 방식이면 나머지 코드를 건드리지 않아도 계좌별 입력이 그대로 반영된다.
+function syncTotals(item) {
+  const accts = item.accounts;
+  if (!Array.isArray(accts) || !accts.length) { delete item.accounts; return item; }
+  let totQty = 0, costQty = 0, cost = 0;
+  accts.forEach(a => {
+    const q = Number(a.qty) || 0;
+    if (q <= 0) return;
+    totQty += q;
+    const p = Number(a.avgPrice) || 0;
+    if (p > 0) { costQty += q; cost += q * p; }
+  });
+  item.qty = totQty;
+  // 단가를 적은 계좌만으로 가중평균한다 (일부만 입력해도 나머지가 0원으로 희석되지 않도록)
+  if (costQty > 0) item.avgPrice = Math.round(cost / costQty * 100) / 100;
+  else delete item.avgPrice;
+  return item;
+}
+
+// 화면의 계좌 입력값을 읽어온다 (저장 전 편집분이 날아가지 않도록 DOM에서 직접 수집)
+function readAcctRows(code) {
+  const box = document.getElementById('acct-' + code);
+  if (!box) return null;
+  return [...box.querySelectorAll('.acct-row')].map(r => ({
+    name:     r.querySelector('.acct-name').value.trim(),
+    qty:      parseInt(r.querySelector('.acct-qty').value) || 0,
+    avgPrice: parseFloat(r.querySelector('.acct-avg').value) || 0,
+  }));
+}
+
+function withItem(code, fn) {
+  const items = load();
+  const item = items.find(i => i.code === code);
+  if (!item) return;
+  fn(item, items);
+  syncTotals(item);
+  save(items);
+  render();
+}
+
+// 계좌별 입력 켜기 — 기존 수량·단가를 첫 계좌로 옮겨 담는다
+function enableAccounts(code) {
+  withItem(code, item => {
+    item.accounts = [{ name: '계좌 1', qty: item.qty || 0, avgPrice: item.avgPrice || 0 }];
+  });
+}
+
+// 단순 입력으로 되돌리기 — 합계는 그대로 남는다
+function disableAccounts(code) {
+  if (!confirm('계좌별 입력을 해제할까요?\n계좌 구분은 사라지고 합계 수량과 평균단가만 남습니다.')) return;
+  withItem(code, item => {
+    const rows = readAcctRows(code);
+    if (rows) { item.accounts = rows; syncTotals(item); }
+    delete item.accounts;
+  });
+}
+
+function addAccount(code) {
+  withItem(code, item => {
+    const rows = readAcctRows(code) || item.accounts || [];
+    rows.push({ name: '계좌 ' + (rows.length + 1), qty: 0, avgPrice: 0 });
+    item.accounts = rows;
+  });
+}
+
+function removeAccount(code, idx) {
+  withItem(code, item => {
+    const rows = readAcctRows(code) || item.accounts || [];
+    rows.splice(idx, 1);
+    // 마지막 계좌까지 지우면 단순 입력 상태로 되돌린다
+    item.accounts = rows.length ? rows : null;
+    if (!rows.length) { item.qty = Math.max(1, item.qty || 1); delete item.accounts; }
+  });
+}
+
+function saveAccounts(code) {
+  const rows = readAcctRows(code);
+  if (!rows) return;
+  if (!rows.some(r => r.qty > 0)) { alert('수량이 1 이상인 계좌가 최소 하나는 있어야 합니다.'); return; }
+  withItem(code, item => {
+    item.accounts = rows.map((r, i) => ({ ...r, name: r.name || '계좌 ' + (i + 1) }));
+  });
+}
+
+// 입력 중 합계를 즉시 갱신 (저장 전에도 결과를 확인할 수 있도록)
+function updateAcctTotal(code) {
+  const rows = readAcctRows(code);
+  const el = document.getElementById('acctTotal-' + code);
+  if (!rows || !el) return;
+  const tmp = syncTotals({ accounts: rows });
+  const etf = findETF(code);
+  const roi = (tmp.avgPrice > 0 && etf && etf.price)
+    ? (etf.price - tmp.avgPrice) / tmp.avgPrice * 100 : null;
+  el.innerHTML =
+    `<span>합계 <b>${(tmp.qty || 0).toLocaleString()}주</b></span>` +
+    (tmp.avgPrice > 0 ? `<span>평균단가 <b>${comma(Math.round(tmp.avgPrice))}원</b></span>` : '') +
+    (roi != null ? `<span>수익률 <b class="${roi > 0 ? 'pos' : roi < 0 ? 'neg' : ''}">${roi > 0 ? '+' : ''}${roi.toFixed(2)}%</b></span>` : '');
+}
 
 // ── ETF 유틸 ──
 const findETF   = code => (ETF_ALL || []).find(e => e.code === code);
@@ -1155,7 +1284,11 @@ function addToPortfolioWl(ev, code) {
   ev.stopPropagation();
   const items = load();
   const existing = items.find(i => i.code === code);
-  if (existing) { existing.qty += 1; } else { items.push({ code, qty: 1 }); }
+  // 계좌별 입력 중이면 첫 계좌에 더해 합계가 어긋나지 않게 한다
+  if (existing && existing.accounts && existing.accounts.length) {
+    existing.accounts[0].qty = (Number(existing.accounts[0].qty) || 0) + 1;
+    syncTotals(existing);
+  } else if (existing) { existing.qty += 1; } else { items.push({ code, qty: 1 }); }
   save(items);
   renderWatchlist();
   render();
@@ -1217,7 +1350,11 @@ function addItem() {
   const avgPrice = parseFloat(document.getElementById('avgPriceInput').value) || 0;
   const items = load();
   const existing = items.find(i => i.code === selectedCode);
-  if (existing) {
+  if (existing && existing.accounts && existing.accounts.length) {
+    // 계좌별 입력 중인 상품은 새 계좌로 추가한다 (합계를 덮어쓰지 않도록)
+    existing.accounts.push({ name: '계좌 ' + (existing.accounts.length + 1), qty, avgPrice });
+    syncTotals(existing);
+  } else if (existing) {
     existing.qty += qty;
     if (avgPrice > 0) existing.avgPrice = avgPrice;
   } else {
@@ -1362,7 +1499,7 @@ function render() {
     const prevDist     = prevT ? prevT.dist : 0;
     const prevDistAmt  = prevDist * item.qty;
     const distAmt      = confirmedAmt + (useEst ? estAmt : 0) + (usePrev ? prevDistAmt : 0);
-    return { code: item.code, qty: item.qty, avgPrice: item.avgPrice, etf, di, value, distAmt, confirmedAmt, estAmt, useEst, avgDist, usePrev, prevDist, prevDistAmt };
+    return { code: item.code, qty: item.qty, avgPrice: item.avgPrice, accounts: item.accounts, etf, di, value, distAmt, confirmedAmt, estAmt, useEst, avgDist, usePrev, prevDist, prevDistAmt };
   }).filter(Boolean).sort((a, b) => b.value - a.value);
 
   const totalValue    = enriched.reduce((s, i) => s + i.value, 0);
@@ -1503,6 +1640,44 @@ function render() {
         </div>`;
     }
 
+    // ── 계좌별 보유 편집 (같은 상품을 여러 계좌에서 산 경우) ──
+    // ⚠️ const/let 을 if 블록 안에서 선언하면 아래 return 에서 참조할 수 없으므로 밖에서 선언한다
+    const accts = item.accounts;
+    const hasAccts = Array.isArray(accts) && accts.length > 0;
+    let acctHtml = '';
+    if (hasAccts) {
+      const rowsHtml = accts.map((a, idx) => `
+        <div class="acct-row">
+          <input type="text"   class="acct-name" value="${(a.name || '').replace(/"/g, '&quot;')}" placeholder="계좌 ${idx + 1}" maxlength="20">
+          <input type="number" class="acct-qty acct-num" value="${a.qty || ''}" min="0" placeholder="수량" oninput="updateAcctTotal('${item.code}')">
+          <input type="number" class="acct-avg acct-num" value="${a.avgPrice || ''}" min="0" placeholder="단가" oninput="updateAcctTotal('${item.code}')">
+          <button class="acct-del" onclick="removeAccount('${item.code}',${idx})" title="이 계좌 삭제">×</button>
+        </div>`).join('');
+      const roiTxt = (item.avgPrice > 0 && item.etf.price)
+        ? (() => { const r = (item.etf.price - item.avgPrice) / item.avgPrice * 100;
+                   return `<span>수익률 <b class="${r > 0 ? 'pos' : r < 0 ? 'neg' : ''}">${r > 0 ? '+' : ''}${r.toFixed(2)}%</b></span>`; })()
+        : '';
+      acctHtml = `
+        <div class="acct-box" id="acct-${item.code}">
+          <div class="acct-head">
+            <span class="acct-title">계좌별 보유</span>
+            <button class="acct-toggle" onclick="disableAccounts('${item.code}')">단순 입력으로</button>
+          </div>
+          <div class="acct-cols"><span>계좌명</span><span>수량</span><span>평균매수단가</span><span></span></div>
+          ${rowsHtml}
+          <div class="acct-foot">
+            <button class="acct-add" onclick="addAccount('${item.code}')">＋ 계좌 추가</button>
+            <button class="qty-save" onclick="saveAccounts('${item.code}')">저장</button>
+          </div>
+          <div class="acct-total" id="acctTotal-${item.code}">
+            <span>합계 <b>${(item.qty || 0).toLocaleString()}주</b></span>
+            ${item.avgPrice > 0 ? `<span>평균단가 <b>${comma(Math.round(item.avgPrice))}원</b></span>` : ''}
+            ${roiTxt}
+          </div>
+          <div class="acct-note">평균단가는 단가를 입력한 계좌만 수량으로 가중평균합니다. 위 합계가 이 상품의 보유 수량·평균매수단가로 반영됩니다.</div>
+        </div>`;
+    }
+
     return `
       <div class="pf-item" style="border-left-color:${color}">
         <div class="pf-item-header">
@@ -1531,7 +1706,9 @@ function render() {
           <div class="weight-bar-bg"><div class="weight-bar-fill" style="width:${weight.toFixed(1)}%;background:${color}"></div></div>
           <div class="weight-pct">${weight.toFixed(1)}%</div>
         </div>
+        ${acctHtml}
         <div class="pf-item-actions">
+          ${hasAccts ? '' : `
           <div class="qty-wrap">
             <span class="qty-label">수량</span>
             <input type="number" class="qty-edit" id="qty-${item.code}" value="${item.qty}" min="1">
@@ -1542,6 +1719,7 @@ function render() {
             <input type="number" class="qty-edit" id="avgPrice-${item.code}" value="${item.avgPrice || ''}" min="0" placeholder="선택">
             <button class="qty-save" onclick="updateAvgPrice('${item.code}')">수정</button>
           </div>
+          <button class="acct-toggle" onclick="enableAccounts('${item.code}')">계좌별 입력</button>`}
           <button class="pf-delete" onclick="removeItem('${item.code}')">삭제</button>
         </div>
       </div>`;
