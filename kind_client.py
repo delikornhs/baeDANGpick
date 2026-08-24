@@ -108,6 +108,47 @@ def search_disclosures(report_nm: str, from_date: str, to_date: str,
                                     title_filter, page_size)[0]
 
 
+def _open_search_page(page, attempts: int = 3):
+    """
+    KIND 검색 페이지를 열고 검색창(#reportNmTemp)이 뜰 때까지 기다린다.
+
+    ⚠️ 이 단계는 KIND 쪽 사정(일시적 지연·차단 페이지·점검)으로 실패할 수 있다.
+       한 번 실패했다고 그날 수집 전체를 포기하면 공시를 놓치므로 재시도한다.
+       그래도 실패하면 페이지 상태를 예외 메시지에 담아, 다음에 같은 일이
+       생겼을 때 '느려서'인지 '화면이 바뀌어서'인지 로그만 보고 구분할 수 있게 한다.
+       (2026-08-24 kind-watch 실패: 이 selector 대기가 30초 초과)
+    """
+    last_err = None
+    for i in range(attempts):
+        try:
+            page.goto(SEARCH_URL, timeout=60000, wait_until="domcontentloaded")
+            page.wait_for_selector("#reportNmTemp", timeout=30000)
+            return
+        except Exception as e:
+            last_err = e
+            if i < attempts - 1:
+                wait = 5 * (i + 1)
+                print(f"  ⚠️ KIND 검색 페이지 열기 실패 ({i+1}/{attempts}) — {wait}초 후 재시도")
+                time.sleep(wait)
+
+    # 마지막 시도까지 실패 — 무엇을 받았는지 남긴다
+    diag = []
+    try:
+        body_js = "() => (document.body && document.body.innerText || '').slice(0, 400)"
+        ids_js = "() => [...document.querySelectorAll('input[id]')].map(x => x.id).slice(0, 20)"
+        body = ' '.join(page.evaluate(body_js).split())
+        diag.append(f"url={page.url}")
+        diag.append(f"title={page.title()!r}")
+        diag.append(f"body={body!r}")
+        diag.append(f"input_ids={page.evaluate(ids_js)}")
+    except Exception as e:
+        diag.append(f"(진단 수집 실패: {e})")
+    raise RuntimeError(
+        "KIND 검색 페이지에서 #reportNmTemp 를 찾지 못했습니다 "
+        f"({attempts}회 시도). 화면 구조가 바뀌었는지 확인하세요.\n  " + "\n  ".join(diag)
+    ) from last_err
+
+
 def search_disclosures_batch(report_nm: str, ranges: list,
                              title_filter: str = None, page_size: int = 100,
                              progress=None) -> list:
@@ -127,8 +168,7 @@ def search_disclosures_batch(report_nm: str, ranges: list,
         browser = p.chromium.launch()
         try:
             page = browser.new_page(user_agent=UA)
-            page.goto(SEARCH_URL, timeout=60000, wait_until="domcontentloaded")
-            page.wait_for_selector("#reportNmTemp", timeout=30000)
+            _open_search_page(page)
 
             for i, (from_date, to_date) in enumerate(ranges):
                 rows = _search_once(page, report_nm, from_date, to_date, page_size)

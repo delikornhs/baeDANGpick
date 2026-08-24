@@ -56,6 +56,7 @@ jobs:
 
       - name: Collect distribution disclosures
         id: fetch
+        continue-on-error: true      # 실패해도 아래 알림 단계까지는 가야 조용히 묻히지 않는다
         run: |
           set -o pipefail
           python -X utf8 kind_fetch.py 2>&1 | tee fetch.log
@@ -65,6 +66,41 @@ jobs:
           else
             echo "new_files=false" >> $GITHUB_OUTPUT
           fi
+
+      # 수집 자체가 깨지면(KIND 장애·화면 변경 등) 새 공시가 있어도 못 가져온다.
+      # 아래 '분배금 반영 알림'은 new_files=true 일 때만 나가므로 이 경우 조용히 묻힌다.
+      # 월말·월중 공시일에 이런 일이 겹치면 회차를 통째로 놓치므로 따로 알린다.
+      - name: Open fetch failure issue
+        if: steps.fetch.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="🚨 KIND 공시 수집 실패 ($(TZ=Asia/Seoul date +%m/%d))"
+          # 연속 실패 시 매일 새 이슈가 쌓이지 않도록 열린 이슈가 있으면 건너뛴다
+          if gh issue list --state open --limit 50 --json title --jq '.[].title' \
+             | grep -qF "KIND 공시 수집 실패"; then
+            echo "이미 열린 수집 실패 이슈가 있습니다."
+            exit 0
+          fi
+          {
+            echo "\`kind_fetch.py\` 가 실패해 **새 공시를 확인하지 못했습니다.**"
+            echo ""
+            echo "사이트 데이터는 이전 상태 그대로이고 잘못된 값이 반영되지는 않았습니다."
+            echo "다만 이 상태가 이어지면 **분배금 공시일에 회차를 통째로 놓칩니다.**"
+            echo ""
+            echo "### 할 일"
+            echo "- [ ] 공시일이 임박했는지 확인 (기준일 2일 전쯤 공시가 올라옵니다)"
+            echo "- [ ] Claude에게 \`\"KIND 수집 실패 확인해줘\"\` 라고 요청"
+            echo ""
+            echo "> 일시적 장애면 다음 실행에 자동 복구됩니다 (페이지 열기는 3회 재시도)."
+            echo "> 반복되면 KIND 화면 구조가 바뀐 것일 수 있습니다 — 아래 로그의 \`input_ids\` 를 확인하세요."
+            echo ""
+            echo "## 수집 로그"
+            echo '```'
+            tail -60 fetch.log 2>/dev/null || echo "(로그 없음)"
+            echo '```'
+          } > fetch_fail.md
+          gh issue create --title "$TITLE" --body-file fetch_fail.md
 
       - name: Check upcoming schedule
         id: schedule
@@ -219,7 +255,9 @@ jobs:
               echo "📅 달력 미반영 회차 있음 (기준일 ${{ steps.schedule.outputs.key }})"
               echo ""
             fi
-            if [ "${{ steps.fetch.outputs.new_files }}" != "true" ]; then
+            if [ "${{ steps.fetch.outcome }}" = "failure" ]; then
+              echo "🚨 공시 수집 실패 — 새 공시를 확인하지 못했습니다. 이슈를 확인하세요."
+            elif [ "${{ steps.fetch.outputs.new_files }}" != "true" ]; then
               echo "변경 없음 — 새로 올라온 공시가 없습니다."
             elif [ "${{ steps.verify.outcome }}" = "success" ]; then
               echo "✅ 새 공시 수집 → 검증 통과 → 사이트 반영 완료. 뉴스레터는 수동 발송."
@@ -237,3 +275,11 @@ jobs:
             cat schedule.log 2>/dev/null || true
             echo '```'
           } >> $GITHUB_STEP_SUMMARY
+
+      # fetch 단계는 알림 이슈를 만들기 위해 continue-on-error 로 두었으므로,
+      # 여기서 다시 실패로 끝내야 실행 결과가 '성공'으로 잘못 표시되지 않는다.
+      - name: Fail if fetch failed
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          echo "kind_fetch.py 실패 — 위 로그와 생성된 이슈를 확인하세요."
+          exit 1
