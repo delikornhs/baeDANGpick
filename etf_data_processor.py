@@ -1199,6 +1199,7 @@ if __name__ == "__main__":
         print(f"{'='*50}")
         ret_ok = ret_fail = 0
         close_samples = []
+        chg_tails     = {}       # code -> daily 꼬리 구간 (등락률은 기준일 확정 후 계산)
         for i, item in enumerate(latest):
             code  = item["code"]
             daily = fetch_daily_price_history(code, item.get("listed_date", ""), hist_headers)
@@ -1207,23 +1208,9 @@ if __name__ == "__main__":
                 rets = calc_returns(item, daily, history_for_returns)
                 for k, v in rets.items():
                     item[k] = v
-                # 전일 대비 등락률: 현재가(item["price"])가 속한 거래일의 직전 거래일 종가와 비교
-                # ⚠️ 비거래일(주말·공휴일)에 실행하면 현재가 = daily 마지막 종가가 된다.
-                #    이때 "price_date 이전 가장 최근 종가"를 그대로 쓰면 자기 자신과 비교해
-                #    등락률이 전 종목 0%가 되므로, 한 칸 더 앞의 거래일을 전일로 잡는다.
-                prev_close = 0
-                cur_price  = item.get("price")
-                for idx in range(len(daily) - 1, -1, -1):
-                    d, c = daily[idx]
-                    if d >= price_date:
-                        continue
-                    if c == cur_price and idx > 0:
-                        prev_close = daily[idx - 1][1]   # 이 종가가 곧 현재가 → 그 직전 거래일
-                    else:
-                        prev_close = c                   # 장중 실행 등 — 현재가는 아직 daily에 없음
-                    break
-                if prev_close > 0 and cur_price:
-                    item["chg_pct"] = round((item["price"] - prev_close) / prev_close * 100, 2)
+                # 전일 대비 등락률은 종가 기준일(price_date)이 확정된 뒤에 계산한다.
+                # 여기서는 판단에 필요한 최근 구간만 모아둔다.
+                chg_tails[code] = daily[-10:]
                 with open(PRICE_HISTORY_DIR / f"{code}.json", "w", encoding="utf-8") as f:
                     json.dump(daily, f, ensure_ascii=False)
                 ret_ok += 1
@@ -1241,6 +1228,24 @@ if __name__ == "__main__":
         if real_date != price_date:
             print(f"⚠️  {price_date}는 거래일이 아님 → 종가 기준일을 {real_date}로 보정")
             price_date = real_date
+
+        # 전일 대비 등락률 — 기준일이 확정된 뒤에 계산해야 한다.
+        # 기준일보다 앞선 가장 최근 거래일의 종가가 곧 전일 종가다.
+        #
+        # ⚠️ 종가가 현재가와 "같다"는 이유로 한 칸 더 앞을 잡으면 안 된다.
+        #    이틀 연속 같은 가격에 마감하는 종목이 실제로 있어서, 그 경우 하루 전
+        #    등락률이 오늘 값으로 새어 나온다. 오직 날짜로만 판단한다.
+        chg_ok = 0
+        for item in latest:
+            tail      = chg_tails.get(item["code"])
+            cur_price = item.get("price")
+            if not tail or not cur_price:
+                continue
+            prev_close = next((c for d, c in reversed(tail) if d < price_date), 0)
+            if prev_close > 0:
+                item["chg_pct"] = round((cur_price - prev_close) / prev_close * 100, 2)
+                chg_ok += 1
+        print(f"📊 전일 대비 등락률: {chg_ok}개 계산 (기준일 {price_date})")
 
         # 안정성 지표 계산 (분배율 수준은 공시일 전일 종가 기준)
         for item in latest:
