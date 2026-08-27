@@ -486,7 +486,7 @@ function testDataNewsletterRanking() {
   const checks = [
     ['랭킹에 관심 ETF 포함 (3위)', rank.indexOf('관심-3위') > -1],
     ['랭킹에 관심 ETF 포함 (5위)', rank.indexOf('관심-5위') > -1],
-    ['랭킹 행 수 5개',             (rank.match(/<tr/g) || []).length === 5],
+    ['랭킹 행 수 5개',             rank.split('width:24px').length - 1 === 5],
     ['4위 자리에 ETF-4위',         rank.indexOf('ETF-4위') > rank.indexOf('관심-3위')],
     ['관심 섹션 유지',             html.indexOf('내 관심 ETF 이번달 분배금') > -1],
     ['★ 표시 존재',                rank.indexOf('★') > -1],
