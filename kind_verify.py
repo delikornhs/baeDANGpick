@@ -80,18 +80,42 @@ def main():
           f"분배율 이상치 {len(bad_rate)}개" +
           (f" — 예: {bad_rate[0]['name'][:24]} {bad_rate[0].get('rate')}%" if bad_rate else ""))
 
-    # 6) 직전 커밋 대비 급감하지 않았는지
+    # 6) 직전 커밋 대비 '조용한 손실'이 없는지
+    #    ⚠️ current 총계를 그대로 비교하면 안 된다. 월말 회차 종목 수는 결산이 몰리는 달
+    #       (4·7·12·1월) 300~500개, 평월 120~135개로 정상적으로 3~4배 오르내린다.
+    #       총계 비교는 회차가 교체되는 시점 — 프로세서가 도는 바로 그때 — 마다 울린다.
+    #    → 양쪽에 공통으로 있는 기준일만 비교한다. 같은 회차라면 종목이 줄 이유가 없으므로
+    #       원래 잡으려던 손실은 그대로 걸리고, 회차 교체는 오탐하지 않는다.
+    #
+    #    2026-08-27 거짓 경보: 직전 448개(월말 7/31 399 + 월중 8/14 49) 대비
+    #    현재 187개(월말 8/31 135 + 월중 8/14 49 + 비정기 3)로 42%가 나와 반영이 막혔다.
+    #    공시 원본 138건 = 135 + 3 으로 정확히 일치해 실제 손실은 없었다.
     prev = load_previous()
     if prev is None:
         check(True, "직전 latest.json 없음 — 비교 생략")
     else:
-        prev_cur = len([x for x in prev if x.get("current")])
-        if prev_cur == 0:
-            check(True, "직전 current 0개 — 비교 생략")
+        def count_by_ex(items):
+            c = {}
+            for x in items:
+                if x.get("current") and x.get("ex_date"):
+                    c[x["ex_date"]] = c.get(x["ex_date"], 0) + 1
+            return c
+
+        prev_by_ex = count_by_ex(prev)
+        cur_by_ex  = count_by_ex(data)
+        shared = sorted(set(prev_by_ex) & set(cur_by_ex))
+        if not shared:
+            check(True, "공통 기준일 없음(회차 전면 교체) — 비교 생략 "
+                        f"[직전 {','.join(sorted(prev_by_ex)) or '없음'}"
+                        f" → 현재 {','.join(sorted(cur_by_ex)) or '없음'}]")
         else:
-            ratio = len(current) / prev_cur
-            check(ratio >= MAX_DROP_RATIO,
-                  f"직전 {prev_cur}개 → 현재 {len(current)}개 ({ratio*100:.0f}%)")
+            drops = [(ex, prev_by_ex[ex], cur_by_ex[ex]) for ex in shared
+                     if cur_by_ex[ex] < prev_by_ex[ex] * MAX_DROP_RATIO]
+            check(not drops,
+                  f"공통 기준일 {len(shared)}개 종목 수 유지 "
+                  f"({', '.join(f'{ex} {cur_by_ex[ex]}개' for ex in shared)})"
+                  if not drops else
+                  "급감: " + ", ".join(f"{ex} {p}→{c}개" for ex, p, c in drops))
 
     # ── 출력 ──
     print("=" * 60)
