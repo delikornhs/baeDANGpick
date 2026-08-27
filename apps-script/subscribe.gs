@@ -298,19 +298,28 @@ function buildDataNewsletterHtml(data, watchlist, scriptUrl, token) {
   const { month, timing, etfs = [] } = data;
   const unsubUrl = `${scriptUrl}?action=unsubscribe&token=${token}`;
 
-  // 관심 ETF 중 이번 데이터에 있는 것
-  const myEtfs    = watchlist.length ? etfs.filter(e => watchlist.includes(e.code)) : [];
-  // 나머지 전체 (관심 ETF 없으면 전체 표시)
-  const otherEtfs = myEtfs.length   ? etfs.filter(e => !watchlist.includes(e.code)) : etfs;
+  // 관심 ETF 중 이번 데이터에 있는 것 (상단 하이라이트 섹션용)
+  const myEtfs = watchlist.length ? etfs.filter(e => watchlist.includes(e.code)) : [];
+
+  // 랭킹은 관심 ETF와 무관하게 항상 전체를 보여준다. 순위는 원본(분배율 내림차순) 기준.
+  // ⚠️ 예전에는 관심 ETF를 랭킹에서 빼고 남은 것에 1번부터 다시 번호를 매겼다.
+  //    그래서 관심 ETF를 등록한 사람에게만 (a) 자기 종목이 랭킹에서 사라지고
+  //    (b) 그 아래 종목들의 순위가 한 칸씩 당겨져 실제와 어긋났다. 2026-08 발송까지 그렇게 나갔다.
+  const rankEtfs = etfs.map((e, i) => ({
+    ...e,
+    rank: i + 1,
+    mine: watchlist.includes(e.code),
+  }));
 
   // ETF 테이블 HTML 생성 헬퍼
   function etfRows(list) {
     return list.slice(0, 15).map((e, i) => `
-      <tr>
+      <tr${e.mine ? ' style="background:#f4fbf7"' : ''}>
         <td style="padding:9px 8px;border-bottom:1px solid #f0f0f0;
-          font-size:12px;color:#9a9a93;text-align:center;width:24px">${i + 1}</td>
+          font-size:12px;color:#9a9a93;text-align:center;width:24px">${e.rank || i + 1}</td>
         <td style="padding:9px 8px;border-bottom:1px solid #f0f0f0">
-          <div style="font-size:13px;font-weight:600;color:#1a1a18;line-height:1.3">${e.name}</div>
+          <div style="font-size:13px;font-weight:600;color:#1a1a18;line-height:1.3">${
+            e.mine ? '<span style="color:#1d6b38" title="관심 ETF">★</span> ' : ''}${e.name}</div>
           <div style="font-size:11px;color:#9a9a93;margin-top:2px">${e.manager || e.brand || ''}</div>
         </td>
         <td style="padding:9px 8px;border-bottom:1px solid #f0f0f0;
@@ -357,12 +366,12 @@ function buildDataNewsletterHtml(data, watchlist, scriptUrl, token) {
 
   // 전체 랭킹 섹션
   const rankTitle = myEtfs.length ? '이번달 전체 랭킹' : '이번달 분배금 랭킹';
-  const rankSection = otherEtfs.length ? `
+  const rankSection = rankEtfs.length ? `
     <div style="margin-bottom:20px">
       <div style="font-size:13px;font-weight:700;color:#1a1a18;margin-bottom:10px">
         📊 ${rankTitle}
       </div>
-      ${etfTable(otherEtfs)}
+      ${etfTable(rankEtfs)}
     </div>` : '';
 
   return `<!DOCTYPE html>
@@ -458,4 +467,30 @@ function testSubscribe() {
     watchlist: ['458730', '114800']
   });
   Logger.log('구독 테스트 완료 - 시트와 이메일 확인');
+}
+
+// 데이터 뉴스레터 랭킹 섹션 점검 — 아무에게도 발송하지 않고 HTML만 만들어 확인한다.
+// 배포 후 에디터에서 이 함수를 실행해 로그가 전부 OK인지 보면 된다.
+function testDataNewsletterRanking() {
+  const etfs = [
+    { code: 'A1',  name: 'ETF-1위', manager: '가', dist: 100, rate: 3.40, pay: '2026-09-16' },
+    { code: 'A2',  name: 'ETF-2위', manager: '나', dist: 200, rate: 3.07, pay: '2026-09-16' },
+    { code: 'MY1', name: '관심-3위', manager: '다', dist: 300, rate: 3.05, pay: '2026-09-16' },
+    { code: 'A4',  name: 'ETF-4위', manager: '라', dist: 400, rate: 2.49, pay: '2026-09-16' },
+    { code: 'MY2', name: '관심-5위', manager: '마', dist: 500, rate: 2.06, pay: '2026-09-16' },
+  ];
+  const html = buildDataNewsletterHtml(
+    { month: '2026년 9월', timing: '월중', etfs }, ['MY1', 'MY2'], 'https://example.com', 'tok');
+
+  const rank = html.split('전체 랭킹')[1] || '';
+  const checks = [
+    ['랭킹에 관심 ETF 포함 (3위)', rank.indexOf('관심-3위') > -1],
+    ['랭킹에 관심 ETF 포함 (5위)', rank.indexOf('관심-5위') > -1],
+    ['랭킹 행 수 5개',             (rank.match(/<tr/g) || []).length === 5],
+    ['4위 자리에 ETF-4위',         rank.indexOf('ETF-4위') > rank.indexOf('관심-3위')],
+    ['관심 섹션 유지',             html.indexOf('내 관심 ETF 이번달 분배금') > -1],
+    ['★ 표시 존재',                rank.indexOf('★') > -1],
+  ];
+  checks.forEach(function (c) { Logger.log((c[1] ? 'OK   ' : 'FAIL ') + c[0]); });
+  Logger.log(checks.every(function (c) { return c[1]; }) ? '=> 전체 통과' : '=> 실패 있음');
 }
