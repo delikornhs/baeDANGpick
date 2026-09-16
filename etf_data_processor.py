@@ -1338,18 +1338,28 @@ if __name__ == "__main__":
             with open(ETF_META_FILE, encoding="utf-8") as f:
                 meta_cache = json.load(f)
 
-        # 신규 ETF(메타 캐시에 없는 코드) 즉시 메타 조회
+        # 메타를 다시 받아야 하는 코드: 캐시에 아예 없거나, 상장일이 비어 있는 것.
+        # ⚠️ "캐시에 키가 있는가"가 아니라 "값이 있는가"로 판단해야 한다.
+        #    종전에는 키 유무만 봐서, 상장일이 빈 문자열로 남은 종목은 평일 실행이
+        #    한 번도 재시도하지 않았다. 주 1회(월요일 --fetch-meta)뿐이라
+        #    그 경로가 고장 나면 빈 값이 그대로 눌러앉았다. (2026-09-14 사고)
         new_codes = [c for c in codes if c not in meta_cache]
-        if new_codes:
-            print(f"\n신규 ETF {len(new_codes)}개 감지 — 메타 즉시 조회: {new_codes}")
-            fetch_etf_meta(new_codes)
+        stale_codes = [c for c in codes
+                       if c in meta_cache and not meta_cache[c].get("listed_date")]
+        retry_codes = new_codes + stale_codes
+        if retry_codes:
+            detail = f": {retry_codes}" if len(retry_codes) <= 20 else ""
+            print(f"\n메타 조회 대상 {len(retry_codes)}개 "
+                  f"(신규 {len(new_codes)} / 상장일 없음 {len(stale_codes)}){detail}")
+            fetch_etf_meta(retry_codes)
             if ETF_META_FILE.exists():
                 with open(ETF_META_FILE, encoding="utf-8") as f:
                     meta_cache = json.load(f)
 
         for item in latest:
             m = meta_cache.get(item["code"], {})
-            item["listed_date"] = m.get("listed_date", "")
+            # 캐시가 비어 있으면 기존 값을 유지한다 — 빈 값으로 덮어쓰지 않는다
+            item["listed_date"] = m.get("listed_date", "") or item.get("listed_date", "")
             # 운용사: 브랜드 매핑 우선(정확), 없으면 네이버 스크래핑, 최종 fallback 브랜드명
             item["manager"] = (
                 BRAND_TO_COMPANY.get(item["brand"], "") or
