@@ -45,6 +45,7 @@ HISTORY_FILE = OUT_DIR / "history.json"
 LATEST_FILE  = OUT_DIR / "latest.json"
 JS_FILE      = OUT_DIR / "etf_data.js"
 ETF_META_FILE = OUT_DIR / "etf_meta.json"
+PRICE_HISTORY_DIR = OUT_DIR / "price_history"
 
 # ── 브랜드 → 실제 운용사 매핑 ──
 BRAND_TO_COMPANY = {
@@ -648,6 +649,26 @@ def fetch_naver_historical_price(code: str, target_date: str, headers: dict) -> 
     return 0
 
 
+def listed_date_from_history(code: str) -> str:
+    """
+    저장된 종가 이력의 첫 거래일 = 상장일.
+
+    네이버 금융 HTML에서 상장일을 못 읽었을 때 쓰는 대체 수단이다.
+    fetch_daily_price_history()가 상장일을 모르면 startTime=19900101로 전 구간을
+    받아오므로, 이력의 첫 날짜가 곧 상장일이 된다.
+    (2026-09-07 캐시의 922종목과 대조해 전부 일치하는 것을 확인)
+    """
+    f = PRICE_HISTORY_DIR / f"{code}.json"
+    if not f.exists():
+        return ""
+    try:
+        with open(f, encoding="utf-8") as fp:
+            rows = json.load(fp)
+        return rows[0][0] if rows else ""
+    except Exception:
+        return ""
+
+
 def fetch_etf_meta(codes: list) -> dict:
     """
     네이버 모바일 ETF API에서 총보수·추종지수·상품설명·구성종목 조회.
@@ -710,6 +731,7 @@ def fetch_etf_meta(codes: list) -> dict:
     missing_date = [c for c in codes if not meta.get(c, {}).get("listed_date")]
     if missing_date:
         print(f"\n상장일 조회: {len(missing_date)}개 신규 종목")
+        scraped = from_history = 0
         for i, code in enumerate(missing_date):
             try:
                 url = f"https://finance.naver.com/item/main.nhn?code={code}"
@@ -726,6 +748,7 @@ def fetch_etf_meta(codes: list) -> dict:
 
                 if date_m:
                     meta[code]["listed_date"] = f"{date_m.group(1)}-{int(date_m.group(2)):02d}-{int(date_m.group(3)):02d}"
+                    scraped += 1
                 else:
                     meta[code].setdefault("listed_date", "")
 
@@ -739,7 +762,21 @@ def fetch_etf_meta(codes: list) -> dict:
                 meta[code].setdefault("listed_date", "")
                 meta[code].setdefault("manager", "")
 
+            # 스크래핑이 실패하면 저장된 종가 이력에서 상장일을 되살린다
+            if not meta[code].get("listed_date"):
+                fallback = listed_date_from_history(code)
+                if fallback:
+                    meta[code]["listed_date"] = fallback
+                    from_history += 1
+
             time.sleep(0.3)
+
+        filled = sum(1 for c in missing_date if meta.get(c, {}).get("listed_date"))
+        print(f"  상장일 확보: {filled}/{len(missing_date)}개 "
+              f"(네이버 {scraped} / 종가이력 {from_history})")
+        if scraped == 0 and len(missing_date) > 20:
+            print("  ⚠️ 네이버 금융에서 상장일을 한 건도 읽지 못했습니다 — "
+                  "페이지 구조가 바뀌었거나 차단된 것으로 보입니다. 확인하세요.")
 
     with open(ETF_META_FILE, "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
@@ -1154,9 +1191,18 @@ if __name__ == "__main__":
         with open(LATEST_FILE, encoding="utf-8") as f:
             latest = json.load(f)
         codes = list({item["code"] for item in latest})
-        # 강제 재조회를 위해 기존 캐시 초기화
+        # API로 매번 다시 받는 필드만 비운다.
+        # ⚠️ 캐시 파일을 통째로 지우면 안 된다. listed_date·manager는 네이버 금융
+        #    HTML 스크래핑으로만 얻는 값이라, 그 페이지가 바뀌거나 막히면 전 종목이
+        #    빈 값으로 덮이고 되돌릴 방법이 없다. (2026-09-14 사고 — 922개 전멸)
         if ETF_META_FILE.exists():
-            ETF_META_FILE.unlink()
+            with open(ETF_META_FILE, encoding="utf-8") as f:
+                cached = json.load(f)
+            for v in cached.values():
+                for k in ("total_fee", "index_name", "summary", "holdings"):
+                    v.pop(k, None)
+            with open(ETF_META_FILE, "w", encoding="utf-8") as f:
+                json.dump(cached, f, ensure_ascii=False, indent=2)
         fetch_etf_meta(codes)
         print("✅ 메타 데이터 갱신 완료")
         exit(0)
