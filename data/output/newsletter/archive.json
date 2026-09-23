@@ -1,5 +1,15 @@
 [
   {
+    "id": "2026-09-end-schedule",
+    "type": "schedule",
+    "timing": "월말",
+    "month": "2026년 9월",
+    "sent_at": "2026-09-23",
+    "lastBuy": "2026-09-28",
+    "exDate": "2026-09-29",
+    "record": "2026-09-30"
+  },
+  {
     "id": "2026-09-mid-data",
     "type": "data",
     "timing": "월중",
