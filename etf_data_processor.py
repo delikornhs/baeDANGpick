@@ -21,6 +21,7 @@ import os
 import glob
 import re
 import subprocess
+import bisect
 import time
 import urllib.request
 from collections import defaultdict
@@ -837,6 +838,40 @@ def find_friday_price(daily: list, on_or_before: str) -> tuple:
     return best_date, best_price
 
 
+def ex_dividend_date(record_date: str, trade_dates: list) -> str:
+    """
+    기준일(history 키 = ex_date) → 배당락일(기준일 직전 거래일).
+
+    이력 안이면 실제 거래일에서 역산하므로 공휴일도 반영된다.
+    기준일이 이력보다 뒤(아직 오지 않음)면 주말만 건너뛴 계산값을 쓴다.
+    """
+    i = bisect.bisect_left(trade_dates, record_date)
+    if 0 < i < len(trade_dates):
+        return trade_dates[i - 1]
+    try:
+        return prev_business_day(record_date)
+    except ValueError:
+        return ""
+
+
+def dist_in_window(isin: str, history: dict, trade_dates: list,
+                   start_date: str, end_date: str) -> int:
+    """
+    start_date 종가에 사서 end_date 종가까지 들고 있었을 때 받는 분배금 합계.
+
+    ⚠️ 배당락일이 (start_date, end_date] 안에 있는 분배금만 센다.
+       - start_date 당일이 배당락일이면 시작 가격이 이미 분배금만큼 빠진 뒤라 받지 못한다
+       - 배당락일이 end_date 뒤면 아직 주가가 빠지지 않았으므로 더하면 이중 계산이다
+       기준일(ex_date)로 판단하면 두 경계 모두 틀린다. (2026-09-29 수정 — 1개월 총수익률 138개 과대)
+    """
+    total = 0
+    for rec_date, rec in history.get(isin, {}).items():
+        exd = ex_dividend_date(rec_date, trade_dates)
+        if exd and start_date < exd <= end_date:
+            total += rec["dist"]
+    return total
+
+
 def calc_returns(item: dict, daily: list, history: dict) -> dict:
     """
     일별 이력으로 주가 수익률 및 분배금 포함 총수익률 계산.
@@ -851,6 +886,8 @@ def calc_returns(item: dict, daily: list, history: dict) -> dict:
     isin = item["isin"]
     now  = datetime.now()
     ret  = {}
+    trade_dates = [d for d, _ in daily]
+    end_date    = trade_dates[-1]   # 현재가의 거래일
 
     # 상장 이후 (가장 오래된 일별 데이터 기준 = 상장일 종가)
     if daily:
@@ -859,12 +896,7 @@ def calc_returns(item: dict, daily: list, history: dict) -> dict:
             ret["price_listed"] = oldest_price
             pr = round((current_price - oldest_price) / oldest_price * 100, 2)
             ret["return_listed"] = pr
-            dist_sum = 0
-            if isin in history:
-                dist_sum = sum(
-                    rec["dist"] for ex_k, rec in history[isin].items()
-                    if ex_k >= oldest_date
-                )
+            dist_sum = dist_in_window(isin, history, trade_dates, oldest_date, end_date)
             ret["total_return_listed"] = round(
                 (current_price - oldest_price + dist_sum) / oldest_price * 100, 2)
 
@@ -877,12 +909,7 @@ def calc_returns(item: dict, daily: list, history: dict) -> dict:
         last_fri_date, last_fri_price = find_friday_price(daily, last_fri_target)
         if last_fri_price > 0:
             ret["return_1wf"] = round((this_fri_price - last_fri_price) / last_fri_price * 100, 2)
-            dist_sum = 0
-            if isin in history:
-                dist_sum = sum(
-                    rec["dist"] for ex_k, rec in history[isin].items()
-                    if last_fri_date < ex_k <= this_fri_date
-                )
+            dist_sum = dist_in_window(isin, history, trade_dates, last_fri_date, this_fri_date)
             ret["total_return_1wf"] = round(
                 (this_fri_price - last_fri_price + dist_sum) / last_fri_price * 100, 2)
 
@@ -895,12 +922,9 @@ def calc_returns(item: dict, daily: list, history: dict) -> dict:
         ret[f"price_{label}"] = past_price
         pr = round((current_price - past_price) / past_price * 100, 2)
         ret[f"return_{label}"] = pr
-        dist_sum = 0
-        if isin in history:
-            dist_sum = sum(
-                rec["dist"] for ex_k, rec in history[isin].items()
-                if ex_k >= target
-            )
+        # 시작가 = target 이하 마지막 거래일 종가 → 그 날짜 '다음'부터 배당락된 분배금만 받는다
+        start_date = trade_dates[bisect.bisect_right(trade_dates, target) - 1]
+        dist_sum = dist_in_window(isin, history, trade_dates, start_date, end_date)
         ret[f"total_return_{label}"] = round(
             (current_price - past_price + dist_sum) / past_price * 100, 2)
 

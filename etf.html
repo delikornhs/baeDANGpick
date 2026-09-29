@@ -1704,26 +1704,38 @@ function rcRender() {
   const seg = pxRaw.slice(startIdx);
   const base = seg[0][1];
 
-  // 2) 분배금 배치
-  //    포함 판정은 프로세서와 동일하게 '기준일(ex_date) >= target' 으로 한다.
-  //    표시 위치는 실제로 주가가 떨어지는 배당락일(기준일 직전 거래일)로 잡는다.
+  // 2) 분배금 배치 — 프로세서 dist_in_window()와 같은 조건
+  //    배당락일이 (구간 시작일, 마지막 거래일] 안에 있는 분배금만 더한다.
+  //    - 시작일 당일이 배당락일이면 시작가가 이미 분배금만큼 빠져 있어 받을 수 없다
+  //    - 배당락 전인 분배금(공시만 나온 것)은 주가가 아직 안 빠졌으므로 더하면 이중 계산이다
+  //    ⚠️ 종전에는 '기준일 >= target'으로 판정하고, 구간 앞 분배금을 첫 지점에 얹었다.
+  //       두 경계 모두 틀려 1개월 총수익률이 138개 종목에서 과대 계산됐다 (2026-09-29 수정)
   //    trend의 ex_date는 배당락일이 아니라 기준일이다(CLAUDE.md 참조).
-  //    price_history의 실제 거래일에서 역산하므로 공휴일도 자동 반영된다.
+  //    배당락일은 price_history의 실제 거래일에서 역산하므로 공휴일도 자동 반영된다.
   const allDates = pxRaw.map(r => r[0]);
   const segStart = seg[0][0];
+  const lastDate = allDates[allDates.length - 1];
+  const prevWeekday = s => {          // 이력 밖(아직 오지 않은) 기준일용: 주말만 건너뛴다
+    const d = new Date(s + 'T00:00:00Z');
+    do { d.setUTCDate(d.getUTCDate() - 1); } while(d.getUTCDay() === 0 || d.getUTCDay() === 6);
+    return d.toISOString().slice(0, 10);
+  };
   const distOn = new Map();
   (ETF.trend || []).forEach(t => {
     if(!t.ex_date || !(t.dist > 0)) return;
-    if(target && t.ex_date < target) return;          // 프로세서와 같은 포함 조건
-    let lo = 0, hi = allDates.length - 1, ex = null;
-    while(lo <= hi) {
-      const mid = (lo + hi) >> 1;
-      if(allDates[mid] < t.ex_date) { ex = allDates[mid]; lo = mid + 1; }
-      else hi = mid - 1;
+    let ex = null;
+    if(t.ex_date <= lastDate) {
+      let lo = 0, hi = allDates.length - 1;
+      while(lo <= hi) {
+        const mid = (lo + hi) >> 1;
+        if(allDates[mid] < t.ex_date) { ex = allDates[mid]; lo = mid + 1; }
+        else hi = mid - 1;
+      }
+    } else {
+      ex = prevWeekday(t.ex_date);
     }
-    // 배당락일이 구간 시작보다 앞서면 첫 지점에 얹어 합계에서 누락되지 않게 한다
-    const at = (!ex || ex < segStart) ? segStart : ex;
-    distOn.set(at, (distOn.get(at) || 0) + t.dist);
+    if(!ex || ex <= segStart || ex > lastDate) return;
+    distOn.set(ex, (distOn.get(ex) || 0) + t.dist);
   });
 
   // 3) 시계열 — 누적 분배금을 더해가며 단순 합산 총수익률 계산
