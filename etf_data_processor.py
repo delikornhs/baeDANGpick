@@ -838,6 +838,86 @@ def find_friday_price(daily: list, on_or_before: str) -> tuple:
     return best_date, best_price
 
 
+PRICE_FORMAT_FILE = PRICE_HISTORY_DIR / "_format.json"
+
+
+def dists_by_code(history: dict) -> dict:
+    """
+    history(ISIN 키) → {종목코드: {기준일: 기록}}.
+
+    같은 종목이 ISIN 표기가 다른 항목으로 갈라져 들어간 경우가 있다
+    (예: 192720 — 'KR7192720001'과 끝에 '&nbsp;'가 붙은 찌꺼기 ISIN).
+    종가 이력은 종목코드 단위이므로 분배 기록도 코드 기준으로 모아야 빠짐이 없다.
+    정상 ISIN의 기록을 우선한다.
+    """
+    out: dict = {}
+    for isin in sorted(history, key=lambda k: (k != k.strip() or "&" in k, k)):
+        for rec_date, rec in history[isin].items():
+            code = rec.get("code")
+            if code and re.match(r"\d{4}-\d{2}-\d{2}$", rec_date):
+                out.setdefault(code, {}).setdefault(rec_date, rec)
+    return out
+
+
+def unadjust_distributions(daily: list, recs: dict) -> list:
+    """
+    네이버 차트 API(siseJson)의 '분배 수정주가'를 원시 종가로 되돌린다.
+
+    ⚠️ fchart siseJson은 배당락이 생길 때마다 그 이전 종가를 모두
+       (1 - 분배금/전일종가) 비율로 소급 조정한 수정주가를 준다.
+       현재가(m.stock.naver.com)는 원시 가격이라, 그대로 쓰면
+       주가 수익률에 분배금이 섞이고 총수익률은 분배금을 두 번 더한다.
+       (2026-09-30 발견 — TIGER 배당커버드콜액티브 1년 총수익률 161.78% → 실제 105.16%)
+
+    최신 날짜부터 거꾸로 가며 배당락일을 지날 때마다 조정 비율을 되돌린다.
+      원시 전일종가 = 조정 전일종가 / (그 뒤 누적 비율) + 분배금
+    검증: 과거 스냅샷의 원시 종가와 ±3원, 1,014개 종목 두 시점 복원 간 0.3% 이내 일치.
+    ⚠️ 2019-07 이전 분배금은 데이터가 없어 그 이전 구간은 완전히 되돌려지지 않는다.
+    """
+    if not daily or not recs:
+        return daily
+    trade_dates = [d for d, _ in daily]
+    idx = {d: i for i, d in enumerate(trade_dates)}
+    events: dict = {}
+    for rec_date, rec in recs.items():
+        exd = ex_dividend_date(rec_date, trade_dates)
+        if exd in idx and idx[exd] > 0 and rec.get("dist", 0) > 0:
+            events[exd] = events.get(exd, 0) + rec["dist"]
+    if not events:
+        return daily
+    raw = [None] * len(daily)
+    factor = 1.0
+    for i in range(len(daily) - 1, -1, -1):
+        d, p = daily[i]
+        raw[i] = [d, int(round(p / factor))]
+        if d in events and i > 0:
+            dist = events[d]
+            raw_prev = daily[i - 1][1] / factor + dist
+            if raw_prev > dist:
+                factor *= (raw_prev - dist) / raw_prev
+    return raw
+
+
+def check_raw_consistency(code: str, new_raw: list, prev_raw: list, tol: float = 0.005):
+    """
+    오늘 변환한 원시 종가가 어제 저장한 원시 종가와 같은지 확인한다.
+    과거 종가는 원래 바뀌면 안 되므로, 어긋나면 변환에 쓴 분배 이력이
+    네이버의 조정과 맞지 않는다는 뜻이다. (분배 기록 누락, 또는 네이버가
+    수정주가를 그만 주는 경우) → (최대 괴리율, 날짜) 반환, 문제 없으면 None
+    """
+    if not prev_raw:
+        return None
+    old = {d: p for d, p in prev_raw}
+    worst = None
+    for d, p in new_raw:
+        q = old.get(d)
+        if q and q > 0 and d >= "2019-08-01":
+            gap = abs(p / q - 1)
+            if gap > tol and (worst is None or gap > worst[0]):
+                worst = (gap, d)
+    return worst
+
+
 def ex_dividend_date(record_date: str, trade_dates: list) -> str:
     """
     기준일(history 키 = ex_date) → 배당락일(기준일 직전 거래일).
@@ -1270,12 +1350,28 @@ if __name__ == "__main__":
         ret_ok = ret_fail = 0
         close_samples = []
         chg_tails     = {}       # code -> daily 꼬리 구간 (등락률은 기준일 확정 후 계산)
+        code_dists    = dists_by_code(history_for_returns)
+        # 저장된 종가 이력이 이미 원시 종가인지 (변환 도입 첫 실행이면 비교를 건너뛴다)
+        prev_is_raw   = PRICE_FORMAT_FILE.exists()
+        mismatches    = []
         for i, item in enumerate(latest):
             code  = item["code"]
             daily = fetch_daily_price_history(code, item.get("listed_date", ""), hist_headers)
             if daily:
+                recs  = code_dists.get(code, {})
+                daily = unadjust_distributions(daily, recs)   # 네이버 수정주가 → 원시 종가
+                if prev_is_raw:
+                    prev_file = PRICE_HISTORY_DIR / f"{code}.json"
+                    try:
+                        with open(prev_file, encoding="utf-8") as fp:
+                            prev_raw = json.load(fp)
+                    except Exception:
+                        prev_raw = []
+                    bad = check_raw_consistency(code, daily, prev_raw)
+                    if bad:
+                        mismatches.append((bad[0], code, item["name"], bad[1]))
                 close_samples.append((daily[-1][0], daily[-1][1], item.get("price")))
-                rets = calc_returns(item, daily, history_for_returns)
+                rets = calc_returns(item, daily, {item["isin"]: recs})
                 for k, v in rets.items():
                     item[k] = v
                 # 전일 대비 등락률은 종가 기준일(price_date)이 확정된 뒤에 계산한다.
@@ -1291,7 +1387,20 @@ if __name__ == "__main__":
                 print(f"  진행: {i+1}/{len(latest)} (성공 {ret_ok}개)")
 
         print(f"수익률 계산: {ret_ok}개 성공 / {ret_fail}개 실패")
-        print(f"💾 종목별 종가 이력 저장: {PRICE_HISTORY_DIR}")
+        print(f"💾 종목별 종가 이력 저장(원시 종가): {PRICE_HISTORY_DIR}")
+        if not prev_is_raw:
+            print("ℹ️  원시 종가 변환 첫 실행 — 이전 이력과의 비교는 다음 실행부터 한다")
+        elif mismatches:
+            mismatches.sort(reverse=True)
+            print(f"⚠️  과거 원시 종가가 어제와 0.5% 넘게 달라진 종목 {len(mismatches)}개 — "
+                  "분배 기록 누락 또는 네이버 수정주가 방식 변경을 의심할 것")
+            for gap, code, name, d in mismatches[:10]:
+                print(f"     {code} {name}: {d} {gap*100:.2f}%")
+        else:
+            print("✅ 과거 원시 종가가 어제 저장분과 일치")
+        with open(PRICE_FORMAT_FILE, "w", encoding="utf-8") as f:
+            json.dump({"type": "raw", "note": "네이버 siseJson 분배 수정주가를 원시 종가로 되돌린 값"},
+                      f, ensure_ascii=False)
 
         # 종가 기준일 보정 (비거래일 실행 시 실제 종가 날짜로 교체)
         real_date = resolve_price_date(price_date, close_samples)
