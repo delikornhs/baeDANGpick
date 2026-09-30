@@ -918,6 +918,35 @@ def check_raw_consistency(code: str, new_raw: list, prev_raw: list, tol: float =
     return worst
 
 
+def notice_prev_close(code: str, prev_day: str, headers: dict) -> int:
+    """
+    분배율 계산용 '공시일 전일 종가'.
+
+    ⚠️ 네이버 차트 가격(fetch_naver_historical_price)은 배당락이 지나면 소급 조정된다.
+       그래서 배당락 이후 분배율을 다시 계산하면 분모가 낮아져 분배율이 부풀려졌다
+       (2026-09-30 확인 — 9월 월중 ACE미국반도체 3.00% → 3.10% 등 11개).
+       저장된 원시 종가(price_history, _format.json 있음)를 우선 쓴다.
+       저장분이 prev_day까지 아직 없으면(전날 데일리 실행 전) 네이버에서 받는다 —
+       공시 직후라 아직 배당락 전이므로 그 값은 원시 가격이다.
+    """
+    if PRICE_FORMAT_FILE.exists():
+        f = PRICE_HISTORY_DIR / f"{code}.json"
+        try:
+            with open(f, encoding="utf-8") as fp:
+                rows = json.load(fp)
+            # 종전 네이버 조회(최근 60거래일)와 같은 범위에서만 쓴다. 그보다 오래된 공시는
+            # 종전처럼 네이버 조회가 0을 돌려 기존 분배율이 유지된다 — 범위를 넓히면
+            # 오래된 비current 종목 500여 개의 분배율까지 새로 계산돼 버린다.
+            recent = rows[-60:]
+            if recent and recent[0][0] <= prev_day <= rows[-1][0]:
+                price = find_price_at_or_before(recent, prev_day)
+                if price > 0:
+                    return price
+        except Exception:
+            pass
+    return fetch_naver_historical_price(code, prev_day, headers)
+
+
 def ex_dividend_date(record_date: str, trade_dates: list) -> str:
     """
     기준일(history 키 = ex_date) → 배당락일(기준일 직전 거래일).
@@ -1573,7 +1602,7 @@ if __name__ == "__main__":
         nd = item.get("notice_date", "")
         if nd:
             prev_day = prev_business_day(nd)
-            hist_price = fetch_naver_historical_price(item["code"], prev_day, hist_headers)
+            hist_price = notice_prev_close(item["code"], prev_day, hist_headers)
             if hist_price > 0:
                 item["rate"] = round(item["dist"] / hist_price * 100, 2)
                 rate_updated += 1
