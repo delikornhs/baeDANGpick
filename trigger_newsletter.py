@@ -6,8 +6,14 @@
   python trigger_newsletter.py --type schedule --timing 월중 \
     --last-buy 2026-05-14 --ex-date 2026-05-15 --record 2026-05-15
 
-  # 데이터 업데이트 뉴스레터 (지급일·분배금액) - GitHub Actions 자동 실행
+  # 데이터 업데이트 뉴스레터 (지급일·분배금액)
   python trigger_newsletter.py --type data --timing 월중
+
+종료 코드 — 자동 발송(auto_schedule.py / auto_data_newsletter.py)이 이 값으로 판단한다
+  0 = 발송 성공. 아카이브에 기록함
+  1 = 발송되지 않음. 아카이브에 기록하지 않음 (다시 보내도 중복 없음)
+  2 = 결과 불명. 일부 발송됐을 수 있어 중복을 막으려고 아카이브에 '미확인'으로 기록함
+      → 다시 보내지 말고 수신 여부를 확인할 것
 """
 import argparse
 import json
@@ -62,12 +68,13 @@ def main():
                         help='기준일 YYYY-MM-DD (schedule 타입)')
     args = parser.parse_args()
 
+    # 예전에는 비밀값이 없으면 조용히 끝나(종료 코드 0) 발송된 것처럼 보였다
     if not APPS_SCRIPT_URL:
-        print("APPS_SCRIPT_URL 없음, 스킵")
-        return
+        print("❌ APPS_SCRIPT_URL 없음 — 발송하지 않음")
+        sys.exit(1)
     if not NEWSLETTER_SECRET:
-        print("NEWSLETTER_SECRET 없음, 스킵")
-        return
+        print("❌ NEWSLETTER_SECRET 없음 — 발송하지 않음")
+        sys.exit(1)
 
     now   = datetime.now()
     month = f"{now.year}년 {now.month}월"
@@ -176,14 +183,40 @@ def main():
 
     print(f"뉴스레터 발송: type={args.type}, timing={timing_label}")
     try:
-        r = requests.post(APPS_SCRIPT_URL, json=payload, timeout=60)
-        print(f"응답: {r.text}")
+        # Apps Script는 구독자에게 한 통씩 보내므로 넉넉히 기다린다
+        r = requests.post(APPS_SCRIPT_URL, json=payload, timeout=300)
+    except requests.exceptions.ConnectTimeout as e:
+        print(f"❌ 연결 실패 — 요청이 전달되지 않아 발송되지 않음: {e}")
+        sys.exit(1)
     except Exception as e:
-        print(f"발송 요청 실패: {e}")
+        # 요청은 나갔는데 응답을 못 받은 경우. Apps Script는 계속 돌며 발송했을 수 있다.
+        print(f"⚠️ 응답을 받지 못함 — 발송됐을 수 있음: {e}")
+        archive_entry['status'] = 'unconfirmed'
+        save_archive(archive_entry)
+        sys.exit(2)
+
+    print(f"응답: {r.text[:500]}")
+    try:
+        res = r.json()
+    except ValueError:
+        res = None
+
+    # 예전에는 응답 내용과 상관없이 아카이브에 기록해, 발송 실패도 '보낸 것'으로 남았다
+    if isinstance(res, dict) and res.get('result') == 'success':
+        archive_entry['sent'] = res.get('sent')
+        archive_entry['failed'] = res.get('failed')
+        save_archive(archive_entry)
+        print(f"✅ 발송 완료 — 성공 {res.get('sent')}명 / 실패 {res.get('failed')}명")
+        return
+    if isinstance(res, dict) and res.get('result') == 'error':
+        # 인증 실패 등은 발송 루프에 들어가기 전에 난다
+        print(f"❌ 발송 실패(Apps Script 오류: {res.get('message')}) — 아카이브에 기록하지 않음")
         sys.exit(1)
 
-    # 발송 성공 후 아카이브 저장
+    print("⚠️ 알 수 없는 응답 — 발송됐을 수 있어 '미확인'으로 기록함")
+    archive_entry['status'] = 'unconfirmed'
     save_archive(archive_entry)
+    sys.exit(2)
 
 
 if __name__ == '__main__':

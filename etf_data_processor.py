@@ -839,6 +839,8 @@ def find_friday_price(daily: list, on_or_before: str) -> tuple:
 
 
 PRICE_FORMAT_FILE = PRICE_HISTORY_DIR / "_format.json"
+# 원시 종가 일관성 검사 결과 — update-prices.yml 의 git add 목록에도 들어 있어야 한다
+PRICE_INTEGRITY_FILE = OUT_DIR / "price_integrity.json"
 
 
 def dists_by_code(history: dict) -> dict:
@@ -1427,6 +1429,17 @@ if __name__ == "__main__":
                 print(f"     {code} {name}: {d} {gap*100:.2f}%")
         else:
             print("✅ 과거 원시 종가가 어제 저장분과 일치")
+        # 위 결과를 파일로 남긴다. 로그 경고만으로는 아무도 못 보고 지나간다 —
+        # 자동 발송(auto_data_newsletter.py)이 이 파일을 읽어, 걸린 종목이 발송 대상에 있으면 멈춘다.
+        with open(PRICE_INTEGRITY_FILE, "w", encoding="utf-8") as f:
+            json.dump({
+                "checked_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
+                "compared": prev_is_raw,
+                "tolerance_pct": 0.5,
+                "mismatch_count": len(mismatches),
+                "mismatches": [{"code": c, "name": n, "date": d, "gap_pct": round(g * 100, 2)}
+                               for g, c, n, d in sorted(mismatches, reverse=True)[:200]],
+            }, f, ensure_ascii=False, indent=2)
         with open(PRICE_FORMAT_FILE, "w", encoding="utf-8") as f:
             json.dump({"type": "raw", "note": "네이버 siseJson 분배 수정주가를 원시 종가로 되돌린 값"},
                       f, ensure_ascii=False)

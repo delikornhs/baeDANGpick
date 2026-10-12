@@ -15,6 +15,12 @@ on:
 permissions:
   contents: write
 
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONUTF8: 1
+  # 뉴스레터의 월 표기와 아카이브 id를 한국 날짜로 만든다
+  TZ: Asia/Seoul
+
 jobs:
   send:
     runs-on: ubuntu-latest
@@ -34,19 +40,13 @@ jobs:
           NEWSLETTER_SECRET: ${{ secrets.NEWSLETTER_SECRET }}
         run: python trigger_newsletter.py --type data --timing "${{ inputs.timing }}"
 
+      # 발송 결과가 '불명'(종료 코드 2)이어도 기록은 남겨야 하므로 항상 실행한다.
+      # 기록이 커밋되지 않으면 자동 발송(kind-watch.yml)이 이 회차를 안 보낸 것으로 보고 다시 보낼 수 있다.
+      # 충돌 시 예전처럼 --ours(리베이스 중엔 원격 쪽)로 풀면 방금 보낸 기록이 버려지므로,
+      # 원격 최신본에 새 기록을 합쳐 다시 push한다.
       - name: Commit archive
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/output/newsletter/archive.json
-          if git diff --cached --quiet; then
-            echo "아카이브 변경 없음"
-          else
-            git commit -m "chore: newsletter archive update (data/${{ inputs.timing }})"
-            if ! git pull --rebase origin master; then
-              git checkout --ours data/output/newsletter/archive.json
-              git add data/output/newsletter/archive.json
-              GIT_EDITOR=true git rebase --continue
-            fi
-            git push
-          fi
+          python -X utf8 auto_common.py commit-archive "chore: newsletter archive update (data/${{ inputs.timing }})"
