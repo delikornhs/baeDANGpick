@@ -1,5 +1,151 @@
 [
   {
+    "id": "2026-10-mid-data",
+    "type": "data",
+    "timing": "월중",
+    "month": "2026년 10월",
+    "sent_at": "2026-10-14",
+    "etfs": [
+      {
+        "code": "480040",
+        "name": "ACE미국반도체데일리타겟커버드콜(합성)",
+        "brand": "ACE",
+        "manager": "한국투자신탁운용",
+        "pay": "2026-10-19",
+        "dist": 435,
+        "rate": 2.98
+      },
+      {
+        "code": "480020",
+        "name": "ACE미국빅테크7+데일리타겟커버드콜(합성)",
+        "brand": "ACE",
+        "manager": "한국투자신탁운용",
+        "pay": "2026-10-19",
+        "dist": 301,
+        "rate": 2.98
+      },
+      {
+        "code": "0094M0",
+        "name": "RISE 코리아밸류업위클리고정커버드콜",
+        "brand": "RISE",
+        "manager": "KB자산운용",
+        "pay": "2026-10-19",
+        "dist": 465,
+        "rate": 2.87
+      },
+      {
+        "code": "0132K0",
+        "name": "PLUS 테슬라위클리커버드콜채권혼합",
+        "brand": "PLUS",
+        "manager": "한화자산운용",
+        "pay": "2026-10-19",
+        "dist": 179,
+        "rate": 2.23
+      },
+      {
+        "code": "480030",
+        "name": "ACE미국500데일리타겟커버드콜(합성)",
+        "brand": "ACE",
+        "manager": "한국투자신탁운용",
+        "pay": "2026-10-19",
+        "dist": 191,
+        "rate": 1.98
+      },
+      {
+        "code": "0177R0",
+        "name": "TIGER 반도체TOP10커버드콜액티브",
+        "brand": "TIGER",
+        "manager": "미래에셋자산운용",
+        "pay": "2026-10-19",
+        "dist": 165,
+        "rate": 1.49
+      },
+      {
+        "code": "498400",
+        "name": "KODEX 200타겟위클리커버드콜",
+        "brand": "KODEX",
+        "manager": "삼성자산운용",
+        "pay": "2026-10-19",
+        "dist": 281,
+        "rate": 1.47
+      },
+      {
+        "code": "476800",
+        "name": "KODEX 한국부동산리츠인프라",
+        "brand": "KODEX",
+        "manager": "삼성자산운용",
+        "pay": "2026-10-19",
+        "dist": 60,
+        "rate": 1.43
+      },
+      {
+        "code": "0183V0",
+        "name": "KIWOOM 삼성전자&amp;SK하이닉스채권혼합50",
+        "brand": "KIWOOM",
+        "manager": "키움투자자산운용",
+        "pay": "2026-10-19",
+        "dist": 146,
+        "rate": 1.28
+      },
+      {
+        "code": "490600",
+        "name": "RISE 미국배당100데일리고정커버드콜",
+        "brand": "RISE",
+        "manager": "KB자산운용",
+        "pay": "2026-10-19",
+        "dist": 106,
+        "rate": 1.26
+      },
+      {
+        "code": "0018C0",
+        "name": "PLUS 고배당주위클리고정커버드콜",
+        "brand": "PLUS",
+        "manager": "한화자산운용",
+        "pay": "2026-10-19",
+        "dist": 127,
+        "rate": 1.25
+      },
+      {
+        "code": "493810",
+        "name": "TIGER 미국AI빅테크10타겟데일리커버드콜",
+        "brand": "TIGER",
+        "manager": "미래에셋자산운용",
+        "pay": "2026-10-19",
+        "dist": 142,
+        "rate": 1.25
+      },
+      {
+        "code": "494420",
+        "name": "PLUS 미국배당증가성장주데일리커버드콜",
+        "brand": "PLUS",
+        "manager": "한화자산운용",
+        "pay": "2026-10-19",
+        "dist": 95,
+        "rate": 1.1
+      },
+      {
+        "code": "481060",
+        "name": "KODEX 미국30년국채타겟커버드콜(합성 H)",
+        "brand": "KODEX",
+        "manager": "삼성자산운용",
+        "pay": "2026-10-19",
+        "dist": 71,
+        "rate": 1.0
+      },
+      {
+        "code": "482730",
+        "name": "TIGER 미국S&amp;P500타겟데일리커버드콜",
+        "brand": "TIGER",
+        "manager": "미래에셋자산운용",
+        "pay": "2026-10-19",
+        "dist": 115,
+        "rate": 1.0
+      }
+    ],
+    "sent": 29,
+    "failed": 0
+  },
+  {
     "id": "2026-10-mid-schedule",
     "type": "schedule",
     "timing": "월중",
