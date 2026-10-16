@@ -1,7 +1,14 @@
 {
-  "checked_at": "2026-10-15 13:57",
+  "checked_at": "2026-10-16 13:49",
   "compared": true,
   "tolerance_pct": 0.5,
-  "mismatch_count": 0,
-  "mismatches": []
+  "mismatch_count": 1,
+  "mismatches": [
+    {
+      "code": "267450",
+      "name": "RISE 미국장기국채선물인버스(H)",
+      "date": "2026-10-15",
+      "gap_pct": 0.61
+    }
+  ]
 }
