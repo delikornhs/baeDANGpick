@@ -1,14 +1,14 @@
 {
-  "checked_at": "2026-10-16 13:49",
+  "checked_at": "2026-10-19 16:30",
   "compared": true,
   "tolerance_pct": 0.5,
   "mismatch_count": 1,
   "mismatches": [
     {
-      "code": "267450",
-      "name": "RISE 미국장기국채선물인버스(H)",
-      "date": "2026-10-15",
-      "gap_pct": 0.61
+      "code": "215620",
+      "name": "HK S&amp;P로우볼상장지수 투자신탁[주식]",
+      "date": "2026-10-16",
+      "gap_pct": 0.91
     }
   ]
 }
