@@ -1,14 +1,7 @@
 {
-  "checked_at": "2026-10-19 16:30",
+  "checked_at": "2026-10-20 14:03",
   "compared": true,
   "tolerance_pct": 0.5,
-  "mismatch_count": 1,
-  "mismatches": [
-    {
-      "code": "215620",
-      "name": "HK S&amp;P로우볼상장지수 투자신탁[주식]",
-      "date": "2026-10-16",
-      "gap_pct": 0.91
-    }
-  ]
+  "mismatch_count": 0,
+  "mismatches": []
 }
