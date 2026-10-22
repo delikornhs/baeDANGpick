@@ -1,7 +1,20 @@
 {
-  "checked_at": "2026-10-21 14:20",
+  "checked_at": "2026-10-22 14:21",
   "compared": true,
   "tolerance_pct": 0.5,
-  "mismatch_count": 0,
-  "mismatches": []
+  "mismatch_count": 2,
+  "mismatches": [
+    {
+      "code": "181480",
+      "name": "ACE 미국부동산리츠(합성 H)",
+      "date": "2026-10-21",
+      "gap_pct": 2.1
+    },
+    {
+      "code": "491700",
+      "name": "HK 200증권상장지수투자 신탁[주식]",
+      "date": "2026-10-21",
+      "gap_pct": 1.97
+    }
+  ]
 }
