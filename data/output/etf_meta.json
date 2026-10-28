@@ -40404,5 +40404,54 @@
         "pct": "3.56%"
       }
     ]
+  },
+  "489290": {
+    "total_fee": 0.49,
+    "index_name": "Bloomberg US Billionaires Investment Select Index(PR)",
+    "summary": "이 투자신탁은 주식을 법 시행령 제94조제2항제4호에서 규정하는 주된 투자대상자산으로 하며, 1좌당 순자산가치의 일간변동률을 “Bloomberg US Billionaires Investment Select Price Return Index(원화환산)”의 1배수와 유사하도록 투자신탁 재산을 운용함을 목적으로 하는 상장지수투자신탁입니다.  이 투자신탁은 환헤지를 하지 않으므로 환율 변동위험에 노출되며, 이 투자신탁의 1좌당 순자산가치는 기초지수의 원화환산 후 수익률에 연동하게 됩니다.",
+    "holdings": [
+      {
+        "name": "테슬라",
+        "pct": "8.69%"
+      },
+      {
+        "name": "마이크로소프트",
+        "pct": "8.57%"
+      },
+      {
+        "name": "월마트",
+        "pct": "8.20%"
+      },
+      {
+        "name": "엔비디아",
+        "pct": "7.83%"
+      },
+      {
+        "name": "버크셔 해서웨이 Class B",
+        "pct": "7.80%"
+      },
+      {
+        "name": "아마존닷컴",
+        "pct": "7.40%"
+      },
+      {
+        "name": "알파벳 Class A",
+        "pct": "7.16%"
+      },
+      {
+        "name": "브로드컴",
+        "pct": "7.07%"
+      },
+      {
+        "name": "메타",
+        "pct": "7.06%"
+      },
+      {
+        "name": "존슨앤드존슨",
+        "pct": "3.27%"
+      }
+    ],
+    "listed_date": "",
+    "manager": ""
   }
 }
