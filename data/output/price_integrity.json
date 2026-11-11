@@ -1,7 +1,14 @@
 {
-  "checked_at": "2026-11-10 16:50",
+  "checked_at": "2026-11-11 16:51",
   "compared": true,
   "tolerance_pct": 0.5,
-  "mismatch_count": 0,
-  "mismatches": []
+  "mismatch_count": 1,
+  "mismatches": [
+    {
+      "code": "407300",
+      "name": "HANARO Fn골프테마",
+      "date": "2026-11-10",
+      "gap_pct": 1.27
+    }
+  ]
 }
