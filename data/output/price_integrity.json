@@ -1,38 +1,7 @@
 {
-  "checked_at": "2026-11-12 17:17",
+  "checked_at": "2026-11-13 16:57",
   "compared": true,
   "tolerance_pct": 0.5,
-  "mismatch_count": 5,
-  "mismatches": [
-    {
-      "code": "0052T0",
-      "name": "1Q 중단기회사채(A-이상)액티브",
-      "date": "2026-10-06",
-      "gap_pct": 3.93
-    },
-    {
-      "code": "492500",
-      "name": "1Q 현대차그룹채권(A+이상)&amp;국고통안",
-      "date": "2026-11-10",
-      "gap_pct": 3.67
-    },
-    {
-      "code": "463290",
-      "name": "1Q 단기금융채액티브",
-      "date": "2026-09-30",
-      "gap_pct": 3.11
-    },
-    {
-      "code": "479080",
-      "name": "1Q 머니마켓액티브",
-      "date": "2026-10-01",
-      "gap_pct": 2.83
-    },
-    {
-      "code": "491610",
-      "name": "1Q CD금리액티브(합성)",
-      "date": "2026-09-30",
-      "gap_pct": 2.39
-    }
-  ]
+  "mismatch_count": 0,
+  "mismatches": []
 }
