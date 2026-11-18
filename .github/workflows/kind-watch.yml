@@ -32,10 +32,15 @@ on:
         description: '새 공시가 없어도 프로세서·검증을 실행 (동작 점검·수동 재처리용)'
         type: boolean
         default: false
+      retry:
+        description: '차단 재시도 횟수 (워크플로가 자동으로 넣는다 — 수동 실행 시 0)'
+        type: number
+        default: 0
 
 permissions:
   contents: write
   issues: write
+  actions: write     # KIND 차단 시 새 실행(= 새 러너)으로 자기 자신을 다시 띄운다
 
 # 실행이 겹치면 push가 서로 엇갈리므로 한 번에 하나씩
 concurrency:
@@ -80,10 +85,40 @@ jobs:
             echo "new_files=false" >> $GITHUB_OUTPUT
           fi
 
+      # KIND 앞단 CDN(Akamai)이 러너 IP를 막으면 'Access Denied' 페이지가 온다.
+      # 같은 러너에서 다시 시도하면 IP가 같아 계속 막히고(페이지 열기 3회 재시도도 소용없음),
+      # 실패한 실행을 다시 돌리면 새 러너가 배정돼 통과한 사례가 있다(2026-10-01).
+      # 그래서 차단이면 새 실행을 띄우고 이번 실행은 알림 없이 끝낸다. 최대 2회까지.
+      - name: Retry on a fresh runner if KIND blocked us
+        id: retry
+        if: steps.fetch.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RETRY: ${{ inputs.retry || 0 }}
+          MAX_RETRY: 2
+        run: |
+          DISPATCHED=false
+          if ! grep -q "Access Denied" fetch.log; then
+            echo "차단(Access Denied)이 아닌 실패 — 재시도하지 않고 알린다."
+          elif [ "$RETRY" -ge "$MAX_RETRY" ]; then
+            echo "새 러너 재시도 ${MAX_RETRY}회 모두 차단 — 알린다."
+          else
+            NEXT=$((RETRY + 1))
+            if printf '{"ref":"master","inputs":{"retry":"%s"}}' "$NEXT" \
+                 | gh api -X POST "repos/${{ github.repository }}/actions/workflows/kind-watch.yml/dispatches" --input -; then
+              DISPATCHED=true
+              echo "KIND 차단 — 새 러너로 재시도 실행을 띄웠다 (${NEXT}/${MAX_RETRY})"
+            else
+              echo "재시도 실행을 띄우지 못했다 — 알린다."
+            fi
+          fi
+          echo "dispatched=$DISPATCHED" >> $GITHUB_OUTPUT
+
       # 수집 자체가 깨지면(KIND 장애·화면 변경 등) 새 공시가 있어도 못 가져온다.
       # 월말·월중 공시일에 이런 일이 겹치면 회차를 통째로 놓치므로 따로 알린다.
+      # 재시도 실행을 띄웠으면 그쪽 결과를 기다린다 (마지막 재시도까지 막히면 거기서 알린다).
       - name: Open fetch failure issue
-        if: steps.fetch.outcome == 'failure'
+        if: steps.fetch.outcome == 'failure' && steps.retry.outputs.dispatched != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -105,6 +140,7 @@ jobs:
             echo "- [ ] Claude에게 \`\"KIND 수집 실패 확인해줘\"\` 라고 요청"
             echo ""
             echo "> 일시적 장애면 다음 실행에 자동 복구됩니다 (하루 세 번 실행, 페이지 열기는 3회 재시도)."
+            echo "> KIND 차단(Access Denied)이면 새 러너로 최대 2회 다시 돌린 뒤에도 막힌 경우에만 이 이슈가 생깁니다."
             echo "> 반복되면 KIND 화면 구조가 바뀐 것일 수 있습니다 — 아래 로그의 \`input_ids\` 를 확인하세요."
             echo ""
             echo "## 수집 로그"
@@ -201,7 +237,9 @@ jobs:
           {
             echo "## KIND 감시 결과"
             echo ""
-            if [ "${{ steps.fetch.outcome }}" = "failure" ]; then
+            if [ "${{ steps.retry.outputs.dispatched }}" = "true" ]; then
+              echo "🔁 KIND 차단(Access Denied) — 새 러너로 재시도 실행을 띄웠습니다. 그 실행 결과를 확인하세요."
+            elif [ "${{ steps.fetch.outcome }}" = "failure" ]; then
               echo "🚨 공시 수집 실패 — 새 공시를 확인하지 못했습니다. 이슈를 확인하세요."
             elif [ "${{ steps.fetch.outputs.new_files }}" != "true" ]; then
               echo "변경 없음 — 새로 올라온 공시가 없습니다."
@@ -224,8 +262,9 @@ jobs:
 
       # fetch 단계는 알림 이슈를 만들기 위해 continue-on-error 로 두었으므로,
       # 여기서 다시 실패로 끝내야 실행 결과가 '성공'으로 잘못 표시되지 않는다.
+      # 재시도 실행을 띄운 경우는 실패로 끝내지 않는다 — 실패 알림 메일은 마지막 재시도에서만.
       - name: Fail if fetch failed
-        if: steps.fetch.outcome == 'failure'
+        if: steps.fetch.outcome == 'failure' && steps.retry.outputs.dispatched != 'true'
         run: |
           echo "kind_fetch.py 실패 — 위 로그와 생성된 이슈를 확인하세요."
           exit 1
