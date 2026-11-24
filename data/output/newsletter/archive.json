@@ -1,5 +1,17 @@
 [
   {
+    "id": "2026-11-end-schedule",
+    "type": "schedule",
+    "timing": "월말",
+    "month": "2026년 11월",
+    "sent_at": "2026-11-25",
+    "lastBuy": "2026-11-26",
+    "exDate": "2026-11-27",
+    "record": "2026-11-30",
+    "sent": 30,
+    "failed": 0
+  },
+  {
     "id": "2026-11-mid-data",
     "type": "data",
     "timing": "월중",
