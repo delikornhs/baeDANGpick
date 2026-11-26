@@ -1,5 +1,151 @@
 [
   {
+    "id": "2026-11-end-data",
+    "type": "data",
+    "timing": "월말",
+    "month": "2026년 11월",
+    "sent_at": "2026-11-27",
+    "etfs": [
+      {
+        "code": "0174J0",
+        "name": "DAISHIN 오피스리츠플러스",
+        "brand": "DAISHI",
+        "manager": "대신자산운용",
+        "pay": "2026-12-02",
+        "dist": 250,
+        "rate": 3.15
+      },
+      {
+        "code": "480460",
+        "name": "WON한국부동산TOP3플러스",
+        "brand": "WON",
+        "manager": "우리자산운용",
+        "pay": "2026-12-02",
+        "dist": 250,
+        "rate": 3.09
+      },
+      {
+        "code": "0223A0",
+        "name": "RISE 코스닥커버드콜액티브",
+        "brand": "RISE",
+        "manager": "KB자산운용",
+        "pay": "2026-12-02",
+        "dist": 200,
+        "rate": 2.91
+      },
+      {
+        "code": "0198A0",
+        "name": "KIWOOM 코스닥150커버드콜액티브",
+        "brand": "KIWOOM",
+        "manager": "키움투자자산운용",
+        "pay": "2026-12-02",
+        "dist": 153,
+        "rate": 2.54
+      },
+      {
+        "code": "0199C0",
+        "name": "ACE 고배당주Plus커버드콜액티브",
+        "brand": "ACE",
+        "manager": "한국투자신탁운용",
+        "pay": "2026-12-02",
+        "dist": 174,
+        "rate": 2.45
+      },
+      {
+        "code": "491620",
+        "name": "RISE 미국테크100데일리고정커버드콜",
+        "brand": "RISE",
+        "manager": "KB자산운용",
+        "pay": "2026-12-02",
+        "dist": 205,
+        "rate": 2.31
+      },
+      {
+        "code": "490590",
+        "name": "RISE 미국AI밸류체인데일리고정커버드콜",
+        "brand": "RISE",
+        "manager": "KB자산운용",
+        "pay": "2026-12-02",
+        "dist": 228,
+        "rate": 2.29
+      },
+      {
+        "code": "0219E0",
+        "name": "KODEX 200커버드콜액티브",
+        "brand": "KODEX",
+        "manager": "삼성자산운용",
+        "pay": "2026-12-02",
+        "dist": 121,
+        "rate": 2.24
+      },
+      {
+        "code": "473330",
+        "name": "SOL 미국30년국채커버드콜(합성)",
+        "brand": "SOL",
+        "manager": "신한자산운용",
+        "pay": "2026-12-01",
+        "dist": 172,
+        "rate": 2.23
+      },
+      {
+        "code": "0210E0",
+        "name": "PLUS 200커버드콜액티브",
+        "brand": "PLUS",
+        "manager": "한화자산운용",
+        "pay": "2026-12-02",
+        "dist": 96,
+        "rate": 2.03
+      },
+      {
+        "code": "0040Y0",
+        "name": "SOL 팔란티어커버드콜OTM채권혼합",
+        "brand": "SOL",
+        "manager": "신한자산운용",
+        "pay": "2026-12-01",
+        "dist": 149,
+        "rate": 2.01
+      },
+      {
+        "code": "0176P0",
+        "name": "FOCUS AI반도체위클리고정커버드콜",
+        "brand": "FOCUS",
+        "manager": "동양자산운용",
+        "pay": "2026-12-02",
+        "dist": 170,
+        "rate": 1.99
+      },
+      {
+        "code": "472150",
+        "name": "TIGER 배당커버드콜액티브",
+        "brand": "TIGER",
+        "manager": "미래에셋자산운용",
+        "pay": "2026-12-02",
+        "dist": 260,
+        "rate": 1.99
+      },
+      {
+        "code": "429740",
+        "name": "PLUS K리츠",
+        "brand": "PLUS",
+        "manager": "한화자산운용",
+        "pay": "2026-12-02",
+        "dist": 101,
+        "rate": 1.93
+      },
+      {
+        "code": "494300",
+        "name": "KODEX 미국나스닥100데일리커버드콜OTM",
+        "brand": "KODEX",
+        "manager": "삼성자산운용",
+        "pay": "2026-12-02",
+        "dist": 140,
+        "rate": 1.9
+      }
+    ],
+    "sent": 30,
+    "failed": 0
+  },
+  {
     "id": "2026-11-end-schedule",
     "type": "schedule",
     "timing": "월말",
