@@ -1,7 +1,80 @@
 {
-  "checked_at": "2026-11-26 18:59",
+  "checked_at": "2026-11-27 18:47",
   "compared": true,
   "tolerance_pct": 0.5,
-  "mismatch_count": 0,
-  "mismatches": []
+  "mismatch_count": 12,
+  "mismatches": [
+    {
+      "code": "0099L0",
+      "name": "ACE 우량회사채(AA-이상)액티브",
+      "date": "2026-10-08",
+      "gap_pct": 5.15
+    },
+    {
+      "code": "272910",
+      "name": "KINDEX 중장기국공채액티브",
+      "date": "2026-11-02",
+      "gap_pct": 3.98
+    },
+    {
+      "code": "438330",
+      "name": "TIGER우량회사채액티브",
+      "date": "2026-11-16",
+      "gap_pct": 3.93
+    },
+    {
+      "code": "451530",
+      "name": "TIGER국고채30년스트립액티브",
+      "date": "2026-09-17",
+      "gap_pct": 3.81
+    },
+    {
+      "code": "480260",
+      "name": "TIGER 27-04회사채(A+이상)액티브",
+      "date": "2026-09-29",
+      "gap_pct": 3.52
+    },
+    {
+      "code": "302190",
+      "name": "TIGER 중장기국채",
+      "date": "2026-09-18",
+      "gap_pct": 3.15
+    },
+    {
+      "code": "451540",
+      "name": "TIGER종합채권(AA-이상)액티브",
+      "date": "2026-09-15",
+      "gap_pct": 3.13
+    },
+    {
+      "code": "114820",
+      "name": "TIGER 국채3년",
+      "date": "2026-11-13",
+      "gap_pct": 2.73
+    },
+    {
+      "code": "0043B0",
+      "name": "TIGER머니마켓액티브",
+      "date": "2026-10-23",
+      "gap_pct": 2.37
+    },
+    {
+      "code": "157450",
+      "name": "TIGER 단기통안채",
+      "date": "2026-09-17",
+      "gap_pct": 2.33
+    },
+    {
+      "code": "272580",
+      "name": "TIGER 단기채권액티브",
+      "date": "2026-11-06",
+      "gap_pct": 2.12
+    },
+    {
+      "code": "449170",
+      "name": "TIGERKOFR금리액티브(합성)",
+      "date": "2026-10-27",
+      "gap_pct": 1.75
+    }
+  ]
 }
